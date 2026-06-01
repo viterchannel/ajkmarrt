@@ -13,6 +13,7 @@ type WalletTx = {
   type: string;
   amount: number | string;
   createdAt: string;
+  description?: string | null;
 };
 
 interface EarningsBarChartProps {
@@ -24,28 +25,25 @@ interface EarningsBarChartProps {
 export default function EarningsBarChart({ transactions, currency, title }: EarningsBarChartProps) {
   const { language } = useLanguage();
   const T = (key: Parameters<typeof tDual>[0]) => tDual(key, language);
-  const [tooltip, setTooltip] = useState<{ idx: number; amount: number; date: string } | null>(null);
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   const days = useMemo(() => {
-    const result: { label: string; amount: number; date: string; isToday: boolean }[] = [];
+    const result: { label: string; amount: number; count: number; date: string; isToday: boolean }[] = [];
     for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      d.setHours(0, 0, 0, 0);
-      const next = new Date(d);
-      next.setDate(next.getDate() + 1);
-      const earned = transactions
-        .filter(
-          (t) =>
-            t.type === "credit" &&
-            new Date(t.createdAt) >= d &&
-            new Date(t.createdAt) < next
-        )
-        .reduce((s, t) => s + Number(t.amount), 0);
+      const now = new Date();
+      const dUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i));
+      const nextUTC = new Date(dUTC.getTime() + 24 * 60 * 60 * 1000);
+      const dayTxs = transactions.filter(
+        (t) =>
+          t.type === "credit" &&
+          new Date(t.createdAt) >= dUTC &&
+          new Date(t.createdAt) < nextUTC
+      );
       result.push({
-        label: i === 0 ? T("today") : d.toLocaleDateString("en-PK", { weekday: "short" }),
-        amount: earned,
-        date: d.toLocaleDateString("en-PK", { day: "numeric", month: "short" }),
+        label: i === 0 ? T("today") : dUTC.toLocaleDateString("en-PK", { weekday: "short", timeZone: "UTC" }),
+        amount: dayTxs.reduce((s, t) => s + Number(t.amount), 0),
+        count: dayTxs.length,
+        date: dUTC.toLocaleDateString("en-PK", { day: "numeric", month: "short", timeZone: "UTC" }),
         isToday: i === 0,
       });
     }
@@ -53,6 +51,7 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
   }, [transactions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const maxVal = Math.max(...days.map((d) => d.amount), 1);
+  const active = activeIdx != null ? days[activeIdx] : null;
 
   return (
     <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-5 shadow-sm">
@@ -61,11 +60,16 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
         <p className="text-sm font-bold text-white">{title ?? "7-Day Earnings"}</p>
       </div>
 
-      {tooltip && (
+      {active ? (
         <div className="mb-3 flex items-center justify-between rounded-xl border border-brand/20 bg-brand/10 px-3 py-2">
-          <span className="text-xs font-semibold text-brand">{days[tooltip.idx]?.date}</span>
-          <span className="text-sm font-extrabold text-brand">{fc(tooltip.amount, currency)}</span>
+          <div>
+            <p className="text-xs font-semibold text-brand">{active.date}</p>
+            <p className="text-[10px] text-brand/60">{active.count} {active.count === 1 ? "delivery" : "deliveries"}</p>
+          </div>
+          <span className="text-sm font-extrabold text-brand">{fc(active.amount, currency)}</span>
         </div>
+      ) : (
+        <div className="mb-3 h-[46px]" />
       )}
 
       <div className="flex h-20 items-end gap-2">
@@ -74,12 +78,12 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
             key={i}
             type="button"
             className="flex flex-1 flex-col items-center gap-1.5 cursor-pointer"
-            onClick={() => setTooltip(tooltip?.idx === i ? null : { idx: i, amount: d.amount, date: d.date })}
+            onClick={() => setActiveIdx(activeIdx === i ? null : i)}
           >
             <div className="flex w-full items-end justify-center" style={{ height: 56 }}>
               <div
                 className={`w-full max-w-[24px] rounded-t-lg transition-all duration-500 ${
-                  d.isToday ? "bg-brand" : tooltip?.idx === i ? "bg-white/40" : "bg-white/20"
+                  d.isToday ? "bg-brand" : activeIdx === i ? "bg-white/40" : "bg-white/20"
                 }`}
                 style={{
                   height: Math.max((d.amount / maxVal) * 56, d.amount > 0 ? 4 : 2),

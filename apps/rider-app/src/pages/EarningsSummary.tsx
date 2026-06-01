@@ -352,7 +352,7 @@ export default function EarningsSummary() {
                         <PayoutStatusBadge reference={tx.reference} />
                       </div>
                     </div>
-                    <p className="ml-3 flex-shrink-0 text-base font-extrabold text-error">
+                    <p className="ml-3 flex-shrink-0 text-right text-base font-extrabold text-white">
                       −{fc(Number(tx.amount), currency)}
                     </p>
                   </div>

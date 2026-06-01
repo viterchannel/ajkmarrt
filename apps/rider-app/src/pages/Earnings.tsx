@@ -567,7 +567,7 @@ export default function Earnings() {
               onClick={() => navigate("/wallet")}
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-black active:opacity-80 transition-opacity"
             >
-              <Wallet size={15} /> {T("walletBalance")} <ArrowRight size={15} />
+              <Wallet size={15} /> Withdraw <ArrowRight size={15} />
             </button>
           </div>
         </div>
