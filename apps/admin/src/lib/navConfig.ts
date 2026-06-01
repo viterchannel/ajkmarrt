@@ -23,6 +23,7 @@ import type { TranslationKey } from "@workspace/i18n";
 import {
   Activity,
   AlertTriangle,
+  Banknote,
   BarChart2,
   BellRing,
   Bike,
@@ -201,6 +202,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { nameKey: "navVendors", href: "/vendors", icon: Store, requirePermission: "vendors.view" },
       { nameKey: "navKyc", href: "/kyc", icon: UserCheck, requirePermission: "finance.kyc.view", pendingDocsBadge: true },
       { nameKey: "navLocationRequests" as TranslationKey, href: "/location-requests", icon: MapPinPlus, requirePermission: "system.settings.view", pendingLocationsBadge: true },
+      { nameKey: "navCodRemittances" as TranslationKey, href: "/cod-remittances", icon: Banknote, requirePermission: "finance.transactions.view" },
     ],
   },
   {

@@ -266,6 +266,7 @@ router.get("/", async (req, res) => {
       docUploadEnabled: (s["rider_doc_upload_enabled"] ?? "on") === "on",
       deliveryRadiusKm: parseFloat(s["rider_delivery_radius_km"] ?? "5"),
       pushNotificationsEnabled: (s["rider_push_notifications_enabled"] ?? "on") === "on",
+      approvalEtaHours: parseFloat(s["rider_approval_eta_hours"] ?? "24"),
       modules: {
         wallet: (s["rider_module_wallet"] ?? "on") === "on",
         earnings: (s["rider_module_earnings"] ?? "on") === "on",

@@ -5438,6 +5438,83 @@ router.post("/wallet/withdraw", checkFeatureAccess("withdraw_money"), requireAtt
   }
 });
 
+/* ── GET /rider/cod/remittances — Paginated list of COD remittances ── */
+router.get("/cod/remittances", async (req, res) => {
+  try {
+    const riderId = req.riderId!;
+    const page = Math.max(1, parseInt(String(req.query.page ?? "1")));
+    const limit = Math.min(50, Math.max(1, parseInt(String(req.query.limit ?? "20"))));
+    const status = String(req.query.status ?? "all");
+    const offset = (page - 1) * limit;
+
+    const whereConditions = [
+      eq(walletTransactionsTable.userId, riderId),
+      eq(walletTransactionsTable.type, "cod_remittance"),
+    ];
+
+    if (status === "pending") {
+      whereConditions.push(sql`${walletTransactionsTable.reference} LIKE 'pending:%'`);
+    } else if (status === "verified") {
+      whereConditions.push(sql`${walletTransactionsTable.reference} LIKE 'verified:%'`);
+    } else if (status === "rejected") {
+      whereConditions.push(sql`${walletTransactionsTable.reference} LIKE 'rejected:%'`);
+    }
+
+    const [rows, totalRows] = await Promise.all([
+      db
+        .select()
+        .from(walletTransactionsTable)
+        .where(and(...whereConditions))
+        .orderBy(desc(walletTransactionsTable.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db
+        .select({ count: count() })
+        .from(walletTransactionsTable)
+        .where(and(...whereConditions)),
+    ]);
+
+    const total = Number(totalRows[0]?.count ?? 0);
+    sendSuccess(res, {
+      remittances: rows.map((r) => {
+        const ref = r.reference ?? "";
+        const statusKey: "pending" | "verified" | "rejected" = ref.startsWith("verified:")
+          ? "verified"
+          : ref.startsWith("rejected:")
+            ? "rejected"
+            : "pending";
+        /* Extract human-readable note/rejection-reason from the reference tail */
+        let note: string | null = null;
+        if (statusKey === "verified" || statusKey === "rejected") {
+          const parts = ref.split(":");
+          /* format: verified:<adminId>:<note>  or rejected:<adminId>:<reason> */
+          note = parts.slice(2).join(":") || null;
+        }
+        return {
+          ...r,
+          amount: safeNum(r.amount),
+          status: statusKey,
+          rejectionNote: statusKey === "rejected" ? note : null,
+          adminNote: statusKey === "verified" ? note : null,
+        };
+      }),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore: page * limit < total,
+      },
+    });
+  } catch (err) {
+    logger.error(
+      { error: err instanceof Error ? err.message : String(err) },
+      "[cod/remittances] error"
+    );
+    sendError(res, "Internal server error", 500);
+  }
+});
+
 /* ── GET /rider/cod-summary — COD balance + remittance history ── */
 router.get("/cod-summary", async (req, res) => {
   try {

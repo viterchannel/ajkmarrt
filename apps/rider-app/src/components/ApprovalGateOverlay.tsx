@@ -1,4 +1,4 @@
-import { CheckCircle, Lock, Wifi, WifiOff } from "lucide-react";
+import { CheckCircle, Lock, MessageCircle, Phone, Wifi, WifiOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { tDual } from "@workspace/i18n";
@@ -18,7 +18,10 @@ export function ApprovalGateOverlay() {
   const T = useCallback((key: Parameters<typeof tDual>[0]) => tDual(key, language), [language]);
   const qc = useQueryClient();
   const { socket, connected } = useSocket();
+
   const supportPhone = (config.content as { supportPhone?: string } | undefined)?.supportPhone;
+  const supportEmail = (config.content as { supportEmail?: string } | undefined)?.supportEmail;
+  const etaHours = config.rider?.approvalEtaHours ?? 24;
 
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const [socketUpdate, setSocketUpdate] = useState<{ status: "approved" | "rejected"; reason?: string | null } | null>(null);
@@ -42,12 +45,21 @@ export function ApprovalGateOverlay() {
       })()
     : null;
 
+  const phoneVerified = !!(user as { phoneVerified?: boolean }).phoneVerified;
+  const docsSubmitted = !!(user as { documentsSubmitted?: boolean }).documentsSubmitted;
+  const docsApproved = !!(user as { documentsApproved?: boolean }).documentsApproved;
+
   return (
     <ApprovalGateOverlayInner
       T={T}
       user={user}
       submittedLabel={submittedLabel}
       supportPhone={supportPhone}
+      supportEmail={supportEmail}
+      etaHours={etaHours}
+      phoneVerified={phoneVerified}
+      docsSubmitted={docsSubmitted}
+      docsApproved={docsApproved}
       socket={socket}
       connected={connected}
       lastChecked={lastChecked}
@@ -60,11 +72,48 @@ export function ApprovalGateOverlay() {
   );
 }
 
+function DocCheckItem({
+  label,
+  checked,
+  pending,
+}: {
+  label: string;
+  checked: boolean;
+  pending: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center gap-2.5 rounded-xl px-3 py-2 ${
+        pending
+          ? "border border-warning/20 bg-warning/10"
+          : checked
+            ? "border border-success/20 bg-success/10"
+            : "border border-error/20 bg-error/10"
+      }`}
+    >
+      <span className="text-sm">{pending ? "⏳" : checked ? "✅" : "❌"}</span>
+      <p
+        className={`text-xs font-semibold ${
+          pending ? "text-warning" : checked ? "text-success" : "text-error"
+        }`}
+      >
+        {label}
+      </p>
+      {pending && <span className="ml-auto text-[10px] text-warning">Pending</span>}
+    </div>
+  );
+}
+
 function ApprovalGateOverlayInner({
   T,
   user,
   submittedLabel,
   supportPhone,
+  supportEmail,
+  etaHours,
+  phoneVerified,
+  docsSubmitted,
+  docsApproved,
   socket,
   connected,
   lastChecked,
@@ -75,9 +124,14 @@ function ApprovalGateOverlayInner({
   logout,
 }: {
   T: (key: Parameters<typeof tDual>[0]) => string;
-  user: { name?: string; approvalStatus?: string };
+  user: { name?: string; approvalStatus?: string; createdAt?: unknown };
   submittedLabel: string | null;
   supportPhone: string | undefined;
+  supportEmail: string | undefined;
+  etaHours: number;
+  phoneVerified: boolean;
+  docsSubmitted: boolean;
+  docsApproved: boolean;
   socket: import("socket.io-client").Socket | null;
   connected: boolean;
   lastChecked: Date | null;
@@ -166,30 +220,55 @@ function ApprovalGateOverlayInner({
     },
   ];
 
+  const whatsappPhone = supportPhone?.replace(/\D/g, "");
+  const whatsappUrl = whatsappPhone ? `https://wa.me/${whatsappPhone}` : null;
+
+  const etaLabel =
+    etaHours >= 24
+      ? `~${Math.round(etaHours / 24)} business day${Math.round(etaHours / 24) !== 1 ? "s" : ""}`
+      : `~${etaHours} hour${etaHours !== 1 ? "s" : ""}`;
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-emerald-50 p-5">
       <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-card-dark shadow-xl">
+        {/* Header */}
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 px-6 pt-8 pb-6 text-white">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-warning/30 bg-warning/15">
             <span className="text-3xl">
-              {socketUpdate?.status === "approved" ? "✅" : socketUpdate?.status === "rejected" ? "❌" : "⏳"}
+              {socketUpdate?.status === "approved"
+                ? "✅"
+                : socketUpdate?.status === "rejected"
+                  ? "❌"
+                  : "⏳"}
             </span>
           </div>
           <h2 className="mb-1 text-xl font-extrabold">{T("applicationSubmitted")}</h2>
           <p className="text-sm text-[#B0B0B0]">
-            {T("welcome")}, <span className="font-semibold text-white">{user.name || T("riderFallback")}</span>
+            {T("welcome")},{" "}
+            <span className="font-semibold text-white">{user.name || T("riderFallback")}</span>
           </p>
           {submittedLabel && <p className="mt-1 text-xs text-[#B0B0B0]">{submittedLabel}</p>}
 
+          {/* Estimated review time */}
+          <div className="mt-3 flex items-center gap-2 rounded-xl border border-warning/20 bg-warning/10 px-3 py-2">
+            <span className="text-base">🕐</span>
+            <div>
+              <p className="text-xs font-bold text-warning">Typical review time: {etaLabel}</p>
+              <p className="text-[10px] text-[#B0B0B0]">
+                You'll be notified immediately upon approval
+              </p>
+            </div>
+          </div>
+
           <div className="mt-3 flex items-center gap-2">
-            <span className={`flex h-2 w-2 rounded-full ${connected ? "bg-success animate-pulse" : "bg-[#B0B0B0]"}`} />
+            <span
+              className={`flex h-2 w-2 rounded-full ${connected ? "bg-success animate-pulse" : "bg-[#B0B0B0]"}`}
+            />
             <span className="text-xs text-[#B0B0B0]">
               {connected ? "Live — watching for approval" : "Offline — checking periodically"}
             </span>
             {!connected && lastCheckedLabel && (
-              <span className="ml-auto text-xs text-[#B0B0B0]">
-                {lastCheckedLabel}
-              </span>
+              <span className="ml-auto text-xs text-[#B0B0B0]">{lastCheckedLabel}</span>
             )}
           </div>
         </div>
@@ -208,8 +287,30 @@ function ApprovalGateOverlayInner({
           </div>
         )}
 
-        <div className="space-y-3 px-6 py-5">
-          <div className="mb-3 flex items-center justify-between">
+        {/* Document checklist */}
+        <div className="px-6 pt-5">
+          <p className="mb-2.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+            Document Checklist
+          </p>
+          <div className="space-y-2">
+            <DocCheckItem label="Phone Number Verified" checked={phoneVerified} pending={false} />
+            <DocCheckItem
+              label="CNIC / ID Uploaded"
+              checked={docsSubmitted || docsApproved}
+              pending={false}
+            />
+            <DocCheckItem
+              label="Driving License Uploaded"
+              checked={docsSubmitted || docsApproved}
+              pending={false}
+            />
+            <DocCheckItem label="Admin Review" checked={false} pending={true} />
+          </div>
+        </div>
+
+        {/* Progress steps */}
+        <div className="space-y-3 px-6 py-4">
+          <div className="mb-2 flex items-center justify-between">
             <p className="text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
               {T("applicationProgress")}
             </p>
@@ -250,22 +351,14 @@ function ApprovalGateOverlayInner({
               <div className="min-w-0 flex-1">
                 <p
                   className={`text-sm font-bold ${
-                    item.done
-                      ? "text-success"
-                      : item.locked
-                        ? "text-[#B0B0B0]"
-                        : "text-warning"
+                    item.done ? "text-success" : item.locked ? "text-[#B0B0B0]" : "text-warning"
                   }`}
                 >
                   {item.label}
                 </p>
                 <p
                   className={`mt-0.5 text-xs ${
-                    item.done
-                      ? "text-success"
-                      : item.locked
-                        ? "text-[#B0B0B0]"
-                        : "text-warning"
+                    item.done ? "text-success" : item.locked ? "text-[#B0B0B0]" : "text-warning"
                   } ${item.pulse ? "animate-pulse" : ""}`}
                 >
                   {item.sub}
@@ -275,13 +368,34 @@ function ApprovalGateOverlayInner({
           ))}
         </div>
 
+        {/* Contact and sign-out buttons */}
         <div className="space-y-2 px-6 pb-6">
-          {supportPhone && (
+          {whatsappUrl && (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1ebe5b]"
+            >
+              <MessageCircle size={16} />
+              WhatsApp Support
+            </a>
+          )}
+          {supportPhone && !whatsappUrl && (
             <a
               href={`tel:${supportPhone}`}
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-success py-3 text-sm font-semibold text-white transition-colors hover:bg-success/90"
             >
-              📞 {T("contactSupport")}
+              <Phone size={16} />
+              {T("contactSupport")}
+            </a>
+          )}
+          {!supportPhone && supportEmail && (
+            <a
+              href={`mailto:${supportEmail}`}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-semibold text-white transition-colors hover:bg-brand/90"
+            >
+              ✉️ Email Support
             </a>
           )}
           <button
