@@ -135,7 +135,7 @@ export default function CodRemittances() {
       <div className="space-y-6 p-6">
         <PageHeader
           title="COD Remittances"
-          description="Review and verify rider cash-on-delivery remittance submissions"
+          subtitle="Review and verify rider cash-on-delivery remittance submissions"
           actions={
             <Button variant="outline" size="sm" onClick={() => refetch()}>
               <RefreshCw size={14} className="mr-1.5" />
@@ -214,7 +214,7 @@ export default function CodRemittances() {
             />
           </div>
           <div className="ml-auto">
-            {dataUpdatedAt > 0 && <LastUpdated timestamp={dataUpdatedAt} />}
+            {dataUpdatedAt > 0 && <LastUpdated dataUpdatedAt={dataUpdatedAt} />}
           </div>
         </div>
 
