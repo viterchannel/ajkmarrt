@@ -213,7 +213,14 @@ export function HomeAlertCenter({
     progressiveMissing = Array.from(missingSet);
   }
 
-  /* Profile completion */
+  /* Profile completion — calculate % from bool flags */
+  const profileTotal = 4;
+  const profileDone =
+    (!showPhoneBanner ? 1 : 0) +
+    (!showEmailBanner ? 1 : 0) +
+    (!showBankBanner ? 1 : 0) +
+    (!showKycBanner ? 1 : 0);
+  const profilePct = Math.round((profileDone / profileTotal) * 100);
   const showProfileBanner = !profileBannerDismissed && (showPhoneBanner || showEmailBanner || showBankBanner || showKycBanner);
 
   const hasAnyAlert = alerts.length > 0 || showKyc || progressiveMissing.length > 0 || showProfileBanner;
@@ -437,50 +444,54 @@ export function HomeAlertCenter({
                 </div>
               )}
 
-              {/* Profile completion banner */}
+              {/* Profile completion progress bar */}
               {showProfileBanner && (
-                <div className="flex items-start gap-2.5 rounded-xl border border-warning/30 bg-warning/10 px-3 py-2.5" role="alert">
-                  <AlertTriangle size={14} className="mt-0.5 flex-shrink-0 text-warning" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-bold text-warning">Complete your profile to unlock withdrawals</p>
-                    <div className="mt-1 space-y-0.5">
-                      {showPhoneBanner && (
-                        <p className="flex items-center gap-1 text-[10px] text-warning">
-                          <span className="h-1 w-1 flex-shrink-0 rounded-full bg-warning" />
-                          Phone number not verified
-                        </p>
-                      )}
-                      {showEmailBanner && (
-                        <p className="flex items-center gap-1 text-[10px] text-warning">
-                          <span className="h-1 w-1 flex-shrink-0 rounded-full bg-warning" />
-                          Email address not verified
-                        </p>
-                      )}
-                      {showBankBanner && (
-                        <p className="flex items-center gap-1 text-[10px] text-warning">
-                          <span className="h-1 w-1 flex-shrink-0 rounded-full bg-warning" />
-                          Bank account not added
-                        </p>
-                      )}
-                      {showKycBanner && (
-                        <p className="flex items-center gap-1 text-[10px] text-warning">
-                          <span className="h-1 w-1 flex-shrink-0 rounded-full bg-warning" />
-                          KYC not verified
-                        </p>
-                      )}
-                    </div>
-                    <Link href="/profile" className="mt-1.5 inline-block text-[10px] font-bold text-warning underline underline-offset-2">
-                      Go to Profile →
-                    </Link>
-                  </div>
-                  <button
-                    onClick={onDismissProfileBanner}
-                    className="flex-shrink-0 p-0.5 text-warning hover:text-warning"
-                    aria-label="Dismiss banner"
+                <Link href="/profile">
+                  <div
+                    className="group flex cursor-pointer flex-col gap-2 rounded-xl border border-warning/30 bg-warning/10 px-3 py-2.5 transition-transform active:scale-[0.98]"
+                    role="alert"
                   >
-                    <X size={12} />
-                  </button>
-                </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <AlertTriangle size={13} className="flex-shrink-0 text-warning" />
+                        <p className="text-[11px] font-bold text-warning">
+                          Profile {profilePct}% complete
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-medium text-warning/60">
+                          {profileDone}/{profileTotal} done
+                        </span>
+                        <button
+                          onClick={(e) => { e.preventDefault(); onDismissProfileBanner(); }}
+                          className="flex-shrink-0 rounded p-0.5 text-warning/60 hover:text-warning"
+                          aria-label="Dismiss banner"
+                        >
+                          <X size={11} />
+                        </button>
+                      </div>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                      <div
+                        className="h-full rounded-full bg-warning transition-all duration-500"
+                        style={{ width: `${profilePct}%` }}
+                      />
+                    </div>
+                    {/* First missing item hint */}
+                    <p className="text-[10px] text-warning/70">
+                      {showPhoneBanner
+                        ? "⚠ Verify phone number to enable withdrawals"
+                        : showBankBanner
+                          ? "⚠ Add bank account to enable withdrawals"
+                          : showKycBanner
+                            ? "⚠ CNIC pending approval"
+                            : showEmailBanner
+                              ? "⚠ Verify email address"
+                              : "Tap to complete profile →"}
+                    </p>
+                  </div>
+                </Link>
               )}
             </div>
           )}

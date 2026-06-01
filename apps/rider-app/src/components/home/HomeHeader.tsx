@@ -88,11 +88,13 @@ export function HomeHeader({
           )}
         </div>
         <div className="flex flex-col items-end gap-1.5">
-          <span
-            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}
-          >
-            {tier.label}
-          </span>
+          {tier.label !== "Standard" && (
+            <span
+              className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}
+            >
+              {tier.label}
+            </span>
+          )}
           <p className="text-[10px] text-white/25">
             Last online · {lastSeenLabel}
           </p>

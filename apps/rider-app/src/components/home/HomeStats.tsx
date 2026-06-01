@@ -1,5 +1,5 @@
 import { tDual, type Language } from "@workspace/i18n";
-import { Clock, Package, Star, ThumbsUp, TrendingUp } from "lucide-react";
+import { Package, Star, ThumbsUp, TrendingUp, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../dashboard";
 
@@ -11,7 +11,7 @@ interface HomeStatsProps {
   onlineSince: number | null;
   isOnline: boolean;
   currency: string;
-  language: Language;
+  language: string;
   maxDeliveries?: number;
 }
 
@@ -19,6 +19,7 @@ function formatOnlineTime(ms: number): string {
   const totalMin = Math.floor(ms / 60_000);
   const h = Math.floor(totalMin / 60);
   const m = totalMin % 60;
+  if (totalMin < 1) return "just now";
   if (h === 0) return `${m}m`;
   return `${h}h ${m}m`;
 }
@@ -34,21 +35,23 @@ export function HomeStats({
   language,
   maxDeliveries,
 }: HomeStatsProps) {
-  const T = (key: Parameters<typeof tDual>[0]) => tDual(key, language);
+  const T = (key: Parameters<typeof tDual>[0]) => tDual(key, language as Language);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
     if (!onlineSince) return;
-    const t = setInterval(() => setNow(Date.now()), 60_000);
+    const t = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(t);
   }, [onlineSince]);
 
   const onlineMs = onlineSince ? Math.max(0, now - onlineSince) : 0;
-  const onlineLabel = !isOnline ? "Offline" : onlineSince ? formatOnlineTime(onlineMs) : "—";
+  const onlineLabel = onlineSince ? formatOnlineTime(onlineMs) : "—";
+
+  const hasRides = todayRides > 0;
 
   const ratingColor =
-    rating == null || rating === 0
-      ? "text-white/30"
+    !hasRides || rating == null || rating === 0
+      ? "text-white/25"
       : rating >= 4.5
         ? "text-success"
         : rating >= 3.5
@@ -56,8 +59,8 @@ export function HomeStats({
           : "text-error";
 
   const acceptColor =
-    acceptanceRate == null
-      ? "text-white/30"
+    !hasRides || acceptanceRate == null
+      ? "text-white/25"
       : acceptanceRate >= 80
         ? "text-success"
         : acceptanceRate >= 60
@@ -80,22 +83,18 @@ export function HomeStats({
       bg: "bg-white/[0.04] border-white/[0.08]",
     },
     {
-      icon: <ThumbsUp size={13} className={acceptanceRate != null ? acceptColor : "text-white/25"} />,
-      label: "Accept.",
-      value: acceptanceRate != null ? `${Math.round(acceptanceRate)}%` : "—",
-      valueClass: acceptColor,
-      bg: acceptanceRate != null && acceptanceRate >= 80
-        ? "bg-success/[0.08] border-success/15"
-        : "bg-white/[0.04] border-white/[0.08]",
+      icon: <ThumbsUp size={13} className={hasRides && acceptanceRate != null ? acceptColor : "text-white/20"} />,
+      label: hasRides ? "Accept." : "No rides",
+      value: hasRides && acceptanceRate != null ? `${Math.round(acceptanceRate)}%` : "—",
+      valueClass: hasRides ? acceptColor : "text-white/20",
+      bg: "bg-white/[0.04] border-white/[0.08]",
     },
     {
-      icon: <Star size={13} className={rating != null && rating > 0 ? "text-warning" : "text-white/25"} />,
-      label: "Rating",
-      value: rating != null && rating > 0 ? rating.toFixed(1) : "—",
-      valueClass: ratingColor,
-      bg: rating != null && rating >= 4.0
-        ? "bg-warning/[0.08] border-warning/15"
-        : "bg-white/[0.04] border-white/[0.08]",
+      icon: <Star size={13} className={hasRides && rating != null && rating > 0 ? "text-warning" : "text-white/20"} />,
+      label: hasRides ? "Rating" : "yet",
+      value: hasRides && rating != null && rating > 0 ? rating.toFixed(1) : "—",
+      valueClass: hasRides ? ratingColor : "text-white/20",
+      bg: "bg-white/[0.04] border-white/[0.08]",
     },
   ];
 
@@ -106,14 +105,14 @@ export function HomeStats({
         <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">
           Today's Performance
         </p>
-        <div className="flex items-center gap-1.5">
-          <span
-            className={`h-1.5 w-1.5 rounded-full ${isOnline ? "animate-pulse bg-success" : "bg-white/20"}`}
-          />
-          <p className="text-[10px] font-semibold text-white/30">
-            {isOnline ? onlineLabel : "Offline"}
-          </p>
-        </div>
+        {isOnline && onlineSince && (
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full animate-pulse bg-success" />
+            <p className="text-[10px] font-semibold text-white/40">
+              Online {onlineLabel}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Stats grid */}
@@ -138,30 +137,14 @@ export function HomeStats({
         ))}
       </div>
 
-      {/* Online time + max deliveries strip */}
-      <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 backdrop-blur-sm">
-        <Clock
-          size={12}
-          className={`flex-shrink-0 ${isOnline ? "text-brand" : "text-white/25"}`}
-        />
-        <div className="flex flex-1 items-center justify-between gap-2">
-          <p className="text-xs font-medium text-white/50">
-            Session time
-          </p>
-          <p className={`text-xs font-extrabold ${isOnline ? "text-brand" : "text-white/25"}`}>
-            {onlineLabel}
-          </p>
+      {/* Active limit strip — only visible when online */}
+      {isOnline && maxDeliveries != null && (
+        <div className="flex items-center gap-2.5 rounded-2xl border border-success/15 bg-success/[0.05] px-3 py-2.5 backdrop-blur-sm">
+          <Zap size={12} className="flex-shrink-0 text-success" />
+          <p className="flex-1 text-xs font-medium text-white/50">Active order limit</p>
+          <p className="text-xs font-extrabold text-success">{maxDeliveries} max</p>
         </div>
-        {maxDeliveries != null && (
-          <>
-            <div className="h-3 w-px bg-white/10" />
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-medium text-white/50">Max trips</p>
-              <p className="text-xs font-extrabold text-white">{maxDeliveries}</p>
-            </div>
-          </>
-        )}
-      </div>
+      )}
     </div>
   );
 }
