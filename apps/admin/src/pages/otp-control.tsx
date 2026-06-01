@@ -117,7 +117,9 @@ function fmtDate(iso: string) {
 }
 
 function generateBypassCode() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  const arr = new Uint32Array(1);
+  crypto.getRandomValues(arr);
+  return String(100000 + (arr[0]! % 900000));
 }
 
 type OTPStatus = {
@@ -274,20 +276,6 @@ function AvatarInitial({ name }: { name: string | null }) {
 
 /* ── Main page ───────────────────────────────────────────────────────────── */
 
-type _DeliveryOtpResult = {
-  rideId: string;
-  otp: string | null;
-  otpVerified: boolean;
-  displayStatus: "pending" | "used" | "expired";
-  rideStatus: string;
-  arrivedAt: string | null;
-  createdAt: string;
-  otpAttempts: {
-    count: number;
-    firstAt: string | null;
-    expiresAt: string | null;
-  };
-};
 
 export default function OtpControl() {
   const { toast } = useToast();

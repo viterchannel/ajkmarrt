@@ -744,7 +744,7 @@ router.post("/whitelist", async (req, res) => {
     });
 
     if (existing) {
-      return res.status(409).json({ error: "Identifier already whitelisted" });
+      return res.status(409).json({ success: false, error: "Identifier already whitelisted" });
     }
 
     const id = generateId();
@@ -930,8 +930,7 @@ router.delete("/whitelist/:id", async (req, res) => {
 
     sendSuccess(res, { message: "Whitelist entry deleted" });
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    sendValidationError(res, errMsg);
+    sendServerError(res, error, "delete whitelist entry");
   }
 });
 
@@ -989,6 +988,7 @@ router.get("/otp/delivery-otp/:rideId", async (req, res) => {
         otpVerified: true,
         status: true,
         createdAt: true,
+        arrivedAt: true,
       },
     });
 
@@ -996,16 +996,19 @@ router.get("/otp/delivery-otp/:rideId", async (req, res) => {
       return sendNotFound(res, "Ride not found");
     }
 
-    /* Derive display status */
+    /* Derive display status.
+       OTP expiry is measured from arrivedAt (when the OTP was generated),
+       falling back to createdAt only if the rider hasn't marked arrival yet. */
     const TERMINAL_CANCELLED_STATUSES = ["cancelled", "refunded"];
     const OTP_EXPIRY_MS = 15 * 60 * 1000; // 15 minutes
+    const otpGeneratedAt = ride.arrivedAt ?? ride.createdAt;
 
     let otpStatus: "Used" | "Expired" | "Pending";
     if (ride.otpVerified) {
       otpStatus = "Used";
     } else if (
       TERMINAL_CANCELLED_STATUSES.includes(ride.status) ||
-      Date.now() - new Date(ride.createdAt).getTime() > OTP_EXPIRY_MS
+      Date.now() - new Date(otpGeneratedAt).getTime() > OTP_EXPIRY_MS
     ) {
       otpStatus = "Expired";
     } else {
