@@ -1,0 +1,1 @@
+{"version":3,"file":"walletWithdrawRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/walletWithdrawRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,qBAAqB;IACpC,MAAM,EAAE,MAAM,CAAC;IACf,MAAM,EAAE,MAAM,CAAC;IACf,aAAa,EAAE,MAAM,CAAC;IACtB,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}

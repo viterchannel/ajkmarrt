@@ -1,0 +1,1 @@
+{"version":3,"file":"walletDepositRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/walletDepositRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,oBAAoB;IACnC,MAAM,EAAE,MAAM,CAAC;IACf,aAAa,EAAE,MAAM,CAAC;IACtB,aAAa,EAAE,MAAM,CAAC;IACtB,cAAc,EAAE,MAAM,CAAC;IACvB,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}

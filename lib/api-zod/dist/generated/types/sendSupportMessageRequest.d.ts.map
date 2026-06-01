@@ -1,0 +1,1 @@
+{"version":3,"file":"sendSupportMessageRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/sendSupportMessageRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,6BAA6B,EAAE,MAAM,iCAAiC,CAAC;AAErF,MAAM,WAAW,yBAAyB;IACxC,OAAO,EAAE,MAAM,CAAC;IAChB,IAAI,CAAC,EAAE,6BAA6B,CAAC;CACtC"}

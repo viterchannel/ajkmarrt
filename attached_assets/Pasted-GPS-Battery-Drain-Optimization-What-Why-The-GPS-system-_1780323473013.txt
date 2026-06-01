@@ -1,0 +1,26 @@
+GPS Battery Drain Optimization
+What & Why
+The GPS system currently pings every 10 seconds unconditionally, draining a rider's battery in 4–6 hours. Riders who are stationary (waiting for a request) or offline should not be tracked at the same frequency as riders actively on a trip.
+
+Done looks like
+When a rider has not moved more than 10 meters in the last 60 seconds, ping interval increases to 30 seconds automatically
+When the rider goes offline (toggle set to offline), GPS pinging stops entirely and resumes when they go online again
+During an active ride/order (in_transit status), interval stays at the fast 10-second rate for accuracy
+Battery-friendly behaviour is transparent to the rider (no UI change needed)
+GPS pings resume immediately at the fast rate when the device starts moving again (detected via devicemotion or position delta)
+Out of scope
+Native Capacitor Geofencing API (future enhancement for native Android build)
+Changing the backend GPS ingestion rate or schema
+User-facing settings for GPS interval
+Steps
+Add stationary detection to gpsQueue.ts — Track the last N positions and compute total distance moved. If distance < 10m over the last 60 seconds, switch the ping interval to 30s. Reset to 10s immediately when movement is detected again (position delta > 10m).
+
+Pause GPS when rider is offline — Listen to the rider's online/offline status from the auth or socket context. When the rider sets themselves offline, clear the GPS ping interval and stop sending location updates. Re-start the interval when they go back online.
+
+Lock to fast interval during active ride — When the socket receives ride:accepted, order:accepted, or status transitions to in_transit, force the interval to 10s regardless of stationary detection, and hold it there until ride:completed or order:delivered.
+
+Add a visibility-based pause — When document.visibilityState === 'hidden' and the rider is not on an active trip, reduce pings to 60s (PWA background tab scenario) to avoid unnecessary battery drain from background tabs.
+
+Relevant files
+apps/rider-app/src/lib/gpsQueue.ts
+apps/rider-app/src/lib/socket.tsx

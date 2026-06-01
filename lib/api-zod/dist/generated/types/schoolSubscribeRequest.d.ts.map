@@ -1,0 +1,1 @@
+{"version":3,"file":"schoolSubscribeRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/schoolSubscribeRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,sBAAsB;IACrC,OAAO,EAAE,MAAM,CAAC;IAChB,WAAW,EAAE,MAAM,CAAC;IACpB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}

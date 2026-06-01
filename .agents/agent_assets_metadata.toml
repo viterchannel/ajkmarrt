@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "f_GieORt_apBfcMh2rw6K"
+uri = "file://apps/rider-app/rider.test.md"
+type = "text"
+title = "Rider App Complete Production Testing Guide"

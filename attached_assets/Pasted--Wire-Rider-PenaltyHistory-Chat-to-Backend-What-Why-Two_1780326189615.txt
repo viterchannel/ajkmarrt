@@ -1,0 +1,32 @@
+ Wire Rider PenaltyHistory & Chat to Backend
+What & Why
+Two rider-app pages — PenaltyHistory.tsx and Chat.tsx — exist in the frontend but are not properly wired to their backend endpoints, which already exist. PenaltyHistory shows no data (orphaned page) and Chat only works via real-time Socket.IO with no message history persistence.
+
+Done looks like
+PenaltyHistory page fetches from GET /api/rider/penalties and displays the rider's penalty list with type, amount, date, and status (active/resolved/waived)
+If there are no penalties, a friendly empty state is shown
+Chat page loads existing message history from GET /api/support-chat/messages on mount so riders see prior conversations when they reopen the app
+New messages sent via POST /api/support-chat/messages are persisted to the DB and also broadcast via the support_message Socket.IO event for real-time delivery
+Chat optimistically appends the new message to the UI before the server confirms it, with a retry on failure
+Both pages use the existing api.ts client so auth headers and 401 refresh are handled automatically
+Out of scope
+Admin-side chat reply UI (already exists in admin/chat-monitor.ts)
+Push notification for new support messages (separate notification task)
+Rich media (file attachments, voice notes) in rider support chat
+Penalty appeal or dispute flow
+Steps
+Wire PenaltyHistory.tsx to the backend — Add a React Query useQuery call to GET /api/rider/penalties, map the response to the existing UI card structure, and handle loading and empty states. Ensure the penalty type labels are passed through i18n for multilingual support.
+
+Load chat history in Chat.tsx — On component mount, fetch GET /api/support-chat/messages and populate the message list before attaching the Socket.IO listener. Display a loading skeleton while fetching and an empty state if no history exists.
+
+Persist outgoing messages via REST — Change the "send message" handler in Chat.tsx to POST /api/support-chat/messages (in addition to or instead of a raw socket emit), so messages are stored in the database. Keep the Socket.IO listener for receiving real-time replies from admin.
+
+Add optimistic UI for sent messages — Immediately append the sent message to the local list with a "pending" indicator, then confirm or revert based on the API response.
+
+Relevant files
+apps/rider-app/src/pages/PenaltyHistory.tsx
+apps/rider-app/src/pages/Chat.tsx
+apps/rider-app/src/lib/api.ts
+apps/rider-app/src/lib/socket.tsx
+apps/api-server/src/routes/support-chat.ts
+apps/api-server/src/routes/rider/index.ts

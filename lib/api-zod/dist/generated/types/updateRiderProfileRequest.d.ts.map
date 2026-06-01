@@ -1,0 +1,1 @@
+{"version":3,"file":"updateRiderProfileRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/updateRiderProfileRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,yBAAyB;IACxC,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,gBAAgB,CAAC,EAAE,MAAM,CAAC;CAC3B"}

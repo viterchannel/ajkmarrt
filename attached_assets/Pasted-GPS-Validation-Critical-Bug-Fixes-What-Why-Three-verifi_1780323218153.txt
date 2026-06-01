@@ -1,0 +1,21 @@
+GPS Validation Critical Bug Fixes
+What & Why
+Three verified bugs exist in the GPS coordinate validation logic that cause real operational problems: invalid rides get approved, legitimate high-quality pings get rejected, and geofencing fails silently due to inverted axes.
+
+Done looks like
+Riders inside Pakistan using modern dual-band GPS phones no longer get their pings rejected as "spoofed"
+Geofencing correctly blocks riders outside the defined service area polygons
+Speed violation counter resets cleanly between trip segments, preventing false "stuck" violation states
+(0, 0) ocean coordinates and coordinates outside Pakistan bounding box are always rejected
+Out of scope
+Adding new geofence zones via admin UI (that's a separate feature)
+GPS battery optimization (separate task)
+Any changes to the backend GPS ingestion logic
+Steps
+Fix isInsidePolygon axis inversion — In gps/validation.ts, the ray-casting algorithm uses lat as the X-axis and lng as the Y-axis, which is the inverse of standard GIS convention. Swap the axis references so longitude is the horizontal and latitude is the vertical, then verify the Pakistan bounding polygon still makes sense with corrected orientation.
+
+Fix MIN_ACCURACY_M threshold — The current threshold of 2m rejects legitimate pings from modern dual-band GPS devices (L1+L5) that routinely achieve 1–1.5m accuracy. Lower the threshold to 0.5m or replace the hard rejection with a warning-only flag, since sub-2m accuracy is a sign of quality, not spoofing.
+
+Fix speed violation counter reset — _consecutiveSpeedViolations is a module-level counter that never resets when deltaMs < 100 or when prev is null (i.e., at the start of a new trip segment). Add a reset call at the start of each new trip or when a null prev is detected, so violations from one trip don't carry into the next.
+
+Add null-island and Pakistan bounding box guard — Before the polygon check, add a fast reject for (0, 0) coordinates and any lat/lng outside the Pakistan bounding box (lat: 23–37, lng: 60–77) to prevent obvious invalid data from reaching the database.

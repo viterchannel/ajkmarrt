@@ -1,0 +1,159 @@
+ Complete Fix Prompt for AI Replit Agent
+You are an expert React/TypeScript developer. Fix all the following issues in the codebase. The project uses Tailwind CSS, React, and TypeScript. Pay attention to every issue category.
+
+Context
+Files affected: RideRequestCard.tsx, OrderRequestCard.tsx, Notifications.tsx, LoginScreen.tsx, HomeRequestList.tsx, SecuritySettings.tsx
+
+The app has ride/order requests with counter offers, notifications, login, security settings.
+
+Many Tailwind classnames are truncated – restore full classes.
+
+Missing validation, accessibility, error handling, and logic bugs.
+
+🔴 1. TRUNCATED / BROKEN CLASSNAMES (18 occurrences)
+Fix these by writing the complete Tailwind classes.
+
+RideRequestCard.tsx
+Line 307 – Current: focus-visible:out[...] → Full: focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100
+
+Line 315 – Current: focus-visible:outline-none[...] → Add: focus-visible:ring-2 focus-visible:ring-gray-200
+
+Line 326 – Current: hover:[...] → Full: hover:bg-brand-hover hover:shadow-lg
+
+Line 377 – Current: bord[...] → Full: border-gray-200 focus:border-gray-300 focus:ring-gray-100
+
+Line 383 – Current: f[...] → Full: focus-visible:ring-orange-500/50
+
+Line 391 – Current: hover:bg-brand-hover [...] → Remove [...] – just keep hover:bg-brand-hover (the rest is fine)
+
+Line 417 – Current: rin[...] → Full: focus-visible:ring-orange-500/50
+
+Line 427 – Current: fo[...] → Full: focus-visible:ring-gray-200
+
+Line 451 – Current: focus-v[...] → Full: focus-visible:ring-gray-200
+
+Line 458 – Current: font-extra[...] → Full: font-extrabold
+
+Line 466 – Current: ho[...] → Full: hover:bg-brand-hover
+
+OrderRequestCard.tsx
+Line 178 – Current: focus-visible:outline-none [...] → Add: focus-visible:ring-2 focus-visible:ring-red-200
+
+Line 185 – Current: foc[...] → Full: focus-visible:ring-2 focus-visible:ring-gray-200
+
+Line 193 – Current: hover:bg[...] → Full: hover:bg-brand-hover
+
+Notifications.tsx
+Line 406 – Current: active:bg-whit[...] → Full: active:bg-white/10
+
+Line 549 – Current: hover:shadow-sm [...] → Add missing: hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-200
+
+Line 590 – Current: back[...] → Full: backdrop-blur-md bg-black/20
+
+🟠 2. MISSING VALIDATION (HIGH severity)
+RideRequestCard.tsx – Counter offer input (lines 368–377 and 402–410)
+Both <input type="number"> fields must have min and max attributes:
+
+For bid/fare: min="0.01" and max="999999" (or reasonable max based on ride estimate)
+
+Also add step="0.5" if needed.
+
+Prevent negative and huge values.
+
+Example fix:
+
+tsx
+<input
+  type="number"
+  inputMode="numeric"
+  min="0.01"
+  max="999999"
+  step="0.5"
+  value={counterInput}
+  onChange={(e) => {
+    const val = parseFloat(e.target.value);
+    if (!isNaN(val) && val >= 0) setCounterInput(e.target.value);
+    else if (e.target.value === "") setCounterInput("");
+    if (counterError) setCounterError("");
+  }}
+  ...
+/>
+🟠 3. MISSING ERROR HANDLING
+RideRequestCard.tsx – validateAndSubmitCounter (lines 114–132)
+Wrap the onCounter call in try/catch and show user feedback (toast or inline error). Also handle network errors.
+
+OrderRequestCard.tsx – Reject and Dismiss buttons (lines 176–182)
+Add error handling with toast notification if the mutation fails.
+
+HomeRequestList.tsx – getRiderEarning function (line 17)
+Add null/undefined check:
+
+ts
+return fee * (config?.finance?.riderEarningPct ?? 80) / 100;
+🟠 4. ACCESSIBILITY (Aria labels + focus states)
+Many buttons lack aria-label. Add them:
+In RideRequestCard.tsx lines 379–385 (Update bid button) → aria-label="Update bid"
+
+In RideRequestCard.tsx line 322 (role error button) → aria-label="Dismiss role error"
+
+In OrderRequestCard.tsx line 176 (Reject button) → aria-label="Reject request"
+
+In Notifications.tsx (mark all read) → aria-label="Mark all notifications as read"
+
+Also ensure all focus-visible outlines are not suppressed – we already fixed classes.
+
+🟡 5. INCOMPLETE TEXT / LABELS
+LoginScreen.tsx lines 283–284
+The pending status message container has [...] – remove it. The full class should be:
+
+tsx
+<div className="fixed bottom-6 left-1/2 z-50 w-[calc(100%-3rem)] max-w-sm -translate-x-1/2 rounded-xl bg-amber-50 px-4 py-3 text-center text-[13px] font-medium text-amber-800 shadow-lg">
+Also fix the comment on line 291:
+/* ── Rejected screen ─────────────────────────────────────────────── */ (remove [...]).
+
+🟡 6. LOADING STATE ISSUES
+RideRequestCard.tsx line 414–421 – Submit button loading text
+Change {counterPending ? "..." : "Submit"} → {counterPending ? "Submitting..." : "Submit"}
+
+Notifications.tsx line 404–410 – Mark all read button
+Add loading state: when markAllMut.isPending is true, show a spinner icon or change text to "Marking...".
+
+Example:
+
+tsx
+<button disabled={markAllMut.isPending} ...>
+  {markAllMut.isPending ? <Loader2 size={15} className="animate-spin" /> : <CheckCheck size={15} />}
+  {markAllMut.isPending ? T("marking") : T("readAll")}
+</button>
+🟡 7. TYPOS & TEXT ERRORS
+Notifications.tsx line 467
+Change {filter === "all" ? T("noNotificationsYet") :${T("noNotifications")}}
+→ {filter === "all" ? T("noNotificationsYet") : T("noNotifications")} (remove template literal)
+
+RideRequestCard.tsx line 179
+{svcName} Ride → {svcName} (because "Bike Ride" is awkward) or {svcName} Request
+
+OrderRequestCard.tsx line 99
+{orderType} Delivery → Capitalize first letter:
+{orderType.charAt(0).toUpperCase() + orderType.slice(1)} Delivery
+
+🟠 8. LOGIC BUGS
+RideRequestCard.tsx line 115
+Early return if (localBidPending || counterPending) return; – show a toast instead:
+
+ts
+if (localBidPending || counterPending) {
+  toast.info("Please wait, previous action still processing");
+  return;
+}
+RideRequestCard.tsx line 84 – rideExpired uses local Date.now()
+Change to use server timestamp if available. If not, at least add a note but keep as is if no server time. Or use a time offset from props.
+
+🟡 9. MISSING FORM VALIDATION (SecuritySettings.tsx)
+Password strength indicator (lines 97–168) – add visual + textual feedback in all languages. Ensure the strength labels are properly translated (use T(...)). If a language lacks a translation, fallback to English.
+
+🟡 10. STYLING – Hover state incomplete
+Notifications.tsx line 549 – The button must have full hover + focus classes:
+
+tsx
+className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-green-100 bg-green-50 text-green-600 transition-all hover:shadow-md hover:bg-green-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-200"

@@ -1,0 +1,178 @@
+modules = ["nodejs-20", "web", "bash", "python-3.11", "postgresql-16"]
+[nix]
+channel = "stable-25_05"
+
+[agent]
+expertMode = true
+stack = "BEST_EFFORT_FALLBACK"
+
+[userenv]
+
+[userenv.shared]
+NODE_ENV = "development"
+ALLOW_DEV_OTP = "true"
+LOG_LEVEL = "info"
+API_PORT = "8080"
+VITE_API_PROXY_TARGET = "http://127.0.0.1:5000"
+ALLOWED_ORIGINS = "*"
+PORT = "5000"
+ADMIN_DEV_PORT = "3000"
+VENDOR_DEV_PORT = "3001"
+RIDER_DEV_PORT = "3002"
+
+[userenv.production]
+JWT_SECRET = "00cfa1d4be81e8c6212c8807c49624e86e9a1a13672df4cba291fb220cc4e3f748b510ee1184e29b91553105db464df606b1a2fed9f519d887d0e71a700e2f52"
+ENCRYPTION_MASTER_KEY = "b8abd355be5fb8a2040ae8e426a2d2f72f6be452c690abfce2b704bfc97e6359"
+TOTP_ENCRYPTION_KEY = "aa2b86b7e0cce15385fe1ca8575a3d2835e421f9c9208b2c5b25e3190c319a23"
+HMAC_OTP_SECRET = "b0277a91b31e9c710c0b5be29f2c55b600206a7223f4e7590b98e36a03a937fd"
+OTP_HMAC_SECRET = "6b79fd903ebcb93f1914fd4eac6c3f606856ada16208abcd5886a4805f017e7a"
+ADMIN_ACCESS_TOKEN_SECRET = "b0604436b673bbfa490dab5563632f47c3e554638836702d55ea924d7c6f37c051a823a1dba741ae9fc7bf837ff0200b105f95986b0ddf9d99f535307ecbd9fb"
+ADMIN_REFRESH_TOKEN_SECRET = "6af31d988e0ea8de94144c0ac93880c447d51933e4d723c7db174ca4438469f17398c784ab1f6785b76bd734ee68b36d87742fbfce170b9f096877bb411ab47e"
+ADMIN_CSRF_SECRET = "5520a32cb4fd2c8dcd36cab70c5ac267ca04ecdab6814609859ee99a8c1cbd57"
+ERROR_REPORT_HMAC_SECRET = "2791e7bd86d77a9535aadb431e32e772acce895fd0f36ecea80f56e782744a47"
+TOKEN_HASH_SECRET = "4119f215baf1e3781296da513ccc81d253d099da5c0ddfd0b23d9342f1aaf549"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
+[[ports]]
+localPort = 3002
+externalPort = 3002
+
+[[ports]]
+localPort = 3003
+externalPort = 5000
+
+[[ports]]
+localPort = 3004
+externalPort = 6800
+
+[[ports]]
+localPort = 3005
+externalPort = 8000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
+
+[[ports]]
+localPort = 20716
+externalPort = 5173
+
+[[ports]]
+localPort = 20717
+externalPort = 8099
+
+[[ports]]
+localPort = 21463
+externalPort = 6000
+
+[[ports]]
+localPort = 21464
+externalPort = 8008
+
+[[ports]]
+localPort = 22969
+externalPort = 3003
+
+[[ports]]
+localPort = 22970
+externalPort = 8080
+
+[[ports]]
+localPort = 23744
+externalPort = 4200
+
+[[ports]]
+localPort = 23745
+externalPort = 9000
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd apps/api-server && PORT=5000 PORT_FALLBACK_ENABLE=false NODE_ENV=development node ./scripts/start-with-restart.mjs"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Admin Panel"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=3000 BASE_PATH=/admin pnpm --filter @workspace/admin run dev"
+waitForPort = 3000
+
+[[workflows.workflow]]
+name = "Vendor App"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=3001 BASE_PATH=/vendor pnpm --filter @workspace/vendor-app run dev"
+waitForPort = 3001
+
+[[workflows.workflow]]
+name = "Rider App"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=3002 BASE_PATH=/rider pnpm --filter @workspace/rider-app run dev"
+waitForPort = 3002
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Admin Panel"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Vendor App"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Rider App"
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 180000
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["bash", "-c", "NODE_ENV=production node apps/api-server/dist/index.mjs"]
+build = ["bash", "-c", "BASE_PATH=/admin pnpm --filter @workspace/admin run build && BASE_PATH=/vendor pnpm --filter @workspace/vendor-app run build && BASE_PATH=/rider pnpm --filter @workspace/rider-app run build && pnpm --filter @workspace/api-server run build"]

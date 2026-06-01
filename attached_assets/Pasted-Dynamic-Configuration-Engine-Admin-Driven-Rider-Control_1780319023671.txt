@@ -1,0 +1,38 @@
+Dynamic Configuration Engine — Admin-Driven Rider Controls
+What & Why
+Rider App mein abhi themes, feature toggles, aur system parameters hardcoded hain ya partially platform_settings se aate hain. Maqsad hai ke Admin Panel se har cheez runtime par control ho — colors, logos, feature on/off, delivery radius, commission rates — bina Rider App rebuild kiye.
+
+platform_settings table aur /api/platform-config endpoint already exist karte hain. Is task mein inhe extend karna hai taake rider-specific dynamic controls mukammal hon, Admin UI mein management pages banen, aur Rider App inhe zero hardcoding ke saath consume kare.
+
+Done looks like
+Admin Panel mein ek "App Configuration" section hai jahan se:
+Brand colors, logo URL, dark/light mode default, aur banner images set ho sakti hain
+Rider features (Instant Payout, Cash on Delivery, Document Upload, GPS Tracking) toggle ho sakti hain
+Delivery radius limits, commission/keep percentage, min wallet balance, push notification switches set ho sakti hain
+Rider App /api/platform-config se yeh saari values fetch karta hai — koi value hardcoded nahi
+Config change Admin se save karne ke baad Rider App next launch/foreground par naya config apply karta hai (ETag-based cache invalidation)
+Rider App theme (primary color, brand logo) runtime par apply hoti hai bina app restart ke
+Out of scope
+Vendor App ya Admin App theming (sirf Rider App is task mein)
+Per-rider individual config (yeh platform-wide / role-wide config hai)
+Push notification delivery system (sirf on/off toggle)
+Steps
+platform_settings schema extend karo — Rider-specific keys add karo jo abhi missing hain: rider_instant_payout_enabled, rider_cod_enabled, rider_doc_upload_enabled, rider_delivery_radius_km, rider_commission_pct, rider_push_notifications_enabled, brand_primary_color, brand_logo_url, brand_banner_url, brand_dark_mode_default. Seed values with safe defaults.
+
+/api/platform-config endpoint extend karo — Naya riderConfig block add karo jo in saare keys ko typed, structured JSON mein return kare (na raw key-value strings). Ensure ETag generation in nayi keys ko include kare.
+
+Admin Configuration UI page banao — Admin Panel mein /admin/configuration route add karo jisme tabs hon: "Branding", "Rider Features", "System Limits". Har tab mein relevant platform_settings keys ko edit karne ke liye form fields hon (color pickers, toggles, number inputs, image URL inputs). Save karne par PATCH /api/admin/platform-settings call ho.
+
+Rider App config consumption refactor karo — apps/rider-app/src/lib/useConfig.ts mein ensure karo ke theme colors, feature flags, aur system limits directly config se aayein. Hardcoded values (e.g., DELIVERY_RADIUS = 5) dhundo aur replace karo. useConfig hook se riderConfig.instantPayoutEnabled, riderConfig.primaryColor etc. expose karo.
+
+Runtime theme application — Rider App mein primaryColor aur logoUrl config se React Context / CSS variables ke zariye apply karo. Tailwind custom color variables ko runtime update karne ka mechanism banao (CSS custom properties via inline style on root).
+
+Feature gate components — Rider App mein <FeatureGate feature="instantPayout"> jaise wrapper component banao jo useConfig() se flag read kare aur feature disable ho toh UI element hide/disable kare.
+
+Relevant files
+lib/db/src/schema/platform_settings.ts
+apps/api-server/src/routes/platform-config.ts
+apps/api-server/src/routes/admin-shared.ts
+apps/rider-app/src/lib/useConfig.ts
+apps/admin/src/pages/riders.tsx
+Dependencies

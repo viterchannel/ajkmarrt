@@ -1,0 +1,78 @@
+CRITICAL BUGS (Fix IMMEDIATELY)
+BUG #1: Vendor Phone Validation Completely Missing
+File: artifacts/vendor-app/src/lib/auth/RegisterWizard.tsx (Line 215-223)
+Problem: Phone input accepts ANY text — no format validation, no error feedback
+Impact: Users submit invalid phone numbers → backend rejection → poor UX
+Fix: Add real-time validation, clean input to digits only, show error/success feedback
+BUG #2: Vendor Store Category Not Validated on Step 1
+File: artifacts/vendor-app/src/lib/auth/RegisterWizard.tsx (Line ~100-150)
+Problem: User can skip category selection and proceed to Step 2 → form fails later at backend
+Impact: Wasted time, confusing error messages, high abandonment
+Fix: Add validation check before allowing next step
+BUG #3: Rider Upload Error Persists After Successful Retry
+File: artifacts/rider-app/src/lib/auth/RegisterWizard.tsx (Line 160-200)
+Problem: After failed upload then successful retry, old error message still shows with success checkmark (confusing!)
+Impact: Users don't know if upload actually succeeded
+Fix: Explicitly clear error on success, show proper progress state
+BUG #23: Order Item Price is 100% Client-Controlled (PRICE MANIPULATION)
+File: artifacts/api-server/src/routes/orders.ts (Line 699, 753-759)
+Severity: CRITICAL BUSINESS LOGIC BUG
+Problem: Customer can send price: 0 for any product → order created at no cost
+Impact: Massive financial loss, fraud
+Fix: Server MUST fetch authoritative prices from database, never trust client price
+🟡 MEDIUM BUGS (Fix This Sprint)
+BUG #4: Rider Password Mismatch — No Real-Time Feedback
+File: artifacts/rider-app/src/lib/auth/RegisterWizard.tsx (Line 480-520)
+Problem: Users type mismatched passwords but only see error AFTER clicking Next
+Impact: User frustration, form abandonment, slower registration
+Fix: Show real-time feedback like: "✓ Passwords match" OR "✗ Passwords do not match"
+BUG #5: Rider OTP Not Cleared on Verification Failure
+File: artifacts/rider-app/src/lib/auth/LoginScreen.tsx (Line 140-160)
+Problem: Custom OtpBoxes component doesn't properly clear when state changes
+Impact: Inconsistent behavior between Rider and Vendor apps
+Fix: Ensure component clears OTP input when error occurs
+BUG #6: Rider Password Strength Indicator Breaks on Mobile
+File: artifacts/rider-app/src/lib/auth/RegisterWizard.tsx (Line 505-520)
+Problem: On screens < 340px wide, label text gets cut off: "Stron..." (truncated)
+Impact: Confusing UX on small phones
+Fix: Add responsive layout, wrap text if needed, prevent truncation
+BUG #7: Rider Username Check Triggers on Empty Value
+File: artifacts/rider-app/src/lib/auth/RegisterWizard.tsx (Line 70-75)
+Problem: Makes API request even when username is empty (wastes network, backend spam)
+Impact: Extra requests, slow network, wastes user data
+Fix: Only check non-empty usernames, add debouncing (500ms), cancel previous requests
+BUG #8: No Real-Time Validation on CNIC/Phone in Rider Register
+File: artifacts/rider-app/src/lib/auth/RegisterWizard.tsx (Step 2)
+Problem: No validation feedback while typing CNIC — error only shows on Next click
+Impact: Friction, user has to re-enter if wrong
+Fix: Auto-format CNIC while typing, show real-time validation: "✓ Valid" or "✗ Invalid"
+BUG #9: Vendor Bank Account — No Validation
+File: artifacts/vendor-app/src/lib/auth/RegisterWizard.tsx (Step 3)
+Problem: Accepts any input for IBAN/account number, no format check
+Impact: Invalid bank data submitted → backend rejection → support tickets
+Fix: Validate IBAN format, show helper text, real-time feedback
+BUG #19: Admin-Configurable Phone Regex Allows ReDoS Attack
+File: artifacts/api-server/src/routes/auth/helpers.ts
+Problem: Admins can set phone validation regex that causes catastrophic backtracking
+Impact: Server CPU spike, DoS vulnerability
+Fix: Validate regex with safe-regex2 before using
+BUG #20: Rider Home Offline State Doesn't Show Recovery Actions Clearly
+File: artifacts/rider-app/src/pages/Home.tsx
+Problem: Multiple competing notifications for offline/refresh failure — confusing
+Impact: Users don't know how to reconnect, support load increases
+Fix: One consolidated offline banner with clear "Retry sync" action
+BUG #21: Rider Active Delivery — Photo State Not Reset After Failed Upload
+File: artifacts/rider-app/src/pages/Active.tsx
+Problem: Stale photo preview remains after upload fails, may resubmit unintentionally
+Impact: Confusion, higher failure rate on slow connections
+Fix: Add explicit status text, add "Retake photo" action
+BUG #25: Vendor App Stores Refresh Token in sessionStorage (XSS Risk)
+File: artifacts/vendor-app/src/lib/api.ts (Lines 18-89)
+Problem: Refresh token visible to JavaScript — single XSS compromises account
+Impact: If any XSS found, attacker steals refresh token, account fully compromised
+Fix: Store refresh token in HttpOnly cookie (like admin app does), not sessionStorage
+BUG #26: HMAC Secret Bundled in Client JS Bundle (Defeats Security)
+File: artifacts/admin/src/lib/error-reporter.ts (Line 59)
+Problem: VITE_ERROR_REPORT_HMAC_SECRET visible in production JS source
+Impact: Attacker can forge error reports and flood dashboard
+Fix: Use admin session token instead, don't bundle secrets in client code

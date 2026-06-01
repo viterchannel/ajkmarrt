@@ -1,0 +1,29 @@
+Rider App Memory Leak & useEffect Cleanup Audit
+What & Why
+Several components in the rider-app attach event listeners, timers, or subscriptions in useEffect without properly cleaning them up on unmount. Over a long session this causes memory bloat, stale listener accumulation, and progressively sluggish UI — especially on low-end Android devices where riders typically operate.
+
+Done looks like
+Every useEffect that attaches a DOM event listener, window.addEventListener, custom event, or setInterval/setTimeout has a corresponding cleanup function that removes it
+Components that were previously leaking (verified via exploration: socket listener duplicates in pages, GPS interval lingering after unmount) no longer accumulate listeners across route navigations
+The app's memory footprint remains stable during a 30-minute simulated session (mount/unmount repeated page navigation does not grow listener count)
+No functional behaviour changes — cleanup only happens on unmount, not during the component's active lifecycle
+Out of scope
+Refactoring the socket architecture (socket.tsx already has thorough cleanup — leave it unchanged)
+Performance optimizations beyond memory leaks (bundle size, lazy loading — separate concerns)
+Adding new features to any page
+Steps
+Audit all useEffect hooks in pages/ — Go through all 22 page files and identify any useEffect that calls window.addEventListener, document.addEventListener, setInterval, setTimeout, or attaches to a custom EventEmitter without a cleanup return function. List all affected files.
+
+Fix event listener leaks in pages — For each identified leak, add the correct cleanup: return () => window.removeEventListener(...) or return () => clearInterval(intervalId). Pay special attention to Active.tsx (live tracking), Home.tsx (online toggle polling), and Notifications.tsx (push subscription).
+
+Audit components/ for the same pattern — Check the 60+ component files for the same issue, prioritizing components that are frequently mounted/unmounted: RideRequestCard, OrderRequestCard, OnlineToggleCard, GpsMiniMap, MiniMap, and StatusStepper.
+
+Fix component-level leaks — Apply the same cleanup pattern to all affected components found in step 3.
+
+Verify ErrorBoundary.tsx is complete — The file is marked ⚠️ partial in the audit. Ensure it catches both render errors and async errors, and logs them through error-reporter.ts before showing a fallback UI.
+
+Relevant files
+apps/rider-app/src/pages/
+apps/rider-app/src/components/
+apps/rider-app/src/components/ErrorBoundary.tsx
+apps/rider-app/src/lib/error-reporter.ts

@@ -1,0 +1,1 @@
+{"version":3,"file":"rideStatus.d.ts","sourceRoot":"","sources":["../../../src/generated/types/rideStatus.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,OAAO,EAAE,mBAAmB,EAAE,MAAM,8BAA8B,CAAC;AAEnE,MAAM,MAAM,UAAU,GAAG,CAAC,OAAO,UAAU,CAAC,CAAC,MAAM,OAAO,UAAU,CAAC,CAAC;AAEtE,eAAO,MAAM,UAAU,EAAiE,GACrF,CAAC,IAAI,CAAC,OAAO,mBAAmB,EAAE,MAAM,CAAC,GAAG,CAAC,GAC/C,CAAC"}

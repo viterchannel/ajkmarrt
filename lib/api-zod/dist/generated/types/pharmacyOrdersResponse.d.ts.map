@@ -1,0 +1,1 @@
+{"version":3,"file":"pharmacyOrdersResponse.d.ts","sourceRoot":"","sources":["../../../src/generated/types/pharmacyOrdersResponse.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,yBAAyB,CAAC;AAErE,MAAM,WAAW,sBAAsB;IACrC,MAAM,EAAE,qBAAqB,EAAE,CAAC;IAChC,KAAK,EAAE,MAAM,CAAC;CACf"}

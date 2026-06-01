@@ -1,0 +1,84 @@
+Rider App — Complete All Reference API Routes
+What & Why
+A full audit of the rider app against the official backend API reference table reveals that the backend is largely functional under the /api/riders/... prefix, but several routes in the reference table are either at different paths, missing as aliases, or have gaps. This task closes every gap so the rider app works against every route listed in the spec — both on the backend and the frontend.
+
+Audit Findings
+✅ Already working correctly
+POST /api/auth/register — exists
+POST /api/auth/refresh-token — exists (/auth/refresh-token)
+POST /api/auth/validate-token — exists
+GET /api/riders/me — exists (riderRouter mounted at /riders)
+PATCH /api/riders/status — exists
+PATCH /api/rider/location → works as PATCH /api/riders/location; frontend correctly calls this
+POST /api/rider/location/batch → works as POST /api/riders/location/batch
+POST /api/verification/phone/send — exists
+POST /api/verification/phone/confirm — exists
+POST /api/verification/email/send — exists
+POST /api/verification/email/confirm — exists
+POST /api/verification/documents — exists
+POST /api/rides/:id/verify-otp → works as POST /api/riders/rides/:id/verify-otp
+PATCH /api/orders/:id/status → works as PATCH /api/riders/orders/:id/status
+POST /api/wallet/deposit → works as POST /api/riders/wallet/deposit
+GET /api/platform-config — exists
+❌ Missing or broken — must be fixed
+Reference Route	Gap	Fix
+POST /api/auth/login	No single /auth/login endpoint; only /auth/login/verify-otp (OTP) and /auth/phone/send (send OTP). Rider-app login flow has no consolidated entry point.	Add POST /api/auth/login that accepts { phone, otp } or { email, otp } and delegates to the existing verify-OTP handler
+POST /api/auth/magic-link	Actual path is POST /api/auth/magic-link/send. Reference path missing.	Add POST /api/auth/magic-link alias → delegates to magic-link/send handler
+GET /auth/magic-link	Only POST /api/auth/magic-link/verify exists. Email click links use GET with a token query param.	Add GET /api/auth/magic-link handler that accepts ?token=... query param, verifies it, and redirects the browser to the rider app with the session
+GET /api/verification/status	Only at GET /api/users/verification-status. Reference path missing.	Add GET /api/verification/status alias on the verification router (or add it to the verification router mounting)
+GET /api/orders/requests	Rider live feed is at GET /api/riders/requests. Reference path missing.	Add GET /api/orders/requests alias that rider auth middleware protects, delegating to riderRouter's /requests handler
+POST /api/orders/accept	Exists as POST /api/riders/orders/:id/accept (requires :id). Reference shows no :id.	Add POST /api/orders/accept that reads { orderId } from body and routes to the existing accept handler
+POST /api/rides/accept	Exists as POST /api/riders/rides/:id/accept. Reference shows no :id.	Add POST /api/rides/accept that reads { rideId } from body and routes to the existing accept handler
+POST /api/rides/counter	Exists as POST /api/riders/rides/:id/counter. Reference shows no :id.	Add POST /api/rides/counter that reads { rideId, ...data } from body and routes to existing counter handler
+GET /api/wallet	/api/wallet is the customer wallet. For riders it's GET /api/riders/wallet/transactions.	Add GET /api/wallet rider-auth branch: if request is authenticated as a rider, return rider wallet balance + transactions
+POST /api/withdraw	Rider withdrawal is at POST /api/riders/wallet/withdraw. Reference path missing.	Add POST /api/withdraw rider-auth protected alias that delegates to the rider withdraw handler (feature gate: withdraw_money)
+POST /api/wallet/cod-remittance	Rider COD remittance is at POST /api/riders/cod/remit. Reference path missing + different path structure.	Add POST /api/wallet/cod-remittance alias that delegates to the existing cod/remit handler (with requireAttestation)
+GET /api/earnings	Rider earnings is at GET /api/riders/earnings. Reference path missing.	Add GET /api/earnings rider-auth protected alias to the rider earnings handler
+GET /api/history	Rider history is at GET /api/riders/history. Reference path missing.	Add GET /api/history rider-auth protected alias to the rider history handler
+GET /api/public/zones	Exists as GET /api/service-zones/public. Reference path missing.	Add GET /api/public/zones alias that delegates to the public-zones handler
+Done looks like
+Every route in the reference table is reachable at its exact listed path and returns the correct response
+All auth guards are applied correctly (rider JWT required where spec says "Yes")
+Feature gates (accept_ride, withdraw_money) are applied on the new alias routes
+Rider-app frontend api.ts calls are updated to use the canonical reference paths where they previously called slightly different paths
+No existing /api/riders/... routes are broken — they remain as-is; new aliases are additive
+Out of scope
+Changes to the admin panel, vendor app, or customer-facing routes
+Any database schema changes
+New business logic (aliases only delegate to existing handlers)
+Steps
+Add POST /api/auth/login — In src/routes/auth/ add a new /login handler that accepts { phone|email, otp } and delegates to the existing OTP verify logic. Mount it in auth/index.ts.
+
+Add POST /api/auth/magic-link and GET /api/auth/magic-link — In src/routes/auth/magic-link.ts, register POST /magic-link as an alias for the existing /magic-link/send handler. Add GET /magic-link that reads ?token= query param, calls the verify logic, and responds with a JSON token payload (or redirect) so the rider app can handle it.
+
+Add GET /api/verification/status — In src/routes/verification.ts, add a GET /status route that calls the same handler as GET /api/users/verification-status (import and reuse the handler function).
+
+Add rider-specific top-level aliases — In src/routes/index.ts, add the following protected aliases using the rider auth middleware:
+
+GET /orders/requests → rider requests feed
+POST /orders/accept → rider order accept (body: { orderId })
+POST /rides/accept → rider ride accept (body: { rideId })
+POST /rides/counter → rider ride counter (body: { rideId, ...counterData })
+GET /wallet → branch: if rider JWT, return rider wallet; else existing customer wallet
+POST /withdraw → rider wallet withdraw (feature gate: withdraw_money)
+POST /wallet/cod-remittance → rider COD remit
+GET /earnings → rider earnings
+GET /api/history → rider history
+GET /public/zones → public zones (no auth)
+Update rider-app api.ts — Update the frontend API client to call the canonical reference paths (e.g., /auth/login, /auth/magic-link, /verification/status, /orders/requests, /rides/accept, /wallet, /withdraw, /wallet/cod-remittance, /earnings, /history, /public/zones) while keeping backward-compat fallback where needed.
+
+Smoke-test all 30 routes — Manually verify each reference route returns the expected shape and correct HTTP status. Confirm feature gates block unauthorized access.
+
+Relevant files
+extracted/12345678/artifacts/api-server/src/routes/index.ts
+extracted/12345678/artifacts/api-server/src/routes/auth/index.ts
+extracted/12345678/artifacts/api-server/src/routes/auth/magic-link.ts
+extracted/12345678/artifacts/api-server/src/routes/auth/register.ts
+extracted/12345678/artifacts/api-server/src/routes/auth/refresh.ts
+extracted/12345678/artifacts/api-server/src/routes/verification.ts
+extracted/12345678/artifacts/api-server/src/routes/rider/index.ts
+extracted/12345678/artifacts/api-server/src/routes/users.ts
+extracted/12345678/artifacts/api-server/src/routes/wallet.ts
+extracted/12345678/artifacts/api-server/src/routes/platform-config.ts
+extracted/12345678/artifacts/api-server/src/routes/public-zones.ts
+extracted/12345678/artifacts/rider-app/src/lib/api.ts

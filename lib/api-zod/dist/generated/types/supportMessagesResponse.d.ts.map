@@ -1,0 +1,1 @@
+{"version":3,"file":"supportMessagesResponse.d.ts","sourceRoot":"","sources":["../../../src/generated/types/supportMessagesResponse.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,kBAAkB,CAAC;AAEvD,MAAM,WAAW,uBAAuB;IACtC,QAAQ,EAAE,cAAc,EAAE,CAAC;IAC3B,KAAK,EAAE,MAAM,CAAC;CACf"}

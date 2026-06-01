@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Network Security Configuration — DEBUG BUILDS ONLY
+  ============================================================
+  Overrides the base config (src/main/) for debug builds.
+  - Trusts user-installed CAs so developers can intercept traffic with
+    Charles Proxy / mitmproxy for debugging.
+  - Allows cleartext traffic to localhost / 10.0.2.2 (Android emulator host)
+    so the dev Vite server and local API can be reached without TLS.
+  - NO pins enforced in debug builds to avoid blocking on placeholder values.
+  This file is NEVER included in release APKs.
+-->
+<network-security-config>
+
+  <!-- Allow cleartext to local dev endpoints only -->
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="true">localhost</domain>
+    <domain includeSubdomains="true">10.0.2.2</domain>
+    <domain includeSubdomains="true">10.0.3.2</domain>
+  </domain-config>
+
+  <!-- All other domains: system + user-installed CAs, no cleartext -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+      <certificates src="user" />
+    </trust-anchors>
+  </base-config>
+
+</network-security-config>

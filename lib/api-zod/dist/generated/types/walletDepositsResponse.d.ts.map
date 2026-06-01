@@ -1,0 +1,1 @@
+{"version":3,"file":"walletDepositsResponse.d.ts","sourceRoot":"","sources":["../../../src/generated/types/walletDepositsResponse.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAErD,MAAM,WAAW,sBAAsB;IACrC,QAAQ,EAAE,aAAa,EAAE,CAAC;IAC1B,KAAK,EAAE,MAAM,CAAC;CACf"}

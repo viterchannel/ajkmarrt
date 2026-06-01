@@ -1,0 +1,310 @@
+AJKMART Rider App – Complete Logic Flow
+Theme: Dark mode with yellow/gold accents (PRESERVED — existing theme, do NOT change) Purpose: Visual reference for every rider-app flow Last updated: 2026-05-28
+
+Contents
+App Launch & Auth Check
+Registration (Simplified)
+Login
+Dashboard / Home
+Profile & Verification
+Accept Ride / Active Order
+Earnings & Withdrawal
+Socket Events
+Feature Gate System
+Theme Style Guide
+1. App Launch & Auth Check
++------------------------------------------------+
+|              APP LAUNCH (index.html)            |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  Check: Is valid access token in storage?       |
++------------------------------------------------+
+           |                    |
+          YES                  NO
+           |                    |
+           v                    v
++------------------------------------------------+
+| Validate with API              |  Show GuestLanding |
+| /api/auth/validate-token       |  (onboarding +    |
+|                                |   Skip/Register)   |
++------------------------------------------------+
+           |                    |
+   VALID / INVALID               v
+           |           +------------------------------------------------+
+           |           |  Skip → Guest Dashboard (browse only)            |
+           |           +------------------------------------------------+
+           v
++------------------------------------------------+
+|           Go to DASHBOARD (Home)                |
+|   • Fetch rider profile                         |
+|   • Show verification badges if missing         |
+|   • Listen to socket for ride orders            |
++------------------------------------------------+
+
+2. Registration (Simplified)
+Step 1: Personal Details
+Field	Required	Validation
+Full Name	Yes	min 2 chars
+Phone Number	Yes	03XXXXXXXXX format
+Email	No	valid format if provided
+CNIC / ID Card Number	Yes	XXXXX-XXXXXXX-X format
+City	Yes	text and  dropdown
+Area	Yes	text and  dropdown
+Full Address	Yes	text
+Step 2: Vehicle Information
+Field	Required
+Vehicle Type	Yes (Bike / Car / Rickshaw / Van)
+Plate Number	Yes (e.g., RWP-1234)
+Driving License Number	Yes
+Step 3: Password & Terms
+Field	Required	Validation
+Password	Yes	8+ chars, 1 uppercase, 1 number, 1 symbol
+Confirm Password	Yes	must match
+Terms & Conditions	Yes	checkbox
+On "Register" Button Click:
++------------------------------------------------+
+|  1. Auto-fetch browser geolocation (lat/lng)    |
+|     ├─ If denied → show manual city/area selector  |
+|  2. Send POST /api/auth/register + lat/lng      |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  Backend Validation:                              |
+|  • phone unique?      → NO → 409 "Already exists"
+|  • Email unique?      → NO → 409 "Already exists" | |
+|  • cnic unique?       → NO → 409 "Already exists" |
+|  • password strong?    → NO → 400 "Weak password" |
+|  • city/area/address? → NO → 400 "Required"      |
+|  • All OK → insert user + rider_profile          |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  Account Created:                               |
+|  • isActive = true                               |
+|  • phoneVerified = false                         |
+|  • emailVerified = false                         |
+|  • documentsApproved = false                     |
+|  • approvalStatus = "approved"                   |
+|  • kycStatus = "none"                            |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  Backend returns: access_token + refresh_token   |
+|  Frontend stores → auto-login → DASHBOARD         |
++------------------------------------------------+
+
+REMOVED from registration (was in old version):
+
+Document upload (CNIC photos, vehicle photo, license photo)
+Phone OTP verification
+Email OTP verification
+3. Login
++------------------------------------------------+
+|              LOGIN SCREEN                        |
+|  • Phone or Email + Password                    |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  Backend: POST /api/auth/login                  |
+|  • Find user by phone or email                   |
+|  • Verify password hash                         |
+|  • Account banned?   → 403 "Account suspended"   |
+|  • Account deleted?  → 403 "Account not found"   |
+|  • phoneVerified=false? → OK, login allowed!   |
+|  • Generate access_token + refresh_token         |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  Frontend:                                       |
+|  • Store access_token in @capacitor/preferences |
+|  • Store refresh_token in HttpOnly cookie        |
+|  • isAuthenticated = true                        |
+|  • Navigate to DASHBOARD (Home)                   |
++------------------------------------------------+
+
+4. Dashboard / Home
++------------------------------------------------+
+|  TOP: Rider Status Card                          |
+|  • Name + AJK-ID (e.g., AJK-ABC123)              |
+|  • Wallet Balance (PKR)                         |
+|  • Online/Offline toggle                         |
+|  • Earnings today                               |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  VERIFICATION BANNER (if anything missing)       |
+|  • "Verify phone to unlock ride requests"        |
+|  • "Upload documents to start accepting rides"   |
+|  • "Verify email to enable withdrawals"          |
+|  → Clicking goes to Profile > Verification        |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  ACTIVE ORDERS / RIDE REQUESTS (Socket.IO)      |
+|  New ride → notification + socket push           |
+|  Rider taps "Accept"                              |
+|    ├─ Feature gate: accept_ride → requires docs  |
+|    ├─ NOT approved → 403 + "Upload documents"     |
+|    └─ Approved → Accept → Active Ride screen      |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  BOTTOM NAVIGATION (4 tabs)                      |
+|  ┌──────────────────────────────────────────────┐ |
+|  │ Home    │ Active   │ Earnings  │ Profile       │ |
+|  │ Dashboard │ Current  │ History   │ Settings      │ |
+|  │ Orders   │ Rides    │ Stats     │ Verification  │ |
+|  │          │ Chat     │ Withdraw  │ Logout        │ |
+|  └──────────────────────────────────────────────┘ |
++------------------------------------------------+
+
+5. Profile & Verification
+Verification Card (added to Profile page)
++------------------------------------------------+
+|  VERIFICATION STATUS                             |
++------------------------------------------------+
+|  ✓ ID Card Number: Already verified (given at    |
+|    registration) → Shows as ✅                      |
++------------------------------------------------+
+|  🟡 Phone Verification:                        |
+|    • Status: NOT VERIFIED                        |
+|    • Button: "Send OTP" → POST /verify/phone/send   |
+|    • Enter 6-digit code → POST /verify/phone/confirm |
+|    • On success: phoneVerified=true               |
+|    • Bonus: ₹20 wallet cash (auto-awarded)       |
++------------------------------------------------+
+|  🟡 Email Verification:                        |
+|    • Status: NOT VERIFIED (if email provided)    |
+|    • Button: "Send OTP" → POST /verify/email/send   |
+|    • Enter 6-digit code → POST /verify/email/confirm |
+|    • On success: emailVerified=true               |
++------------------------------------------------+
+|  🟡 Document Upload (KYC):                     |
+|    • Status: NOT SUBMITTED                       |
+|    • Button: "Upload Documents"                    |
+|    • Upload: CNIC front, CNIC back, License       |
+|    • POST /verify/documents (multipart)            |
+|    • kycStatus=pending → admin approves           |
+|    • On approval: documentsApproved=true           |
++------------------------------------------------+
+
+6. Accept Ride / Active Order
++------------------------------------------------+
+|  1. New ride order arrives via Socket.IO         |
+|  2. Rider sees order details (pickup, drop, fare) |
+|  3. Rider taps "Accept"                          |
+|                                                  |
+|  +-- Feature Gate Check: accept_ride --+          |
+|  |  → requires: documents_approved = true        |
+|  |  → If FALSE:                                  |
+|  |      403 Response: "Upload documents to        |
+|  |      accept rides. Go to Profile > Upload"    |
+|  |  → If TRUE:                                    |
+|  |      Proceed to accept ride                     |
+|  +---------------------------------------+        |
+|                                                  |
+|  4. Ride status: accepted → pickup → in-progress |
+|  5. Ride completes → earnings credited to wallet  |
++------------------------------------------------+
+
+7. Earnings & Withdrawal
++------------------------------------------------+
+|  EARNINGS TAB                                    |
+|  • Total earnings today                          |
+|  • Total earnings this week                      |
+|  • Total earnings this month                     |
+|  • Ride history list                            |
+|                                                  |
+|  WITHDRAWAL BUTTON                               |
+|  +-- Feature Gate Check: withdraw_money --+     |
+|  |  → requires: phone_verified + documents_approved |
+|  |  → If MISSING:                                 |
+|  |      403 Response: "Verify phone and upload    |
+|  |      documents to enable withdrawals"           |
+|  |  → If ALL VERIFIED:                           |
+|  |      Show withdrawal form (amount, method)     |
+|  +---------------------------------------+        |
++------------------------------------------------+
+
+8. Socket Events
+Event	Direction	Payload	Action
+connect	Out	auth token	Join rider room
+new_order	In	order details	Show notification + Accept button
+order_accepted	In	order_id	Remove from list (another rider got it)
+order_cancelled	In	order_id	Update status
+rider_location	Out	{ lat, lng }	Send periodic location updates
+disconnect	Out	-	Reconnect on network change
+9. Feature Gate System
+DB Table: feature_rules
+role	feature_name	required_verifications	max_limit_per_day
+rider	accept_ride	["documents_approved"]	5 (unverified) / unlimited
+customer	withdraw_money	["phone_verified", "documents_approved"]	-
+vendor	add_product	["documents_approved"]	-
+Middleware Flow
++------------------------------------------------+
+|  API Request comes in with feature action       |
+|  e.g., POST /orders/accept, POST /withdraw      |
++------------------------------------------------+
+                    |
+                    v
++------------------------------------------------+
+|  featureAccess middleware:                       |
+|  1. Look up feature_rules for this role+feature  |
+|  2. Check user's verification flags:              |
+|     • phoneVerified?                              |
+|     • emailVerified?                             |
+|     • documentsApproved?                          |
+|  3. If any required flag is FALSE:               |
+|     → 403 Forbidden with clear message             |
+|  4. If all required flags are TRUE:              |
+|     → Allow request to proceed                     |
++------------------------------------------------+
+
+10. Theme Style Guide
+Element	Value	Preserved
+Background	#0A0A0A (dark)	YES
+Primary Accent	#FFD700 (gold/yellow)	YES
+Secondary Accent	#FFC107 (amber)	YES
+Text Primary	#FFFFFF	YES
+Text Secondary	#A0A0A0	YES
+Card Background	#1A1A1A	YES
+Input Background	#2A2A2A	YES
+Success	#4CAF50	YES
+Warning	#FF9800	YES
+Error	#F44336	YES
+Font	Inter / system-ui	YES
+Border Radius	12px (cards), 8px (inputs)	YES
+Bottom Nav	4 tabs, icon + label	YES
+Existing Pages (do NOT redesign — only add/modify):
+GuestLanding.tsx — onboarding
+RegisterWizard.tsx + rider-register-steps.tsx — registration
+LoginScreen.tsx — login
+Home.tsx — dashboard
+Profile.tsx — profile (add verification card)
+ActiveRides.tsx — current orders
+Earnings.tsx — earnings history
+Chat.tsx — support chat
+Backend API Routes (relevant)
+Method	Route	Purpose	Auth Required
+POST	/api/auth/register	Register new rider	NO
+POST	/api/auth/login	Login	NO
+POST	/api/auth/refresh-token	Refresh access token	NO (cookie)
+POST	/api/verification/phone/send	Send phone OTP	YES
+POST	/api/verification/phone/confirm	Confirm phone OTP	YES
+POST	/api/verification/email/send	Send email OTP	YES
+POST	/api/verification/email/confirm	Confirm email OTP	YES
+POST	/api/verification/documents	Upload KYC docs	YES
+GET	/api/verification/status	Get verification status	YES
+POST	/api/orders/accept	Accept ride	YES + feature gate
+POST	/api/withdraw	Request withdrawal	YES + feature gate
+End of Rider App Flow Document

@@ -1,0 +1,1 @@
+const a=["EasyPaisa","JazzCash","MCB","HBL","UBL","Meezan Bank","Bank Alfalah","Habib Bank","NBP","Faysal Bank","Allied Bank","Other"],s=["JazzCash","EasyPaisa","Bank Transfer","Other"],n=["food","grocery","bakery","pharmacy","electronics","clothing","mart","general"],r=["mart","food","pharmacy","parcel"];export{a as A,n as C,s as D,r as T};

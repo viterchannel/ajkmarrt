@@ -1,0 +1,578 @@
+2026-05-30T02:58:52Z info: Deployment: e070b921-4f7c-41fe-8f40-c08acb0e6c4e
+2026-05-30T02:58:52Z info: Build: 4bd4c199-81f1-4bdb-b477-25884e5b4395
+2026-05-30T02:58:54Z info: Running Security Scan
+2026-05-30T02:59:56Z info: Security Scan Complete
+2026-05-30T03:00:04Z info: Preparing development database data
+2026-05-30T03:06:52Z info: Successfully copied development database data to production database
+2026-05-30T03:06:55Z info: Installing packages
+--> pnpm install
+
+Scope: all 20 workspace projects
+
+
+   ╭─────────────────────────────────────────╮
+   │                                         │
+   │   Update available! 10.26.1 → 11.5.0.   │
+   │   Changelog: https://pnpm.io/v/11.5.0   │
+   │    To update, run: pnpm add -g pnpm     │
+   │                                         │
+   ╰─────────────────────────────────────────╯
+
+
+Progress: resolved 0, reused 1, downloaded 0, added 0
+
+artifacts/ajkmart                        |  WARN  deprecated @ungap/structured-clone@1.3.0
+
+Progress: resolved 51, reused 50, downloaded 0, added 0
+
+artifacts/admin                          |  WARN  deprecated @types/dompurify@3.2.0
+
+Progress: resolved 140, reused 139, downloaded 0, added 0
+
+artifacts/admin                          |  WARN  deprecated recharts@2.15.4
+
+artifacts/api-server                     |  WARN  deprecated @types/bcryptjs@3.0.0
+
+Progress: resolved 229, reused 228, downloaded 0, added 0
+
+Progress: resolved 580, reused 536, downloaded 0, added 0
+
+Progress: resolved 1134, reused 1084, downloaded 0, added 0
+
+Progress: resolved 2177, reused 2133, downloaded 1, added 0
+
+ WARN  14 deprecated subdependencies found: @aws-sdk/core@3.974.11, glob@11.1.0, glob@7.1.6, glob@7.2.3, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, node-domexception@1.0.0, prebuild-install@7.1.3, rimraf@3.0.2, scmp@2.1.0, source-map@0.8.0-beta.0, text-encoding@0.7.0, whatwg-encoding@3.1.1
+
+Already up to date
+
+Progress: resolved 2177, reused 2133, downloaded 1, added 0, done
+
+. preinstall$ sh -c 'rm -f package-lock.json yarn.lock; case "$npm_config_user_agent" in pnpm/*) ;; *) echo "Use pnpm instead" >&2; exit 1 ;; esac'
+
+. preinstall: Done
+
+. prepare$ husky
+
+. prepare: Done
+
+lib/api-client-react prepare$ node scripts/ensure-generated-stub.mjs
+
+lib/api-client-react prepare: Done
+
+ WARN  Issues with peer dependencies found
+.
+└─┬ vite-plugin-pwa 0.21.2
+  └── ✕ unmet peer vite@"^3.1.0 || ^4.0.0 || ^5.0.0 || ^6.0.0": found 7.3.3
+
+artifacts/ajkmart
+└─┬ @tanstack/react-query-persist-client 5.100.10
+  └── ✕ unmet peer @tanstack/react-query@^5.100.10: found 5.90.21
+
+artifacts/api-server
+└─┬ swagger-jsdoc 6.2.8
+  └─┬ swagger-parser 10.0.3
+    └─┬ @apidevtools/swagger-parser 10.0.3
+      └── ✕ missing peer openapi-types@>=7
+Peer dependencies that should be installed:
+  openapi-types@>=7
+
+artifacts/rider-app
+├─┬ @capacitor-community/play-integrity 8.0.0
+│ └── ✕ unmet peer @capacitor/core@>=8.0.0: found 7.6.5
+├─┬ @capacitor/browser 8.0.3
+│ └── ✕ unmet peer @capacitor/core@>=8.0.0: found 7.6.5
+└─┬ @capacitor/push-notifications 8.1.1
+  └── ✕ unmet peer @capacitor/core@>=8.0.0: found 7.6.5
+
+Done in 11.3s using pnpm v10.26.1
+
+2026-05-30T03:07:09Z info: Starting Build
+
+> @workspace/api-server@0.0.0 build /home/runner/workspace/artifacts/api-server
+> node ./scripts/build.mjs
+
+
+✅  API server built → dist/index.mjs
+
+✅  Bundle assertion passed — no escaped workspace imports or .ts references.
+
+
+> @workspace/admin@0.0.0 build /home/runner/workspace/artifacts/admin
+> vite build --config vite.config.ts
+
+
+vite v7.3.3 building client environment for production...
+
+transforming...
+
+
+./fonts/plus-jakarta-sans-latin-ext.woff2 referenced in ./fonts/plus-jakarta-sans-latin-ext.woff2 didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+
+./fonts/plus-jakarta-sans-latin.woff2 referenced in ./fonts/plus-jakarta-sans-latin.woff2 didn't resolve at build time, it will remain unchanged to be resolved at runtime
+
+src/components/ui/sheet.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/select.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/label.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/avatar.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/collapsible.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/command.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/dropdown-menu.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/calendar.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/field.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/progress.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/toggle-group.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/sonner.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/resizable.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/sheet.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+../../lib/ui/src/components/ui/sidebar.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+✓ 4510 modules transformed.
+
+rendering chunks...
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/lib/i18n/src/locales/en.ts is dynamically imported by /home/runner/workspace/lib/i18n/src/react.tsx but also statically imported by /home/runner/workspace/lib/i18n/src/index.ts, dynamic import will not move module into another chunk.
+
+
+computing gzip size...
+
+dist/public/index.html                                       50.71 kB │ gzip:  16.25 kB
+
+dist/public/assets/vendor-map-CIGW-MKW.css                   15.61 kB │ gzip:   6.46 kB
+dist/public/assets/index-CUlQEBzU.css                       203.14 kB │ gzip:  28.85 kB
+dist/public/assets/i18nKeys-DcA2rtyC.js                       0.17 kB │ gzip:   0.14 kB
+dist/public/assets/index-DiBNkCse.js                          0.36 kB │ gzip:   0.27 kB
+dist/public/assets/useAbortableEffect-D8Ta3sCE.js             0.38 kB │ gzip:   0.28 kB
+dist/public/assets/safeClipboard-du9wm5Vi.js                  0.38 kB │ gzip:   0.25 kB
+dist/public/assets/NavigationGuard-C4ilv6cK.js                0.59 kB │ gzip:   0.36 kB
+dist/public/assets/label-BPmX_SNq.js                          0.62 kB │ gzip:   0.40 kB
+dist/public/assets/textarea-DslXVONs.js                       0.73 kB │ gzip:   0.46 kB
+dist/public/assets/progress-BIgNLHzG.js                       0.97 kB │ gzip:   0.49 kB
+dist/public/assets/switch-DCYMddSB.js                         1.34 kB │ gzip:   0.62 kB
+dist/public/assets/popover-RF-orEQs.js                        1.35 kB │ gzip:   0.61 kB
+dist/public/assets/checkbox-D6hiZXO4.js                       1.44 kB │ gzip:   0.59 kB
+
+dist/public/assets/LoadingState-CKXySrEx.js                   1.64 kB │ gzip:   0.63 kB
+dist/public/assets/slider-D0eN1V2d.js                         1.69 kB │ gzip:   0.63 kB
+dist/public/assets/conditions-_WLPDPbu.js                     2.31 kB │ gzip:   0.60 kB
+dist/public/assets/MobileDrawer-dgVQLS0m.js                   3.90 kB │ gzip:   0.92 kB
+dist/public/assets/AdminFormSheet-Cy8VMOEO.js                 4.21 kB │ gzip:   1.03 kB
+dist/public/assets/forbidden-BFIgUucp.js                      4.52 kB │ gzip:   1.06 kB
+dist/public/assets/sheet-DLCrBGr0.js                          5.15 kB │ gzip:   1.28 kB
+dist/public/assets/vendor-router-B0Cxm3xk.js                  5.75 kB │ gzip:   2.73 kB
+dist/public/assets/ConfirmDialog-BsebbnSZ.js                  6.59 kB │ gzip:   1.31 kB
+dist/public/assets/business-rules-B1JF5-l6.js                 7.37 kB │ gzip:   1.52 kB
+dist/public/assets/not-found-CTNn_dxx.js                      8.17 kB │ gzip:   1.74 kB
+dist/public/assets/WalletAdjustModal-zYHp25LY.js             10.37 kB │ gzip:   2.32 kB
+dist/public/assets/forgot-password-FJQiSucv.js               10.52 kB │ gzip:   2.20 kB
+dist/public/assets/accessibility-9N4eR-QS.js                 10.89 kB │ gzip:   2.23 kB
+dist/public/assets/analytics-BO-nd7cx.js                     12.84 kB │ gzip:   1.85 kB
+dist/public/assets/notifications-DV7DfL66.js                 13.64 kB │ gzip:   2.45 kB
+dist/public/assets/vendor-inventory-settings-LIEhVeym.js     15.01 kB │ gzip:   2.78 kB
+dist/public/assets/verification-bonuses-Dg09IPM6.js          16.03 kB │ gzip:   2.88 kB
+dist/public/assets/AdminShared-C6LC7dV1.js                   16.43 kB │ gzip:   2.72 kB
+dist/public/assets/index-BoBfT7EX.js                         16.44 kB │ gzip:   6.11 kB
+dist/public/assets/set-new-password-D3GUeOHh.js              16.77 kB │ gzip:   2.80 kB
+dist/public/assets/whatsapp-delivery-log-ytMjkDje.js         17.18 kB │ gzip:   3.23 kB
+dist/public/assets/reset-password-BNSqJtsX.js                19.13 kB │ gzip:   3.43 kB
+dist/public/assets/feature-rules-CYK1hO0b.js                 24.19 kB │ gzip:   4.12 kB
+dist/public/assets/consent-log-_aZOepcC.js                   24.51 kB │ gzip:   3.75 kB
+dist/public/assets/sms-gateways-qLO64Laj.js                  24.68 kB │ gzip:   4.21 kB
+dist/public/assets/support-chat-Crfe98l-.js                  26.87 kB │ gzip:   4.44 kB
+dist/public/assets/faq-management-B3yd2F0h.js                31.59 kB │ gzip:   4.97 kB
+dist/public/assets/drawer-Cju-rkVv.js                        32.35 kB │ gzip:   9.53 kB
+dist/public/assets/sos-alerts-BQCjm2Xc.js                    32.51 kB │ gzip:   5.72 kB
+dist/public/assets/broadcast-Ca04Rd1y.js                     33.60 kB │ gzip:   4.93 kB
+dist/public/assets/audit-logs-BQYhbmoO.js                    35.43 kB │ gzip:   5.26 kB
+dist/public/assets/webhook-manager-DsZmMq2-.js               36.03 kB │ gzip:   4.59 kB
+dist/public/assets/deep-links-C6up10Mv.js                    37.20 kB │ gzip:   4.95 kB
+dist/public/assets/flash-deals-DJAlnPue.js                   38.47 kB │ gzip:   6.09 kB
+
+dist/public/assets/qr-codes-CpA7cDi3.js                      38.73 kB │ gzip:   4.92 kB
+dist/public/assets/promo-codes-BLJD3Rbf.js                   39.02 kB │ gzip:   5.42 kB
+dist/public/assets/LocationRequests-CRm31R-R.js              39.89 kB │ gzip:   5.69 kB
+dist/public/assets/condition-rules-Cyi4YSrm.js               42.46 kB │ gzip:   5.96 kB
+dist/public/assets/experiments-m08ubPyn.js                   43.19 kB │ gzip:   5.62 kB
+dist/public/assets/auth-control-CsbukU-z.js                  43.85 kB │ gzip:   5.62 kB
+dist/public/assets/vendor-query-yNEg3Ix4.js                  44.62 kB │ gzip:  13.57 kB
+dist/public/assets/login-B6NLwANB.js                         44.65 kB │ gzip:   8.70 kB
+dist/public/assets/loyalty-DoF-ZFIR.js                       46.15 kB │ gzip:   6.09 kB
+dist/public/assets/wishlist-insights-DX6K-NdR.js             48.23 kB │ gzip:   5.46 kB
+dist/public/assets/banners-CicHG2nJ.js                       48.35 kB │ gzip:   7.40 kB
+dist/public/assets/chat-monitor-DxEgBBMj.js                  53.12 kB │ gzip:   5.82 kB
+dist/public/assets/parcel-eoJTN2j4.js                        53.99 kB │ gzip:   6.67 kB
+dist/public/assets/validation-CpNsyhIR.js                    55.21 kB │ gzip:  12.84 kB
+dist/public/assets/delivery-access-DpXsgx1h.js               56.64 kB │ gzip:   6.94 kB
+dist/public/assets/auth-methods-BH_ydulL.js                  56.98 kB │ gzip:   8.84 kB
+dist/public/assets/vendor-icons-CDPNVBFw.js                  58.16 kB │ gzip:  18.81 kB
+dist/public/assets/pharmacy-AZP2y9qe.js                      58.27 kB │ gzip:   7.58 kB
+dist/public/assets/account-conditions-DaXvfwLg.js            59.06 kB │ gzip:   6.96 kB
+dist/public/assets/categories-DeMuDCQf.js                    61.67 kB │ gzip:   8.30 kB
+dist/public/assets/riders-CLwLkgyS.js                        71.11 kB │ gzip:  10.37 kB
+dist/public/assets/vendors-D3SHG0fs.js                       81.67 kB │ gzip:  12.29 kB
+dist/public/assets/launch-control-Dj2yRGIy.js                95.41 kB │ gzip:  12.55 kB
+dist/public/assets/app-management-CFvKRzQp.js                95.96 kB │ gzip:  13.60 kB
+dist/public/assets/reviews-D-IyUT2T.js                      107.40 kB │ gzip:  13.71 kB
+
+dist/public/assets/dnd.esm-uwbhTAGy.js                      114.64 kB │ gzip:  36.42 kB
+dist/public/assets/roles-permissions-C1BLPyJo.js            115.16 kB │ gzip:  15.95 kB
+dist/public/assets/kyc-BLz5oDzf.js                          118.19 kB │ gzip:  15.70 kB
+dist/public/assets/popups-D9W2lbdT.js                       121.65 kB │ gzip:  14.12 kB
+dist/public/assets/otp-control-CwvGxj4V.js                  129.39 kB │ gzip:  18.61 kB
+dist/public/assets/promotions-hub-wDOSn1mT.js               130.56 kB │ gzip:  14.55 kB
+dist/public/assets/health-dashboard-CmNMz9hr.js             135.67 kB │ gzip:  15.66 kB
+dist/public/assets/dashboard-D0taxCWO.js                    143.20 kB │ gzip:  18.36 kB
+dist/public/assets/pages-analytics-D1bFsolB.js              160.96 kB │ gzip:  18.94 kB
+dist/public/assets/vendor-map-y24-ZMME.js                   161.32 kB │ gzip:  50.62 kB
+dist/public/assets/products-C_MiGvnI.js                     161.65 kB │ gzip:  20.79 kB
+dist/public/assets/live-riders-map-DgWEZ8yX.js              162.90 kB │ gzip:  24.99 kB
+dist/public/assets/index-CY4E5z6x.js                        164.00 kB │ gzip:  23.19 kB
+dist/public/assets/error-monitor-BGndASHv.js                173.10 kB │ gzip:  22.96 kB
+dist/public/assets/communication-DoROcYCZ.js                174.53 kB │ gzip:  18.55 kB
+dist/public/assets/brand-guidelines-8lPGF5kK.js             177.37 kB │ gzip:  42.10 kB
+dist/public/assets/van-DJ0fqi6_.js                          182.10 kB │ gzip:  19.43 kB
+dist/public/assets/security-B1cXACBS.js                     192.07 kB │ gzip:  27.08 kB
+dist/public/assets/vendor-radix-cNyWniZY.js                 194.35 kB │ gzip:  58.29 kB
+dist/public/assets/rides-BG1lt6lx.js                        262.98 kB │ gzip:  31.79 kB
+dist/public/assets/users-BsiyybjY.js                        280.75 kB │ gzip:  33.56 kB
+dist/public/assets/vendor-react-DERYYwDB.js                 366.03 kB │ gzip: 109.63 kB
+
+dist/public/assets/vendor-charts-BDoNF267.js                446.26 kB │ gzip: 119.72 kB
+dist/public/assets/pages-finance-C9fysJ3U.js                542.00 kB │ gzip: 105.59 kB
+dist/public/assets/index-cON8ci4l.js                        574.73 kB │ gzip: 135.27 kB
+dist/public/assets/settings-CxeEuLJ8.js                     849.04 kB │ gzip: 112.93 kB
+dist/public/assets/vendor-mapbox-CoZleFva.js              1,727.41 kB │ gzip: 476.06 kB
+
+✓ built in 21.54s
+
+
+> @workspace/ajkmart@0.0.0 build /home/runner/workspace/artifacts/ajkmart
+> node scripts/build.js
+
+
+Building static Expo Go deployment...
+Preparing build directories...
+
+Build: 1780110454698-236
+
+Clearing Metro cache...
+Cache cleared
+
+Starting Metro...
+
+Setting EXPO_PUBLIC_DOMAIN=eid-2--nnmhogdshop.replit.app
+
+Setting EXPO_PUBLIC_REPL_ID=4bd4c199-81f1-4bdb-b477-25884e5b4395
+
+[Metro] Starting project at /home/runner/workspace/artifacts/ajkmart
+
+[Metro] React Compiler enabled
+
+[Metro] Starting Metro Bundler
+
+Metro ready
+Downloading bundles and manifests...
+This may take several minutes for production builds...
+Fetching ios bundle...
+Downloading: http://localhost:8081/artifacts/ajkmart/node_modules/expo-router/entry.bundle?platform=ios&dev=false&hot=false&lazy=false&minify=true
+
+[Metro Error] The following packages should be updated for best compatibility with the installed expo version:
+
+[Metro Error] expo-auth-session@7.0.10 - expected version: ~7.0.11
+
+[Metro Error] expo-crypto@55.0.10 - expected version: ~15.0.9
+
+[Metro Error] expo-file-system@19.0.21 - expected version: ~19.0.23
+
+[Metro Error] expo-image-manipulator@55.0.11 - expected version: ~14.0.8
+
+[Metro Error] expo-updates@29.0.17 - expected version: ~29.0.18
+
+[Metro Error] expo@54.0.33 - expected version: ~54.0.35
+  expo-font@14.0.11 - expected version: ~14.0.12
+  expo-glass-effect@0.1.9 - expected version: ~0.1.10
+  expo-image-picker@17.0.10 - expected version: ~17.0.11
+  expo-linking@8.0.11 - expected version: ~8.0.12
+  expo-router@6.0.23 - expected version: ~6.0.24
+  expo-web-browser@15.0.10 - expected version: ~15.0.11
+[Metro Error] Your project may not work correctly until you install the expected versions of the packages.
+
+[Metro] Waiting on http://localhost:8081
+[Metro] Logs for your project will appear below.
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓░░░░░░░░░░░░░ 21.3% (130/452)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓░░░░░░░░░░░░░ 21.3% (242/567)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓░░░░░░░░░░░░ 26.6% (307/595)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓░░░░░░░░░░ 38.5% ( 610/1062)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓░░░░░░░ 58.9% ( 974/1286)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 74.0% (1204/1400)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 80.8% (1486/1662)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 88.5% (1791/1942)
+
+[Metro] iOS node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 94.6% (2200/2307)
+
+[Metro] iOS Bundled 33424ms node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js (2336 modules)
+
+ios bundle ready
+
+Fetching android bundle...
+Downloading: http://localhost:8081/artifacts/ajkmart/node_modules/expo-router/entry.bundle?platform=android&dev=false&hot=false&lazy=false&minify=true
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓░░░░░░░░░░░░ 27.0% (144/441)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓░░░░░░░░░░░░ 27.0% (201/500)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓░░░░░░░░░░░ 33.0% (497/957)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓░░░░░░░░░ 48.5% ( 859/1233)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 71.8% (1211/1440)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 85.8% (1578/1704)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 89.9% (1863/1965)
+
+[Metro] Android Bundled 26569ms node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js (2334 modules)
+
+[Metro] Android node_modules/.pnpm/expo-router@6.0.23_@expo+metro-runtime@6.1.2_@types+react-dom@19.1.11_@types+react@19.1_c2e42e87a72fcbe57e50351b28a7c0aa/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (2334/2334)
+
+android bundle ready
+
+Fetching ios manifest...
+
+Fetching android manifest...
+
+android manifest ready
+
+ios manifest ready
+All downloads completed successfully
+
+Processing assets...
+
+Found 53 unique asset(s)
+
+Copying assets...
+
+Copied 53 assets
+
+Updated bundle URLs
+Updating manifests and creating landing page...
+
+Manifests updated
+Build complete! Deploy to: https://eid-2--nnmhogdshop.replit.app
+
+
+> @workspace/rider-app@0.0.0 build /home/runner/workspace/artifacts/rider-app
+> vite build --config vite.config.ts
+
+
+vite v7.3.3 building client environment for production...
+
+transforming...
+
+✓ 2480 modules transformed.
+
+rendering chunks...
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/lib/i18n/src/locales/en.ts is dynamically imported by /home/runner/workspace/lib/i18n/src/react.tsx but also statically imported by /home/runner/workspace/lib/i18n/src/index.ts, dynamic import will not move module into another chunk.
+
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/artifacts/rider-app/src/lib/error-reporter.ts is dynamically imported by /home/runner/workspace/artifacts/rider-app/src/lib/api.ts but also statically imported by /home/runner/workspace/artifacts/rider-app/src/App.tsx, /home/runner/workspace/artifacts/rider-app/src/components/ErrorBoundary.tsx, /home/runner/workspace/artifacts/rider-app/src/main.tsx, dynamic import will not move module into another chunk.
+
+
+[plugin vite:reporter] 
+(!) /home/runner/workspace/artifacts/rider-app/src/lib/attestation.ts is dynamically imported by /home/runner/workspace/artifacts/rider-app/src/lib/api.ts but also statically imported by /home/runner/workspace/artifacts/rider-app/src/App.tsx, dynamic import will not move module into another chunk.
+
+
+computing gzip size...
+
+dist/public/index.html                                  50.59 kB │ gzip:  16.30 kB
+
+dist/public/assets/TileLayer-CIGW-MKW.css               15.61 kB │ gzip:   6.46 kB
+dist/public/assets/index-DkKSD7FY.css                  117.00 kB │ gzip:  17.93 kB
+dist/public/assets/capacitor-browser-Da-m3BWE.js         0.05 kB │ gzip:   0.07 kB
+dist/public/assets/check-CWC2J4i0.js                     0.12 kB │ gzip:   0.14 kB
+
+dist/public/assets/chevron-down-j3Zd_piG.js              0.13 kB │ gzip:   0.14 kB
+dist/public/assets/chevron-up-DFjN9qap.js                0.13 kB │ gzip:   0.14 kB
+dist/public/assets/chevron-right-lH9bDeW7.js             0.13 kB │ gzip:   0.14 kB
+dist/public/assets/loader-circle-Cc6Q7loi.js             0.14 kB │ gzip:   0.15 kB
+
+dist/public/assets/navigation-BV1xMdWi.js                0.15 kB │ gzip:   0.15 kB
+dist/public/assets/clock-C18gZlrd.js                     0.17 kB │ gzip:   0.17 kB
+dist/public/assets/arrow-left-DcW2R-OC.js                0.17 kB │ gzip:   0.16 kB
+
+dist/public/assets/check-check-faNIxZwh.js               0.18 kB │ gzip:   0.17 kB
+dist/public/assets/ban-BeVMZ8JJ.js                       0.18 kB │ gzip:   0.17 kB
+dist/public/assets/smartphone-BG5Nycnr.js                0.20 kB │ gzip:   0.18 kB
+dist/public/assets/info-DAzSWXDi.js                      0.20 kB │ gzip:   0.18 kB
+dist/public/assets/credit-card-DqhouUF_.js               0.21 kB │ gzip:   0.19 kB
+dist/public/assets/target-CUf59cHB.js                    0.22 kB │ gzip:   0.16 kB
+dist/public/assets/index-BIie3YYx.js                     0.22 kB │ gzip:   0.20 kB
+dist/public/assets/log-out-rHj-gHcv.js                   0.23 kB │ gzip:   0.19 kB
+
+dist/public/assets/message-square-EQfOOqVU.js            0.23 kB │ gzip:   0.20 kB
+dist/public/assets/globe-BSCs71aE.js                     0.24 kB │ gzip:   0.19 kB
+dist/public/assets/circle-alert-DPgxhbXj.js              0.25 kB │ gzip:   0.19 kB
+dist/public/assets/eye-H0iww2Qn.js                       0.25 kB │ gzip:   0.20 kB
+dist/public/assets/chart-column-By-B_X_v.js              0.25 kB │ gzip:   0.20 kB
+dist/public/assets/Polyline-BLhQ1yJb.js                  0.26 kB │ gzip:   0.21 kB
+dist/public/assets/zap-DYnJM7I4.js                       0.26 kB │ gzip:   0.21 kB
+dist/public/assets/shield-BUH2IFhQ.js                    0.27 kB │ gzip:   0.23 kB
+dist/public/assets/bike-D-15eCEl.js                      0.28 kB │ gzip:   0.21 kB
+
+dist/public/assets/wallet-DDuee6gA.js                    0.29 kB │ gzip:   0.21 kB
+dist/public/assets/user-x-B1NvCDdl.js                    0.31 kB │ gzip:   0.23 kB
+dist/public/assets/phone-BDm2czlB.js                     0.32 kB │ gzip:   0.23 kB
+dist/public/assets/trash-2-2iAwGp4P.js                   0.33 kB │ gzip:   0.22 kB
+dist/public/assets/file-text-Blh56y2T.js                 0.33 kB │ gzip:   0.22 kB
+
+dist/public/assets/camera-Dz2amk5D.js                    0.34 kB │ gzip:   0.25 kB
+dist/public/assets/index-BMbdIQjD.js                     0.35 kB │ gzip:   0.24 kB
+dist/public/assets/leafletIconFix-BAStxZGk.js            0.37 kB │ gzip:   0.22 kB
+dist/public/assets/package-BHZQ9Qns.js                   0.37 kB │ gzip:   0.26 kB
+dist/public/assets/landmark-ClgZBglq.js                  0.40 kB │ gzip:   0.26 kB
+dist/public/assets/truck-DZg5o1LR.js                     0.40 kB │ gzip:   0.27 kB
+dist/public/assets/car-Bi3IcVNK.js                       0.40 kB │ gzip:   0.28 kB
+dist/public/assets/message-circle-DVOG7KlU.js            0.41 kB │ gzip:   0.30 kB
+dist/public/assets/clipboard-list-DtdgE3gZ.js            0.41 kB │ gzip:   0.26 kB
+dist/public/assets/pencil-BwarTsJ1.js                    0.44 kB │ gzip:   0.30 kB
+
+dist/public/assets/star-B7N3vbVj.js                      0.47 kB │ gzip:   0.30 kB
+dist/public/assets/sparkles-DuRemitY.js                  0.50 kB │ gzip:   0.28 kB
+dist/public/assets/capacitor-native-CRt26s-D.js          0.56 kB │ gzip:   0.31 kB
+dist/public/assets/rideUtils-DPTQOAzo.js                 0.59 kB │ gzip:   0.43 kB
+dist/public/assets/timer-BB4fVlUq.js                     0.64 kB │ gzip:   0.36 kB
+dist/public/assets/shield-check-BKBx1og6.js              0.70 kB │ gzip:   0.41 kB
+dist/public/assets/wifi-off-OqpWKH10.js                  0.71 kB │ gzip:   0.39 kB
+dist/public/assets/utensils-crossed-BvrLB69N.js          0.88 kB │ gzip:   0.48 kB
+dist/public/assets/useInfiniteQuery-CN6OYjFv.js          1.12 kB │ gzip:   0.48 kB
+dist/public/assets/web-DY8fLvLA.js                       1.25 kB │ gzip:   0.59 kB
+dist/public/assets/useMutation-BMFd1UVr.js               2.21 kB │ gzip:   0.92 kB
+dist/public/assets/notificationSound-nQZbPqoM.js         2.72 kB │ gzip:   0.99 kB
+dist/public/assets/ErrorState-a7CHcxzK.js                2.82 kB │ gzip:   0.82 kB
+dist/public/assets/PhoneInput-B9-4tvPc.js                3.36 kB │ gzip:   1.36 kB
+dist/public/assets/not-found-BqpG2gMV.js                 3.57 kB │ gzip:   0.89 kB
+dist/public/assets/SplashScreen-YUBPqakU.js              4.88 kB │ gzip:   1.25 kB
+dist/public/assets/PullToRefresh-DtoGaaLm.js             4.92 kB │ gzip:   1.53 kB
+dist/public/assets/accordion-DpbQaBEw.js                 8.13 kB │ gzip:   2.73 kB
+dist/public/assets/Onboarding-gwG6in_P.js               10.48 kB │ gzip:   2.96 kB
+dist/public/assets/MiniMapImpl-D8N1EdeW.js              14.35 kB │ gzip:   3.06 kB
+dist/public/assets/ActiveHelpersLeaflet-EvvADOct.js     15.85 kB │ gzip:   3.46 kB
+dist/public/assets/Settings-CgEFDOiu.js                 16.16 kB │ gzip:   2.46 kB
+
+dist/public/assets/Help-9X0zQkr_.js                     16.74 kB │ gzip:   2.94 kB
+dist/public/assets/PenaltyHistory-CuapOo4i.js           18.33 kB │ gzip:   3.25 kB
+dist/public/assets/Reviews-DW6G7gyl.js                  20.76 kB │ gzip:   3.19 kB
+dist/public/assets/PasswordInput-D7SX2ENS.js            21.67 kB │ gzip:   5.33 kB
+dist/public/assets/EarningsSummary-BuO0zzTs.js          25.24 kB │ gzip:   4.10 kB
+dist/public/assets/JoinSelect-UeB3Dix7.js               27.95 kB │ gzip:   5.04 kB
+dist/public/assets/ForgotPassword-Bx0zuPZg.js           32.48 kB │ gzip:   5.47 kB
+dist/public/assets/LoginHistory-DxXA1Sps.js             40.98 kB │ gzip:   5.65 kB
+dist/public/assets/Notifications-CrblGU-V.js            44.77 kB │ gzip:   6.77 kB
+
+dist/public/assets/validate-D9QnYcqG.js                 46.51 kB │ gzip:   5.06 kB
+dist/public/assets/History-D0IDczta.js                  50.31 kB │ gzip:   8.03 kB
+dist/public/assets/VanDriver-BE3arBJP.js                51.53 kB │ gzip:   8.02 kB
+dist/public/assets/SecuritySettings-BmycgRF7.js         58.89 kB │ gzip:   8.18 kB
+dist/public/assets/Chat-DUoJSqOz.js                     69.72 kB │ gzip:  11.78 kB
+dist/public/assets/Earnings-BacpXy8e.js                 79.42 kB │ gzip:  10.63 kB
+dist/public/assets/Register-DyZsc5rC.js                 92.01 kB │ gzip:  15.23 kB
+dist/public/assets/GuestLanding-DflbrvqU.js             93.72 kB │ gzip:  14.77 kB
+dist/public/assets/roman-BiS7JZG9.js                    94.15 kB │ gzip:  31.52 kB
+dist/public/assets/Login-PuAOTRKH.js                   119.39 kB │ gzip:  19.95 kB
+dist/public/assets/ur-DNbq9emi.js                      125.28 kB │ gzip:  34.45 kB
+dist/public/assets/TileLayer-CzX6iVX2.js               153.85 kB │ gzip:  44.66 kB
+dist/public/assets/Active-C-Hy2HAe.js                  223.17 kB │ gzip:  32.39 kB
+dist/public/assets/Home-B21s7bS1.js                    226.60 kB │ gzip:  35.74 kB
+dist/public/assets/Profile-C0AKl6Xx.js                 240.11 kB │ gzip:  37.28 kB
+dist/public/assets/Wallet-Dl79L2ts.js                  303.91 kB │ gzip:  34.26 kB
+dist/public/assets/index-DsEaupTL.js                   317.61 kB │ gzip: 104.44 kB
+dist/public/assets/index-BwzqRxIW.js                 1,121.04 kB │ gzip: 322.34 kB
+
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+✓ built in 7.68s
+
+
+> @workspace/vendor-app@0.0.0 build /home/runner/workspace/artifacts/vendor-app
+> vite build --config vite.config.ts
+
+
+vite v7.3.3 building client environment for production...
+
+✓ 0 modules transformed.
+
+transforming...
+
+
+PWA v0.21.2
+mode      generateSW
+precache  1 entries (0.00 KiB)
+files generated
+  dist/public/sw.js
+  dist/public/workbox-13942bd7.js
+
+warnings
+  One of the glob patterns doesn't match any files. Please remove or fix the following: {
+  "globDirectory": "/home/runner/workspace/artifacts/vendor-app/dist/public",
+  "globPattern": "**/*.{js,css,html,ico,png,svg,woff2}",
+  "globIgnores": [
+    "**/node_modules/**/*",
+    "sw.js",
+    "workbox-*.js"
+  ]
+}
+
+
+✗ Build failed in 1.94s
+error during build:
+[vite-plugin-pwa:build] [plugin vite-plugin-pwa:build] index.html: There was an error during the build:
+  EISDIR: illegal operation on a directory, read
+Additionally, handling the error in the 'buildEnd' hook caused the following error:
+  EISDIR: illegal operation on a directory, read
+file: /home/runner/workspace/artifacts/vendor-app/index.html
+    at getRollupError (file:///home/runner/workspace/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/es/shared/parseAst.js:402:41)
+    at file:///home/runner/workspace/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/es/shared/node-entry.js:23467:39
+    at async catchUnfinishedHookActions (file:///home/runner/workspace/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/es/shared/node-entry.js:22925:16)
+    at async rollupInternal (file:///home/runner/workspace/node_modules/.pnpm/rollup@4.59.0/node_modules/rollup/dist/es/shared/node-entry.js:23450:5)
+    at async buildEnvironment (file:///home/runner/workspace/node_modules/.pnpm/vite@7.3.3_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.1_tsx@4.21.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:33561:12)
+    at async Object.build (file:///home/runner/workspace/node_modules/.pnpm/vite@7.3.3_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.1_tsx@4.21.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:33920:19)
+    at async Object.buildApp (file:///home/runner/workspace/node_modules/.pnpm/vite@7.3.3_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.1_tsx@4.21.0_yaml@2.9.0/node_modules/vite/dist/node/chunks/config.js:33917:153)
+    at async CAC.<anonymous> (file:///home/runner/workspace/node_modules/.pnpm/vite@7.3.3_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31.1_terser@5.46.1_tsx@4.21.0_yaml@2.9.0/node_modules/vite/dist/node/cli.js:629:3)
+
+/home/runner/workspace/artifacts/vendor-app:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/vendor-app@0.0.0 build: `vite build --config vite.config.ts`
+Exit status 1

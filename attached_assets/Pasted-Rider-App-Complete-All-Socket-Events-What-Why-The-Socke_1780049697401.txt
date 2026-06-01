@@ -1,0 +1,41 @@
+Rider App — Complete All Socket Events
+What & Why
+The Socket Events Reference defines 11 events the Rider App must handle. A full audit found 8 gaps where events are either missing, use the wrong event name, have incomplete behavior (e.g. no navigation, no sound, no push notification), or have a capped reconnect count instead of indefinite backoff. All gaps must be closed so the real-time layer is fully spec-compliant.
+
+Done looks like
+On every socket connect, the client emits rider:online with { riderId } then rider:location_update with { lat, lng, ts } whenever GPS position changes.
+rider:new_request (IN) immediately shows the accept card and plays the request sound in the same way new_order does.
+ride:assigned (IN) navigates the rider programmatically to /active (locks the ride), in addition to invalidating queries.
+ride:otp_verified (IN) is listened to; when received it advances the Active stepper to the next step without requiring a page reload.
+admin:chat (IN) messages appear inside the Chat tab (/chat) as well as in the Active.tsx inline overlay.
+kyc_status_changed (IN) fires a local browser notification (via the Notifications API / existing push helper) in addition to the existing in-app banner.
+disconnect uses reconnectionAttempts: Infinity (with the existing 2 s / 20 s delay/max) so the client retries indefinitely instead of giving up after 5 attempts.
+Out of scope
+Changes to the API server socket handlers — only the rider-app client is in scope.
+Replacing the rider:heartbeat mechanism — it stays as-is; rider:online and rider:location_update are added on top.
+Redesigning the Chat page UI.
+Firebase / VAPID push to locked-screen — only foreground local notification via the Notifications API.
+Steps
+Emit rider:online on connect — In socket.tsx, inside the s.on("connect", …) handler, emit rider:online with { riderId: user.id } immediately after draining the offline queue. Add a Zod schema in socketEvents.ts for the outgoing payload for consistency.
+
+Emit rider:location_update on GPS change — In socket.tsx, within the heartbeat emitHeartbeat function, after emitting rider:heartbeat, also emit rider:location_update with { lat, lng, ts: new Date().toISOString() } whenever a fresh coordinate is available (i.e. coordsToSend is set from actual movement, not the re-used cached position).
+
+rider:new_request — inject card + play sound — In Home.tsx, update the handleNewRequest listener for rider:new_request to parse the raw payload as a NewOrderPayload (falls back to cache invalidation on parse failure) and inject a synthetic ride card + call playRequestSound(), mirroring the existing handleNewOrder logic. If the payload carries no order_id, fall back to the existing simple invalidation.
+
+ride:assigned — navigate to Active — In Home.tsx, update handleRideAssigned to programmatically navigate to /active using wouter's useLocation setter after invalidating the queries, so the rider is taken to the Active page automatically when a ride is assigned.
+
+Add ride:otp_verified listener — In Active.tsx, add a new useEffect that listens for ride:otp_verified (payload: { rideId }). On receipt, if the rideId matches the current active ride, mark the ride as OTP-verified in the React Query cache (otpVerified: true) and advance the ride step index to the next step. Add a RideOtpVerifiedPayloadSchema in socketEvents.ts.
+
+admin:chat → Chat tab — In Chat.tsx, add a socket listener for admin:chat using the existing parseAdminChatPayload parser. Received messages should be prepended to a dedicated "Admin Support" conversation entry in the conversations list (or appended to an existing one), making them visible on the Chats tab without requiring the rider to be on an active trip.
+
+kyc_status_changed — local notification — In App.tsx, inside the existing onKycStatusChanged handler, after setting the banner, trigger a browser Notification (using the existing Notification API permission already requested in the app) with the KYC status and reason as the notification body.
+
+Infinite reconnect backoff — In socket.tsx, change reconnectionAttempts from the adaptive navigator.onLine ? 5 : 2 expression to Infinity so the socket retries indefinitely. Remove the adaptive comment; the existing reconnectionDelay: 2000 and reconnectionDelayMax: 20000 already provide proper exponential backoff.
+
+Relevant files
+extracted/12345678/artifacts/rider-app/src/lib/socket.tsx
+extracted/12345678/artifacts/rider-app/src/lib/socketEvents.ts
+extracted/12345678/artifacts/rider-app/src/pages/Home.tsx:560-770
+extracted/12345678/artifacts/rider-app/src/pages/Active.tsx:96-230
+extracted/12345678/artifacts/rider-app/src/pages/Chat.tsx:332-564
+extracted/12345678/artifacts/rider-app/src/App.tsx:1288-1318

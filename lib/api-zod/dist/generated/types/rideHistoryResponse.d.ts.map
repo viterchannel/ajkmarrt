@@ -1,0 +1,1 @@
+{"version":3,"file":"rideHistoryResponse.d.ts","sourceRoot":"","sources":["../../../src/generated/types/rideHistoryResponse.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AAEnC,MAAM,WAAW,mBAAmB;IAClC,KAAK,EAAE,IAAI,EAAE,CAAC;IACd,KAAK,EAAE,MAAM,CAAC;CACf"}

@@ -1,0 +1,28 @@
+Vendor App — Approval Overlay & Analytics Fixes
+What & Why
+Two verified gaps exist in the vendor-app: (1) a TODO comment in App.tsx for the APPROVAL_PENDING / APPROVAL_REJECTED overlay in the magic-link success path means vendors who register via magic link land on a blank or broken state instead of a clear "pending review" or "rejected" screen; (2) the Analytics page exists but lacks historical drill-downs, showing only flat aggregates.
+
+Done looks like
+A vendor who registers via magic link and is in APPROVAL_PENDING status sees a clear "Application under review" overlay explaining next steps, instead of a blank state
+A vendor with APPROVAL_REJECTED status sees a "Your application was rejected" screen with the rejection reason (fetched from their profile) and a "Contact support" CTA
+These overlays cannot be dismissed — they replace the main app until the status changes
+Analytics page shows a date-range picker (today / 7d / 30d / custom) and the table/chart data updates to reflect the selected period, using the existing earnings history endpoints
+All new UI strings go through the existing i18n system
+Out of scope
+Vendor self-resubmission flow (requires admin to first set status back to pending)
+Staff/sub-user management for vendors
+Direct refund management from vendor side
+Advanced multi-warehouse inventory
+Steps
+Implement APPROVAL_PENDING overlay — In App.tsx, replace the TODO comment with a full-screen modal/overlay component that shows the vendor's business name, a "Your application is being reviewed" message, an estimated timeline, and a logout button. This should be shown when vendor.approvalStatus === 'pending' || vendor.approvalStatus === 'pending_review' in the magic-link success path and on every app load.
+
+Implement APPROVAL_REJECTED overlay — Add a second overlay variant for approvalStatus === 'rejected' that fetches the rejection reason from the vendor profile API and displays it prominently, with a "Contact Support" button that opens the support chat.
+
+Add date-range picker to Analytics page — In Analytics.tsx, add a date range selector (preset buttons: Today, 7 days, 30 days, plus a custom date picker). Wire it to the existing earnings/analytics API calls so the charts and summary numbers reflect the chosen period.
+
+Ensure approval status is re-checked on resume — When the app regains focus (visibilitychange) or the auth token is refreshed, re-fetch the vendor's approval status so the overlay appears or disappears without requiring a full logout/login cycle.
+
+Relevant files
+apps/vendor-app/src/App.tsx
+apps/vendor-app/src/pages/Analytics.tsx
+apps/vendor-app/src/lib/

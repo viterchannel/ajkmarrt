@@ -1,0 +1,16 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="180" height="180" rx="36" fill="#0b0e11"/>
+  <rect x="12" y="38" width="18" height="7" rx="3.5" fill="white" opacity="0.9"/>
+  <rect x="12" y="50" width="14" height="7" rx="3.5" fill="white" opacity="0.75"/>
+  <rect x="12" y="62" width="10" height="7" rx="3.5" fill="white" opacity="0.6"/>
+  <text x="32" y="116" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-weight="800" font-size="92" fill="white" letter-spacing="-4">AJK</text>
+  <defs>
+    <linearGradient id="cartRider" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0B90B"/>
+      <stop offset="100%" stop-color="#FCD34D"/>
+    </linearGradient>
+  </defs>
+  <path d="M126,118 L136,118 L148,148 L166,148 L169,132 L140,132" stroke="url(#cartRider)" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="149" cy="160" r="6" fill="url(#cartRider)"/>
+  <circle cx="165" cy="160" r="6" fill="url(#cartRider)"/>
+</svg>

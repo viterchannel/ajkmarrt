@@ -1,0 +1,28 @@
+Feature Gate Hardening
+What & Why
+The client-side feature gate system has three verified gaps: accept_order is missing from CRITICAL_FEATURES (so it fails-open when the cache is cold), there is no reactive React hook causing manual boilerplate in every consumer, and the cache can go stale if an admin changes a rider's status mid-session (no background refresh).
+
+Done looks like
+When a rider's feature-rules cache is cold (first launch, cleared storage), accept_order is blocked by default just like accept_ride
+Components can call useFeatureGate('accept_ride') and receive a reactive { accessible, reason, missingVerifications } object that updates automatically without manual state wiring
+If an admin approves or suspends a rider while they are online, the rider's gate status refreshes within the next poll cycle (configurable, suggested 5 min) without requiring a full logout
+Home.tsx and Wallet.tsx replace their manual checkGate call-sites with the new hook
+Out of scope
+Server-side feature gate enforcement at the API level (already handled by the backend)
+Adding new feature gates or changing gate rules
+Any admin UI for managing feature flags (separate task in #2 scope)
+Steps
+Add accept_order to CRITICAL_FEATURES — In featureGate.ts, add 'accept_order' to the CRITICAL_FEATURES set so it fails-closed when the rules cache is absent, matching the behaviour of accept_ride.
+
+Create useFeatureGate React hook — Build a hook that reads from the rules cache, returns { accessible, reason, missingVerifications, isLoading }, and subscribes to cache-update events so consumers re-render automatically when the cache is refreshed. Co-locate it in featureGate.ts or a new useFeatureGate.ts alongside it.
+
+Add periodic background cache refresh — In the SocketProvider or the auth context, add a periodic call to refreshFeatureRules() every 5 minutes while the rider is online so stale approval-status changes from the admin panel propagate to the client without a logout.
+
+Refactor Home.tsx and Wallet.tsx to use the hook — Replace the manual checkGate() calls and their surrounding state variables with the new useFeatureGate hook, removing the duplicated "fallback server-side check" block in Home.tsx.
+
+Relevant files
+apps/rider-app/src/lib/featureGate.ts
+apps/rider-app/src/pages/Home.tsx
+apps/rider-app/src/pages/Wallet.tsx
+apps/rider-app/src/lib/socket.tsx
+apps/rider-app/src/lib/rider-auth.tsx

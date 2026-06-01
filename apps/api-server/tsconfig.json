@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "types": ["node"],
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "jsx": "react-jsx" // Added for i18n React components
+  },
+  "include": ["src"],
+  "exclude": ["src/routes/admin/_archive"]
+}

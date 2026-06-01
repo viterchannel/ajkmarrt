@@ -1,0 +1,32 @@
+Shared Package Cleanup & DRY Architecture Enforcement
+What & Why
+Admin aur Rider App mein kuch Type Definitions, Zod schemas, aur utility functions duplicate hain. Shared packages (lib/api-zod, lib/phone-utils, lib/auth-utils, etc.) already exist karte hain lekin saare apps inhe consistently use nahi karte. Yeh task duplicate code dhund kar shared packages mein consolidate karta hai — DRY principle enforce karna.
+
+Done looks like
+Rider App aur Admin mein koi duplicate Zod schema ya TypeScript type nahi jo lib/api-zod ya lib/db mein already exist kare
+Phone/CNIC validation lib/phone-utils se aata hai dono jagah — local copy nahi
+JWT/permission helpers lib/auth-utils se aate hain dono jagah
+lib/api-zod mein rider profile, platform config, aur KYC response ke Zod schemas available hain aur dono apps use karte hain
+Koi "inline" type definition nahi jo existing shared type ko duplicate kare
+pnpm build saare packages par cleanly pass karta hai
+Out of scope
+New features banana
+Theming ya UI changes
+Backend routes restructure
+Steps
+Duplication audit — Admin (apps/admin/src) aur Rider (apps/rider-app/src) mein grep karo locally defined types aur Zod schemas ke liye jo lib/ mein already exist karte hain (e.g., rider profile type, KYC status enum, phone validator regex). Ek complete list banao.
+
+lib/api-zod mein missing schemas add karo — Rider /me response, platform config response, aur KYC document types ke liye Zod schemas lib/api-zod mein add karo agar missing hain. TypeScript types export karo inse.
+
+Admin mein local duplicates replace karo — Admin app mein paye gaye duplicate types/schemas ko @workspace/api-zod imports se replace karo. Local files delete karo.
+
+Rider App mein local duplicates replace karo — Rider App mein paye gaye duplicate validators aur types ko @workspace/phone-utils, @workspace/api-zod, @workspace/auth-utils imports se replace karo.
+
+Build verification — pnpm --filter @workspace/api-zod build, pnpm --filter @workspace/admin build, pnpm --filter @workspace/rider-app build run karo aur TypeScript errors fix karo. Ensure koi circular dependency na ho.
+
+Relevant files
+lib/api-zod/
+lib/phone-utils/
+lib/auth-utils/
+apps/admin/src/
+apps/rider-app/src/

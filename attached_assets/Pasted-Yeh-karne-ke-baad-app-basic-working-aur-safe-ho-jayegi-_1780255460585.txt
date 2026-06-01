@@ -1,0 +1,212 @@
+Yeh karne ke baad app basic working aur safe ho jayegi.
+
+❗ Fix 1: Feature Gate Enforce Karein (Frontend + Backend)
+Current Code (buggy):
+
+typescript
+// apps/rider-app/src/lib/featureGate.ts
+export function checkFeatureGate(feature: string, user: Rider): boolean {
+  if (feature === 'accept_ride') {
+    return user.phoneVerified; // sirf phone check, baqi sab ignore
+  }
+  return true; // undefined features ke liye true – galat
+}
+Fix:
+Puri validation add karo aur backend middleware banao.
+
+Frontend fix (featureGate.ts):
+
+typescript
+export function checkFeatureGate(feature: string, user: Rider): boolean {
+  if (!user) return false;
+  
+  switch (feature) {
+    case 'accept_ride':
+      return (
+        user.phoneVerified === true &&
+        user.emailVerified === true && // email bhi verified ho
+        user.approvalStatus === 'approved' && // admin ne approve kiya ho
+        (user.walletBalance ?? 0) >= (user.platformMinBalance ?? 50) // dynamic min balance
+      );
+    case 'wallet_withdraw':
+      return user.emailVerified && user.approvalStatus === 'approved';
+    // aur features add kar sakte hain
+    default:
+      return false; // unknown feature ko false
+  }
+}
+Backend Middleware (api-server):
+Har endpoint par middleware lagao jo featureGate check kare.
+
+typescript
+// api-server/src/middleware/featureGate.ts
+import { db } from '@ajkmart/db';
+
+export const requireFeatureGate = (feature: string) => {
+  return async (req, res, next) => {
+    const riderId = req.user?.id; // auth middleware se
+    const rider = await db.rider.findUnique({ where: { id: riderId } });
+    
+    if (!rider) return res.status(403).json({ code: 'RIDER_NOT_FOUND' });
+
+    const allowed = checkFeatureGateForBackend(feature, rider);
+    if (!allowed) {
+      return res.status(403).json({ 
+        code: 'FEATURE_NOT_ALLOWED',
+        reason: getBlockReason(feature, rider) // e.g., "Phone not verified"
+      });
+    }
+    next();
+  };
+};
+
+// Har route mein use karo:
+router.post('/rides/accept', requireFeatureGate('accept_ride'), acceptRideHandler);
+❗ Fix 2: Admin Approval Workflow Banao
+Yeh sabse bada missing piece hai. Admin panel mein Riders Management section banana hai.
+
+Steps:
+
+Backend endpoints banao:
+
+GET /api/admin/riders?status=pending → pending riders list
+
+PATCH /api/admin/riders/:id/approve → approve karein
+
+PATCH /api/admin/riders/:id/reject → reject with reason
+
+GET /api/admin/riders/:id/documents → uploaded documents dekhne ke liye
+
+Database schema check (lib/db):
+
+rider table mein approvalStatus field (enum: pending_review, approved, rejected)
+
+documents table already hai, bas link karna hai.
+
+Admin UI (apps/admin):
+
+New page: RidersManagement.tsx
+
+Table list, filter by status
+
+Click on rider → document preview modal
+
+Approve/Reject buttons
+
+Rejection reason textarea
+
+Implementation ka sample:
+
+tsx
+// apps/admin/src/pages/RidersManagement.tsx
+const [riders, setRiders] = useState([]);
+const [selectedRider, setSelectedRider] = useState(null);
+
+const fetchPending = async () => {
+  const res = await api.get('/admin/riders?status=pending_review');
+  setRiders(res.data);
+};
+
+const approveRider = async (id) => {
+  await api.patch(`/admin/riders/${id}/approve`);
+  fetchPending(); // refresh
+};
+❗ Fix 3: Offline Queue Ko Reliable Banao
+Current code:
+
+typescript
+// queueManager.ts mein flush():
+async flush() {
+  const items = await this.getAll();
+  for (const item of items) {
+    try {
+      await this.processItem(item); // process but result ignore?
+      await this.removeItem(item.id);
+    } catch (e) {
+      // ❌ silently skip, item remove nahi hota? Actually code mein dekhna padega
+    }
+  }
+}
+Fix: Har item ka response check karo, agar fail ho to retry logic ya error report karo, aur tab hi remove karo jab success ho.
+
+typescript
+async flush() {
+  const items = await this.getAll();
+  const failedItems = [];
+  for (const item of items) {
+    try {
+      const response = await this.processItem(item);
+      if (response.ok || response.status < 400) {
+        await this.removeItem(item.id);
+      } else {
+        failedItems.push({ item, status: response.status });
+        // maybe retry count badhao, if max retries reached, mark as failed
+      }
+    } catch (networkError) {
+      failedItems.push({ item, error: 'NETWORK_ERROR' });
+    }
+  }
+  if (failedItems.length > 0) {
+    reportErrorToAdmin('OFFLINE_QUEUE_FAILURES', failedItems); // new
+  }
+}
+Also retry with backoff implement karo (e.g., 1s, 2s, 5s).
+
+❗ Fix 4: Error Reporting Admin Ko Bhejo
+error-reporter.ts ko backend API se connect karo.
+
+typescript
+// apps/rider-app/src/lib/error-reporter.ts
+import { apiClient } from './api';
+
+export async function reportError(error: Error, context?: any) {
+  // Local log (existing)
+  console.error(error, context);
+  
+  // Send to admin server
+  try {
+    await apiClient.post('/api/admin/error-reports', {
+      message: error.message,
+      stack: error.stack,
+      context: JSON.stringify(context),
+      timestamp: new Date().toISOString(),
+      userId: getCurrentUserId(),
+    });
+  } catch (e) {
+    // agar ye bhi fail ho to silently ignore, but log locally
+  }
+}
+Backend endpoint: POST /api/admin/error-reports (admin dashboard mein list view banao).
+
+❗ Fix 5: GPS Validation Strict Karo
+apps/rider-app/src/lib/gps/validation.ts mein:
+
+Current:
+
+typescript
+export function isValidCoordinate(lat: number, lng: number): boolean {
+  return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+}
+Fix:
+
+typescript
+// Pakistan boundary (rough)
+const PAKISTAN_BOUNDS = {
+  north: 37.0841,
+  south: 23.7695,
+  east: 77.8375,
+  west: 60.8722,
+};
+
+export function isValidCoordinate(lat: number, lng: number): boolean {
+  // basic range
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return false;
+  // reject 0,0
+  if (lat === 0 && lng === 0) return false;
+  // geofence check
+  if (lat < PAKISTAN_BOUNDS.south || lat > PAKISTAN_BOUNDS.north) return false;
+  if (lng < PAKISTAN_BOUNDS.west || lng > PAKISTAN_BOUNDS.east) return false;
+  return true;
+}
+Aur location send karte waqt validation fail hone par user ko warning dikhao, location update nahi bhejo.
+

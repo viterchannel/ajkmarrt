@@ -1,0 +1,40 @@
+Rider App i18n & Accessibility — Complete
+What & Why
+The Rider App has partial i18n and accessibility coverage. Several screens still have hardcoded English strings, the FontSizeProvider is missing from the app root, ARIA labels are absent on login inputs and the base button component, and secondary text colors fail WCAG AA contrast ratios on the dark theme. This task closes all those gaps so the app is fully accessible and properly internationalised.
+
+Done looks like
+Every user-visible string in the Rider App (including error messages and VanDriver labels) goes through the T() i18n function — no hardcoded English strings remain
+Missing translation keys are added to all three locale files (en.ts, ur.ts, roman.ts)
+FontSizeProvider wraps the App.tsx root provider tree alongside the existing providers, and font scaling (small / medium / large) applies correctly throughout the app
+All inputs, buttons, and interactive icons on LoginScreen.tsx carry aria-label or aria-labelledby attributes
+The base button.tsx component accepts and forwards an aria-label prop; a lint/grep check finds no remaining unlabelled interactive elements across the pages directory
+Secondary text token textSecondary is raised from #A0A0A0 to #B0B0B0 (≥ 4.5:1 against #0A0A0A/#1A1A1A); the inline #6B7280 usages in App.tsx are replaced with the corrected token
+Profile Settings language tabs inactive colour updated to match the new token
+Out of scope
+Admin Panel, Vendor App, or mobile (Expo) i18n/accessibility changes
+Adding new translation keys beyond what is already used or directly needed for the strings being fixed
+Automated WCAG audit scripts or CI checks
+Steps
+Fix hardcoded strings — App.tsx — Replace the "Secure Storage Unavailable", "Login credentials cannot be stored safely…", and "Couldn't reach server…" strings with T() calls and add corresponding keys to all three locale files.
+
+Fix hardcoded strings — VanDriver.tsx — Wrap "Rs", "Scheduled", payment-method labels, and other raw strings through T() calls; add keys to all three locale files.
+
+Add FontSizeProvider to App.tsx — Import FontSizeProvider from the shared context, add it to the root provider tree in App.tsx (wrap inside ThemeProvider, outside page routes), and verify dynamic font scaling works at small/medium/large settings.
+
+ARIA labels — LoginScreen.tsx — Add descriptive aria-label attributes to the phone-number input, OTP input, and all action buttons (submit, dismiss-role-error, resend OTP) on LoginScreen.tsx.
+
+ARIA labels — base button.tsx — Accept an explicit aria-label prop in the base button component and forward it to the underlying element; audit all icon-only and ambiguous buttons in the pages/ directory and add missing labels.
+
+Fix contrast — useThemeTokens.ts & App.tsx — Change textSecondary from #A0A0A0 to #B0B0B0 in useThemeTokens.ts; replace the two #6B7280 inline usages in App.tsx with the textSecondary token; update the inactive-tab colour in ProfileSettings.tsx to use the same token.
+
+Relevant files
+extracted/12345678/artifacts/rider-app/src/App.tsx
+extracted/12345678/artifacts/rider-app/src/pages/VanDriver.tsx
+extracted/12345678/artifacts/rider-app/src/lib/auth/LoginScreen.tsx
+extracted/12345678/artifacts/rider-app/src/components/ui/button.tsx
+extracted/12345678/artifacts/rider-app/src/lib/useThemeTokens.ts
+extracted/12345678/artifacts/rider-app/src/components/profile/ProfileSettings.tsx
+extracted/12345678/lib/i18n/src/locales/en.ts
+extracted/12345678/lib/i18n/src/locales/ur.ts
+extracted/12345678/lib/i18n/src/locales/roman.ts
+extracted/12345678/artifacts/ajkmart/context/FontSizeContext.tsx

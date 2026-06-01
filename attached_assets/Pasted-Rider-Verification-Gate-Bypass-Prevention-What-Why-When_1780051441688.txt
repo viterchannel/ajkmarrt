@@ -1,0 +1,36 @@
+Rider Verification Gate — Bypass Prevention
+What & Why
+When the server returns a 403/blocked response, VerificationGateModal appears but is fully dismissible. A rider can tap "Dismiss" (or the backdrop) and then navigate to another route — the gate state lives locally in each page and resets on unmount, so the requirement is silently dropped. This closes that gap by lifting the blocked state to the app shell and re-asserting it on every navigation to a protected route.
+
+Done looks like
+After any 403/feature-blocked response, the VerificationGateModal re-appears automatically whenever the rider navigates to a protected route (/, /active, /earnings, /history, /wallet, /chat, /reviews, /penalty-history) while verifications are still incomplete
+A persistent amber sticky banner is visible on all protected pages whenever there are pending verification items; it cannot be dismissed — it disappears only when availableFeatures confirms all features are accessible (i.e. after the rider completes the required steps and the query refreshes)
+Completing the required verification steps (phone, email, documents) clears both the modal and the banner automatically — no manual reload required
+The dismissible prop on VerificationGateModal is set to false when shown from the app-level gate (rider must navigate to Profile, not just close the modal)
+Out of scope
+Changes to the server-side 403 logic or the availableFeatures API
+KYC status banners (already handled separately by kycBanner in App.tsx)
+The IdCardGateModal (hard-blocks the app — already non-dismissible)
+Wallet.tsx local VerificationGateModal instance (can remain as-is for its own feature checks, but should also emit the shared event)
+Steps
+Create a VerificationGateContext — Add a small React context (VerificationGateContext) in a new file under src/lib/. It exposes two values: blockedVerifications: string[] (the missing items from the last 403 gate trigger) and setBlockedVerifications: (items: string[]) => void. The setter also persists the list to sessionStorage so it survives hot-reloads in dev. A separate clearBlockedVerifications helper wipes both state and sessionStorage.
+
+Wire the context into AppRoutes — Wrap the existing authenticated route tree in App.tsx with a VerificationGateProvider. Read any persisted blockedVerifications from sessionStorage as the initial state so the gate survives same-tab refreshes.
+
+Replace local gate state in Home.tsx — Remove the local showFeatureBlockModal / blockedMissing / blockedFallbackMsg / blockedReason state quartet. Replace showFeatureBlocked(...) calls with setBlockedVerifications(missing) from the context. The VerificationGateModal is no longer rendered inside Home.tsx.
+
+Replace local gate state in Wallet.tsx — Same as step 3 for any VerificationGateModal usage inside Wallet.tsx.
+
+Render a persistent app-level VerificationGateModal — In AppRoutes (inside App.tsx), render <VerificationGateModal> when blockedVerifications.length > 0. Pass dismissible={false} so the rider cannot close it without navigating to Profile. The onClose handler navigates to /profile; after navigation the modal stays visible (the context state persists) but the rider is now on the page to act. The modal clears automatically once availableFeatures is re-fetched and all features show accessible: true — wire this by calling clearBlockedVerifications() inside a useEffect that watches availableFeatures in AppRoutes (pass it down via context or a separate effect in the component that owns the query).
+
+Re-assert the gate on route change — In AppRoutes, use wouter's useLocation to watch for route changes. When the rider navigates to a protected route and blockedVerifications.length > 0, ensure the modal is visible (it already will be since the state persists, but this step covers any edge case where the modal was hidden without clearing state).
+
+Add a persistent sticky banner — In the authenticated return branch of AppRoutes (the main <div> that wraps the route tree), render a non-dismissible amber banner whenever blockedVerifications.length > 0. Style it consistently with the existing isLimited banner (same amber strip). It shows the count of pending items and a "Complete Verification" link to /profile. This gives riders a constant visual reminder even if the modal is somehow bypassed.
+
+Auto-clear when verifications are satisfied — In AppRoutes (or wherever availableFeatures is accessible), add a useEffect that calls clearBlockedVerifications() when all features in availableFeatures.features have accessible: true. This ensures the banner and modal disappear immediately after the rider completes verification, without needing a page reload.
+
+Relevant files
+extracted/12345678/artifacts/rider-app/src/App.tsx:1-2364
+extracted/12345678/artifacts/rider-app/src/pages/Home.tsx:92-98,1017-1037,1495-1550
+extracted/12345678/artifacts/rider-app/src/components/VerificationGateModal.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Wallet.tsx

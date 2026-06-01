@@ -1,0 +1,1 @@
+{"version":3,"file":"walletSendRequest.d.ts","sourceRoot":"","sources":["../../../src/generated/types/walletSendRequest.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,iBAAiB;IAChC,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,MAAM,EAAE,MAAM,CAAC;IACf,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}

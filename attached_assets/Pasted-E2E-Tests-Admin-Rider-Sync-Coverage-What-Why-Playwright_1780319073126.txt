@@ -1,0 +1,38 @@
+E2E Tests: Admin → Rider Sync Coverage
+What & Why
+Playwright framework aur extensive test suite already exist karta hai (/e2e directory, playwright.config.ts, existing e2e/rider/ aur e2e/admin/ specs). Lekin Admin→Rider cross-app sync flows ke liye koi test nahi hai — jaise Admin se rider verify karna aur Rider App par effect check karna. Yeh task in critical sync flows ke liye nayi Playwright specs add karta hai existing infrastructure par.
+
+Done looks like
+e2e/admin-rider-sync/ mein 3 nayi spec files hain:
+verification-sync.spec.ts: Admin rider verify kare → Rider App /me response mein phoneVerified: true reflect ho
+feature-toggle-sync.spec.ts: Admin config se feature toggle OFF kare → Rider App mein feature hidden ho
+block-suspend-sync.spec.ts: Admin rider block kare → Rider App par suspended screen dikhti ho
+pnpm e2e se yeh nayi specs existing suite ke saath run hoti hain
+Tests existing e2e/helpers/mock-auth.ts aur e2e/state/admin-auth.json auth setup reuse karte hain
+Failure par screenshots e2e/test-results/ mein save hoti hain
+Out of scope
+Playwright framework setup (already exist karta hai)
+Existing specs modify karna
+Mobile (Expo) app testing
+Load/performance testing
+Steps
+Existing helpers aur auth setup samjho — e2e/helpers/mock-auth.ts, e2e/setup/admin-auth.setup.ts, aur existing e2e/admin/rides.spec.ts read karo patterns samajhne ke liye. Note karo ke rider test auth kaise mock/set hota hai.
+
+e2e/admin-rider-sync/ directory banao — Shared syncHelpers.ts file banao jo: (a) API call se test rider seed kare, (b) Admin UI se rider dhunde, (c) cleanup utilities provide kare. Existing adminFetch pattern follow karo.
+
+Verification sync spec — verification-sync.spec.ts: Admin login karo (saved auth state se), rider list page par jao, test rider ko verify karo UI se, phir rider API /api/rider/me call karo aur assert karo phoneVerified === true. Rider App web build mein profile page navigate karo aur verified badge assert karo.
+
+Feature toggle sync spec — feature-toggle-sync.spec.ts: Admin Configuration page par Instant Payout toggle OFF karo. /api/platform-config response fetch karo aur assert karo flag false hai. Rider App web mein earnings/payout section navigate karo aur Instant Payout option absent hai.
+
+Block/Suspend sync spec — block-suspend-sync.spec.ts: Admin se test rider ko "Temporarily Blocked" karo. Rider App web par us rider ke credentials se login karo aur assert karo ke suspended/blocked screen render hoti hai (home screen nahi).
+
+playwright.config.ts mein admin-rider-sync project add karo — Existing admin project par depend kare (auth setup ke liye), parallel mein rider server bhi run ho. e2e/admin-rider-sync/**/*.spec.ts glob use karo.
+
+Relevant files
+playwright.config.ts
+e2e/playwright.config.ts
+e2e/helpers/mock-auth.ts
+e2e/setup/admin-auth.setup.ts
+e2e/rider/login.spec.ts
+e2e/admin/rides.spec.ts
+e2e/rider/profile.spec.ts

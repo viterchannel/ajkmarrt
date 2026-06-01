@@ -1,0 +1,24 @@
+Mujhe mere Admin Dashboard aur Rider Module ka ek complete Full-Stack End-to-End (E2E) Audit aur Fix chahiye. Ek critical bug hai jise solve karna hai, aur sath hi poore system ko fully functional banana hai.
+
+CRITICAL BUG TO FIX:
+- Admin ne jab Rider ka Phone Number aur Email verify kar diya hai (Database/Admin UI mein verified show ho raha hai), tab bhi Rider Screen par "Phone number not verified" ka option/error status nazar aa raha hai. 
+
+COMPLETE FULL-STACK AUDIT REQUIREMENTS:
+
+1. BUG ANALYSIS & DATABASE CHECK:
+   - Check karo ke Admin jab status 'Verified' karta hai, toh Database (SQL/NoSQL) mein Rider table/collection ke fields (`is_phone_verified`, `phone_verified_at`, etc.) sahi tarah update ho rahe hain ya nahi.
+   - Frontend jo API call kar raha hai Rider screen ke liye, check karo ke kya woh backend se latest updated database state fetch kar rahi hai ya purana cached data dikha rahi hai.
+
+2. ADMIN SIDE RIDER MODULE AUDIT:
+   - Admin panel ke andar jitne bhi Rider se related modules aur functions hain (Rider List, Verification Toggle, Document Approval, Block/Unblock, Wallet/Earnings), un sab ko investigate karo.
+   - Make sure karo ke Admin panel se trigger hone wala har action backend aur database se properly linked ho.
+
+3. RIDER SIDE MODULE AUDIT & MISSING FEATURES:
+   - Rider screen aur uske saare options ko thoroughly audit karo. 
+   - Check karo ke Admin dashboard ke features aur Rider app ke features ke darmiyan kya gap hai? Jo features Admin side par hain par Rider side par missing hain (ya broken hain), unhain dhoondho.
+
+4. FULL-STACK AUTO-FIX & E2E TESTING:
+   - Jo bhi bugs, missing API routes, ya frontend state synchronization ke maslay milen, unhain 'apps/admin/' aur Rider files mein khud ba khud code modify kar ke FIX karo.
+   - Fix karne ke baad Playwright/Cypress ya built-in Replit server testing ke zariye user flow ko test karo taake confirm ho sake ke dono screens fully sync hain aur kuch bhi miss nahi ho raha.
+
+Mujhe step-by-step report do ke tum ne kya bugs dhoondhe aur unhain kaise full-stack fix kiya.

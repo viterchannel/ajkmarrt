@@ -1,0 +1,30 @@
+ Rider KYC — Close 3 Remaining Gaps
+What & Why
+The Rider App Profile & Verification (KYC) flow is mostly complete, but three spec requirements are not yet met:
+
+Vehicle Registration doc missing from KYC submission — The rider can upload their registration doc via the "Vehicle" tab (saved to regDocUrl on the profile), but it is never appended to the POST /verify/documents FormData, so the admin never sees it in the KYC queue.
+No push notification on KYC approve / reject — The sendPushToUser utility in src/lib/webpush.ts is fully ready, but kyc-queue.ts never calls it after approving or rejecting a rider's documents.
+Upload errors are toasts, not inline — When a file exceeds the size limit or has an invalid format, the error appears as a floating toast. The spec requires an inline error message rendered directly below (or on) the upload widget.
+Done looks like
+When a rider submits KYC documents, their Vehicle Registration photo is included in the multipart upload and saved alongside CNIC front/back and licence.
+When an admin approves a rider's KYC from the Admin Panel, the rider instantly receives a push notification: "KYC Approved — Your documents have been verified. You can now accept orders."
+When an admin rejects a rider's KYC (with or without a reason), the rider receives a push notification: "KYC Rejected — Please resubmit your documents. "
+When a rider picks a document file that is the wrong format or too large, an inline red error message appears directly below that upload slot (not a floating toast). The toast is removed for these two specific validation errors.
+Out of scope
+Changes to the admin KYC review UI
+CNIC auto-verification from registration (already done)
+OTP verification flows (already complete)
+Changing the bonus amounts or verification bonus logic
+Steps
+Add Vehicle Registration to KYC FormData — In Profile.tsx, add a regDocFile / regDocPreview state pair (mirroring the existing vehiclePhotoFile pattern). Add a "Vehicle Registration" upload slot in the Verification Hub document section. In submitVerifyDocuments, append regDoc to the FormData. In verification.ts, add regDoc as an accepted multer field, save it with saveDocumentFile, and persist the URL to regDocUrl on the user record alongside the other documents.
+
+Wire push notifications in kyc-queue.ts — Import sendPushToUser from ../../lib/webpush.js in kyc-queue.ts. After the DB update in the approve route, call sendPushToUser(userId, { title: "KYC Approved", body: "Your documents have been verified. You can now accept orders.", icon: "checkmark-circle-outline", tag: "kyc" }) (non-blocking, catch errors). After the DB update in the reject route, call sendPushToUser(userId, { title: "KYC Rejected", body: reason ? \Please resubmit your documents. ${reason}` : "Please resubmit your documents.", icon: "close-circle-outline", tag: "kyc" })` (non-blocking, catch errors).
+
+Convert upload validation errors to inline — In Profile.tsx, add a docUploadError state map keyed by document kind (cnic_front | cnic_back | license | regDoc | vehiclePhoto). Replace the showToast calls for size and format errors inside handleDocUpload (and the verify-section file picker onChange handlers) with setDocUploadError(kind, message). Render the error string as a small red <p> directly beneath each upload button/slot. Clear the error when the user picks a new file or the component unmounts.
+
+Relevant files
+extracted/12345678/artifacts/rider-app/src/pages/Profile.tsx
+extracted/12345678/artifacts/api-server/src/routes/verification.ts:329-436
+extracted/12345678/artifacts/api-server/src/routes/admin/kyc-queue.ts
+extracted/12345678/artifacts/api-server/src/lib/webpush.ts
+extracted/12345678/artifacts/api-server/src/services/verificationBonus.ts

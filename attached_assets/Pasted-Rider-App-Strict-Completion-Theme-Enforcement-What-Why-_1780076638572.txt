@@ -1,0 +1,40 @@
+Rider App — Strict Completion & Theme Enforcement
+What & Why
+The Rider App is largely built but has three remaining gaps that must be closed to call it strictly complete:
+
+Several files use hardcoded hex color literals instead of the CSS token references already defined in index.css — breaking the single-source-of-truth theme system.
+There is no Help/FAQ page — riders have no self-service support reference.
+There is no unified Settings page — settings are scattered across ProfileSettings (component, not a page) and SecuritySettings.
+Do NOT redesign or modify the visual appearance of: GuestLanding.tsx, RegisterWizard.tsx, LoginScreen.tsx, Home.tsx, Profile.tsx, Active.tsx, Earnings.tsx, Chat.tsx.
+
+Done looks like
+No file under src/ contains raw hex literals (#FFD700, #0A0A0A, #1A1A1A, #2A2A2A, #4CAF50, #FF9800, #F44336, #A0A0A0, #FFFFFF, #FFC107) — all resolved via var(--color-*) or the Tailwind token classes.
+A Help.tsx page exists at /help route, styled with the existing theme tokens, containing: FAQs for common rider questions, an "open support chat" button that navigates to /chat, and a contact/emergency info section.
+A Settings.tsx page exists at /settings route, styled with the existing theme tokens, acting as a hub that links to: SecuritySettings (/settings/security), LoginHistory (/settings/login-history), Notifications preferences, and Language/App preferences toggle.
+Both /help and /settings are reachable from the Profile tab (Profile.tsx already has a settings/help list — wire them up there).
+The Active.tsx page file is given an additional named export alias or a thin re-export file ActiveRides.tsx so the canonical name matches the spec.
+Out of scope
+Redesigning or refactoring any of the eight protected pages listed above.
+Adding new backend API endpoints (Help/Settings use existing endpoints where needed; static FAQ content is fine).
+Changing any color values — only the references are being standardised.
+Steps
+Token audit & replace — Grep all src/ files for raw hex literals matching the theme palette. Replace every occurrence with the corresponding CSS variable (var(--color-brand), var(--color-surface), etc.) or the equivalent Tailwind utility class. Priority files: Onboarding.tsx, App.tsx (overlays/modals), Home.tsx, Wallet.tsx, History.tsx.
+
+Help.tsx page — Create src/pages/Help.tsx. Dark-themed page using existing token classes. Sections: Accordion FAQ (5–8 common rider questions), a prominent "Chat with Support" button routing to /chat, and a static emergency contact block. Add route /help in App.tsx.
+
+Settings.tsx page — Create src/pages/Settings.tsx. Simple list-based hub page linking to /settings/security, /settings/login-history, a notifications toggle (call existing /api/rider/notification-preferences if available, else store in localStorage), and a language selector (hook into existing i18n if available). Add route /settings in App.tsx.
+
+Wire Profile tab — In Profile.tsx, ensure the "Settings" and "Help" list items navigate to /settings and /help respectively (they may already exist as placeholder items — just fix the href/onClick targets).
+
+ActiveRides alias — Add a thin re-export file src/pages/ActiveRides.tsx that simply re-exports the default from ./Active so both import paths work.
+
+Relevant files
+extracted/12345678/artifacts/rider-app/src/index.css
+extracted/12345678/artifacts/rider-app/src/App.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Onboarding.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Home.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Wallet.tsx
+extracted/12345678/artifacts/rider-app/src/pages/History.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Profile.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Active.tsx
+extracted/12345678/artifacts/rider-app/src/pages/Chat.tsx

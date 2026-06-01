@@ -1,0 +1,1 @@
+import{r as e}from"./vendor-react-DERYYwDB.js";function c(t,f){const n=e.useRef(t);n.current=t,e.useEffect(()=>{const o=new AbortController,r=n.current(o.signal);return()=>{o.abort(),typeof r=="function"&&r()}},f)}function s(t){return t?t instanceof DOMException&&t.name==="AbortError"?!0:typeof t=="object"&&t!=null&&"name"in t?t.name==="AbortError":!1:!1}export{s as i,c as u};

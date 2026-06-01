@@ -1,0 +1,115 @@
+❗ Fix 6: Code Audit for Duplicate Import Issues
+Global search karo from '.. patterns ko, ensure all imports correct.
+
+ESLint rule: import/no-duplicates enable karo.
+
+Check GoalSection.tsx already fixed but same type ki mistakes doosre components mein check karo.
+
+❗ Fix 7: Socket Connection Robust Banao
+apps/rider-app/src/lib/socket.tsx mein:
+
+Connection options: reconnection: true, reconnectionAttempts: Infinity, reconnectionDelay: 1000, reconnectionDelayMax: 10000.
+
+Event listeners ko ek useEffect mein register karo, cleanup mein socket.off karo.
+
+Connection error handling: agar token expire ho to auto-refresh and reconnect.
+
+Heartbeat mechanism banao (server side bhi) to detect dead connections.
+
+❗ Fix 8: GPS Battery Drain Optimize Karo
+apps/rider-app/src/lib/gpsQueue.ts:
+
+Jab rider online toggle off ho, GPS collection band karo.
+
+Idle detection: agar last 2 minute mein location 10 meter se kam change hui, to ping interval 30s kar do.
+
+Capacitor Geofencing API use karo jab possible, background tracking kam aggressive rakho.
+
+Sample modification:
+
+typescript
+let lastPosition = null;
+let idle = false;
+
+function onPositionUpdate(position) {
+  if (lastPosition) {
+    const dist = haversine(lastPosition, position);
+    idle = dist < 0.01; // 10m
+  }
+  lastPosition = position;
+  // adjust interval
+  gpsInterval = idle ? 30000 : 10000;
+}
+❗ Fix 9: Rate Limiting Lagao (Backend)
+api-server mein express-rate-limit package use karo.
+
+javascript
+import rateLimit from 'express-rate-limit';
+
+const acceptRideLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // max 10 requests per minute per IP
+  message: { code: 'RATE_LIMIT_EXCEEDED' }
+});
+app.use('/api/rides/accept', acceptRideLimiter);
+Auth walay endpoints ke liye bhi rate limit lagao (login, OTP).
+
+❗ Fix 10: Error Messages Specific Banao
+Backend har fail case ke liye code field bheje jaise:
+
+PHONE_NOT_VERIFIED
+
+INSUFFICIENT_BALANCE
+
+RIDER_NOT_APPROVED
+
+Frontend in codes ko map kare aur friendly message dikhaye. api.ts mein interceptor add karein:
+
+typescript
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 403) {
+      const code = error.response.data?.code;
+      if (code === 'PHONE_NOT_VERIFIED') {
+        toast.error('Please verify your phone number first.');
+      } // etc.
+    }
+    return Promise.reject(error);
+  }
+);
+❗ Fix 11: Biometric Auth Complete Integration
+biometric.ts mein Capacitor Biometric plugin use karein.
+
+Settings page se enable/disable option.
+
+Login flow: agar biometric enabled hai to phone unlock ke baad auto-login.
+
+Backend par biometric public key store karein? (Usually biometric is device-local, so just ensure user has set it up as an extra layer on the device.)
+
+Simple flow:
+
+typescript
+async function authenticateWithBiometrics() {
+  const result = await BiometricAuth.verifyIdentity('Unlock with biometrics');
+  if (result.verified) {
+    // proceed
+  }
+}
+❗ Fix 12: Memory Leaks Fix Karo
+Har component jo socket ya event listeners use karta hai, cleanup return karo:
+
+tsx
+useEffect(() => {
+  const handleEvent = (data) => { ... };
+  socket.on('ride_request', handleEvent);
+  return () => {
+    socket.off('ride_request', handleEvent);
+  };
+}, [socket]);
+Also global event listeners (backbutton, etc.) ke liye bhi cleanup karo.
+
+❗ Fix 13: Chat History Persistence
+Backend mein table banao rider_chat_messages (columns: id, rider_id, message, sender, timestamp).
+API: GET /api/chat/history (paginated), POST /api/chat/send.
+Socket.IO se message aaye to usey database mein save karo (server side), aur history API se load karo jab app open ho.

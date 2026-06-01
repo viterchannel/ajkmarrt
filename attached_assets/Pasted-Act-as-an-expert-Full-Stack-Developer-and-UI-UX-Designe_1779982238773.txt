@@ -1,0 +1,25 @@
+Act as an expert Full-Stack Developer and UI/UX Designer. I have an existing application where I want to upgrade and polish the City/Area selection flow and OTP screen for both the RIDER and VENDOR flows. Do not add completely new features outside this scope; only improve, fix bugs, and polish the existing logic as per these exact requirements:
+
+1. Dynamic City & Area Dropdown (Rider & Vendor Forms):
+   - Replace or update the current City and Area input fields with a dynamic Dropdown.
+   - This dropdown must fetch data directly from the Admin Panel's database.
+   - Add a "Custom Text / Other" option at the bottom of the dropdown. If a user's city/area is not listed, they should be able to type it manually in a clean text input field that appears dynamically.
+
+2. Backend Logic, AI Spelling Correction & Admin Approval:
+   - When a user submits a custom City/Area:
+     a) Before saving, pass the text through our integrated AI API to check for spelling mistakes and automatically correct the name/spelling to the official standard format.
+     b) Check if this corrected name ALREADY exists in the database. If it exists, auto-skip creating a duplicate and link the user to the existing city/area.
+     c) If it is a new unique name, save it as a "Temporary" status in the database.
+     d) Immediately trigger a real-time notification to the Admin Panel about this new custom city/area request.
+     e) Admin should have the ability to review and approve it to make it "Permanent" in the dropdown list.
+
+3. OTP Screen UI Design Polish:
+   - The current OTP input UI is plain white and looks unpolished. Redesign it to look modern, premium, and clean.
+   - Use high-quality components (like Shadcn-style or polished Tailwind inputs) with separate boxes for each digit, smooth auto-focus on the next box, active border highlights, and clear error states.
+   - Ensure it includes a subtle loading spinner during verification.
+
+4. Form Entry Design Optimization:
+   - Review the entire form entry layout for both Rider and Vendor registration.
+   - Without removing any existing fields, optimize the spacing, alignment, inputs, and buttons to make the form look professional, easy to read, and frictionless to fill out.
+
+Please implement these UI polishes and backend logic enhancements step-by-step for both the Rider and Vendor apps. Ensure zero breakdown of existing features and test for edge cases before finalizing.

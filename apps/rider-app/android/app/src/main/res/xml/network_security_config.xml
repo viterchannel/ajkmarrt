@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Network Security Configuration — AJKMart Rider (BASE)
+  ==============================================================
+  This base config applies to ALL build variants unless overridden by a
+  variant-specific config in src/debug/ or src/release/.
+
+  - Disables cleartext (HTTP) traffic globally.
+  - Trusts the system CA store only (no user-installed CAs in production).
+  - NO certificate pins are set here — pins live in the release-variant config
+    (src/release/res/xml/network_security_config.xml) so debug and CI builds
+    can connect to the API without placeholder-hash failures.
+
+  RELEASE BUILD SETUP
+  ───────────────────
+  Before publishing to Google Play:
+    1. Obtain the SHA-256 SPKI fingerprint of your production API certificate:
+         openssl s_client -connect api.ajkmart.com:443 -servername api.ajkmart.com \
+           </dev/null 2>/dev/null | openssl x509 -noout -pubkey \
+           | openssl pkey -pubin -outform der \
+           | openssl dgst -sha256 -binary | base64
+
+    2. Put the resulting base64 string (and at least one backup pin) into
+         android/app/src/release/res/xml/network_security_config.xml
+       (see that file for the template).
+
+    3. The release build Gradle task automatically picks up src/release/ resources
+       and overlays them on top of src/main/ — no Gradle changes needed.
+-->
+<network-security-config>
+
+  <!-- Default: trust system CAs, no cleartext -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </base-config>
+
+</network-security-config>

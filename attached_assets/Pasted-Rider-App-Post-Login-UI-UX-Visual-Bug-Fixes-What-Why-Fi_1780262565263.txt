@@ -1,0 +1,76 @@
+Rider App Post-Login UI/UX Visual Bug Fixes
+What & Why
+Fix 22 confirmed visual and UX bugs across all post-login Rider App pages — Wallet, Earnings, Profile, Notifications, Settings, History, and the Bottom Navigation bar. Bugs range from critical light-colored backgrounds showing as white patches inside the dark theme, misleading red colors on non-error values, sub-standard touch targets, and unreadable micro-text. All fixes are UI-only; no API or business logic changes.
+
+Done looks like
+No light-colored (purple-50, gray-50, gray-100) backgrounds appear inside dark-theme cards — all replaced with dark equivalents
+totalWithdrawn in Wallet is shown in neutral white/muted color instead of red (text-error)
+Wallet loyalty transaction icon uses a dark background (bg-purple-500/10) instead of bg-purple-50
+Profile Quick Actions "My Orders" card uses dark background (bg-purple-500/10 text-purple-400) instead of bg-purple-50 text-purple-600
+Profile Quick Actions "Wallet" card icon is clearly visible (no blend with background)
+Notifications empty-state icon container uses a dark background instead of from-gray-50 to-gray-100
+Notifications unread card shadow uses a dark-compatible value (no shadow-green-100/50)
+Wallet balance hide/show button is at least 40×40px (currently 32×32)
+Wallet mini stat labels (text-[9px]) raised to text-[10px] minimum for legibility
+Bottom Nav language switcher moved ABOVE the nav bar as a separate thin strip, or given larger touch targets (min-h-[28px] px-3)
+Bottom Nav tab labels raised from text-[10px] to text-xs (12px)
+Settings back button uses a standard ChevronLeft icon instead of ChevronDown rotate-90
+Notifications "View All Notifications" button text replaced with T("viewAllNotifications") i18n key
+Notifications stat grid labels raised from text-[9px] to text-[10px]
+Onboarding Skip button contrast fixed (color raised from #6B7280 to #A0A0A0)
+SELECT dropdowns in Profile form get a visible custom dropdown arrow indicator
+EarningsChart non-best-day bars use bg-white/10 instead of bg-border-dark for visibility
+Out of scope
+Auth pages (covered by Task #1)
+Any backend/API changes
+Functional/logic changes
+Admin or Vendor app
+New features
+Steps
+Fix Wallet page color bugs — In apps/rider-app/src/pages/Wallet.tsx:
+
+Change totalWithdrawn value from text-error to text-[#B0B0B0] (neutral, not alarming)
+Change loyalty transaction TxIcon background from bg-purple-50 to bg-purple-500/10 and icon color from text-purple-600 to text-purple-400
+Raise balance eye button from h-8 w-8 to h-10 w-10 (40px touch target)
+Raise mini stat labels from text-[9px] to text-[10px]
+Raise "cached" stale badge label from text-[9px] to text-[10px]
+Raise pending amount pill label from text-[9px] to text-[10px]
+Fix Profile page dark-theme color bugs — In apps/rider-app/src/pages/Profile.tsx:
+
+Change quickActions "My Orders" entry from bg-purple-50 text-purple-600 to bg-purple-500/10 text-purple-400
+Add a visible custom dropdown arrow to each SELECT element by wrapping in a relative div with a ChevronDown icon overlay (same pattern used elsewhere in the app)
+Raise form LABEL style from text-[11px] to text-xs (12px)
+Fix Notifications page dark-theme color bugs — In apps/rider-app/src/pages/Notifications.tsx:
+
+Change empty-state icon container gradient from from-gray-50 to-gray-100 to bg-border-dark (dark background)
+Remove shadow-green-100/50 from unread notification cards (replace with shadow-success/10)
+Replace hardcoded "View All Notifications" string with T("viewAllNotifications") — add the key to the i18n call (the key already exists or use T("viewAll") if available, otherwise add viewAllNotifications key)
+Raise stat grid labels from text-[9px] to text-[10px]
+Fix Earnings page chart visibility — In apps/rider-app/src/pages/Earnings.tsx / EarningsChart component:
+
+Change non-best-day bar color from bg-border-dark dark:bg-card-dark/[0.06] to bg-white/10 so bars are visible on dark background
+Fix Bottom Navigation touch targets and layout — In apps/rider-app/src/components/BottomNav.tsx:
+
+Raise tab label text from text-[10px] to text-xs (12px)
+Raise language switcher button min height and padding: change from px-2 py-0.5 to px-3 py-1 and text-[9px] to text-[10px] so touch targets reach ~28px minimum
+Move the language switcher row to sit visually separated above the tab row (already has its own div — ensure adequate pt-2 pb-1 spacing)
+Fix Settings page back button icon — In apps/rider-app/src/pages/Settings.tsx:
+
+Replace <ChevronDown size={18} className="rotate-90" /> with <ChevronLeft size={18} /> (import ChevronLeft from lucide-react)
+Do the same in apps/rider-app/src/pages/SecuritySettings.tsx and apps/rider-app/src/pages/LoginHistory.tsx if they use the same pattern
+Fix Onboarding Skip button contrast — In apps/rider-app/src/pages/Onboarding.tsx:
+
+Change Skip button inline style color: "#6B7280" to color: "#A0A0A0" for sufficient contrast
+Change description text color: "#9CA3AF" to color: "#B0B0B0"
+Change Roman transliteration color: "#6B7280" to color: "#909090"
+(Note: deeper Onboarding auth-screen fixes are in Task #1 — only skip button and text contrast here)
+Relevant files
+apps/rider-app/src/pages/Wallet.tsx
+apps/rider-app/src/pages/Profile.tsx
+apps/rider-app/src/pages/Notifications.tsx
+apps/rider-app/src/pages/Earnings.tsx
+apps/rider-app/src/pages/Settings.tsx
+apps/rider-app/src/pages/SecuritySettings.tsx
+apps/rider-app/src/pages/LoginHistory.tsx
+apps/rider-app/src/pages/Onboarding.tsx
+apps/rider-app/src/components/BottomNav.tsx

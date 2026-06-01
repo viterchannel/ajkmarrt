@@ -1,0 +1,52 @@
+Production Hardening — Verified Gaps
+What & Why
+A fresh full-stack audit (database, API, both rider frontends) confirms the app is already heavily hardened from prior passes: atomic ride acceptance, FK integrity, JWT 401 handling, IDOR guards, a global Express error handler, real-time updates with polling fallbacks, loading states, toasts, and auth route guards all exist and work.
+
+This task closes the specific, verified gaps the audit found — the remaining items that stand between the current state and "no unhandled crashes / consistent UX." It deliberately does NOT rewrite working code.
+
+Done looks like
+No API route can crash the process from an unhandled error: every Express route handler is covered by error handling, including the admin routes that currently lack it.
+The Node process survives unexpected async failures: process-level uncaughtException and unhandledRejection handlers log and (where appropriate) fail gracefully instead of dying silently.
+Security helpers that currently swallow errors and return a permissive default no longer fail "open" — an internal error denies access rather than granting it.
+Rider-facing error feedback is consistent: screens use the shared global toast/notification system rather than ad-hoc local toast timers.
+The Expo ride-status stream reconnects with exponential backoff instead of hammering the server at a fixed interval during an outage.
+Backend starts cleanly and the existing typecheck (pnpm run typecheck) passes for any files touched.
+Out of scope
+Rewriting the ride lifecycle, schema, or auth — these are already correct and must not be changed.
+Unifying the Socket.io vs SSE transports across apps (large refactor; not required for stability).
+Adding a hard foreign key from wallet_transactions to rides (system uses soft-deletes and string references intentionally; changing it is a migration risk, not a stability fix).
+Automated test coverage and the stale-fare server guard — already covered by existing tasks (see note below).
+New features (KYC review UI, document upload endpoint, PWA verification) — already covered by existing tasks.
+Steps
+Audit and close error-handling gaps in admin API routes — Find every route handler that performs DB/async work without error handling (audit confirmed admin/rides.ts, admin/launch.ts, and some admin/otp.ts endpoints). Wrap them so failures return a proper JSON error with the correct status code (4xx/5xx) instead of throwing. Prefer a small shared async-handler wrapper applied consistently rather than copy-pasted try/catch, matching the pattern already used elsewhere in the codebase.
+
+Add process-level safety nets — In the API server entrypoint, register uncaughtException and unhandledRejection handlers that log via the existing pino logger. Decide per the existing restart-wrapper behavior whether to exit-and-restart or log-and-continue, and document the choice in a comment-free, consistent way with current startup code.
+
+Harden fail-open security helpers — Review helpers that catch internal errors and return a permissive default (e.g. IP-whitelist style checks). Change them to deny/fallback safely on internal error rather than granting access.
+
+Standardize rider-app error feedback — Replace ad-hoc per-screen local toast timers with the existing shared toast system (use-toast + global <Toaster />) so error banners behave consistently across screens. Do not redesign the toast component; just route screens through it.
+
+Add exponential backoff to the Expo ride-status SSE stream — Replace the fixed retry delay in the ride-status hook with capped exponential backoff so a server outage doesn't cause a fixed-interval reconnect storm.
+
+Verify — Confirm the API server boots cleanly with no new startup errors, the rider app and Expo app load without new console errors, and pnpm run typecheck passes for touched files.
+
+Relevant files
+apps/api-server/src/app.ts
+apps/api-server/src/index.ts
+apps/api-server/src/middleware/security.ts
+apps/api-server/src/middleware/auth.ts
+apps/api-server/src/routes/admin/rides.ts
+apps/api-server/src/routes/admin/launch.ts
+apps/api-server/src/routes/admin/otp.ts
+apps/rider-app/src/App.tsx
+apps/rider-app/src/hooks/use-toast.ts
+apps/rider-app/src/lib/socket.tsx
+apps/ajkmart/hooks/useRideStatus.ts
+Note on overlapping existing work
+The QA/testing parts of the broader request are already planned and should NOT be duplicated here:
+
+Task #13 — end-to-end tests for booking + login flows.
+Task #14 — server-side guard against stale fare estimates (concurrency/edge-case validation).
+Task #12 — sync the platformFee column to the production database.
+Tasks #6 / #7 — KYC document review UI and the document upload endpoint.
+Task #8 — PWA install/offline verification.

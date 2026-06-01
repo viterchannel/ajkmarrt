@@ -1,0 +1,1 @@
+{"version":3,"file":"getVendorOrdersParams.d.ts","sourceRoot":"","sources":["../../../src/generated/types/getVendorOrdersParams.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,MAAM,qBAAqB,GAAG;IAClC,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,KAAK,CAAC,EAAE,MAAM,CAAC;CAChB,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"checkIdentifierResponse.d.ts","sourceRoot":"","sources":["../../../src/generated/types/checkIdentifierResponse.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AAEH,MAAM,WAAW,uBAAuB;IACtC,MAAM,EAAE,MAAM,CAAC;IACf,gBAAgB,EAAE,MAAM,EAAE,CAAC;IAC3B,QAAQ,CAAC,EAAE,OAAO,CAAC;IACnB,QAAQ,CAAC,EAAE,OAAO,CAAC;IACnB,aAAa,CAAC,EAAE,MAAM,CAAC;CACxB"}

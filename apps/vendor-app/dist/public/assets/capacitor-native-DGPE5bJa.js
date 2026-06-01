@@ -1,0 +1,1 @@
+const e={requestPermissions:async()=>({receive:"denied"}),register:async()=>{},addListener:async()=>({remove:async()=>{}}),removeAllListeners:async()=>{}},s={checkBiometry:async()=>({isAvailable:!1}),authenticate:async()=>{}};export{s as BiometricAuth,e as PushNotifications};

@@ -1,0 +1,34 @@
+Fix TypeScript Errors in Rider-App & Admin
+What & Why
+Both rider-app and admin have TypeScript type errors that prevent clean builds. The rider-app is missing strict mode settings and has unsafe as any casts on native Capacitor plugin imports that lack published type definitions. The admin panel has widespread as any casts in its central data-fetching hook (use-admin.ts) due to untyped TanStack Query error shapes and untyped cache arrays.
+
+Done looks like
+pnpm typecheck (i.e. tsc --noEmit) exits with 0 errors in both rider-app and admin
+pnpm build succeeds in both apps
+No as any, @ts-ignore, or @ts-expect-error suppressions remain in rider-app source files (excluding generated/vendored code)
+The admin use-admin.ts error handling uses a typed getErrorMessage() helper instead of as any casts
+Out of scope
+Fixing TypeScript errors in api-server, vendor-app, or ajkmart (Expo) — those are separate tasks
+Upgrading TypeScript or Vite versions
+Migrating away from Capacitor community plugins
+Steps
+Install missing type packages — Run pnpm install from the monorepo root (extracted/12345678) to ensure all catalog: type definitions (@types/node, @types/react, @types/react-dom) are resolved and installed in both apps.
+
+Tighten rider-app tsconfig — Add strict: true, noImplicitAny: true, strictNullChecks: true, strictFunctionTypes: true, noImplicitReturns: true, noFallthroughCasesInSwitch: true, noUncheckedIndexedAccess: true, forceConsistentCasingInFileNames: true, and useUnknownInCatchVariables: true to rider-app/tsconfig.json compilerOptions to match the admin's existing strict configuration.
+
+Add Capacitor community plugin stubs — Create rider-app/src/types/capacitor-community.d.ts with ambient module declarations for @capacitor-community/play-integrity and @capacitor-community/app-attest, exporting typed interfaces (requestIntegrityToken, generateKey, attestKey) so attestation.ts can remove its as any import casts.
+
+Add a typed error helper to admin — Create admin/src/lib/get-error-message.ts exporting a getErrorMessage(err: unknown): string utility that safely extracts .message from any error-shaped value. This replaces all (query.error as any)?.message patterns in use-admin.ts.
+
+Fix cache typing in use-admin.ts — Replace as any[] casts on TanStack Query cache arrays (users, products) with properly typed updater functions using the actual response types from @workspace/api-zod or @workspace/api-client-react. Use getErrorMessage() for all error description fields.
+
+Run typecheck and fix remaining errors — Run pnpm typecheck in both rider-app and admin. Fix any remaining errors surfaced by the stricter settings (missing return types, implicit any parameters, unhandled undefined from noUncheckedIndexedAccess, etc.). Then run pnpm build in both apps to confirm 0 errors.
+
+Relevant files
+extracted/12345678/artifacts/rider-app/tsconfig.json
+extracted/12345678/artifacts/admin/tsconfig.json
+extracted/12345678/tsconfig.base.json
+extracted/12345678/artifacts/rider-app/src/lib/attestation.ts
+extracted/12345678/artifacts/admin/src/hooks/use-admin.ts
+extracted/12345678/artifacts/rider-app/package.json
+extracted/12345678/artifacts/admin/package.json

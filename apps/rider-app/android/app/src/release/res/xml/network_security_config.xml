@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Network Security Configuration — RELEASE BUILDS
+  =========================================================
+  Overrides the base config (src/main/) for production/release builds.
+  Enforces SSL certificate pinning for the production API domain.
+
+  !! ACTION REQUIRED BEFORE RELEASE !!
+  ─────────────────────────────────────
+  Replace the placeholder fingerprints below with REAL SHA-256 SPKI hashes:
+
+    1. Obtain the leaf-certificate SPKI fingerprint:
+         openssl s_client -connect api.ajkmart.com:443 -servername api.ajkmart.com \
+           </dev/null 2>/dev/null \
+           | openssl x509 -noout -pubkey \
+           | openssl pkey -pubin -outform der \
+           | openssl dgst -sha256 -binary \
+           | base64
+
+    2. Obtain the intermediate CA SPKI fingerprint (backup pin):
+         openssl s_client -connect api.ajkmart.com:443 -servername api.ajkmart.com \
+           -showcerts </dev/null 2>/dev/null \
+           | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' \
+           | split -p '-----BEGIN CERTIFICATE-----'
+       Then run the openssl dgst pipeline on the intermediate cert.
+
+    3. Update the <pin> elements below with the real base64 values.
+
+    4. Set the expiration date to ~6 months before the cert renewal date so you
+       have time to push a pin-rotation APK before old pins expire.
+
+  NEVER ship a release APK with placeholder (AAAA.../BBBB...) values —
+  connections to api.ajkmart.com will fail with a pinning error.
+
+  PIN ROTATION
+  ────────────
+  When the API cert is about to be renewed:
+    1. Add the NEW cert's pin as a second <pin> alongside the old one.
+    2. Ship an APK update with both pins.
+    3. After most users have updated, remove the old pin in the next release.
+-->
+<network-security-config>
+
+  <!-- Production API: enforce certificate pinning, system CAs only -->
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">api.ajkmart.com</domain>
+    <pin-set expiration="2027-06-01">
+      <!-- PRIMARY PIN: leaf/server certificate SHA-256 SPKI fingerprint -->
+      <!-- REPLACE THIS PLACEHOLDER WITH YOUR REAL FINGERPRINT -->
+      <pin digest="SHA-256">REPLACE_ME_WITH_REAL_SHA256_SPKI_BASE64_FINGERPRINT=</pin>
+      <!-- BACKUP PIN: intermediate CA or next certificate (required for rotation) -->
+      <!-- REPLACE THIS PLACEHOLDER WITH YOUR BACKUP FINGERPRINT -->
+      <pin digest="SHA-256">REPLACE_ME_WITH_BACKUP_SHA256_SPKI_BASE64_FINGERPRINT=</pin>
+    </pin-set>
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </domain-config>
+
+  <!-- All other domains: system CAs, no cleartext -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </base-config>
+
+</network-security-config>

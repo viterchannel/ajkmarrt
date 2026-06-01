@@ -1,0 +1,1 @@
+import{c as o}from"./pages-finance-CyNMnFIl.js";const e=o("[safeClipboard]");async function i(a){try{if(typeof navigator>"u"||!navigator.clipboard){const r=new Error("Clipboard API unavailable");return e.error("writeText failed:",r),{ok:!1,error:r}}return await navigator.clipboard.writeText(a),{ok:!0}}catch(r){return e.error("writeText failed:",r),{ok:!1,error:r}}}export{i as s};

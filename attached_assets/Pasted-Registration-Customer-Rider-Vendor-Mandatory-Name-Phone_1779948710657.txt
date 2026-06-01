@@ -1,0 +1,726 @@
+Registration (Customer/Rider/Vendor)
+├─ Mandatory: Name, Phone/Email, Password, ID Card Number, City, Area, Address
+├─ Auto-fetch current location (lat/lng) on submit
+├─ ID card number checked for uniqueness (no duplicate account)
+├─ Phone number optional? Actually required (apne pehle bola phone number enter kare)
+└─ NO document upload, NO phone/email OTP at this stage
+
+After Registration → Account created in "pre-active" state
+├─ Can login, browse, view profile
+├─ Cannot do sensitive actions (withdraw, accept ride, add products)
+
+Profile Section (Post-Login)
+├─ Verify Email (OTP)
+├─ Verify Phone (OTP)
+├─ Upload Documents (ID card image, proof of address, etc.) → KYC
+├─ Verification status visible: ID number given (✅), documents pending (🟡)
+
+Admin Panel Rules (Editable)
+├─ Feature: withdraw_money → requires: phone_verified + document_verified
+├─ Feature: accept_ride → requires: document_verified + ID number verified (already have)
+├─ Bonus: agar user phone verify kare to ₹20 wallet cash
+Kya ye approach sahi hai? – Final Answer
+Haan, bilkul sahi hai.
+Aapne ID card number ko ek unique identifier banaya hai duplicate rokne ke liye – ye professional apps (Uber, Foodpanda) bhi karte hain.
+Aur documents ko profile mein rakhna progressive KYC ka best practice hai.
+
+Bas ek cheez clear karo:
+Kya phone number registration mein mandatory rahega? Agar duplicate account rokna hai to phone number bhi mandatory hona chahiye (along with ID number). Aapne pehle likha tha "phone number enter kare" – so assume karte hain phone mandatory hai.
+
+Replit Agent Ke Liye Final Prompt (Copy-Paste Ready)
+Neeche diya hua prompt exactly aapki requirement ke according hai. Isko Replit Agent mein paste karo:
+
+markdown
+## AJKMART Super App – Registration with ID Number + Location Auto-Fetch + Progressive KYC
+
+I need a full-stack MERN/Next.js application with 4 roles: Customer, Rider, Vendor, Admin.
+
+### Registration Form (for all roles) – Fields:
+- Full name (required)
+- Phone number (required, unique but verification not required at signup)
+- Email (optional, but at least phone or email required)
+- Password (required)
+- **ID Card Number** (required, must be unique across all users – to prevent duplicate accounts)
+- City (required, text or dropdown)
+- Area (required, text)
+- Address (required, text)
+- **Current location** – auto-fetched via browser geolocation when user clicks "Register". Send `latitude` and `longitude` with the registration request. If user denies location permission, show manual city/area selector as fallback.
+
+### Duplicate Account Prevention:
+- Check in backend: No other user with same `phone` OR same `idCardNumber` can register.
+- Return error: "Phone or ID number already exists. Please login."
+
+### No verification at registration:
+- Do NOT send OTP for phone/email during registration.
+- Do NOT require document upload during registration.
+
+### After registration:
+- User account status: `verificationLevel = 0` (pre-active)
+- Can login and view basic profile.
+
+### Profile Section (after login):
+- User can:
+  - Verify email (send OTP, confirm)
+  - Verify phone (send OTP, confirm)
+  - Upload documents (ID card image, proof of address) – store in cloud (e.g., Cloudinary or local upload)
+- Show verification status badges.
+
+### Feature Access Rules (Admin configurable in database table `feature_rules`):
+Each rule has:
+- role (customer/rider/vendor)
+- feature_name (e.g., "withdraw_money", "accept_ride", "add_product")
+- required_verifications (array: ["email_verified","phone_verified","document_verified"])
+- max_limit_per_day (integer)
+
+Default rules:
+- rider → accept_ride → requires ["document_verified"] → limit=5 (unverified) / unlimited after doc verify
+- customer → withdraw_money → requires ["phone_verified","document_verified"]
+- vendor → add_product → requires ["document_verified"]
+
+### Admin Panel:
+- View all users with their verification status (email, phone, document, ID number given)
+- Manually approve/reject uploaded documents
+- Edit `feature_rules` table (which feature needs which verification)
+- Set bonus amounts for verification (e.g., "Verify phone and get 50 coins")
+
+### Additional Requirement – Location on registration:
+When user submits registration, backend receives:
+```json
+{
+  "name": "...",
+  "phone": "...",
+  "email": "...",
+  "password": "...",
+  "idCardNumber": "...",
+  "city": "...",
+  "area": "...",
+  "address": "...",
+  "location": { "lat": 123.45, "lng": 67.89 }
+}
+Save location in user document.
+
+Tech Stack: MongoDB, Express.js, React (or Next.js), Node.js. Use JWT auth. OTP mock or Twilio. No errors, complete working code.
+Generate full project with separate frontend pages for each role (customer app, rider app, vendor app, admin panel) using role-based routing.
+
+text
+
+---
+
+## Is Prompt Mein Aapki Purani Requirements Kaise Cover Hui?
+
+| Aapki Requirement | Prompt Mein Kaise Likha |
+|-------------------|--------------------------|
+| ID card number mandatory (document nahi) | ✅ `ID Card Number (required, unique)` |
+| Documents baad mein profile se upload | ✅ `Profile section: Upload documents` |
+| Phone verification move kiya registration se | ✅ `No OTP during registration` |
+| Current location auto-fetch on submit | ✅ `auto-fetched via browser geolocation when user clicks Register` |
+| Duplicate account rokna (phone + ID number) | ✅ `No other user with same phone OR same idCardNumber` |
+| City, area, address | ✅ Included |
+| Unverified ko force via bonus | ✅ `Admin can set bonus amounts` |
+
+---
+
+## Aapko Kya Karna Hai Ab?
+
+1. Upar diya hua **prompt copy** karo  
+2. Replit Agent mein **naya project** start karo (select Node.js + React)  
+3. Prompt paste karo aur enter karo  
+4. Agent se pucho: *"Explain how ID card number uniqueness is enforced and how location is captured."* – agar sahi jawab de, to samjho agent ne requirement samajh li  
+
+Agar Replit Agent kuch chhode (e.g., location auto-fetch na kare), to usko follow-up do: *"Make sure on registration submit, browser asks for location permission and sends lat/lng."*
+
+---
+
+## Kya Ab Bhi Koi Confusion Hai?
+
+Aapka logic **100% sahi** hai – ID number mandatory rakhna duplicate rokne ka sabse effective tareeqa hai, aur documents ko profile mein rakhna friction kam karta hai.  
+Bas location auto-fetch ke liye user permission handle karna mat bhoolna – agar user deny kare to manual city/area do.
+
+Koi aur point samjhana ho to batao, main aur detail mein jaunga. Ab aap Replit Agent ke saath kaam shuru kar sakte ho.
+This response is AI-generated, for reference only.
+Mera already old bna hoa hai us mein Jo them style hai wo same hi ho aur Jo remove krna hai hai wo remove kr ley aur Jo modify krna hai ya complete replica wo be kr Sakta hai professional stricture ke sath krey complete optimize )bugs ke sath ye Sara system complete krwana hai ab tum ek bar complete prompt bnao Jo fully samjao sakkey  lekn bolna ke abi start nehi krna Jo next command doun ga us ko serf complete krna lekekn mera  plan ye tha
+phir us ke bad alag alag rider,vendor,admin,ajkmart ke Liye prompt bnana 
+ek aur bat rider ke lie alg coular aur theme chal rahi hai vendor ke Liye alag  customer ke liye alag aur admin ke liye alag wo nehi change krni Jo hai us mein rahtey hoey update krna hai
+We need to understand user's request clearly. User says: He already has an old built app (AJKMART) with existing themes/styles for each app (rider, vendor, customer, admin). He wants to keep the same theme/style, just modify/remove/add features as per the new requirements (registration changes, verification, ID card number, location, etc.). He wants a single comprehensive prompt that fully explains the system to be implemented, but he will not start now; he will give a next command to actually do it. Also, after that he will create separate prompts for each app (rider, vendor, admin, customer) but with existing themes preserved. He wants the system to be fully optimized, bug-free, professional structure.
+
+So I need to produce a single "complete prompt" that explains the entire system (all four apps together) with the new logic (progressive verification, ID number mandatory at registration, location auto-fetch, documents in profile, admin configurable rules, etc.), and explicitly state that existing themes/styles per app must be preserved, only functionality changes. Also mention that this prompt is for understanding, and actual implementation will be done after next command.
+
+User also wants to ensure Replit agent can understand and work accurately.
+
+Thus, I will craft a detailed, structured prompt that covers:
+
+Overview of existing apps (AJKMART super app: customer, rider, vendor, admin) with their respective themes/colors unchanged.
+
+New requirements: registration changes, ID card number (mandatory, unique), phone number mandatory, email optional but at least one, location auto-fetch on submit, city/area/address fields.
+
+Remove phone verification from registration; move to profile section.
+
+Keep document upload in profile section (KYC).
+
+Progressive feature unlocking based on verifications (email, phone, documents) with admin-controlled rules.
+
+Duplicate account prevention via phone+ID number.
+
+Bonus/incentive system for verifications.
+
+All existing UI/UX (colors, layouts, themes) remain the same; only add new fields/sections where needed.
+
+Full stack implementation with no errors, optimized, end-to-end working.
+
+Also mention that after this prompt, separate prompts will be given for each app but the core backend and database schema will remain same.
+
+Let me write the prompt in a clear, step-by-step manner, using markdown, but as a single message for user to copy and give to Replit agent later.
+
+✅ Aapka Complete Prompt – AJKMART Super App (Old Theme + New Features)
+Main ne aapki poori requirement ko ek single, professional prompt mein convert kar diya hai.
+Yeh prompt Replit Agent ko 100% accurate kaam karwane ke liye design kiya gaya hai.
+
+⚠️ Note: Abhi start nahi karna – ye prompt sirf samajhne aur ready rakhne ke liye hai.
+Jab main next command doon ga, us waqt ise implement karna.
+
+📌 PROMPT (Copy this exactly for Replit Agent)
+markdown
+## PROJECT: AJKMART Super App – Full Stack with Progressive Verification (Preserving Existing Themes)
+
+### CONTEXT:
+You are given an existing AJKMART super app with 4 separate apps (each with its own theme/color/style):
+1. **Customer App** (AJKMART) – existing theme, don't change UI colors/layout.
+2. **Rider App** – existing theme (different color scheme), preserve it.
+3. **Vendor App** – existing theme, preserve it.
+4. **Admin Panel** – existing theme, preserve it.
+
+Your task is to **MODIFY** the existing codebase to implement a new registration & verification system.  
+Do NOT change any existing UI theme/colors/layouts – only add new fields/sections where necessary.  
+Remove phone verification from registration, move it to profile.  
+Add ID card number (mandatory) in registration to prevent duplicate accounts.  
+Add auto-fetch location on registration submit.  
+Add city/area/address fields in registration.  
+Keep document upload in profile section (KYC).  
+Implement progressive feature unlocking based on verification status, controlled by admin.
+
+---
+
+### 1. DATABASE SCHEMA CHANGES (User Model)
+Add/Modify these fields in the User collection:
+- `idCardNumber` (string, unique, required) – for duplicate prevention.
+- `phone` (string, unique, required) – already exists but now verification is NOT required at registration.
+- `email` (string, optional but at least phone or email provided).
+- `address` (object: { city, area, fullAddress, location: { lat, lng, updatedAt } })
+- `verificationStatus` (object: {
+    emailVerified: boolean,
+    phoneVerified: boolean,
+    documentsSubmitted: boolean,  // after upload
+    documentsApproved: boolean    // after admin approval
+  })
+- `kycDocuments` (array of { type, url, status, uploadedAt })
+- `registrationLocation` (lat, lng captured at signup)
+
+### 2. REGISTRATION FLOW (All roles – Customer, Rider, Vendor)
+
+#### Frontend Form Fields (in order, as per existing app style):
+- Full name (required)
+- Phone number (required, unique)
+- Email (optional but recommended)
+- Password (required)
+- **ID Card Number** (required, unique, show format validation e.g., 13 digits for CNIC)
+- City (required, text or dropdown)
+- Area (required, text)
+- Address (required, text)
+- **Current location** – auto-fetch via browser geolocation when user clicks "Register" button.  
+  If user denies permission → show manual city/area selector as fallback.  
+  Send `lat` and `lng` with registration payload.
+
+#### Backend Logic on Registration:
+- Check if `phone` OR `idCardNumber` already exists → return error: "Phone or ID number already registered. Please login."
+- Hash password, create user with `verificationStatus.emailVerified = false`, `phoneVerified = false`, `documentsSubmitted = false`.
+- Save registration location coordinates.
+- **Do NOT send any OTP** during registration.
+
+### 3. REMOVE EXISTING PHONE VERIFICATION FROM REGISTRATION
+- Delete any middleware/step that required OTP before account creation.
+- Remove any "Verify Phone" screen in signup flow.
+
+### 4. PROFILE SECTION (After Login – All Apps)
+Add a new **Verification Center** tab/section (preserving existing profile layout):
+- Show current verification status (icons: ✅ verified, 🔴 unverified).
+- Buttons/links:
+  - **Verify Email** – send OTP to email, confirm.
+  - **Verify Phone** – send OTP to phone, confirm (use existing OTP service).
+  - **Upload KYC Documents** – form to upload ID card image, proof of address, etc. (admin approval required).
+- After documents uploaded, `documentsSubmitted = true`, but `documentsApproved = false` until admin approves.
+
+### 5. FEATURE ACCESS RULES (Dynamic, Admin Controlled)
+
+Create a new collection `FeatureRules` with fields:
+- `role` (customer/rider/vendor)
+- `featureName` (string) e.g., "withdraw_money", "accept_ride", "add_product", "place_order", "view_earnings"
+- `requiredVerifications` (array of strings) possible values: ["email_verified", "phone_verified", "documents_approved"]
+- `maxDailyLimit` (number, 0 = unlimited)
+- `isActive` (boolean)
+
+**Default rules (seed in DB):**
+```json
+[
+  { "role": "rider", "featureName": "accept_ride", "requiredVerifications": ["documents_approved"], "maxDailyLimit": 10 },
+  { "role": "rider", "featureName": "withdraw_money", "requiredVerifications": ["phone_verified", "documents_approved"], "maxDailyLimit": 0 },
+  { "role": "customer", "featureName": "place_order", "requiredVerifications": [], "maxDailyLimit": 5 },
+  { "role": "customer", "featureName": "withdraw_money", "requiredVerifications": ["phone_verified", "documents_approved"], "maxDailyLimit": 0 },
+  { "role": "vendor", "featureName": "add_product", "requiredVerifications": ["documents_approved"], "maxDailyLimit": 0 },
+  { "role": "vendor", "featureName": "payout", "requiredVerifications": ["email_verified", "phone_verified", "documents_approved"], "maxDailyLimit": 0 }
+]
+API Endpoint for Feature Check:
+GET /api/user/available-features – returns list of features user can currently access based on their verification status.
+
+Each restricted action (e.g., clicking "Accept Ride") must call this API or have middleware that checks against rules.
+
+Admin Panel (preserve existing theme, add new sections):
+Feature Rules Manager – CRUD table to edit rules per role.
+
+Verification Bonuses – set bonus amount (e.g., 50 coins) for each verification type (email, phone, document approve). Show popup to user after verification.
+
+Document Approval Queue – list users with documentsSubmitted=true and documentsApproved=false. Admin can approve/reject. On approval, set documentsApproved=true.
+
+6. BONUS/INCENTIVE SYSTEM
+After user completes any verification (email/phone/document approved), automatically award bonus (coins/wallet cash) as configured by admin.
+
+Show success toast: "Phone verified! You earned 50 coins."
+
+7. LOCATION AUTO-FETCH DETAILS
+On registration page, before form submit, try to get location using navigator.geolocation.getCurrentPosition().
+
+If success: set hidden fields lat, lng. Also optionally reverse-geocode to pre-fill city/area (but user can still edit).
+
+If fail/deny: show message "Please allow location or manually select city/area".
+
+On form submit, send location: { lat, lng } along with other fields.
+
+8. DUPLICATE ACCOUNT PREVENTION LOGIC
+Backend: phone and idCardNumber both must be unique across all users.
+
+If duplicate phone or ID number found → registration fails with clear message.
+
+For existing users (old data), if they lack idCardNumber, force them to add it next login via a modal.
+
+9. EXISTING THEMES – DO NOT CHANGE
+Rider App: keep its current color scheme, buttons, layout.
+
+Vendor App: keep its theme.
+
+Customer App (AJKMART): keep its theme.
+
+Admin Panel: keep its theme.
+
+Only add new sections (Verification Center, Admin Feature Rules) matching the existing UI style (same font, spacing, components).
+
+10. TECHNICAL REQUIREMENTS
+Stack: MERN (MongoDB, Express, React/Next.js, Node.js) – match existing stack.
+
+JWT authentication (refresh token if any).
+
+OTP: use existing mock or Twilio integration; do not break current OTP logic in profile verification.
+
+File upload: use existing cloud storage (Cloudinary or local) for KYC documents.
+
+Ensure no errors, edge cases handled (e.g., user denies location, duplicate submission, invalid ID format).
+
+Code must be optimized, with proper error handling, logging, and security (sanitize inputs, rate limiting on OTP).
+
+11. DELIVERABLES
+Modified codebase with all changes integrated.
+
+No breaking of existing functionality (login, orders, rides, etc.).
+
+All 4 apps (customer, rider, vendor, admin) working with new verification system.
+
+Admin can dynamically change feature rules without redeploying.
+
+User sees clear verification status and unlockable features.
+
+12. TESTING SCENARIOS (must work)
+New user registers with phone + ID number → account created without OTP.
+
+User logs in → sees verification status all red.
+
+User verifies phone → bonus added, feature "withdraw_money" becomes available (if rule requires phone_verified).
+
+User uploads documents → admin approves → feature "accept_ride" becomes available.
+
+User tries to accept ride before doc approval → error message "You need to upload and get documents approved".
+
+Admin changes rule: "accept_ride" now requires only phone_verified → rider with phone verified can accept rides without documents.
+
+Duplicate ID number registration fails.
+
+IMPORTANT INSTRUCTION FOR REPLIT AGENT:
+Do NOT start implementation now. This prompt is for understanding and planning.
+Wait for the user's next command that says "START IMPLEMENTATION".
+Then proceed step by step, keeping all existing themes intact, and deliver a fully working, bug-free system.
+
+text
+
+---
+
+## 📌 Aapka Next Step
+
+1. **Is prompt ko copy karke** kisi notepad ya document mein save karo.  
+2. Jab tum **Replit Agent** se kaam karwana chaho, tab mujhe bolo – main **next command** doonga (e.g., “Ab start karo implementation”).  
+3. Uske baad hum **alag-alag prompts** banayenge for **rider, vendor, admin, customer** – lekin unme sirf **frontend specifics** hongi (themes, routes, etc.), backend same rahega.
+
+> ✅ **Aapka plan sahi hai** – pehle ek comprehensive prompt, phir per-app prompts.  
+> Main ne ensure kiya hai ke existing themes **change nahi honge**, sirf functionality add/modify hogi.
+
+Kya aapko is prompt mein koi aur cheez include karni hai? Batao, main update kar dunga.
+This response is AI-generated, for reference only.
+rider aur vendor ke Liye complete prompt bnao kr do Jo replit agent ko de sakoun
+We need to create separate prompts for Rider and Vendor apps that complement the main comprehensive prompt. The user already has a master prompt for the whole system. Now they want specific prompts for Rider and Vendor to give to Replit Agent. These should be self-contained but consistent with the master prompt. The user wants these prompts to be given to Replit Agent to work on those specific apps.
+
+Key points from conversation:
+
+Existing themes for Rider and Vendor are different and should be preserved.
+
+The new verification system applies to all roles.
+
+Rider and Vendor have specific features (accept ride, add products, etc.) with rules.
+
+The prompts should instruct Replit Agent to modify only the respective app while keeping its existing theme and adding the new verification/profile logic.
+
+I will produce two separate prompts: one for Rider App, one for Vendor App. Each prompt should be clear, step-by-step, and reference the shared backend logic but focus on frontend changes specific to that app. Also ensure that the agent does not change the existing color/theme.
+
+Let me write them.
+
+Bilkul, main ne Rider App aur Vendor App ke liye do alag-alag prompts tayyar kar diye hain.
+Yeh prompts Replit Agent ko directly de sakte ho. Inme existing theme ko preserve rakhne aur new verification system ko integrate karne ka clear instruction hai.
+
+⚠️ Note: Pehle master prompt (jo maine upar diya) ko implement karwa lo. Phir in prompts ko sequentially Replit Agent ko do – pehle Rider, phir Vendor.
+Har prompt self-contained hai, lekin backend common rahega (pehle se implement ho chuka hoga).
+
+📌 PROMPT 1: Rider App (Existing Theme + New Verification System)
+markdown
+## TASK: Modify Rider App (Existing Theme) – AJKMART Super App
+
+### CONTEXT:
+You are given an existing **Rider App** in the AJKMART super app codebase.  
+The Rider App has its own **unique color scheme and theme** (do not change any existing colors, fonts, buttons, layout – preserve exactly as is).
+
+Your job is to **integrate the new progressive verification system** into the Rider App.
+
+### BACKEND ALREADY IMPLEMENTED (from previous step):
+- New user registration with mandatory ID card number + auto-location + city/area/address.
+- Phone/email verification moved to profile section (no OTP at signup).
+- Document upload in profile (KYC) with admin approval.
+- Feature rules system (admin controls which verifications unlock which features).
+- API endpoints: `/api/user/verification-status`, `/api/user/available-features`, `/api/verify/*`, etc.
+
+### WHAT YOU NEED TO DO IN RIDER APP FRONTEND:
+
+1. **Registration Page** (if Rider signs up separately, or same as customer with role selection):
+   - Add the new fields exactly as per master prompt: ID Card Number (mandatory, unique), City, Area, Address.
+   - On form submit, auto-fetch current location (lat/lng) using browser geolocation.
+   - Remove any existing phone OTP step during registration.
+   - Keep the existing Rider theme colors/buttons.
+
+2. **Profile Section (Verification Center)** – add a new tab/section (preserve existing profile layout):
+   - Show verification status: email, phone, documents (submitted/approved).
+   - Buttons: "Verify Email" (send OTP), "Verify Phone" (send OTP).
+   - "Upload KYC Documents" form (ID card image, proof of address) – upload to existing cloud storage.
+   - After upload, show pending approval message.
+
+3. **Dashboard / Home Page**:
+   - Display a banner or widget showing "Verification Required to Unlock Full Features".
+   - Show which features are currently locked (e.g., "Accept Ride requires document approval").
+
+4. **Ride Acceptance Button** – before allowing accept ride:
+   - Call `/api/user/available-features` to check if feature "accept_ride" is allowed based on user's verification status.
+   - If not allowed, show a modal: "You need to [upload documents / verify phone] to accept rides. Complete verification in Profile."
+   - If allowed but daily limit applies, show remaining rides for the day.
+
+5. **Withdrawal & Earnings** – similar check for "withdraw_money" feature.
+
+6. **Deposit / Add Account** – check "deposit" feature (if defined in rules).
+
+7. **Styling**: Do NOT change any existing CSS class names or color variables of the Rider App. Only add new elements using the same style system (e.g., use existing button classes for new buttons).
+
+### TECHNICAL REQUIREMENTS:
+- Use React/Next.js (as per existing codebase).
+- Use existing API client (axios) to call backend endpoints.
+- Handle loading states and errors gracefully.
+- After verification (e.g., phone verified), refresh the verification status automatically (polling or websocket or manual refresh button).
+
+### DELIVERABLES:
+- Modified Rider App frontend code files (pages/components) with all changes integrated.
+- No breaking changes to existing ride flow, map, earnings page, etc.
+- Ensure the existing Rider theme remains intact.
+
+### TEST SCENARIOS (must work):
+- New rider registers with ID number → sees verification status all red.
+- Rider verifies phone → feature "withdraw_money" unlocks (if admin rule says so).
+- Rider uploads documents → admin approves → "accept_ride" unlocks.
+- Rider tries to accept ride before doc approval → modal appears.
+- Existing riders (without ID number) are prompted to add ID number once (modal on login).
+
+### IMPORTANT:
+Do not modify backend or admin panel. Only modify the Rider App frontend to work with the already-implemented backend APIs.
+📌 PROMPT 2: Vendor App (Existing Theme + New Verification System)
+markdown
+## TASK: Modify Vendor App (Existing Theme) – AJKMART Super App
+
+### CONTEXT:
+You are given an existing **Vendor App** in the AJKMART super app codebase.  
+The Vendor App has its own **distinct color scheme and theme** (do not change any existing colors, fonts, buttons, layout – preserve exactly as is).
+
+Your job is to **integrate the new progressive verification system** into the Vendor App.
+
+### BACKEND ALREADY IMPLEMENTED (from previous step):
+- Same as Rider – verification system, feature rules, admin controls.
+
+### WHAT YOU NEED TO DO IN VENDOR APP FRONTEND:
+
+1. **Registration Page** (if Vendor signs up separately):
+   - Add mandatory ID Card Number, City, Area, Address fields.
+   - Auto-fetch current location on submit (lat/lng).
+   - Remove any phone OTP step during registration.
+   - Keep existing Vendor theme.
+
+2. **Profile Section (Verification Center)** – add new section:
+   - Show email/phone verification status and document approval status.
+   - Buttons to verify email/phone (send OTP).
+   - Upload KYC documents (business registration, ID, etc.) – store and admin approval.
+
+3. **Product Management** – add product button:
+   - Before allowing "Add Product", check feature "add_product" via `/api/user/available-features`.
+   - If not allowed (e.g., documents not approved), show message: "You need to complete KYC document verification to add products. Go to Profile."
+
+4. **Payout / Withdrawal** – similar check for "payout" or "withdraw_money".
+
+5. **Dashboard** – show verification progress widget (e.g., "Get verified to unlock unlimited products and withdrawals").
+
+6. **Orders Management** – if any restricted feature (like "view bulk orders") depends on verification, apply same check.
+
+7. **Styling**: Use existing Vendor theme classes; do not override. Add new elements with same style patterns.
+
+### TECHNICAL REQUIREMENTS:
+- Same as Rider – use existing API endpoints.
+- After each verification action, refresh status.
+
+### DELIVERABLES:
+- Modified Vendor App frontend files.
+- No changes to existing product listing, order processing, analytics pages.
+- Preserve Vendor theme.
+
+### TEST SCENARIOS:
+- New vendor registers with ID number → verification incomplete.
+- Vendor uploads documents → admin approves → "add product" button enabled.
+- Vendor tries to add product before doc approval → modal.
+- Vendor verifies phone → payout feature unlocks (if rule defined).
+
+### IMPORTANT:
+Only frontend changes in Vendor App. Backend already supports everything.
+📌 Aap Kaise Use Karoge
+Pehle master prompt (jo maine pehle diya) se backend + all apps ka base implement karwao.
+Usme admin panel, common APIs, database models sab ban jayenge.
+
+Phir Rider App prompt do – agent sirf rider frontend update karega, theme rahega.
+
+Phir Vendor App prompt do – same process.
+
+Customer app ka prompt bhi chahiye? Agar haan to batao, main bana dunga (same pattern).
+
+✅ Final Notes
+In prompts mein maine explicitly likha hai "Do not modify backend / admin panel" – taake agent sirf frontend par focus kare.
+
+Themes preserve karne ke liye "do not change existing colors/classes" ka instruction diya hai.
+
+Location auto-fetch and ID number mandatory dono prompts mein included hai.
+
+Kya aapko Customer App ka alag prompt bhi chahiye? Ya master prompt mein customer ka kaam ho jayega? Batao.
+
+This response is AI-generated, for reference only.
+lekn meinne btaya tha ke rider app mein documents upload ka option nehi ho registration ke douran  bad mein profile ke throu ho a dobra check kro aur complete plan bnao rider app ke liye
+We need to re-evaluate the rider app requirements based on user's clarification: "rider app mein documents upload ka option nehi ho registration ke douran bad mein profile ke through ho". So the user wants: no document upload during registration for rider. Documents upload later in profile section (same as customer). Also the user wants a complete plan for rider app. So we need to provide a revised prompt for Replit Agent that reflects: registration for rider includes mandatory ID card number (text field), phone, email, location, city, area, address. No document upload during registration. Document upload only in profile after login. Verification of phone/email also after login. Also feature unlocking based on verification. Also preserve existing rider theme. Provide a complete prompt for rider app specifically.
+
+Let me produce a detailed answer.
+
+Maafi, main ne pehle wali requirement ko miss kar diya tha. Aapne bilkul sahi kaha – Rider registration ke douran document upload nahi hoga, sirf ID card number hoga. Document upload baad mein profile section mein hoga (jaise customer ke liye plan tha).
+Ab main Rider App ke liye complete plan + Replit Agent ke liye final prompt bana raha hoon, jo aapki exact requirement match karega.
+
+✅ Rider App – Complete Plan (Step by Step)
+Phase 1: Registration (No Documents, No OTP at Signup)
+Registration Form Fields (Rider specific, but same as common):
+
+Full Name (required)
+
+Phone Number (required, unique – duplicate check)
+
+Email (optional)
+
+Password (required)
+
+ID Card Number (required, unique – duplicate check) → only number, no file upload
+
+City (required, text/dropdown)
+
+Area (required, text)
+
+Address (required, text)
+
+Current Location (auto-fetch lat/lng on submit, with fallback)
+
+Flow:
+
+User fills form, clicks Register.
+
+Browser asks location permission → get coordinates.
+
+Backend checks phone and ID number uniqueness.
+
+Account created with:
+
+verificationStatus: { emailVerified: false, phoneVerified: false, documentsSubmitted: false, documentsApproved: false }
+
+idCardNumber saved.
+
+No documents uploaded.
+
+User can login immediately.
+
+No phone OTP, no email OTP, no document upload at this stage.
+
+Phase 2: Profile Section (After Login)
+Add a Verification Center tab (existing rider theme ke andar):
+
+Item	Action
+Verify Email	Send OTP to email → confirm
+Verify Phone	Send OTP to phone → confirm
+Upload Documents	Upload ID card image, license, etc. (KYC) – admin approval needed
+Document Upload Flow:
+
+User uploads files (e.g., CNIC front/back, driving license).
+
+Backend saves to cloud, sets documentsSubmitted = true, documentsApproved = false.
+
+Admin approves/rejects from admin panel.
+
+After approval, documentsApproved = true.
+
+Phase 3: Feature Unlocking (Based on Verifications)
+Admin control ke through feature rules set honge. Example:
+
+Feature	Requires
+View Earnings	Always allowed
+Deposit	Phone OR email verified
+Withdraw	Phone verified + documents approved
+Accept Ride	Documents approved
+Max Rides per day (unverified)	5 (if documents not approved)
+Max Rides per day (verified)	Unlimited
+Rider Dashboard pe:
+
+Agar documents approved nahi hai → "Accept Ride" button disabled with tooltip: "Complete KYC to accept rides".
+
+Agar phone unverified hai → Withdraw option greyed out.
+
+Phase 4: Admin Controls
+Admin panel mein:
+
+Feature Rules table (role=rider ke liye edit kar sakte hain).
+
+Document approval queue: list of riders with pending documents.
+
+Bonus settings: e.g., "Verify phone → 20 coins", "Documents approved → 100 coins".
+
+📌 Replit Agent ke liye Final Prompt – Rider App
+Yeh prompt self-contained hai, lekin backend already master prompt se implement ho chuka hoga.
+Isme document upload registration mein nahi hai, sirf profile mein.
+
+markdown
+## TASK: Modify Rider App (Existing Theme) – AJKMART Super App
+
+### CONTEXT:
+You are given an existing **Rider App** with its own unique color scheme/theme (DO NOT change any existing colors, fonts, buttons, layout).
+
+The backend APIs for progressive verification are already implemented (from master prompt).  
+Your task is to update the **Rider App frontend** to work with this new system.
+
+### REQUIREMENTS:
+
+#### 1. Registration Page (Rider Signup)
+- Fields (mandatory): Full Name, Phone Number, Email (optional), Password, **ID Card Number** (text field only), City, Area, Address.
+- **NO document upload** during registration.
+- **NO phone/email OTP** during registration.
+- On form submit: auto-fetch current location (lat/lng) using `navigator.geolocation`. If user denies, show manual city/area selector.
+- Backend will check uniqueness of phone and ID card number.
+- Keep existing Rider theme styling on form.
+
+#### 2. Profile Section – Verification Center (Add new tab)
+- Display current verification status icons (email verified?, phone verified?, documents submitted?, documents approved?).
+- Buttons:
+  - "Verify Email" – send OTP to user's email, confirm.
+  - "Verify Phone" – send OTP to user's phone, confirm.
+  - "Upload KYC Documents" – form to upload ID card image, driving license, etc. (multiple files). After upload, status changes to "Pending Approval".
+- Use existing file upload method of the app (Cloudinary/local).
+- After phone/email verification, refresh status and show bonus message if any.
+
+#### 3. Dashboard / Home Page
+- Show a verification progress widget (e.g., "Complete your profile: ✔️ Phone pending, ❌ Documents pending").
+- If documents not approved: show a banner "Get document approval to accept rides and withdraw money".
+
+#### 4. Ride Acceptance Button
+- Before allowing "Accept Ride", call API `/api/user/available-features` to check feature "accept_ride".
+- Required verifications for "accept_ride" (as per admin rule) – typically `documents_approved`.
+- If not allowed, disable button or show modal: "You need to upload and get KYC documents approved. Go to Profile > Verification Center."
+- If allowed but daily limit applies, show remaining rides today.
+
+#### 5. Withdrawal / Earnings Section
+- Check feature "withdraw_money" (requires phone_verified + documents_approved by default).
+- If not allowed, show lock icon and message: "Verify phone and complete KYC to withdraw".
+
+#### 6. Deposit / Add Bank Account
+- Check feature "deposit" (requires at least phone or email verified).
+- If not allowed, guide user to verify phone or email.
+
+#### 7. Styling Constraint
+- Use existing Rider App CSS classes and color variables.
+- New elements (buttons, modals, status badges) must match existing design (same border radius, font, spacing).
+- Do NOT override any existing component styles.
+
+### API ENDPOINTS TO USE (already existing):
+- `GET /api/user/verification-status` – get current verification status.
+- `GET /api/user/available-features` – get list of unlocked features and limits.
+- `POST /api/verify/email/send` – send OTP to email.
+- `POST /api/verify/email/confirm` – confirm OTP.
+- `POST /api/verify/phone/send` – send OTP to phone.
+- `POST /api/verify/phone/confirm` – confirm OTP.
+- `POST /api/verify/documents/upload` – upload KYC files.
+- `GET /api/verify/documents/status` – check approval status.
+
+### TEST SCENARIOS (must work):
+1. New rider registers with ID number, phone, location → account created. No documents uploaded.
+2. Rider logs in → sees verification status: email/phone red, documents not submitted.
+3. Rider verifies phone → status updates, "withdraw" feature unlocks (if rule configured).
+4. Rider uploads documents → status "pending".
+5. Admin approves documents → status "approved", "accept ride" feature unlocks.
+6. Rider tries to accept ride before doc approval → modal shows.
+7. Existing rider (without ID number) sees a one-time modal to enter ID number.
+
+### DELIVERABLES:
+- Modified Rider App frontend files (components/pages).
+- No changes to backend or admin panel.
+- Existing theme fully preserved.
+- No errors, fully working with backend APIs.
+
+### IMPORTANT:
+- **DO NOT** add document upload to registration form.
+- **DO NOT** add OTP verification to registration.
+- **DO NOT** change rider theme colors/layout.
+📌 Aapka Action Plan
+Pehle master prompt (jo maine pehle diya tha) se backend + admin + common APIs implement karwao Replit Agent se.
+
+Phir Rider App ka upar wala prompt do agent ko – sirf rider frontend update hoga.
+
+Phir Vendor App prompt (main next message mein dunga, same pattern mein).
+
+Phir Customer App prompt (agar chahiye to).
+
+Kya main Vendor App aur Customer App ke liye bhi aise hi detailed prompts bana doon? Aap bas haan bolo.
+
+This response is AI-generated, for reference only.
+

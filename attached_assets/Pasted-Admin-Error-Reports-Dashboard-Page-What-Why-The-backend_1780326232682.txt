@@ -1,0 +1,31 @@
+Admin Error Reports Dashboard Page
+What & Why
+The backend has a full error-reporting ingestion and management API (/api/error-reports/*) and the rider-app already sends errors to it. However there is no admin panel page to view, filter, or resolve these error reports, making production bugs invisible to the team.
+
+Done looks like
+Admin panel has a new "Error Reports" page accessible from the sidebar
+Page shows a filterable, paginated table of error reports with columns: timestamp, app source (rider/vendor/admin), severity, message preview, status (new/acknowledged/resolved)
+Admin can click a report to see full stack trace, device info, and the redacted context payload
+Bulk-resolve action lets admin clear multiple reports at once (POST /api/error-reports/bulk-resolve)
+A badge on the sidebar nav item shows the count of unacknowledged errors (GET /api/error-reports/new-count), refreshing every 60 seconds
+Filters: by app (rider-app, vendor-app, admin), by severity, by status, by date range
+Out of scope
+Automated alerting / email notifications on new errors (needs SMTP setup)
+Error grouping / deduplication (complex, future feature)
+Integration with external tools like Sentry
+Steps
+Create ErrorReports page component — Add apps/admin/src/pages/error-reports.tsx with a data table that fetches from GET /api/error-reports using the existing adminFetch utility. Include filter controls for app, severity, status, and date range.
+
+Add error detail drawer — When a row is clicked, show a slide-over or modal with the full error payload: stack trace, userAgent, appVersion, device info, and the sanitized context object. Include an "Acknowledge" button that calls PATCH /api/error-reports/:id/status.
+
+Implement bulk resolve — Add a checkbox column with a "Resolve selected" toolbar button that calls POST /api/error-reports/bulk-resolve with the selected IDs.
+
+Add sidebar badge for new error count — In the admin sidebar nav, fetch GET /api/error-reports/new-count every 60 seconds and display an unread badge on the Error Reports nav item.
+
+Register the route in admin router — Add the new page to apps/admin/src/App.tsx route definitions and the sidebar nav config.
+
+Relevant files
+apps/admin/src/pages/
+apps/admin/src/App.tsx
+apps/admin/src/lib/adminApiTypes.ts
+apps/api-server/src/routes/error-reports.ts
