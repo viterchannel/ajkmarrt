@@ -77,6 +77,9 @@ const otpLimiterOrBypass: RequestHandler = async (req, res, next) => {
     try {
       const canonPhone = canonicalizePhone(rawPhone);
       const bypass = await checkOTPBypass(canonPhone);
+      // Cache the bypass result so the route handler can reuse it without
+      // a second DB round-trip on the same request.
+      res.locals["otpBypassResult"] = bypass;
       if (bypass.isBypassed) return next();
     } catch {
       // ignore bypass-check errors — fall through to standard limiter
@@ -164,12 +167,13 @@ router.post(
         return;
       }
 
-      // ── Early bypass check — must run before rate limiting so admin-granted
-      //    per-user / global / whitelist bypasses are never blocked by the
-      //    per-phone counter.  modulesSendOtp() will re-run this internally and
-      //    return otpRequired=false; the early check here only controls whether
-      //    the rate-limit gate is applied.
-      const earlyBypass = await checkOTPBypass(phone);
+      // ── Early bypass check — reuse the result cached by otpLimiterOrBypass
+      //    middleware to avoid a second DB round-trip on the same request.
+      //    Falls back to a fresh check if the middleware result is absent
+      //    (e.g. direct invocation in tests).
+      const earlyBypass: Awaited<ReturnType<typeof checkOTPBypass>> =
+        (res.locals["otpBypassResult"] as Awaited<ReturnType<typeof checkOTPBypass>> | undefined)
+        ?? await checkOTPBypass(phone);
 
       // Per-phone send rate limit — prevents multi-IP SMS flooding of a known number.
       // Skipped entirely when an active bypass is detected (no SMS will be sent).
@@ -209,6 +213,8 @@ router.post(
       }
 
       // ── Delegate entirely to OTP module ──
+      // Pass the already-computed bypass result to avoid a third DB round-trip
+      // inside sendOtp() — earlyBypass was already resolved above.
       const result = await modulesSendOtp({
         identifier: phone,
         identifierType: "phone",
@@ -216,6 +222,7 @@ router.post(
         userId: existingUser?.id,
         channel: req.body.preferredChannel,
         ipAddress: ip,
+        precomputedBypass: earlyBypass,
       });
 
       // Record send against per-phone counter — skip when bypass is active

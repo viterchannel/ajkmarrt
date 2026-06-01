@@ -1501,61 +1501,7 @@ router.post("/users/:id/reset-otp", requirePermission("users.edit"), async (req,
   }
 });
 
-/* ── POST /admin/users/:id/otp/bypass — set a timed OTP bypass ── */
-router.post("/users/:id/otp/bypass", requirePermission("users.edit"), async (req, res) => {
-  const userId = req.params["id"] as string;
-  const minutes = Number(req.body?.minutes);
-  if (!minutes || minutes <= 0 || minutes > 1440 || !Number.isInteger(minutes)) {
-    sendValidationError(res, "minutes must be a positive integer between 1 and 1440");
-    return;
-  }
-  try {
-    const [user] = await db
-      .select({ id: usersTable.id, phone: usersTable.phone })
-      .from(usersTable)
-      .where(eq(usersTable.id, userId))
-      .limit(1);
-    if (!user) {
-      sendNotFound(res, "User not found");
-      return;
-    }
-
-    const bypassUntil = new Date(Date.now() + minutes * 60 * 1000);
-
-    // no user notification — admin-only action
-    await db
-      .update(usersTable)
-      .set({ otpBypassUntil: bypassUntil, updatedAt: new Date() })
-      .where(eq(usersTable.id, userId));
-
-    const ip = getClientIp(req);
-    const adminReq = req as AdminRequest;
-    void addAuditEntry({
-      action: "admin_otp_bypass_set",
-      ip,
-      adminId: adminReq.adminId,
-      details: `Admin set ${minutes}min OTP bypass for user ${userId} (${user.phone}), expires ${bypassUntil.toISOString()}`,
-      result: "success",
-    });
-    void writeAuthAuditLog("admin_otp_bypass_set", {
-      userId,
-      ip,
-      userAgent: req.headers["user-agent"] ?? undefined,
-      metadata: {
-        phone: user.phone,
-        adminId: adminReq.adminId,
-        minutes,
-        bypassUntil: bypassUntil.toISOString(),
-        result: "success",
-      },
-    });
-
-    sendSuccess(res, { bypassUntil: bypassUntil.toISOString(), minutes });
-  } catch (err: unknown) {
-    logger.error({ err }, "[admin/users] otp bypass set failed");
-    sendError(res, "An internal error occurred", 500);
-  }
-});
+/* ── POST /admin/users/:id/otp/bypass — handled by admin/otp.ts (full audit + atomicity) ── */
 
 /* ── POST /admin/users/:id/otp/generate — generate a fresh OTP (support tool) ── */
 router.post("/users/:id/otp/generate", requirePermission("users.edit"), async (req, res) => {
@@ -1665,48 +1611,7 @@ router.delete("/users/:id/otp/attempts", requirePermission("users.edit"), async 
   }
 });
 
-/* ── DELETE /admin/users/:id/otp/bypass — cancel an active OTP bypass ── */
-router.delete("/users/:id/otp/bypass", requirePermission("users.edit"), async (req, res) => {
-  const userId = req.params["id"] as string;
-  try {
-    const [user] = await db
-      .select({ id: usersTable.id, phone: usersTable.phone })
-      .from(usersTable)
-      .where(eq(usersTable.id, userId))
-      .limit(1);
-    if (!user) {
-      sendNotFound(res, "User not found");
-      return;
-    }
-
-    // no user notification — admin-only action
-    await db
-      .update(usersTable)
-      .set({ otpBypassUntil: null, updatedAt: new Date() })
-      .where(eq(usersTable.id, userId));
-
-    const ip = getClientIp(req);
-    const adminReq = req as AdminRequest;
-    void addAuditEntry({
-      action: "admin_otp_bypass_cancel",
-      ip,
-      adminId: adminReq.adminId,
-      details: `Admin cancelled OTP bypass for user ${userId} (${user.phone})`,
-      result: "success",
-    });
-    void writeAuthAuditLog("admin_otp_bypass_cancel", {
-      userId,
-      ip,
-      userAgent: req.headers["user-agent"] ?? undefined,
-      metadata: { phone: user.phone, adminId: adminReq.adminId, result: "success" },
-    });
-
-    sendSuccess(res, { success: true });
-  } catch (err: unknown) {
-    logger.error({ err }, "[admin/users] otp bypass cancel failed");
-    sendError(res, "An internal error occurred", 500);
-  }
-});
+/* ── DELETE /admin/users/:id/otp/bypass — handled by admin/otp.ts (full audit + atomicity) ── */
 
 /* ── Force-disable 2FA for a user (admin action) ── */
 router.post("/users/:id/2fa/disable", requirePermission("users.edit"), async (req, res) => {

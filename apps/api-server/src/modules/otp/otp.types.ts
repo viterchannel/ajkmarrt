@@ -4,6 +4,13 @@ export type OtpType = "login" | "register" | "reset" | "merge" | "trip" | "verif
 
 export type OtpIdentifierType = "phone" | "email";
 
+export interface OtpBypassResult {
+  isBypassed: boolean;
+  reason?: "global" | "per_user" | "whitelist";
+  entryId?: string;
+  createdBy?: string;
+}
+
 export interface OtpSendOptions {
   identifier: string;
   identifierType: OtpIdentifierType;
@@ -12,6 +19,10 @@ export interface OtpSendOptions {
   channel?: OtpChannel;
   ipAddress?: string;
   deviceFingerprint?: string;
+  /** Pre-computed bypass result from an earlier checkOTPBypass() call on the
+   *  same request.  When provided, sendOtp() skips its own DB round-trip and
+   *  uses this value directly — eliminates the duplicate query. */
+  precomputedBypass?: OtpBypassResult;
 }
 
 export interface OtpVerifyOptions {

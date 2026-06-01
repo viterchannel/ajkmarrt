@@ -46,6 +46,7 @@ export async function sendOtp(options: OtpSendOptions): Promise<OtpSendResult> {
     channel: preferredChannel,
     ipAddress,
     deviceFingerprint,
+    precomputedBypass,
   } = options;
 
   const identifier = normalizeIdentifier(rawIdentifier, identifierType);
@@ -55,8 +56,11 @@ export async function sendOtp(options: OtpSendOptions): Promise<OtpSendResult> {
   //    bypasses are never blocked by brute-force counters, hourly caps, or
   //    resend cooldowns.  If a bypass is active, we return immediately and
   //    skip all OTP generation/delivery steps entirely.
+  //    Reuse precomputedBypass when the caller already ran checkOTPBypass()
+  //    on the same request (e.g. phone.routes.ts earlyBypass) to avoid an
+  //    extra DB round-trip.
   if (identifierType === "phone") {
-    const bypass = await checkOTPBypass(identifier);
+    const bypass = precomputedBypass ?? await checkOTPBypass(identifier);
     if (bypass.isBypassed) {
       logger.info(
         { identifier: maskId(identifier), reason: bypass.reason },
