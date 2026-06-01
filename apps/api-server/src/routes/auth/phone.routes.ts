@@ -368,7 +368,7 @@ router.post(
 
 router.post(
   "/verify-otp",
-  otpLimiter,
+  otpLimiterOrBypass,
   verifyCaptcha,
   validateBody(VerifyOtpSchema),
   async (req, res) => {

@@ -115,7 +115,7 @@ export const JWT_SECRET: string = resolveJwtSecret();
 
 /* Access token TTL defaults — overridden at runtime by platform settings jwt_access_ttl_sec / jwt_refresh_ttl_days */
 export const ACCESS_TOKEN_TTL_SEC = 900; /* 15 minutes */
-export const REFRESH_TOKEN_TTL_DAYS = 7; /* 7 days */
+export const REFRESH_TOKEN_TTL_DAYS = 30; /* 30 days — InDrive/Cream-style long session */
 
 function safeInt(val: string | undefined, fallback: number, min = 1): number {
   const n = parseInt(val ?? String(fallback), 10);
