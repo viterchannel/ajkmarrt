@@ -1,0 +1,67 @@
+Good Morning greeting aur rider naam — friendly touch, rakho.
+
+"Last online" timestamp — useful, admin bhi dekh sakta hai ki rider kab active tha.
+
+Today's Performance — Earned Today, Rides Done — bilkul sahi. Rider ko yahi chahiye.
+
+Offline toggle switch — must have. Isi se rider online/offline hota hai.
+
+❌ Jo confusing ya bekar hai (improve/hatao)
+Element	Problem	Suggestion
+Phone not verified, CNIC not approved, Bank not added — teen alag warning lines	Overwhelming. Rider ko ek saath itni warnings se lagta hai account incomplete hai.	Ek single "Profile Completion" progress bar dikhao (e.g., 40% complete). Tap karne par detail page khule jahan phone, email, CNIC, bank sab verify/add kare.
+"Complete your profile to unlock withdrawals"	Sahi message hai par already teen lines upar hain, ye 4th warning ban rahi hai.	Progress bar ke saath ek chhota note: "Complete profile to enable withdrawals".
+Accept. (--) aur Rating (--)	Jab tak koi ride nahi ki, "—" dikhana bekaar hai. Rider confuse hoga.	Inhe tabhi dikhao jab ek bhi ride complete ho. Pehle ye stats hide rakho ya grey out rakho lekin label change karo: "No rides yet".
+Session time: Offline	Redundant. Toggle ke neeche already "You are Offline" likha hai. Upar "Session time" ka koi matlab nahi jab offline ho.	Hata do. Online hone par "Online since 10 min" dikhao, offline hone par kuch mat dikhao.
+Max trips: 3	Kya hai ye? Admin ne limit lagayi? Rider ko pata nahi chalega. Agar parallel rides limit hai to tooltip ya icon ke saath "Max active orders: 3" likho.	Agar zaroori hai to chhota icon ke saath dikhao "Active limit: 3". Otherwise hata do, backend se control karo.
+"You are Offline" message toggle ke neeche	Toggle ka label khud "Offline" hai, fir se niche same line — repetition.	Hata do. Toggle ke color/status se hi pata chal jata hai.
+3. Rider Dashboard B2B ke hisaab se kaisa hona chahiye? (Ideal Design)
+Rider ek field worker hai — usko simple, fast, ek nazar mein sab chahiye.
+Design language: card-based, minimal text, large touch targets.
+
+Ideal Dashboard Layout
+text
+┌─────────────────────────────┐
+│ ☰   AJKMart Rider    🔔     │
+│ Good Morning, toqeer        │
+│ Online since 10:23 am       │
+├─────────────────────────────┤
+│  📋 Profile 40% complete    │ (tappable bar)
+│  ⚠️ CNIC pending approval   │ (only if critical)
+├─────────────────────────────┤
+│  💰 Today's Earnings        │
+│  Rs. 450   |   5 Rides      │
+│  Acceptance 100% | Rating 4.8│ (show only if data exists)
+├─────────────────────────────┤
+│  🔘 You are Online           │ (big toggle, green)
+│   Active orders: 2/3         │ (max limit indicator)
+├─────────────────────────────┤
+│  📦 New Ride Request!        │ (dynamic alert area)
+│   Pickup: ABC Mart → Gulberg │
+│   [Accept]  [Decline]       │
+├─────────────────────────────┤
+│  Quick Actions               │
+│  [My Earnings] [Support]    │
+└─────────────────────────────┘
+Ye clean, action-oriented dashboard hai.
+
+4. Features Jo Zaroor Add Karo (B2B Fleet ke liye)
+New ride request popup/alert — jab rider online ho aur naya order aaye, immediately dikhe. Ye dashboard ka heart hai.
+
+Earnings details page — ek tap pe daily/weekly breakup, cash collected, wallet balance.
+
+Active order summary — agar rider ke paas ek bhi chal raha hai to current order status (picked up, delivering) dikhe bina kisi extra screen ke.
+
+Support chat/call button — B2B mein rider ko turant help chahiye hoti hai. Dashboard par fixed button rakho.
+
+Notifications bell — admin ke alerts, payment updates, document approval status.
+
+5. Jo Remove Ya Simplify Karo
+Multiple warning lines → single tappable completion card.
+
+Session time, "You are Offline" text → toggle status hi kafi hai, online time chahiye toh small text "Online for 12 min" dikhao, offline mein kuch mat dikhao.
+
+Max trips label → agar active order limit hai to sirf online hone ke baad "Active: 1/3" dikhao, offline mein hide karo.
+
+Acceptance aur Rating empty state → completely hide until first ride complete.
+
+"Standard" role tag → rider ke liye irrelevant hai, internal designation hai. Sirf admin ke liye rakhna hai to hata do yahan se.

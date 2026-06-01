@@ -2873,6 +2873,12 @@ export const useAdminViewOtp = (userId: string | null, options?: { enabled?: boo
     gcTime: 0,
   });
 
+export const useAdminGenerateOtp = () =>
+  useMutation({
+    mutationFn: (userId: string) =>
+      adminFetch(`/users/${userId}/otp/generate`, { method: "POST", body: "{}" }),
+  });
+
 export const useAdminVerifyContact = () => {
   const qc = useQueryClient();
   return useMutation({

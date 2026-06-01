@@ -36,7 +36,7 @@ import {
   useAdminResetOtp,
   useAdminUserSessions,
   useAdminVerifyContact,
-  useAdminViewOtp,
+  useAdminGenerateOtp,
   useApproveUser,
   useBulkBanUsers,
   useCreateUser,
@@ -917,9 +917,8 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
   const [showMpinResetConfirm, setShowMpinResetConfirm] = useState(false);
 
   /* ── OTP Tools state ── */
-  const [showOtpData, setShowOtpData] = useState(false);
-  const [viewOtpEnabled, setViewOtpEnabled] = useState(false);
-  const otpQuery = useAdminViewOtp(user.id, { enabled: viewOtpEnabled });
+  const [generatedOtp, setGeneratedOtp] = useState<{ code: string; expiresInSeconds: number; generatedAt: number } | null>(null);
+  const generateOtp = useAdminGenerateOtp();
 
   const verifyContact = useAdminVerifyContact();
   const forcePasswordReset = useAdminForcePasswordReset();
@@ -927,9 +926,16 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
     user.requirePasswordChange || false
   );
 
-  const handleViewOtp = () => {
-    setShowOtpData(true);
-    setViewOtpEnabled(true);
+  const handleGenerateOtp = () => {
+    generateOtp.mutate(user.id, {
+      onSuccess: (data: { code: string; expiresInSeconds: number }) => {
+        setGeneratedOtp({ code: data.code, expiresInSeconds: data.expiresInSeconds, generatedAt: Date.now() });
+      },
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : "Failed to generate OTP";
+        toast({ title: msg.includes("super_admin") ? "Super Admin role required to generate OTP" : msg, variant: "destructive" });
+      },
+    });
   };
 
   const handleVerifyContact = (type: "phone" | "email") => {
@@ -1368,13 +1374,13 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
               </span>
             </div>
             <div className="space-y-3 p-3">
-              {/* View Current OTP */}
+              {/* Generate OTP */}
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <div className="flex-1">
-                    <p className="text-foreground text-sm font-semibold">View Current OTP</p>
+                    <p className="text-foreground text-sm font-semibold">Generate OTP</p>
                     <p className="text-muted-foreground text-xs">
-                      Show live OTP code for troubleshooting
+                      Create a fresh OTP code to share with the user for troubleshooting
                     </p>
                   </div>
                   <Button
@@ -1382,17 +1388,17 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                     variant="outline"
                     className="shrink-0 rounded-lg border-violet-400 text-xs text-violet-700 hover:bg-violet-50"
                     onClick={() => setShowViewOtpConfirm(true)}
-                    disabled={otpQuery.isFetching}
+                    disabled={generateOtp.isPending}
                   >
-                    {otpQuery.isFetching ? (
+                    {generateOtp.isPending ? (
                       <>
                         <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                        Loading...
+                        Generating...
                       </>
                     ) : (
                       <>
                         <Eye className="mr-1 h-3 w-3" />
-                        View OTP
+                        Generate OTP
                       </>
                     )}
                   </Button>
@@ -1401,10 +1407,10 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                   <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-2.5">
                     <p className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
                       <Eye className="h-3.5 w-3.5 text-amber-600" />
-                      View current OTP for {user.name ?? user.phone}?
+                      Generate a new OTP for {user.name ?? user.phone}?
                     </p>
                     <p className="text-[11px] text-amber-700">
-                      This action is recorded in the OTP audit log with your admin ID, IP, and timestamp.
+                      This will create a fresh 6-digit code valid for 10 minutes. The action is recorded in the audit log with your admin ID, IP, and timestamp.
                     </p>
                     <div className="flex gap-2">
                       <Button
@@ -1418,49 +1424,30 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                       <Button
                         size="sm"
                         className="h-7 text-[11px] rounded-lg bg-violet-600 text-white hover:bg-violet-700 gap-1"
-                        onClick={() => { handleViewOtp(); setShowViewOtpConfirm(false); }}
+                        onClick={() => { handleGenerateOtp(); setShowViewOtpConfirm(false); }}
                       >
                         <Eye className="h-3 w-3" />
-                        Confirm &amp; View
+                        Confirm &amp; Generate
                       </Button>
                     </div>
                   </div>
                 )}
 
-                {showOtpData && otpQuery.data && (
+                {generatedOtp && (
                   <div className="space-y-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-violet-700">Phone:</span>
-                      {otpQuery.data.phone?.active ? (
-                        <div className="flex items-center gap-2">
-                          <code className="rounded bg-violet-100 px-2 py-0.5 font-mono text-sm font-bold tracking-widest text-violet-900">
-                            {otpQuery.data.phone?.code ?? "••••••"}
-                          </code>
-                          <span className="text-[10px] text-violet-500">
-                            exp {new Date(otpQuery.data.phone.expiry).toLocaleTimeString()}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-xs italic">No active OTP</span>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-violet-700">Email:</span>
-                      {otpQuery.data.email?.active ? (
-                        <div className="flex items-center gap-2">
-                          <code className="rounded bg-violet-100 px-2 py-0.5 font-mono text-sm font-bold tracking-widest text-violet-900">
-                            {otpQuery.data.email?.code ?? "••••••"}
-                          </code>
-                          <span className="text-[10px] text-violet-500">
-                            exp {new Date(otpQuery.data.email.expiry).toLocaleTimeString()}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-xs italic">No active OTP</span>
-                      )}
+                      <span className="text-xs font-semibold text-violet-700">OTP Code:</span>
+                      <div className="flex items-center gap-2">
+                        <code className="rounded bg-violet-100 px-2 py-0.5 font-mono text-sm font-bold tracking-widest text-violet-900">
+                          {generatedOtp.code}
+                        </code>
+                        <span className="text-[10px] text-violet-500">
+                          valid {generatedOtp.expiresInSeconds / 60}min · expires {new Date(generatedOtp.generatedAt + generatedOtp.expiresInSeconds * 1000).toLocaleTimeString()}
+                        </span>
+                      </div>
                     </div>
                     <button
-                      onClick={() => setShowOtpData(false)}
+                      onClick={() => setGeneratedOtp(null)}
                       className="text-[10px] text-violet-500 hover:underline"
                     >
                       Hide
