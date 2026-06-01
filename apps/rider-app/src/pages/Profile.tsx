@@ -28,11 +28,14 @@ import {
   LogOut,
   Mail,
   MapPin,
+  Package,
   Pencil,
   Phone,
   RefreshCcw,
+  Settings,
   Shield,
   Star,
+  TrendingUp,
   Truck,
   Upload,
   User,
@@ -58,6 +61,34 @@ const log = createLogger("[Profile]");
 
 const fc = (n: string | number | null | undefined, currencySymbol = "Rs.") =>
   _sharedFcP(n != null ? String(n) : (n as null | undefined), currencySymbol);
+
+function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
+  if (!rating || rating === 0) return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
+  if (rating >= 4.5) return { label: "Gold Partner", cls: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" };
+  if (rating >= 4.0) return { label: "Silver Partner", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
+  if (rating >= 3.5) return { label: "Active Rider", cls: "text-success bg-success/10 border-success/20" };
+  return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
+}
+
+function getInitials(name?: string | null): string {
+  if (!name) return "R";
+  const parts = name.trim().split(" ").filter(Boolean);
+  if (parts.length === 0) return "R";
+  if (parts.length === 1) return parts[0]![0]?.toUpperCase() ?? "R";
+  return ((parts[0]![0] ?? "") + (parts[parts.length - 1]![0] ?? "")).toUpperCase();
+}
+
+function timeAgo(dateStr?: string | null): string {
+  if (!dateStr) return "recently";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
 
 const VEHICLES = ["bike", "car", "van", "rickshaw", "bicycle", "on_foot"];
 
@@ -783,46 +814,33 @@ export default function Profile() {
   const quickActions = [
     {
       href: "/wallet",
-      icon: <Wallet size={20} />,
+      icon: <Wallet size={24} className="text-brand" />,
       label: T("wallet"),
-      bg: "bg-success/10 text-success",
     },
     {
       href: "/earnings",
-      icon: <BarChart2 size={20} />,
+      icon: <BarChart2 size={24} className="text-success" />,
       label: T("yourEarnings"),
-      bg: "bg-warning/10 text-warning",
     },
     {
       href: "/history",
-      icon: <ClipboardList size={20} />,
+      icon: <ClipboardList size={24} className="text-indigo-400" />,
       label: T("myOrders"),
-      bg: "bg-purple-500/10 text-purple-400",
     },
     {
       href: "/reviews",
-      icon: <Star size={20} />,
-      label: "My Reviews",
-      bg: "bg-yellow-50 text-yellow-600",
-    },
-    {
-      href: "/notifications",
-      icon: <Bell size={20} />,
-      label: T("notifications"),
-      bg: "bg-indigo-500/10 text-indigo-400",
-      badge: unread,
-    },
-    {
-      href: "/settings",
-      icon: <Shield size={20} />,
-      label: T("securitySettingsLink"),
-      bg: "bg-error/10 text-error",
+      icon: <Star size={24} className="text-warning" />,
+      label: "Reviews",
     },
     {
       href: "/help",
-      icon: <HelpCircle size={20} />,
+      icon: <HelpCircle size={24} className="text-blue-400" />,
       label: "Help & FAQ",
-      bg: "bg-brand/10 text-brand",
+    },
+    {
+      href: "/settings",
+      icon: <Settings size={24} className="text-white/50" />,
+      label: "Settings",
     },
   ];
 
@@ -900,11 +918,9 @@ export default function Profile() {
       )}
 
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-24"
+        className="relative border-b border-white/[0.06] bg-page-bg px-5 pb-4"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
-        <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
         <div className="relative mb-2 flex items-center justify-between">
           <div>
             <p className="mb-1 text-xs font-semibold tracking-widest text-white/40 uppercase">
@@ -916,7 +932,7 @@ export default function Profile() {
           </div>
           <Link
             href="/notifications"
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.06] bg-card-dark/[0.06] text-white backdrop-blur-sm"
+            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.04] text-white transition-colors active:bg-white/[0.08]"
           >
             <Bell size={18} />
             {unread > 0 && (
@@ -928,23 +944,24 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="-mt-20 space-y-4 px-4">
-        <div className="relative animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark p-5 shadow-lg">
-          <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full bg-border-dark opacity-50" />
-          <div className="relative flex items-start gap-4">
-            <input
-              type="file"
-              accept="image/*"
-              capture="user"
-              ref={avatarInputRef}
-              onChange={handleAvatarUpload}
-              className="hidden"
-            />
-            <button
-              onClick={() => avatarInputRef.current?.click()}
-              disabled={avatarUploading}
-              className="group relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl shadow-lg ring-4 ring-brand/30"
-            >
+      <div className="max-w-2xl mx-auto space-y-4 px-4 pb-4">
+
+        {/* ── Avatar section ── */}
+        <div className="animate-[slideUp_0.35s_ease-out] flex flex-col items-center py-6">
+          <input
+            type="file"
+            accept="image/*"
+            capture="user"
+            ref={avatarInputRef}
+            onChange={handleAvatarUpload}
+            className="hidden"
+          />
+          <button
+            onClick={() => avatarInputRef.current?.click()}
+            disabled={avatarUploading}
+            className="relative h-20 w-20 flex-shrink-0"
+          >
+            <div className="h-20 w-20 overflow-hidden rounded-full ring-2 ring-brand/30 ring-offset-2 ring-offset-page-bg">
               {user?.avatar ? (
                 <SafeImage
                   src={user.avatar}
@@ -953,195 +970,178 @@ export default function Profile() {
                   loading="eager"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-card-dark text-2xl font-extrabold text-white">
-                  {(user?.name || user?.phone || "R")[0]!.toUpperCase()}
-                </div>
-              )}
-              {avatarUploading ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                </div>
-              ) : (
-                <div className="absolute right-0 bottom-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-card-dark shadow-sm">
-                  <Camera size={10} className="text-white" />
-                </div>
-              )}
-            </button>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-lg leading-tight font-extrabold text-white">
-                {user?.name || "Rider"}
-              </h2>
-              <p className="mt-0.5 flex items-center gap-1 text-sm text-[#B0B0B0]">
-                <Phone size={12} /> {user?.phone}
-              </p>
-              {user?.city && (
-                <p className="mt-0.5 flex items-center gap-1 text-xs text-[#B0B0B0]">
-                  <MapPin size={11} /> {user.city}
-                </p>
-              )}
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <span
-                  className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${
-                    user?.isOnline ? "bg-green-900/30 text-success" : "bg-border-dark text-[#B0B0B0]"
-                  }`}
-                >
-                  <Circle
-                    size={7}
-                    className={
-                      user?.isOnline
-                        ? "fill-green-500 text-success"
-                        : "fill-[#B0B0B0] text-[#B0B0B0]"
-                    }
-                  />
-                  {user?.isOnline ? T("onlineLabel") : T("offlineLabel")}
-                </span>
-                <span className="flex items-center gap-1 rounded-full bg-card-dark px-2.5 py-1 text-[11px] font-bold text-white">
-                  <Bike size={11} /> {T("riderBadge")}
-                </span>
-                {user?.vehicleType && (
-                  <span className="rounded-full bg-border-dark px-2.5 py-1 text-[11px] font-bold text-[#B0B0B0]">
-                    {VEHICLE_LABELS[user.vehicleType] ?? user.vehicleType}
+                <div className="flex h-full w-full items-center justify-center bg-brand/20">
+                  <span className="text-2xl font-extrabold text-brand">
+                    {getInitials(user?.name)}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-          </div>
-          <div className="mt-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
-                    key={s}
-                    size={13}
-                    className={
-                      s <= Math.round(rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "fill-[#B0B0B0] text-[#B0B0B0]"
-                    }
-                  />
-                ))}
+            {avatarUploading ? (
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
               </div>
-              <span className="text-xs font-semibold text-[#B0B0B0]">
-                {rating.toFixed(1)} {T("ratingLabel")}
+            ) : (
+              <div className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-page-bg bg-card-dark shadow">
+                <Camera size={11} className="text-white/70" />
+              </div>
+            )}
+          </button>
+
+          <h2 className="mt-3 text-[18px] font-extrabold tracking-tight text-white">
+            {user?.name || "Rider"}
+          </h2>
+
+          {(() => {
+            const tier = getRiderTier(rating);
+            return tier.label !== "Standard" ? (
+              <span className={`mt-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}>
+                {tier.label}
               </span>
-            </div>
+            ) : null;
+          })()}
+
+          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+            <span className="text-[10px] text-white/30">
+              {user?.isOnline
+                ? "Online now"
+                : `Last online · ${timeAgo((user as any)?.lastSeen ?? (user as any)?.updatedAt)}`}
+            </span>
             {user?.createdAt && (
-              <p className="flex items-center gap-1 text-[10px] text-[#B0B0B0]">
-                <Clock size={10} /> {T("memberSince")}{" "}
-                {new Date(user.createdAt).toLocaleDateString("en-PK", {
-                  month: "short",
-                  year: "numeric",
-                })}
-              </p>
+              <>
+                <span className="text-white/20">·</span>
+                <span className="text-[10px] text-white/30">
+                  Member since{" "}
+                  {new Date(user.createdAt).toLocaleDateString("en-PK", {
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+              </>
             )}
           </div>
         </div>
 
-        <div className="flex animate-[slideUp_0.5s_ease-out] gap-2">
-          {[
-            {
-              label: T("deliveriesLabel"),
-              value: String(totalDeliveries),
-              icon: <ClipboardList size={15} className="text-blue-500" />,
-              bg: "bg-blue-500/10",
-              border: "border-blue-100",
-            },
-            {
-              label: T("earnedStat"),
-              value: fc(totalEarnings, currency),
-              icon: <BarChart2 size={15} className="text-success" />,
-              bg: "bg-success/10",
-              border: "border-success/20",
-            },
-            {
-              label: T("walletStat"),
-              value: fc(user?.walletBalance ?? "0", currency),
-              icon: <Wallet size={15} className="text-warning" />,
-              bg: "bg-warning/10",
-              border: "border-warning/20",
-            },
-            {
-              label: T("ratingStat"),
-              value: rating.toFixed(1),
-              icon: <Star size={15} className="text-yellow-500" />,
-              bg: "bg-yellow-50",
-              border: "border-yellow-100",
-            },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className={`flex-1 ${s.bg} rounded-2xl border p-3 ${s.border} text-center`}
-            >
-              <div className="mb-1 flex justify-center">{s.icon}</div>
-              <p className="text-[15px] leading-tight font-extrabold text-white">{s.value}</p>
-              <p className="mt-0.5 truncate text-[9px] font-semibold text-[#B0B0B0]">{s.label}</p>
-            </div>
-          ))}
+        {/* ── Stats bar ── */}
+        <div className="flex flex-row gap-2.5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5"
+            style={{ animationDelay: "0ms", animationFillMode: "both" }}
+          >
+            <Package size={18} className="text-indigo-400" />
+            <p className="mt-1.5 text-xl font-extrabold text-white">{totalDeliveries}</p>
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+              {T("deliveriesLabel")}
+            </p>
+          </div>
+
+          <div
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5"
+            style={{ animationDelay: "60ms", animationFillMode: "both" }}
+          >
+            <TrendingUp size={18} className="text-success" />
+            <p className="mt-1.5 text-xl font-extrabold text-success">{fc(totalEarnings, currency)}</p>
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+              {T("earnedStat")}
+            </p>
+          </div>
+
+          <Link
+            href="/wallet"
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5 transition-colors active:bg-white/[0.07]"
+            style={{ animationDelay: "120ms", animationFillMode: "both" }}
+          >
+            <Wallet size={18} className="text-brand" />
+            <p className="mt-1.5 text-xl font-extrabold text-brand">
+              {fc(user?.walletBalance ?? "0", currency)}
+            </p>
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+              {T("walletStat")}
+            </p>
+          </Link>
+
+          <div
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5"
+            style={{ animationDelay: "180ms", animationFillMode: "both" }}
+          >
+            <Star size={18} className="text-warning" />
+            <p className="mt-1.5 text-xl font-extrabold text-warning">{rating.toFixed(1)}</p>
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+              {T("ratingStat")}
+            </p>
+          </div>
         </div>
 
-        <div className="flex animate-[slideUp_0.55s_ease-out] items-center gap-2 rounded-2xl border border-indigo-100 bg-indigo-500/10 px-4 py-2.5">
-          <Truck size={14} className="flex-shrink-0 text-indigo-500" />
-          <p className="text-xs font-semibold text-indigo-400">
-            Max simultaneous deliveries:{" "}
-            <span className="font-extrabold">{config.rider?.maxDeliveries ?? 3}</span>
-          </p>
-        </div>
-
-        {/* Quality Score Card */}
+        {/* ── Quality Score Card with SVG ring ── */}
         {(() => {
           const cancelRate = cancelStatsData?.cancelRate ?? 0;
           const acceptanceRate = Math.max(0, 100 - cancelRate);
           const qualityScore = Math.round((acceptanceRate * 0.6) + ((rating / 5) * 100 * 0.4));
-          const qualityLabel =
-            qualityScore >= 85 ? "Excellent" :
-            qualityScore >= 70 ? "Good" :
-            qualityScore >= 50 ? "Fair" : "Needs Work";
-          const qualityColor =
-            qualityScore >= 85 ? { bg: "bg-success/10", border: "border-emerald-200", text: "text-success", bar: "bg-success", icon: "text-success" } :
-            qualityScore >= 70 ? { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-400", bar: "bg-blue-500", icon: "text-blue-500" } :
-            qualityScore >= 50 ? { bg: "bg-warning/10", border: "border-warning/30", text: "text-warning", bar: "bg-warning", icon: "text-warning" } :
-            { bg: "bg-error/10", border: "border-error/30", text: "text-error", bar: "bg-error", icon: "text-error" };
+          const circumference = 2 * Math.PI * 36;
+          const dashOffset = circumference * (1 - qualityScore / 100);
+          const ringStroke = qualityScore >= 80 ? "#4CAF50" : qualityScore >= 60 ? "#FF9800" : "#F44336";
+          const scoreTextColor = qualityScore >= 80 ? "text-success" : qualityScore >= 60 ? "text-warning" : "text-error";
+          const ratingColor = rating >= 4.5 ? "text-success" : rating >= 3.5 ? "text-warning" : "text-error";
           return (
-            <div className={`animate-[slideUp_0.57s_ease-out] rounded-3xl border ${qualityColor.border} ${qualityColor.bg} p-4`}>
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Award size={16} className={qualityColor.icon} />
-                  <p className={`text-sm font-extrabold ${qualityColor.text}`}>Quality Score</p>
+            <div className="animate-[slideUp_0.5s_ease-out] rounded-2xl border border-white/[0.08] bg-card-dark p-4">
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-white/30">
+                Quality Score
+              </p>
+              <div className="flex items-center gap-4">
+                {/* SVG ring */}
+                <div className="relative flex-shrink-0">
+                  <svg width="96" height="96" viewBox="0 0 96 96">
+                    <circle
+                      cx="48" cy="48" r="36"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.06)"
+                      strokeWidth="7"
+                    />
+                    <circle
+                      cx="48" cy="48" r="36"
+                      fill="none"
+                      stroke={ringStroke}
+                      strokeWidth="7"
+                      strokeLinecap="round"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={dashOffset}
+                      transform="rotate(-90 48 48)"
+                      style={{ transition: "stroke-dashoffset 0.8s ease-out" }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className={`text-2xl font-extrabold leading-none ${scoreTextColor}`}>
+                      {qualityScore}
+                    </span>
+                    <span className="text-[8px] font-bold uppercase tracking-wider text-white/30">
+                      score
+                    </span>
+                  </div>
                 </div>
-                <span className={`rounded-full px-3 py-0.5 text-xs font-extrabold ${qualityColor.bg} ${qualityColor.text} border ${qualityColor.border}`}>
-                  {qualityLabel}
-                </span>
-              </div>
-              <div className="mb-3">
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#B0B0B0]">Overall Score</span>
-                  <span className={`text-sm font-extrabold ${qualityColor.text}`}>{qualityScore}%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-border-dark">
-                  <div
-                    className={`h-2 rounded-full ${qualityColor.bar} transition-all duration-700`}
-                    style={{ width: `${qualityScore}%` }}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="rounded-2xl bg-card-dark/10 px-2 py-2 text-center">
-                  <p className="text-[14px] font-extrabold text-white">{acceptanceRate.toFixed(1)}%</p>
-                  <p className="mt-0.5 text-[9px] font-semibold text-[#B0B0B0]">Acceptance</p>
-                </div>
-                <div className="rounded-2xl bg-card-dark/10 px-2 py-2 text-center">
-                  <p className="text-[14px] font-extrabold text-white">{cancelRate.toFixed(1)}%</p>
-                  <p className="mt-0.5 text-[9px] font-semibold text-[#B0B0B0]">Cancellation</p>
-                </div>
-                <div className="rounded-2xl bg-card-dark/10 px-2 py-2 text-center">
-                  <p className={`text-[14px] font-extrabold ${rating >= 4.5 ? "text-success" : rating >= 3.5 ? "text-warning" : "text-error"}`}>
-                    ★ {rating.toFixed(1)}
-                  </p>
-                  <p className="mt-0.5 text-[9px] font-semibold text-[#B0B0B0]">Rating</p>
+                {/* 3-row mini stats */}
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
+                    <span className="text-[10px] font-semibold text-white/40">Acceptance</span>
+                    <span className="text-[13px] font-extrabold text-success">
+                      {acceptanceRate.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
+                    <span className="text-[10px] font-semibold text-white/40">Cancel Rate</span>
+                    <span className="text-[13px] font-extrabold text-error">
+                      {cancelRate.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
+                    <span className="text-[10px] font-semibold text-white/40">Rating</span>
+                    <span className={`text-[13px] font-extrabold ${ratingColor}`}>
+                      ★ {rating.toFixed(1)}
+                    </span>
+                  </div>
                 </div>
               </div>
               {(ignoreStatsData?.dailyIgnores ?? 0) > 0 && (
-                <p className="mt-1 text-center text-[9px] text-[#B0B0B0]">
+                <p className="mt-3 text-center text-[9px] text-white/25">
                   {ignoreStatsData!.dailyIgnores} request{ignoreStatsData!.dailyIgnores !== 1 ? "s" : ""} ignored today · {ignoreStatsData!.remaining} remaining
                 </p>
               )}
@@ -1166,26 +1166,22 @@ export default function Profile() {
           </div>
         )}
 
+        {/* ── Quick Actions 3×2 grid ── */}
         <div className="animate-[slideUp_0.6s_ease-out]">
-          <p className="mb-2 px-1 text-[13px] font-bold text-[#B0B0B0]">{T("quickActionsLabel")}</p>
-          <div className="grid grid-cols-3 gap-2">
+          <p className="mb-2.5 px-0.5 text-[10px] font-bold uppercase tracking-widest text-white/30">
+            {T("quickActionsLabel")}
+          </p>
+          <div className="grid grid-cols-3 gap-2.5">
             {quickActions.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative flex flex-col items-center gap-2 rounded-3xl border border-white/10 bg-card-dark p-3.5 shadow-sm transition-all active:bg-border-dark"
+                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-card-dark p-3.5 transition-transform active:scale-[0.96]"
               >
-                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.bg}`}>
-                  {item.icon}
-                </div>
-                <span className="text-center text-[11px] leading-tight font-semibold text-[#B0B0B0]">
+                {item.icon}
+                <span className="text-center text-[11px] font-bold leading-tight text-white/70">
                   {item.label}
                 </span>
-                {(item.badge ?? 0) > 0 && (
-                  <span className="absolute top-2 right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-error px-1 text-[9px] font-extrabold text-white">
-                    {item.badge! > 9 ? "9+" : item.badge}
-                  </span>
-                )}
               </Link>
             ))}
           </div>
