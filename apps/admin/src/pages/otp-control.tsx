@@ -75,15 +75,10 @@ function errorMessage(value: unknown, fallback = "Something went wrong"): string
 }
 
 async function api(method: string, path: string, body?: unknown) {
-  try {
-    return await adminFetch(path, {
-      method,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
-  } catch (e: unknown) {
-    if (isApiError(e) && e.status === 401) return null;
-    throw e;
-  }
+  return adminFetch(path, {
+    method,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
 }
 
 function useCountdown(targetIso: string | null) {
@@ -306,6 +301,7 @@ export default function OtpControl() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [searching, setSearching] = useState(false);
   const [bypassMins, setBypassMins] = useState<Record<string, string>>({});
+  const [bypassLoading, setBypassLoading] = useState<Set<string>>(new Set());
   const searchAbortRef = useRef<AbortController | null>(null);
 
   const [auditRows, setAuditRows] = useState<AuditRow[]>([]);
@@ -395,27 +391,10 @@ export default function OtpControl() {
     [toast]
   );
 
-  const loadRateLimits = useCallback(async () => {
-    try {
-      const d = await adminFetch("/platform-settings");
-      const settings: Array<{ key: string; value: string }> = d?.settings ?? [];
-      const get = (key: string, def: string) => settings.find((s) => s.key === key)?.value ?? def;
-      const perPhone = get("security_otp_max_per_phone", "5");
-      const perIp = get("security_otp_max_per_ip", "10");
-      const winMin = get("security_otp_window_min", "10");
-      setRlPhone(perPhone);
-      setRlIp(perIp);
-      setRlWindow(winMin);
-    } catch (err) {
-      console.warn("[otp-control] Failed to load rate-limit settings:", err);
-    }
-  }, []);
-
   useEffect(() => {
     void loadStatus();
     void loadAudit();
-    void loadRateLimits();
-  }, [loadStatus, loadAudit, loadRateLimits]);
+  }, [loadStatus, loadAudit]);
 
   useEffect(() => {
     if (status?.isGloballyDisabled && remaining === 0 && status.disabledUntil) {
@@ -571,6 +550,7 @@ export default function OtpControl() {
   );
 
   const grantBypass = async (userId: string, mins: number) => {
+    setBypassLoading((prev) => new Set(prev).add(userId));
     try {
       const d = await api("POST", `/users/${userId}/otp/bypass`, {
         minutes: mins,
@@ -606,10 +586,17 @@ export default function OtpControl() {
         description: errorMessage(e, "Failed to grant bypass."),
         variant: "destructive",
       });
+    } finally {
+      setBypassLoading((prev) => {
+        const next = new Set(prev);
+        next.delete(userId);
+        return next;
+      });
     }
   };
 
   const cancelBypass = async (userId: string) => {
+    setBypassLoading((prev) => new Set(prev).add(userId));
     try {
       await api("DELETE", `/users/${userId}/otp/bypass`);
       toast({ title: "Bypass Removed" });
@@ -621,6 +608,12 @@ export default function OtpControl() {
         title: "Error",
         description: errorMessage(e, "Failed to remove bypass."),
         variant: "destructive",
+      });
+    } finally {
+      setBypassLoading((prev) => {
+        const next = new Set(prev);
+        next.delete(userId);
+        return next;
       });
     }
   };
@@ -967,7 +960,7 @@ export default function OtpControl() {
                     onChange={(e) => setCustomMinutes(e.target.value)}
                     className="h-8 w-28 rounded-xl text-xs"
                     min={1}
-                    max={10080}
+                    max={1440}
                   />
                   <button
                     onClick={() => {
@@ -1133,10 +1126,16 @@ export default function OtpControl() {
                         <div className="flex flex-wrap gap-1.5">
                           {bypassActive ? (
                             <button
-                              onClick={() => cancelBypass(user.id)}
-                              className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 transition-colors hover:bg-red-50"
+                              onClick={() => void cancelBypass(user.id)}
+                              disabled={bypassLoading.has(user.id)}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 transition-colors hover:bg-red-50 disabled:opacity-60"
                             >
-                              <XCircle className="h-3 w-3" /> Remove Bypass
+                              {bypassLoading.has(user.id) ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <XCircle className="h-3 w-3" />
+                              )}
+                              Remove Bypass
                             </button>
                           ) : (
                             <>
@@ -1147,10 +1146,15 @@ export default function OtpControl() {
                               ].map((opt) => (
                                 <button
                                   key={opt.mins}
-                                  onClick={() => grantBypass(user.id, opt.mins)}
-                                  className="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 transition-colors hover:bg-indigo-100"
+                                  onClick={() => void grantBypass(user.id, opt.mins)}
+                                  disabled={bypassLoading.has(user.id)}
+                                  className="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 transition-colors hover:bg-indigo-100 disabled:opacity-60"
                                 >
-                                  {opt.label}
+                                  {bypassLoading.has(user.id) ? (
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                  ) : (
+                                    opt.label
+                                  )}
                                 </button>
                               ))}
                               <div className="flex items-center gap-1">
@@ -1166,15 +1170,21 @@ export default function OtpControl() {
                                   }
                                   className="h-7 w-16 rounded-lg text-xs"
                                   min={1}
+                                  disabled={bypassLoading.has(user.id)}
                                 />
                                 <button
                                   onClick={() => {
                                     const m = parseInt(bypassMins[user.id] ?? "", 10);
                                     if (m > 0) void grantBypass(user.id, m);
                                   }}
-                                  className="border-border text-foreground hover:bg-muted/40 h-7 rounded-lg border bg-white px-2.5 py-1.5 text-xs font-semibold transition-colors"
+                                  disabled={bypassLoading.has(user.id)}
+                                  className="border-border text-foreground hover:bg-muted/40 h-7 rounded-lg border bg-white px-2.5 py-1.5 text-xs font-semibold transition-colors disabled:opacity-60"
                                 >
-                                  Custom
+                                  {bypassLoading.has(user.id) ? (
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                  ) : (
+                                    "Custom"
+                                  )}
                                 </button>
                               </div>
                             </>

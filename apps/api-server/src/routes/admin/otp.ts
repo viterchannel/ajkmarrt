@@ -80,10 +80,13 @@ function sendServerError(res: import("express").Response, error: unknown, contex
 
 /* ─── GET /admin/otp/bypass-feature-status ────────────────────────────────── */
 router.get("/otp/bypass-feature-status", (_req, res) => {
+  const env = process.env.NODE_ENV ?? "development";
+  const whitelistEnabled =
+    env !== "production" || process.env.ENABLE_OTP_BYPASS_PRODUCTION === "true";
   res.json({
     success: true,
-    whitelistEnabled: process.env.ENABLE_OTP_BYPASS_PRODUCTION === "true",
-    environment: process.env.NODE_ENV ?? "development",
+    whitelistEnabled,
+    environment: env,
   });
 });
 
