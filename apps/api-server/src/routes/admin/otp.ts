@@ -164,7 +164,7 @@ router.post("/otp/disable", async (req, res) => {
        picks up the suspension immediately without waiting for TTL expiry. */
     invalidatePlatformSettingsCache();
 
-    sendSuccess(res, result);
+    sendSuccess(res, { ...result, minutesGranted: minutes });
   } catch (error: unknown) {
     const errMsg = error instanceof Error ? error.message : String(error);
     sendValidationError(res, errMsg);

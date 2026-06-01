@@ -14,7 +14,7 @@ import { db } from "@workspace/db";
 import { refreshTokensTable, userRolesTable, usersTable, walletTransactionsTable } from "@workspace/db/schema";
 import { canonicalizePhone } from "@workspace/phone-utils";
 import { eq, sql } from "drizzle-orm";
-import { Router, type IRouter } from "express";
+import { type RequestHandler, Router, type IRouter } from "express";
 import { z } from "zod";
 import { AUTH_ERROR_CODES, logAuthEvent } from "../../lib/auth-response.js";
 import { fireAndForget } from "../../lib/fireAndForget.js";
@@ -54,6 +54,7 @@ import {
   OtpInvalidError,
   OtpRateLimitError,
 } from "../../modules/otp/index.js";
+import { checkOTPBypass } from "../../lib/auth-otp-bypass.js";
 import {
   decryptPii,
   isDeviceTrusted,
@@ -64,6 +65,25 @@ import {
 } from "./helpers.js";
 
 const router: IRouter = Router();
+
+// ─── Bypass-aware OTP rate limiter ────────────────────────────────────────────
+// When an admin-granted bypass is active (per-user, global, or whitelist), the
+// standard IP/phone rate limiter must not block the login.  We check bypass
+// status early using the same utility the handler uses — if bypass is active we
+// skip the limiter entirely; otherwise we fall through to the normal limiter.
+const otpLimiterOrBypass: RequestHandler = async (req, res, next) => {
+  const rawPhone = req.body?.phone;
+  if (rawPhone && typeof rawPhone === "string") {
+    try {
+      const canonPhone = canonicalizePhone(rawPhone);
+      const bypass = await checkOTPBypass(canonPhone);
+      if (bypass.isBypassed) return next();
+    } catch {
+      // ignore bypass-check errors — fall through to standard limiter
+    }
+  }
+  return otpLimiter(req, res, next);
+};
 
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 
@@ -88,7 +108,7 @@ const VerifyOtpSchema = z.object({
 
 router.post(
   "/send-otp",
-  otpLimiter,
+  otpLimiterOrBypass,
   verifyCaptcha,
   validateBody(SendOtpSchema),
   async (req, res) => {
@@ -144,17 +164,27 @@ router.post(
         return;
       }
 
-      // Per-phone send rate limit — prevents multi-IP SMS flooding of a known number
+      // ── Early bypass check — must run before rate limiting so admin-granted
+      //    per-user / global / whitelist bypasses are never blocked by the
+      //    per-phone counter.  modulesSendOtp() will re-run this internally and
+      //    return otpRequired=false; the early check here only controls whether
+      //    the rate-limit gate is applied.
+      const earlyBypass = await checkOTPBypass(phone);
+
+      // Per-phone send rate limit — prevents multi-IP SMS flooding of a known number.
+      // Skipped entirely when an active bypass is detected (no SMS will be sent).
       const phoneSendKey = `phone_otp_send:${phone}`;
       const PHONE_SEND_MAX = 10;
       const PHONE_SEND_WINDOW_MIN = 60;
-      const phoneSendLockout = await checkLockout(phoneSendKey, PHONE_SEND_MAX, PHONE_SEND_WINDOW_MIN);
-      if (phoneSendLockout.locked) {
-        sendTooManyRequests(
-          res,
-          `Too many OTP requests for this number. Try again in ${phoneSendLockout.minutesLeft} minute(s).`
-        );
-        return;
+      if (!earlyBypass.isBypassed) {
+        const phoneSendLockout = await checkLockout(phoneSendKey, PHONE_SEND_MAX, PHONE_SEND_WINDOW_MIN);
+        if (phoneSendLockout.locked) {
+          sendTooManyRequests(
+            res,
+            `Too many OTP requests for this number. Try again in ${phoneSendLockout.minutesLeft} minute(s).`
+          );
+          return;
+        }
       }
 
       // ── Silent security logging (does not block OTP flow — avoids phone enumeration) ──
@@ -188,8 +218,11 @@ router.post(
         ipAddress: ip,
       });
 
-      // Record send against per-phone counter
-      await recordFailedAttempt(phoneSendKey, PHONE_SEND_MAX, PHONE_SEND_WINDOW_MIN);
+      // Record send against per-phone counter — skip when bypass is active
+      // because no SMS was dispatched so the attempt must not consume quota.
+      if (!earlyBypass.isBypassed) {
+        await recordFailedAttempt(phoneSendKey, PHONE_SEND_MAX, PHONE_SEND_WINDOW_MIN);
+      }
 
       void writeAuthAuditLog("otp_sent", {
         userId: existingUser?.id,

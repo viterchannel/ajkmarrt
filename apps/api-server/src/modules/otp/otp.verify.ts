@@ -50,47 +50,11 @@ export async function sendOtp(options: OtpSendOptions): Promise<OtpSendResult> {
 
   const identifier = normalizeIdentifier(rawIdentifier, identifierType);
 
-  // ── 1. Brute-force / lockout check ──
-  const attemptStatus = await getAttemptStatus(identifier);
-  if (attemptStatus.blocked) {
-    logger.warn(
-      { identifier: maskId(identifier), unlocksAt: attemptStatus.unlocksAt },
-      "[otp:send] Identifier is locked out"
-    );
-    throw new OtpBlockedError(
-      `Too many attempts. Try again after ${attemptStatus.unlocksAt?.toLocaleTimeString() ?? "some time"}.`,
-      attemptStatus.unlocksAt ?? new Date(Date.now() + OTP_CONFIG.LOCKOUT_DURATION_MS)
-    );
-  }
-
-  // ── 2. Send rate limit (max per hour) ──
-  const recentCount = await countRecentSends(identifier, identifierType, 60 * 60 * 1000);
-  if (recentCount >= OTP_CONFIG.MAX_SEND_PER_HOUR) {
-    logger.warn(
-      { identifier: maskId(identifier), recentCount },
-      "[otp:send] Hourly send limit reached"
-    );
-    throw new OtpRateLimitError(
-      "Too many OTP requests. Please wait before requesting another.",
-      60 * 60 * 1000
-    );
-  }
-
-  // ── 3. Resend cooldown ──
-  const lastSentAt = await getLastSentAt(identifier, identifierType, otpType);
-  if (lastSentAt) {
-    const msSinceLast = Date.now() - lastSentAt.getTime();
-    if (msSinceLast < OTP_CONFIG.RESEND_COOLDOWN_MS) {
-      const retryAfterMs = OTP_CONFIG.RESEND_COOLDOWN_MS - msSinceLast;
-      throw new OtpRateLimitError(
-        `Please wait ${Math.ceil(retryAfterMs / 1000)} seconds before resending.`,
-        retryAfterMs
-      );
-    }
-  }
-
-  // ── 4. Bypass checks (global suspend / per-user / whitelist) ──
-  //    Only applies to phone-based OTP (email has no bypass mechanism)
+  // ── 1. Bypass checks (global suspend / per-user / whitelist) ──
+  //    Must run FIRST — before any rate-limit gate — so that admin-granted
+  //    bypasses are never blocked by brute-force counters, hourly caps, or
+  //    resend cooldowns.  If a bypass is active, we return immediately and
+  //    skip all OTP generation/delivery steps entirely.
   if (identifierType === "phone") {
     const bypass = await checkOTPBypass(identifier);
     if (bypass.isBypassed) {
@@ -167,6 +131,45 @@ export async function sendOtp(options: OtpSendOptions): Promise<OtpSendResult> {
         expiresAt: bypass.expiresAt ?? undefined,
         ...(bypass.bypassCode && isDevMode() && { devCode: bypass.bypassCode }),
       };
+    }
+  }
+
+  // ── 2. Brute-force / lockout check ──
+  const attemptStatus = await getAttemptStatus(identifier);
+  if (attemptStatus.blocked) {
+    logger.warn(
+      { identifier: maskId(identifier), unlocksAt: attemptStatus.unlocksAt },
+      "[otp:send] Identifier is locked out"
+    );
+    throw new OtpBlockedError(
+      `Too many attempts. Try again after ${attemptStatus.unlocksAt?.toLocaleTimeString() ?? "some time"}.`,
+      attemptStatus.unlocksAt ?? new Date(Date.now() + OTP_CONFIG.LOCKOUT_DURATION_MS)
+    );
+  }
+
+  // ── 3. Send rate limit (max per hour) ──
+  const recentCount = await countRecentSends(identifier, identifierType, 60 * 60 * 1000);
+  if (recentCount >= OTP_CONFIG.MAX_SEND_PER_HOUR) {
+    logger.warn(
+      { identifier: maskId(identifier), recentCount },
+      "[otp:send] Hourly send limit reached"
+    );
+    throw new OtpRateLimitError(
+      "Too many OTP requests. Please wait before requesting another.",
+      60 * 60 * 1000
+    );
+  }
+
+  // ── 4. Resend cooldown ──
+  const lastSentAt = await getLastSentAt(identifier, identifierType, otpType);
+  if (lastSentAt) {
+    const msSinceLast = Date.now() - lastSentAt.getTime();
+    if (msSinceLast < OTP_CONFIG.RESEND_COOLDOWN_MS) {
+      const retryAfterMs = OTP_CONFIG.RESEND_COOLDOWN_MS - msSinceLast;
+      throw new OtpRateLimitError(
+        `Please wait ${Math.ceil(retryAfterMs / 1000)} seconds before resending.`,
+        retryAfterMs
+      );
     }
   }
 
