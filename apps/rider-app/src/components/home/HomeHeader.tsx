@@ -1,4 +1,4 @@
-import { AlertTriangle, ChevronRight, Smartphone, Volume2, VolumeX, Wallet } from "lucide-react";
+import { AlertTriangle, Bell, ChevronRight, Smartphone, Volume2, VolumeX, Wallet } from "lucide-react";
 import { Link } from "wouter";
 import { LiveClock, formatCurrency } from "../dashboard";
 import type { TranslationKey } from "@workspace/i18n";
@@ -17,6 +17,7 @@ interface HomeHeaderProps {
   onToggleOnline: () => void;
   onToggleSilence: () => void;
   newFlash: boolean;
+  unreadNotifications?: number;
 }
 
 function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
@@ -25,6 +26,14 @@ function getRiderTier(rating: number | null | undefined): { label: string; cls: 
   if (rating >= 4.0) return { label: "Silver Partner", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
   if (rating >= 3.5) return { label: "Active Rider", cls: "text-success bg-success/10 border-success/20" };
   return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
+}
+
+function getInitials(name?: string | null): string {
+  if (!name) return "R";
+  const parts = name.trim().split(" ").filter(Boolean);
+  if (parts.length === 0) return "R";
+  if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "R";
+  return ((parts[0][0] ?? "") + (parts[parts.length - 1][0] ?? "")).toUpperCase();
 }
 
 export function HomeHeader({
@@ -40,10 +49,13 @@ export function HomeHeader({
   onToggleOnline,
   onToggleSilence,
   newFlash,
+  unreadNotifications = 0,
 }: HomeHeaderProps) {
   const tier = getRiderTier((user?.stats as any)?.rating ?? null);
   const firstName = user?.name?.split(" ")[0] || "Rider";
   const isBlocked = !!blockingReason && !effectiveOnline;
+  const initials = getInitials(user?.name);
+  const hasUnread = unreadNotifications > 0;
 
   return (
     <header
@@ -60,10 +72,39 @@ export function HomeHeader({
             AJKMart Rider
           </span>
         </div>
+
+        {/* Right side: notification bell + avatar */}
         <div className="flex items-center gap-2">
-          <p className="font-mono text-[11px] text-white/20">
-            <LiveClock />
-          </p>
+          {/* Notification bell */}
+          <Link
+            href="/notifications"
+            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] transition-colors active:bg-white/[0.08]"
+            aria-label={hasUnread ? `${unreadNotifications} unread notifications` : "Notifications"}
+          >
+            <Bell size={15} className={hasUnread ? "text-white" : "text-white/40"} />
+            {hasUnread && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-extrabold text-white leading-none">
+                {unreadNotifications > 9 ? "9+" : unreadNotifications}
+              </span>
+            )}
+          </Link>
+
+          {/* Avatar → /profile */}
+          <Link
+            href="/profile"
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.08] transition-colors active:bg-white/[0.15]"
+            aria-label="Go to profile"
+          >
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user?.name ?? "Rider"}
+                className="h-full w-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-[10px] font-extrabold text-white/70">{initials}</span>
+            )}
+          </Link>
         </div>
       </div>
 
@@ -80,6 +121,10 @@ export function HomeHeader({
           >
             {firstName}
           </h1>
+          {/* LiveClock moved here as subtle secondary position */}
+          <p className="mt-0.5 font-mono text-[10px] text-white/20">
+            <LiveClock />
+          </p>
           {newFlash && (
             <div className="mt-1 flex items-center gap-1.5 text-xs font-bold text-success">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />

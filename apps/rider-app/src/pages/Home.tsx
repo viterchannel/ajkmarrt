@@ -7,9 +7,12 @@ import { HomeStats } from "../components/home/HomeStats";
 import { HomeAlertCenter } from "../components/home/HomeAlertCenter";
 import { HomeRequests } from "../components/home/HomeRequests";
 import { GoalSection } from "../components/home/GoalSection";
+import { StatusCard } from "../components/home/StatusCard";
+import { ProfileCompletionCard } from "../components/home/ProfileCompletionCard";
+import { QuickActions } from "../components/home/QuickActions";
 import { SkeletonHome } from "../components/dashboard/SkeletonHome";
 import { OfflineConfirmDialog } from "../components/dashboard/OfflineConfirmDialog";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Package } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -61,12 +64,9 @@ export default function Home() {
   const showBankBanner = !hasBankInfo;
   const showKycBanner = !!(h.config.wallet?.kycRequired && !kycVerified);
 
-  const handleDismissProfile = () => {
-    try {
-      sessionStorage.setItem("_ajkm_profileBannerDismissed", "1");
-    } catch { /* sessionStorage unavailable */ }
-    h.setProfileBannerDismissed(true);
-  };
+  const activeOrderCount = (h.user as any)?.activeOrderCount ?? 0;
+  const unreadNotifications = (h.user as any)?.unreadNotifications ?? 0;
+  const maxDeliveries = (h.user as any)?.maxDeliveries ?? h.config.rider?.maxDeliveries ?? 3;
 
   return (
     <PullToRefresh
@@ -93,10 +93,20 @@ export default function Home() {
         onToggleOnline={h.toggleOnline}
         onToggleSilence={h.toggleSilence}
         newFlash={h.newFlash}
+        unreadNotifications={unreadNotifications}
       />
 
       {/* ── Main content ── */}
       <main className="relative z-10 mx-auto w-full max-w-2xl space-y-3 px-3 pt-4 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] sm:px-4">
+
+        {/* Profile completion standalone card — above alert center */}
+        <ProfileCompletionCard
+          showPhoneBanner={showPhoneBanner}
+          showEmailBanner={showEmailBanner}
+          showBankBanner={showBankBanner}
+          showKycBanner={showKycBanner}
+        />
+
         {/* Alert Center: critical + compliance banners only */}
         <HomeAlertCenter
           socketConnected={h.socketConnected}
@@ -126,12 +136,6 @@ export default function Home() {
           drivingLicense={h.user?.drivingLicense}
           rejectionReason={h.user?.rejectionReason}
           availableFeatures={h.availableFeatures}
-          showPhoneBanner={showPhoneBanner}
-          showEmailBanner={showEmailBanner}
-          showBankBanner={showBankBanner}
-          showKycBanner={showKycBanner}
-          profileBannerDismissed={h.profileBannerDismissed}
-          onDismissProfileBanner={handleDismissProfile}
           T={h.T}
         />
 
@@ -149,7 +153,18 @@ export default function Home() {
           isOnline={h.effectiveOnline}
           currency={h.currency}
           language={h.language}
-          maxDeliveries={h.config.rider?.maxDeliveries ?? 3}
+          maxDeliveries={maxDeliveries}
+          activeOrderCount={activeOrderCount}
+        />
+
+        {/* Status card — online duration + active order count */}
+        <StatusCard
+          isOnline={h.effectiveOnline}
+          onlineSince={h.onlineSince}
+          activeOrderCount={activeOrderCount}
+          maxDeliveries={maxDeliveries}
+          toggling={h.toggling}
+          onToggleOnline={h.toggleOnline}
         />
 
         {/* Daily goal tracker */}
@@ -161,6 +176,31 @@ export default function Home() {
           T={h.T}
           refreshUser={h.refreshUser}
         />
+
+        {/* Quick actions */}
+        <QuickActions />
+
+        {/* Offline empty-state card above request feed */}
+        {!h.effectiveOnline && (
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-6 text-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+              <Package size={18} className="text-white/20" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white/30">No requests while offline</p>
+              <p className="mt-0.5 text-[11px] text-white/20">
+                Go online to start receiving delivery requests
+              </p>
+            </div>
+            <button
+              onClick={h.toggleOnline}
+              disabled={h.toggling}
+              className="rounded-xl bg-brand px-5 py-2 text-xs font-black text-black disabled:opacity-50"
+            >
+              Go Online
+            </button>
+          </div>
+        )}
 
         {/* Live requests feed or offline state */}
         <HomeRequests

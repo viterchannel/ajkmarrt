@@ -887,6 +887,8 @@ router.get("/me", async (req, res) => {
       .where(eq(riderProfilesTable.userId, riderId))
       .limit(1);
 
+    const maxDeliveriesSetting = parseInt(s["rider_max_deliveries"] ?? "3");
+
     const [
       ordersTodayStats,
       ordersAllStats,
@@ -894,6 +896,10 @@ router.get("/me", async (req, res) => {
       ridesAllStats,
       bonusTodayStats,
       bonusAllStats,
+      liveLocationRow,
+      activeOrdersCount,
+      activeRidesCount,
+      unreadNotifCount,
     ] = await Promise.all([
       db
         .select({ c: count(), s: sum(ordersTable.total) })
@@ -950,6 +956,43 @@ router.get("/me", async (req, res) => {
             eq(walletTransactionsTable.type, "bonus")
           )
         ),
+      /* onlineSince from live_locations */
+      db
+        .select({ onlineSince: liveLocationsTable.onlineSince })
+        .from(liveLocationsTable)
+        .where(eq(liveLocationsTable.userId, riderId))
+        .limit(1),
+      /* activeOrderCount — orders assigned and not yet delivered/cancelled */
+      db
+        .select({ c: count() })
+        .from(ordersTable)
+        .where(
+          and(
+            eq(ordersTable.riderId, riderId),
+            isNull(ordersTable.deletedAt),
+            sql`${ordersTable.status} NOT IN ('delivered', 'cancelled', 'rejected')`
+          )
+        ),
+      /* activeRidesCount — rides assigned and not yet completed/cancelled */
+      db
+        .select({ c: count() })
+        .from(ridesTable)
+        .where(
+          and(
+            eq(ridesTable.riderId, riderId),
+            sql`${ridesTable.status} NOT IN ('completed', 'cancelled')`
+          )
+        ),
+      /* unreadNotifications */
+      db
+        .select({ c: count() })
+        .from(notificationsTable)
+        .where(
+          and(
+            eq(notificationsTable.userId, riderId),
+            eq(notificationsTable.isRead, false)
+          )
+        ),
     ]);
 
     const deliveriesToday = (ordersTodayStats[0]?.c ?? 0) + (ridesTodayStats[0]?.c ?? 0);
@@ -974,6 +1017,12 @@ router.get("/me", async (req, res) => {
     const avgRating = ratingRow?.avg
       ? parseFloat(parseFloat(String(ratingRow.avg)).toFixed(1))
       : null;
+
+    const apiOnlineSince = liveLocationRow[0]?.onlineSince
+      ? new Date(liveLocationRow[0].onlineSince).getTime()
+      : null;
+    const activeOrderCount = (activeOrdersCount[0]?.c ?? 0) + (activeRidesCount[0]?.c ?? 0);
+    const unreadNotifications = unreadNotifCount[0]?.c ?? 0;
 
     sendSuccess(res, {
       id: user.id,
@@ -1046,6 +1095,10 @@ router.get("/me", async (req, res) => {
         totalEarnings: parseFloat(totalEarnings.toFixed(2)),
         rating: avgRating,
       },
+      onlineSince: user.isOnline ? apiOnlineSince : null,
+      activeOrderCount,
+      maxDeliveries: maxDeliveriesSetting,
+      unreadNotifications,
     });
   } catch (err) {
     logger.error(

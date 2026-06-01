@@ -16,6 +16,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+
 import { Link } from "wouter";
 import type { TranslationKey } from "@workspace/i18n";
 
@@ -67,14 +68,6 @@ interface HomeAlertCenterProps {
   /* Progressive verification */
   availableFeatures: any;
 
-  /* Profile completion */
-  showPhoneBanner: boolean;
-  showEmailBanner: boolean;
-  showBankBanner: boolean;
-  showKycBanner: boolean;
-  profileBannerDismissed: boolean;
-  onDismissProfileBanner: () => void;
-
   T: (key: TranslationKey) => string;
 }
 
@@ -106,12 +99,6 @@ export function HomeAlertCenter({
   drivingLicense,
   rejectionReason,
   availableFeatures,
-  showPhoneBanner,
-  showEmailBanner,
-  showBankBanner,
-  showKycBanner,
-  profileBannerDismissed,
-  onDismissProfileBanner,
   T,
 }: HomeAlertCenterProps) {
   const [collapsed, setCollapsed] = useState(false);
@@ -213,19 +200,9 @@ export function HomeAlertCenter({
     progressiveMissing = Array.from(missingSet);
   }
 
-  /* Profile completion — calculate % from bool flags */
-  const profileTotal = 4;
-  const profileDone =
-    (!showPhoneBanner ? 1 : 0) +
-    (!showEmailBanner ? 1 : 0) +
-    (!showBankBanner ? 1 : 0) +
-    (!showKycBanner ? 1 : 0);
-  const profilePct = Math.round((profileDone / profileTotal) * 100);
-  const showProfileBanner = !profileBannerDismissed && (showPhoneBanner || showEmailBanner || showBankBanner || showKycBanner);
-
-  const hasAnyAlert = alerts.length > 0 || showKyc || progressiveMissing.length > 0 || showProfileBanner;
+  const hasAnyAlert = alerts.length > 0 || showKyc || progressiveMissing.length > 0;
   const criticalCount = alerts.filter((a) => a.severity === "critical").length;
-  const totalCount = alerts.length + (showKyc ? 1 : 0) + (progressiveMissing.length > 0 ? 1 : 0) + (showProfileBanner ? 1 : 0);
+  const totalCount = alerts.length + (showKyc ? 1 : 0) + (progressiveMissing.length > 0 ? 1 : 0);
 
   const visibleAlerts = showAllAlerts ? alerts : alerts.slice(0, 2);
   const hasMoreAlerts = alerts.length > 2;
@@ -444,55 +421,6 @@ export function HomeAlertCenter({
                 </div>
               )}
 
-              {/* Profile completion progress bar */}
-              {showProfileBanner && (
-                <Link href="/profile">
-                  <div
-                    className="group flex cursor-pointer flex-col gap-2 rounded-xl border border-warning/30 bg-warning/10 px-3 py-2.5 transition-transform active:scale-[0.98]"
-                    role="alert"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <AlertTriangle size={13} className="flex-shrink-0 text-warning" />
-                        <p className="text-[11px] font-bold text-warning">
-                          Profile {profilePct}% complete
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-medium text-warning/60">
-                          {profileDone}/{profileTotal} done
-                        </span>
-                        <button
-                          onClick={(e) => { e.preventDefault(); onDismissProfileBanner(); }}
-                          className="flex-shrink-0 rounded p-0.5 text-warning/60 hover:text-warning"
-                          aria-label="Dismiss banner"
-                        >
-                          <X size={11} />
-                        </button>
-                      </div>
-                    </div>
-                    {/* Progress bar */}
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className="h-full rounded-full bg-warning transition-all duration-500"
-                        style={{ width: `${profilePct}%` }}
-                      />
-                    </div>
-                    {/* First missing item hint */}
-                    <p className="text-[10px] text-warning/70">
-                      {showPhoneBanner
-                        ? "⚠ Verify phone number to enable withdrawals"
-                        : showBankBanner
-                          ? "⚠ Add bank account to enable withdrawals"
-                          : showKycBanner
-                            ? "⚠ CNIC pending approval"
-                            : showEmailBanner
-                              ? "⚠ Verify email address"
-                              : "Tap to complete profile →"}
-                    </p>
-                  </div>
-                </Link>
-              )}
             </div>
           )}
         </div>

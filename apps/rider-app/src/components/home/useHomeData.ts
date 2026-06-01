@@ -306,6 +306,21 @@ export function useHomeData(): UseHomeDataReturn {
     setLastSeenOnlineAt((prev) => prev ?? new Date().toISOString());
   }, [user]);
 
+  /* Seed onlineSince from API when no sessionStorage value and user is online */
+  useEffect(() => {
+    if (!user?.isOnline) return;
+    try {
+      const stored = sessionStorage.getItem("_ajkm_onlineSince");
+      if (!stored) {
+        const apiTs = (user as any)?.onlineSince;
+        if (apiTs && typeof apiTs === "number" && apiTs > 0) {
+          setOnlineSince(apiTs);
+          sessionStorage.setItem("_ajkm_onlineSince", String(apiTs));
+        }
+      }
+    } catch { /* sessionStorage unavailable */ }
+  }, [user?.isOnline, (user as any)?.onlineSince]);
+
   useEffect(() => {
     if (!user) { setBlockingReason(null); return; }
     const phoneVerified = verifLoaded ? verifStatus?.phoneVerified : user?.phoneVerified;
