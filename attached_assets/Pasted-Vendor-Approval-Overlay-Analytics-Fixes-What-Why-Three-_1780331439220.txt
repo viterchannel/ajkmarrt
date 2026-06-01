@@ -1,0 +1,34 @@
+Vendor Approval Overlay & Analytics Fixes
+What & Why
+Three concrete gaps exist in the vendor app:
+
+Magic-link approval path — when a vendor arrives via a magic-link email and their account is pending or rejected, the code currently clears their tokens and drops them on a plain static error page. The same session should instead call login() with the stored tokens so the existing app-level PendingApprovalScreen / rejected overlay renders correctly — giving the vendor a rich, actionable screen instead of a dead end.
+
+Approval status not re-checked on tab focus — the visibilitychange listener in App.tsx only re-registers push notifications; it never calls refreshUser(). A vendor approved by an admin while the tab is backgrounded would have to hard-refresh or log out to see the change.
+
+Analytics "Today" preset missing — current presets are 7 / 30 / 90 / custom. The requested set is Today / 7d / 30d / custom. The 90-day option should become a "Today" (1-day) preset, and the RangePreset type and getAnalytics API call must be updated to pass 1 for today.
+
+Done looks like
+A vendor who clicks a magic-link while pending lands on PendingApprovalScreen (same as the main-app flow) with logout button and refresh, not a plain error page
+A vendor whose magic-link account is rejected sees the full rejected overlay with rejection reason and Contact Support CTA, not a plain error page
+Switching tabs away and back re-fetches vendor status; if an admin approves them while they're backgrounded, the overlay disappears on next focus (within the poll cycle)
+Analytics preset row reads: Today · 7 days · 30 days · Custom — charts and summaries update correctly for each
+All new/changed UI strings (if any) use the existing i18n tDual / T() system
+Out of scope
+Vendor self-resubmission flow
+Extracting the inline rejected overlay into a separate component (it is functional; only i18n of new strings is required)
+Staff/sub-user management or direct refund management from vendor side
+Advanced multi-warehouse inventory
+Steps
+Fix magic-link approval path — In MagicLinkPage in App.tsx, when APPROVAL_PENDING or APPROVAL_REJECTED is detected (either as an error code or as profile.approvalStatus), call login(accessToken, profile, refreshToken) and navigate("/") instead of clearing tokens and setting status("error"). The app-level guards at lines 1085 and 1100 will then render the correct overlay automatically.
+
+Add approval status re-check on visibility — In the onVisibilityChange handler in App.tsx, call refreshUser() when document.visibilityState === "visible" (in addition to the existing push re-registration). Wrap it in a try/catch to avoid unhandled rejections.
+
+Swap 90-day preset for Today in Analytics — In Analytics.tsx, change the RangePreset type from 7 | 30 | 90 | "custom" to 1 | 7 | 30 | "custom", update the PRESETS array label for 1 to read "Today" (using the i18n system if a key exists, otherwise add a todayLabel key), and update the api.getAnalytics(preset) call so passing 1 hits the correct endpoint parameter. Verify the default preset state initialises to 30.
+
+Relevant files
+apps/vendor-app/src/App.tsx:456-530
+apps/vendor-app/src/App.tsx:853-895
+apps/vendor-app/src/App.tsx:1085-1200
+apps/vendor-app/src/pages/Analytics.tsx:30-35,130-170,240-320
+apps/vendor-app/src/lib/
