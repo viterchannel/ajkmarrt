@@ -20,6 +20,7 @@ export interface PlatformConfig {
     docUploadEnabled?: boolean;
     deliveryRadiusKm?: number;
     pushNotificationsEnabled?: boolean;
+    approvalEtaHours?: number;
     modules?: {
       wallet: boolean;
       earnings: boolean;

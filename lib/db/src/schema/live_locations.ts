@@ -15,6 +15,11 @@ export const liveLocationsTable = pgTable(
     action: text("action"),
     batteryLevel: real("battery_level"),
     lastSeen: timestamp("last_seen"),
+    /** Timestamp of the most recent GPS ping received from this rider.
+     *  Used by the ghost-rider cleanup job to detect riders who went offline
+     *  without explicitly toggling offline (crash, background kill, etc).
+     *  Any rider with lastPingAt older than 90 seconds is marked offline. */
+    lastPingAt: timestamp("last_ping_at"),
     onlineSince: timestamp("online_since"),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
