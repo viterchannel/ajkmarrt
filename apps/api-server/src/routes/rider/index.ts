@@ -4739,6 +4739,8 @@ router.get("/earnings", async (req, res) => {
     const riderId = req.riderId!;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
     const weekAgo = new Date(today);
     weekAgo.setDate(weekAgo.getDate() - 7);
     const monthAgo = new Date(today);
@@ -4752,12 +4754,15 @@ router.get("/earnings", async (req, res) => {
      when rider_bonus_per_trip > 0. */
     const [
       todayOrders,
+      yesterdayOrders,
       weekOrders,
       monthOrders,
       todayRides,
+      yesterdayRides,
       weekRides,
       monthRides,
       todayBonus,
+      yesterdayBonus,
       weekBonus,
       monthBonus,
       profileRow,
@@ -4773,6 +4778,17 @@ router.get("/earnings", async (req, res) => {
             eq(ordersTable.riderId, riderId),
             eq(ordersTable.status, "delivered"),
             gte(ordersTable.updatedAt, today)
+          )
+        ),
+      db
+        .select({ s: sum(ordersTable.total), c: count() })
+        .from(ordersTable)
+        .where(
+          and(
+            eq(ordersTable.riderId, riderId),
+            eq(ordersTable.status, "delivered"),
+            gte(ordersTable.updatedAt, yesterday),
+            sql`${ordersTable.updatedAt} < ${today.toISOString()}`
           )
         ),
       db
@@ -4812,6 +4828,17 @@ router.get("/earnings", async (req, res) => {
           and(
             eq(ridesTable.riderId, riderId),
             eq(ridesTable.status, "completed"),
+            gte(ridesTable.updatedAt, yesterday),
+            sql`${ridesTable.updatedAt} < ${today.toISOString()}`
+          )
+        ),
+      db
+        .select({ s: sum(ridesTable.fare), c: count() })
+        .from(ridesTable)
+        .where(
+          and(
+            eq(ridesTable.riderId, riderId),
+            eq(ridesTable.status, "completed"),
             gte(ridesTable.updatedAt, weekAgo)
           )
         ),
@@ -4834,6 +4861,17 @@ router.get("/earnings", async (req, res) => {
             eq(walletTransactionsTable.userId, riderId),
             eq(walletTransactionsTable.type, "bonus"),
             gte(walletTransactionsTable.createdAt, today)
+          )
+        ),
+      db
+        .select({ s: sum(walletTransactionsTable.amount) })
+        .from(walletTransactionsTable)
+        .where(
+          and(
+            eq(walletTransactionsTable.userId, riderId),
+            eq(walletTransactionsTable.type, "bonus"),
+            gte(walletTransactionsTable.createdAt, yesterday),
+            sql`${walletTransactionsTable.createdAt} < ${today.toISOString()}`
           )
         ),
       db
@@ -4900,6 +4938,9 @@ router.get("/earnings", async (req, res) => {
     const todayTotal =
       (safeNum(todayOrders[0]?.s) + safeNum(todayRides[0]?.s)) * riderKeepPct +
       safeNum(todayBonus[0]?.s);
+    const yesterdayTotal =
+      (safeNum(yesterdayOrders[0]?.s) + safeNum(yesterdayRides[0]?.s)) * riderKeepPct +
+      safeNum(yesterdayBonus[0]?.s);
     const weekTotal =
       (safeNum(weekOrders[0]?.s) + safeNum(weekRides[0]?.s)) * riderKeepPct +
       safeNum(weekBonus[0]?.s);
@@ -4973,6 +5014,10 @@ router.get("/earnings", async (req, res) => {
         earnings: parseFloat(todayTotal.toFixed(2)),
         deliveries: (todayOrders[0]?.c ?? 0) + (todayRides[0]?.c ?? 0),
         breakdown: mkBreakdown(todayOrders, todayFoodOrders, todayRides),
+      },
+      yesterday: {
+        earnings: parseFloat(yesterdayTotal.toFixed(2)),
+        deliveries: (yesterdayOrders[0]?.c ?? 0) + (yesterdayRides[0]?.c ?? 0),
       },
       week: {
         earnings: parseFloat(weekTotal.toFixed(2)),

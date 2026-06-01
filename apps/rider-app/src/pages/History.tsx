@@ -332,7 +332,7 @@ function RideReceiptSheet({
         >
           <button
             onClick={handleShare}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-3.5 text-sm font-bold text-white active:bg-card-dark"
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-3.5 text-sm font-bold text-black active:opacity-80"
           >
             {copyFeedback ? (
               <>
@@ -567,7 +567,7 @@ export default function History() {
             <button
               key={tab.key}
               onClick={() => setPeriod(tab.key)}
-              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-white shadow-sm" : "text-[#B0B0B0] hover:text-[#B0B0B0]"}`}
+              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-black shadow-sm" : "text-[#B0B0B0] hover:text-[#B0B0B0]"}`}
             >
               {tab.label}
             </button>
@@ -578,7 +578,7 @@ export default function History() {
             <button
               key={tab.key}
               onClick={() => setKind(tab.key)}
-              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all ${kind === tab.key ? "bg-brand text-white shadow-sm" : "border border-white/10 bg-card-dark text-[#B0B0B0]"}`}
+              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all ${kind === tab.key ? "bg-brand text-black shadow-sm" : "border border-white/10 bg-card-dark text-[#B0B0B0]"}`}
             >
               {tab.icon} {tab.label}
             </button>

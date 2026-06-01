@@ -140,14 +140,14 @@ function StatCard({
           : "border border-white/10 bg-card-dark"
       }`}
     >
-      <p className={`text-xs font-semibold ${highlight ? "text-white/60" : "text-[#B0B0B0]"}`}>
+      <p className={`text-xs font-semibold ${highlight ? "text-black/60" : "text-[#B0B0B0]"}`}>
         {label}
       </p>
-      <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-white" : "text-white"}`}>
+      <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-black" : "text-white"}`}>
         {value}
       </p>
       {sub && (
-        <p className={`mt-0.5 text-[10px] ${highlight ? "text-white/50" : "text-[#B0B0B0]"}`}>
+        <p className={`mt-0.5 text-[10px] ${highlight ? "text-black/50" : "text-[#B0B0B0]"}`}>
           {sub}
         </p>
       )}

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatCurrency as _sharedFcE } from "@workspace/api-zod";
 import { tDual } from "@workspace/i18n";
 import {
+  ArrowRight,
   BarChart2,
   Calendar,
   Car,
@@ -18,12 +19,14 @@ import {
   Share2,
   Star,
   Target,
+  TrendingDown,
   TrendingUp,
   UtensilsCrossed,
   Wallet,
   X,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
+import EarningsBarChart from "../components/earnings/EarningsBarChart";
 import { useLocation } from "wouter";
 import { PullToRefresh } from "../components/PullToRefresh";
 import { ErrorState } from "../components/ui/ErrorState";
@@ -213,7 +216,7 @@ function CompletedRidesList({
             onClick={() => handleKindChange(tab.key)}
             className={`flex-1 rounded-full py-2 text-[11px] font-bold transition-all ${
               kindFilter === tab.key
-                ? "bg-brand text-white shadow-sm"
+                ? "bg-brand text-black shadow-sm"
                 : "text-[#B0B0B0]"
             }`}
           >
@@ -425,6 +428,13 @@ export default function Earnings() {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 30_000),
   });
 
+  const { data: walletChartData } = useQuery({
+    queryKey: ["rider-earnings-chart-wallet"],
+    queryFn: () => api.getWalletPage({ limit: 100 }),
+    staleTime: 30_000,
+  });
+  const chartTxs = walletChartData?.items ?? [];
+
   type PeriodBreakdown = {
     food: { earnings: number; count: number };
     parcel: { earnings: number; count: number };
@@ -479,6 +489,7 @@ export default function Earnings() {
   const handlePullRefresh = useCallback(async () => {
     await qc.invalidateQueries({ queryKey: ["rider-earnings"] });
     await qc.invalidateQueries({ queryKey: ["rider-monthly-statements"] });
+    await qc.invalidateQueries({ queryKey: ["rider-earnings-chart-wallet"] });
   }, [qc]);
 
   const goalMutation = useMutation({
@@ -544,14 +555,20 @@ export default function Earnings() {
           </p>
           <h1 className="text-2xl font-extrabold tracking-tight text-white">{T("earnings")}</h1>
 
-          <div className="mt-5 rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] p-4 backdrop-blur-sm">
+          <div className="mt-5 rounded-2xl border border-white/[0.08] bg-card-dark p-5 shadow-lg">
             <p className="flex items-center gap-1.5 text-xs font-semibold tracking-widest text-white/40 uppercase">
               <Wallet size={13} /> {T("walletBalance")}
             </p>
-            <p className="mt-1 text-[36px] leading-tight font-black text-white">
+            <p className="mt-2 text-[28px] leading-tight font-extrabold text-white">
               {formatCurrency(user?.walletBalance ?? "0")}
             </p>
-            <p className="mt-1 text-xs text-white/30">{T("earningsAfterDelivery")}</p>
+            <p className="mt-1 text-[11px] text-white/30">{T("earningsAfterDelivery")}</p>
+            <button
+              onClick={() => navigate("/wallet")}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-black active:opacity-80 transition-opacity"
+            >
+              <Wallet size={15} /> {T("walletBalance")} <ArrowRight size={15} />
+            </button>
           </div>
         </div>
       </div>
@@ -573,7 +590,7 @@ export default function Earnings() {
             <button
               key={tab.key}
               onClick={() => setPeriod(tab.key)}
-              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-white shadow-sm" : "text-[#B0B0B0] hover:text-[#B0B0B0]"}`}
+              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-black shadow-sm" : "text-[#B0B0B0] hover:text-[#B0B0B0]"}`}
             >
               {tab.label}
             </button>
@@ -590,21 +607,83 @@ export default function Earnings() {
             retryLabel={T("retry")}
           />
         ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-3xl bg-brand p-5 text-white shadow-sm">
-              <p className="text-sm font-medium text-white/40">{T("earnings")}</p>
-              <p className="mt-1 text-3xl font-extrabold">{formatCurrency(periodData.earnings)}</p>
-              <p className="mt-1 text-xs text-white/30">
-                {riderKeepPct}% {T("deliveries").toLowerCase()}
-              </p>
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-3xl border border-white/[0.08] bg-card-dark p-5 shadow-sm">
+                <p className="text-xs font-semibold text-[#B0B0B0]">{T("earnings")}</p>
+                <p className="mt-1 text-3xl font-extrabold text-success">{formatCurrency(periodData.earnings)}</p>
+                {period === "today" && data?.yesterday != null && (
+                  <div className="mt-1 flex items-center gap-1">
+                    {data.today.earnings >= data.yesterday.earnings ? (
+                      <>
+                        <TrendingUp size={11} className="text-success flex-shrink-0" />
+                        <p className="text-[11px] text-success truncate">
+                          {formatCurrency(data.today.earnings - data.yesterday.earnings)} more than yesterday
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingDown size={11} className="text-error flex-shrink-0" />
+                        <p className="text-[11px] text-error truncate">
+                          {formatCurrency(data.yesterday.earnings - data.today.earnings)} less than yesterday
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+                {period !== "today" && (
+                  <p className="mt-1 text-xs text-[#B0B0B0]">
+                    {riderKeepPct}% {T("deliveries").toLowerCase()}
+                  </p>
+                )}
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+                <p className="text-sm font-medium text-[#B0B0B0]">{T("deliveries")}</p>
+                <p className="mt-1 text-3xl font-extrabold text-white">{periodData.deliveries}</p>
+                <p className="mt-1 text-xs text-[#B0B0B0]">{T("completedLabel")}</p>
+              </div>
             </div>
-            <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-              <p className="text-sm font-medium text-[#B0B0B0]">{T("deliveries")}</p>
-              <p className="mt-1 text-3xl font-extrabold text-white">{periodData.deliveries}</p>
-              <p className="mt-1 text-xs text-[#B0B0B0]">{T("completedLabel")}</p>
-            </div>
-          </div>
+
+            {/* Commission Breakdown — collapsible accordion */}
+            {periodData.earnings > 0 && (
+              <Accordion type="single" collapsible>
+                <AccordionItem
+                  value="commission"
+                  className="overflow-hidden rounded-2xl border border-white/[0.08] bg-card-dark shadow-sm"
+                >
+                  <AccordionTrigger className="px-5 py-4 hover:no-underline">
+                    <span className="text-sm font-bold text-white">Commission Breakdown</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-0 pb-0">
+                    {(() => {
+                      const net = periodData.earnings;
+                      const gross = riderKeepPct > 0 ? parseFloat((net / (riderKeepPct / 100)).toFixed(2)) : net;
+                      const fee = parseFloat((gross - net).toFixed(2));
+                      const feePct = gross > 0 ? Math.round((fee / gross) * 100) : 0;
+                      return (
+                        <div className="divide-y divide-white/5">
+                          {[
+                            { label: "Gross Fare", value: formatCurrency(gross), color: "text-white" },
+                            { label: `Platform Fee (${feePct}%)`, value: `−${formatCurrency(fee)}`, color: "text-error/70" },
+                            { label: "You Keep", value: formatCurrency(net), color: "text-success font-extrabold" },
+                          ].map((row) => (
+                            <div key={row.label} className="flex items-center justify-between px-5 py-3.5">
+                              <span className="text-sm text-[#B0B0B0]">{row.label}</span>
+                              <span className={`text-sm font-bold ${row.color}`}>{row.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            )}
+          </>
         )}
+
+        {/* 7-day earnings bar chart */}
+        <EarningsBarChart transactions={chartTxs} currency={currency} />
 
         <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
@@ -613,7 +692,7 @@ export default function Earnings() {
                 <Target size={14} className="text-white" />
                 {T("dailyGoal")}
                 {isPersonalGoal && (
-                  <span className="rounded-full bg-brand px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-white uppercase">
+                  <span className="rounded-full bg-brand px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-black uppercase">
                     {T("personalBadge")}
                   </span>
                 )}
@@ -693,47 +772,68 @@ export default function Earnings() {
         </div>
 
         {!isLoading && !isError && periodData.breakdown && (
-          <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-            <p className="mb-3.5 flex items-center gap-1.5 text-sm font-bold text-white">
+          <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-5 shadow-sm">
+            <p className="mb-4 flex items-center gap-1.5 text-sm font-bold text-white">
               <BarChart2 size={14} className="text-white" /> {T("byServiceType")}
             </p>
-            <div className="grid grid-cols-3 gap-3">
-              {[
+            {(() => {
+              const bd = periodData.breakdown;
+              const totalEarned = bd.food.earnings + bd.parcel.earnings + bd.rides.earnings;
+              const items = [
                 {
                   label: "Food",
-                  icon: <UtensilsCrossed size={16} className="text-warning" />,
-                  earnings: periodData.breakdown.food.earnings,
-                  count: periodData.breakdown.food.count,
-                  bg: "bg-warning/10",
-                  text: "text-warning",
+                  emoji: "🍔",
+                  earnings: bd.food.earnings,
+                  count: bd.food.count,
+                  border: "border-orange-500/20",
+                  bg: "bg-orange-500/10",
+                  text: "text-orange-400",
+                  bar: "bg-orange-400",
                 },
                 {
                   label: "Parcel",
-                  icon: <Package size={16} className="text-blue-500" />,
-                  earnings: periodData.breakdown.parcel.earnings,
-                  count: periodData.breakdown.parcel.count,
+                  emoji: "📦",
+                  earnings: bd.parcel.earnings,
+                  count: bd.parcel.count,
+                  border: "border-blue-500/20",
                   bg: "bg-blue-500/10",
                   text: "text-blue-400",
+                  bar: "bg-blue-400",
                 },
                 {
                   label: "Rides",
-                  icon: <Car size={16} className="text-purple-500" />,
-                  earnings: periodData.breakdown.rides.earnings,
-                  count: periodData.breakdown.rides.count,
-                  bg: "bg-purple-50",
-                  text: "text-purple-600",
+                  emoji: "🛵",
+                  earnings: bd.rides.earnings,
+                  count: bd.rides.count,
+                  border: "border-success/20",
+                  bg: "bg-success/10",
+                  text: "text-success",
+                  bar: "bg-success",
                 },
-              ].map((item) => (
-                <div key={item.label} className={`${item.bg} rounded-2xl p-3.5 text-center`}>
-                  <div className="mb-2 flex items-center justify-center">{item.icon}</div>
-                  <p className={`text-base font-extrabold ${item.text}`}>
-                    {formatCurrency(item.earnings)}
-                  </p>
-                  <p className="mt-0.5 text-[9px] font-semibold text-[#B0B0B0]">{item.count} jobs</p>
-                  <p className="text-[9px] font-bold text-[#B0B0B0]">{item.label}</p>
+              ];
+              return (
+                <div className="grid grid-cols-3 gap-3">
+                  {items.map((item) => {
+                    const pct = totalEarned > 0 ? Math.round((item.earnings / totalEarned) * 100) : 0;
+                    return (
+                      <div key={item.label} className={`${item.bg} border ${item.border} rounded-2xl p-3 flex flex-col gap-2`}>
+                        <div className="flex items-center justify-between">
+                          <span className="text-base">{item.emoji}</span>
+                          <span className={`text-[9px] font-bold ${item.text}`}>{pct}%</span>
+                        </div>
+                        <p className={`text-sm font-extrabold ${item.text}`}>
+                          {formatCurrency(item.earnings)}
+                        </p>
+                        <p className="text-[9px] font-semibold text-[#B0B0B0]">{item.count} jobs · {item.label}</p>
+                        <div className="h-1 w-full rounded-full bg-white/10 overflow-hidden">
+                          <div className={`h-1 rounded-full ${item.bar}`} style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              );
+            })()}
           </div>
         )}
 
@@ -788,7 +888,7 @@ export default function Earnings() {
             <p className="flex items-center gap-1.5 text-sm font-bold text-white">
               <FileText size={14} className="text-white" /> {T("monthlyTaxSummary")}
             </p>
-            <span className="rounded-full bg-brand px-2 py-0.5 text-[9px] font-bold tracking-wider text-white uppercase">
+            <span className="rounded-full bg-brand px-2 py-0.5 text-[9px] font-bold tracking-wider text-black uppercase">
               {T("lastSixMonths")}
             </span>
           </div>
@@ -874,7 +974,7 @@ export default function Earnings() {
                               } catch { /* not available */ }
                             }
                           }}
-                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-2.5 text-xs font-bold text-white active:bg-card-dark"
+                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-2.5 text-xs font-bold text-black active:opacity-80"
                         >
                           <Share2 size={13} /> Share Statement
                         </button>
@@ -895,9 +995,9 @@ export default function Earnings() {
             value="how-it-works"
             className="overflow-hidden rounded-3xl border-0 bg-brand"
           >
-            <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-white/40">
-              <span className="flex items-center gap-1.5 text-sm font-bold text-white">
-                <CreditCard size={14} className="text-white/60" /> {T("howEarningsWork")}
+            <AccordionTrigger className="px-5 py-4 hover:no-underline [&>svg]:text-black/40">
+              <span className="flex items-center gap-1.5 text-sm font-bold text-black">
+                <CreditCard size={14} className="text-black/60" /> {T("howEarningsWork")}
               </span>
             </AccordionTrigger>
             <AccordionContent className="pt-0">
@@ -909,8 +1009,8 @@ export default function Earnings() {
                   T("processedWithin"),
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2.5">
-                    <CheckCircle size={13} className="mt-0.5 flex-shrink-0 text-success" />
-                    <p className="text-xs leading-relaxed font-medium text-white/60">{item}</p>
+                    <CheckCircle size={13} className="mt-0.5 flex-shrink-0 text-black/60" />
+                    <p className="text-xs leading-relaxed font-medium text-black/70">{item}</p>
                   </div>
                 ))}
               </div>
@@ -999,7 +1099,7 @@ export default function Earnings() {
               <button
                 onClick={handleSaveGoal}
                 disabled={goalMutation.isPending || (goalError !== null && goalInput.trim() !== "")}
-                className="flex-1 rounded-2xl bg-brand py-3 text-sm font-bold text-white transition-colors hover:bg-card-dark disabled:opacity-60"
+                className="flex-1 rounded-2xl bg-brand py-3 text-sm font-bold text-black transition-colors disabled:opacity-60"
               >
                 {goalMutation.isPending ? "Saving…" : T("saveGoal")}
               </button>

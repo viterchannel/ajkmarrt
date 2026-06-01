@@ -1160,6 +1160,10 @@ export const api = {
         rides: { earnings: number; count: number };
       };
     };
+    yesterday?: {
+      earnings: number;
+      deliveries: number;
+    };
     week: {
       earnings: number;
       deliveries: number;
