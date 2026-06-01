@@ -96,7 +96,7 @@ router.get("/otp/status", async (_req, res) => {
     const status = await UserService.getOtpStatus();
     sendSuccess(res, status);
   } catch (error: unknown) {
-    sendValidationError(res, error instanceof Error ? error.message : String(error));
+    sendServerError(res, error, "fetch OTP status");
   }
 });
 
@@ -169,8 +169,7 @@ router.post("/otp/disable", async (req, res) => {
 
     sendSuccess(res, { ...result, minutesGranted: minutes });
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    sendValidationError(res, errMsg);
+    sendServerError(res, error, "disable OTP globally");
   }
 });
 
@@ -203,8 +202,7 @@ router.delete("/otp/disable", async (req, res) => {
 
     sendSuccess(res, result);
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    sendValidationError(res, errMsg);
+    sendServerError(res, error, "restore OTP globally");
   }
 });
 
@@ -227,12 +225,7 @@ router.get("/otp/audit", async (req, res) => {
     });
     sendSuccess(res, result);
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    if (errMsg.includes("Invalid")) {
-      res.status(400).json({ error: "Failed to fetch OTP audit log", details: errMsg });
-    } else {
-      res.status(500).json({ error: "Failed to fetch OTP audit log", details: errMsg });
-    }
+    sendServerError(res, error, "fetch OTP audit log");
   }
 });
 
@@ -242,7 +235,7 @@ router.get("/otp/channels", async (_req, res) => {
     const result = await UserService.getOtpChannels();
     sendSuccess(res, result);
   } catch (error: unknown) {
-    sendValidationError(res, error instanceof Error ? error.message : String(error));
+    sendServerError(res, error, "fetch OTP channels");
   }
 });
 
@@ -267,8 +260,7 @@ router.patch("/otp/channels", async (req, res) => {
 
     sendSuccess(res, result);
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    sendValidationError(res, errMsg);
+    sendServerError(res, error, "update OTP channel priority");
   }
 });
 
@@ -301,10 +293,10 @@ router.post("/users/:id/otp/generate", async (req, res) => {
     sendSuccess(res, { otp: result.otp, expiresAt: result.expiresAt });
   } catch (error: unknown) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    if (errMsg.includes("not found")) {
+    if (errMsg.toLowerCase().includes("not found")) {
       sendNotFound(res, "User not found");
     } else {
-      sendValidationError(res, errMsg);
+      sendServerError(res, error, "generate user OTP");
     }
   }
 });
@@ -702,8 +694,7 @@ router.get("/whitelist", async (_req, res) => {
 
     sendSuccess(res, { entries });
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    sendValidationError(res, errMsg);
+    sendServerError(res, error, "fetch whitelist entries");
   }
 });
 

@@ -610,20 +610,27 @@ export default function OtpControl() {
   const [generatedOtp, setGeneratedOtp] = useState<{
     userId: string;
     code: string;
+    expiresAt: string;
     copiedCode: boolean;
   } | null>(null);
+  const generatedOtpRemaining = useCountdown(generatedOtp?.expiresAt ?? null);
   const [generatingOtpFor, setGeneratingOtpFor] = useState<string | null>(null);
 
   const generateUserOtp = async (userId: string) => {
     setGeneratingOtpFor(userId);
     try {
       const d = await api("POST", `/users/${userId}/otp/generate`);
-      if (d?.otp || d?.code) {
-        setGeneratedOtp({ userId, code: d.otp ?? d.code, copiedCode: false });
+      if (d?.otp) {
+        setGeneratedOtp({
+          userId,
+          code: d.otp as string,
+          expiresAt: d.expiresAt as string,
+          copiedCode: false,
+        });
       } else {
         toast({
           title: "Error",
-          description: d?.error ?? "Failed to generate OTP.",
+          description: errorMessage(d, "Failed to generate OTP."),
           variant: "destructive",
         });
       }
@@ -1227,7 +1234,11 @@ export default function OtpControl() {
                                 <Copy className="h-3.5 w-3.5" />
                               )}
                             </button>
-                            <span className="text-[10px] text-emerald-600">Expires in 10 min</span>
+                            <span className="text-[10px] text-emerald-600">
+                              {generatedOtpRemaining > 0
+                                ? `Expires in ${fmtCountdown(generatedOtpRemaining)}`
+                                : "Expired"}
+                            </span>
                           </div>
                         )}
                       </div>
