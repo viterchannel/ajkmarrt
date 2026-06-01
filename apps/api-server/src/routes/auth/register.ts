@@ -1223,8 +1223,8 @@ router.post(
             authMethod: "register_otp_bypass",
             expiresAt: new Date(Date.now() + getRefreshTokenTtlDays() * 24 * 60 * 60 * 1000),
           });
-          setRiderRefreshCookie(req, res, refreshRaw, { roles: userRole });
-          setVendorRefreshCookie(req, res, refreshRaw, { roles: userRole });
+          if (userRole === "rider") setRiderRefreshCookie(req, res, refreshRaw, { roles: userRole });
+          if (userRole === "vendor") setVendorRefreshCookie(req, res, refreshRaw, { roles: userRole });
           sendSuccess(
             res,
             {
@@ -1285,8 +1285,8 @@ router.post(
           authMethod: "register",
           expiresAt: new Date(Date.now() + getRefreshTokenTtlDays() * 24 * 60 * 60 * 1000),
         });
-        setRiderRefreshCookie(req, res, refreshRaw, { roles: userRole });
-        setVendorRefreshCookie(req, res, refreshRaw, { roles: userRole });
+        if (userRole === "rider") setRiderRefreshCookie(req, res, refreshRaw, { roles: userRole });
+        if (userRole === "vendor") setVendorRefreshCookie(req, res, refreshRaw, { roles: userRole });
         sendSuccess(
           res,
           {
