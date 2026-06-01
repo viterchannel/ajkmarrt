@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { PullToRefresh } from "../components/PullToRefresh";
 import { useHomeData } from "../components/home/useHomeData";
@@ -14,62 +15,56 @@ import { Link } from "wouter";
 export default function Home() {
   const h = useHomeData();
 
-  if (h.authLoading) return <SkeletonHome />;
-
-  /* Show a one-time warning when document upload failed silently during registration */
-  const showDocWarning = (() => {
+  /* One-time session warnings — run once after mount, not on every render */
+  useEffect(() => {
     try {
       if (sessionStorage.getItem("reg_doc_upload_warning") === "1") {
         sessionStorage.removeItem("reg_doc_upload_warning");
-        return true;
+        toast({
+          title: "Documents not uploaded",
+          description:
+            "Your ID documents couldn't be uploaded during registration. Please upload them from your Profile page to complete KYC verification.",
+          variant: "destructive",
+          duration: 8000,
+        });
       }
-      return false;
-    } catch { return false; }
-  })();
-  if (showDocWarning) {
-    toast({
-      title: "Documents not uploaded",
-      description: "Your ID documents couldn't be uploaded during registration. Please upload them from your Profile page to complete KYC verification.",
-      variant: "destructive",
-      duration: 8000,
-    });
-  }
+    } catch { /* sessionStorage unavailable */ }
+  }, []);
 
-  const showBiometricWarning = (() => {
+  useEffect(() => {
     try {
       if (sessionStorage.getItem("biometric_save_failed") === "1") {
         sessionStorage.removeItem("biometric_save_failed");
-        return true;
+        toast({
+          title: "Biometric not saved",
+          description:
+            "Could not save biometric login. You can enable it later from Profile › Security Settings.",
+          duration: 6000,
+        });
       }
-      return false;
-    } catch { return false; }
-  })();
-  if (showBiometricWarning) {
-    toast({
-      title: "Biometric not saved",
-      description: "Could not save biometric login. You can enable it later from Profile › Security Settings.",
-      duration: 6000,
-    });
-  }
+    } catch { /* sessionStorage unavailable */ }
+  }, []);
+
+  if (h.authLoading) return <SkeletonHome />;
 
   /* Profile banner conditions */
   const hasBankInfo = !!(h.user?.bankName && h.user?.bankAccount);
-  const kycStatus = (h.user as any)?.kycStatus ?? "none";
+  const kycStatus = h.user?.kycStatus ?? "none";
   const kycVerified = kycStatus === "verified" || kycStatus === "pending";
-  const phoneVerified = !!(h.verifLoaded ? h.verifStatus?.phoneVerified : (h.user as any)?.phoneVerified);
-  const emailVerified = !!(h.user?.email) && !!(h.verifLoaded ? h.verifStatus?.emailVerified : (h.user as any)?.emailVerified);
-
-  const showProfileBanner = !h.profileBannerDismissed && (
-    !phoneVerified || (!!h.user?.email && !emailVerified) || !hasBankInfo || (h.config.wallet?.kycRequired && !kycVerified)
-  );
+  const phoneVerified = !!(h.verifLoaded ? h.verifStatus?.phoneVerified : h.user?.phoneVerified);
+  const emailVerified =
+    !!h.user?.email &&
+    !!(h.verifLoaded ? h.verifStatus?.emailVerified : h.user?.emailVerified);
 
   const showPhoneBanner = !phoneVerified;
-  const showEmailBanner = !!(h.user?.email) && !emailVerified;
+  const showEmailBanner = !!h.user?.email && !emailVerified;
   const showBankBanner = !hasBankInfo;
-  const showKycBanner = h.config.wallet?.kycRequired && !kycVerified;
+  const showKycBanner = !!(h.config.wallet?.kycRequired && !kycVerified);
 
   const handleDismissProfile = () => {
-    try { sessionStorage.setItem("_ajkm_profileBannerDismissed", "1"); } catch {}
+    try {
+      sessionStorage.setItem("_ajkm_profileBannerDismissed", "1");
+    } catch { /* sessionStorage unavailable */ }
     h.setProfileBannerDismissed(true);
   };
 
@@ -84,7 +79,7 @@ export default function Home() {
         {h.srAnnouncement}
       </div>
 
-      {/* ── Header: greeting, wallet, online toggle + sound ── */}
+      {/* ── Header: branding, greeting, tier badge, wallet, online toggle ── */}
       <HomeHeader
         user={h.user}
         greeting={h.greeting}
@@ -102,7 +97,7 @@ export default function Home() {
 
       {/* ── Main content ── */}
       <main className="relative z-10 mx-auto w-full max-w-2xl space-y-3 px-3 pt-4 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] sm:px-4">
-        {/* Alert Center: all banners consolidated */}
+        {/* Alert Center: critical + compliance banners only */}
         <HomeAlertCenter
           socketConnected={h.socketConnected}
           effectiveOnline={h.effectiveOnline}
@@ -140,11 +135,15 @@ export default function Home() {
           T={h.T}
         />
 
-        {/* Unified Stats */}
+        {/* Today's performance stats */}
         <HomeStats
           todayEarned={h.earningsData?.today?.earnings ?? h.user?.stats?.earningsToday ?? 0}
           todayRides={h.earningsData?.today?.deliveries ?? h.user?.stats?.deliveriesToday ?? 0}
-          acceptanceRate={h.cancelStatsData?.cancelRate != null ? Math.max(0, 100 - h.cancelStatsData.cancelRate) : null}
+          acceptanceRate={
+            h.cancelStatsData?.cancelRate != null
+              ? Math.max(0, 100 - h.cancelStatsData.cancelRate)
+              : null
+          }
           rating={h.user?.stats?.rating ?? null}
           onlineSince={h.onlineSince}
           isOnline={h.effectiveOnline}
@@ -153,7 +152,7 @@ export default function Home() {
           maxDeliveries={h.config.rider?.maxDeliveries ?? 3}
         />
 
-        {/* Goal Section */}
+        {/* Daily goal tracker */}
         <GoalSection
           adminGoal={h.config.rider?.dailyGoal ?? 5000}
           personalGoal={h.earningsData?.dailyGoal ?? h.user?.dailyGoal ?? null}
@@ -163,7 +162,7 @@ export default function Home() {
           refreshUser={h.refreshUser}
         />
 
-        {/* Requests or Offline State */}
+        {/* Live requests feed or offline state */}
         <HomeRequests
           isOnline={h.effectiveOnline}
           totalRequests={h.totalRequests}
