@@ -88,27 +88,7 @@ export function HomeRequests({
   toggling,
 }: HomeRequestsProps) {
   if (!isOnline) {
-    return (
-      <div className="animate-[slideUp_0.3s_ease-out] rounded-3xl border border-white/10 bg-card-dark p-8 text-center shadow-sm sm:p-10">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-border-dark sm:h-20 sm:w-20">
-          <Wifi size={32} className="text-[#B0B0B0]" />
-        </div>
-        <p className="text-base font-extrabold tracking-tight text-[#B0B0B0] sm:text-lg">
-          You are Offline
-        </p>
-        <p className="mt-1.5 text-sm text-[#B0B0B0]">
-          Toggle the switch above to start accepting orders
-        </p>
-        <button
-          onClick={onGoOnline}
-          disabled={toggling}
-          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white shadow-sm shadow-brand/20 transition-all hover:bg-brand-hover active:scale-[0.98] disabled:opacity-60"
-          aria-label="Go online to start accepting orders"
-        >
-          <Zap size={16} /> Go Online
-        </button>
-      </div>
-    );
+    return null;
   }
 
   return (

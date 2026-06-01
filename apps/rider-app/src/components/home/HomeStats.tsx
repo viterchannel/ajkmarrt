@@ -150,8 +150,8 @@ export function HomeStats({
         )}
       </div>
 
-      {/* Active limit strip — always visible */}
-      {maxDeliveries != null && (
+      {/* Active orders visible only when rider is online */}
+      {isOnline && maxDeliveries != null && (
         <div className={`flex items-center gap-2.5 rounded-2xl border px-3 py-2.5 backdrop-blur-sm ${
           activeOrderCount >= maxDeliveries
             ? "border-warning/20 bg-warning/[0.05]"

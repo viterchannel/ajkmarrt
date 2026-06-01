@@ -5,8 +5,6 @@ import {
   Bell,
   ChevronDown,
   ChevronUp,
-  Clock,
-  Lock,
   MapPin,
   Pin,
   SkipForward,
@@ -16,8 +14,6 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-
-import { Link } from "wouter";
 import type { TranslationKey } from "@workspace/i18n";
 
 export interface AlertItem {
@@ -180,29 +176,9 @@ export function HomeAlertCenter({
     });
   }
 
-  /* KYC check items */
-  const kycChecks = [
-    { key: "vehicleType", label: "Vehicle type selected", done: !!vehicleType },
-    { key: "vehiclePhoto", label: "Vehicle photo uploaded", done: !!vehiclePhoto },
-    { key: "drivingLicense", label: "Driving license number added", done: !!drivingLicense },
-    { key: "kycApproval", label: "KYC approved by admin", done: kycStatus === "approved" },
-  ];
-  const kycMissing = kycChecks.filter((c) => !c.done);
-  const kycAllSubmitted = kycMissing.length === 1 && kycMissing[0]?.key === "kycApproval";
-  const showKyc = kycStatus !== "approved";
-
-  /* Progressive verification */
-  let progressiveMissing: string[] = [];
-  if (availableFeatures?.features) {
-    const locked = availableFeatures.features.filter((f: any) => !f.accessible);
-    const missingSet = new Set<string>();
-    locked.forEach((f: any) => f.missingVerifications.forEach((v: string) => missingSet.add(v)));
-    progressiveMissing = Array.from(missingSet);
-  }
-
-  const hasAnyAlert = alerts.length > 0 || showKyc || progressiveMissing.length > 0;
+  const hasAnyAlert = alerts.length > 0;
   const criticalCount = alerts.filter((a) => a.severity === "critical").length;
-  const totalCount = alerts.length + (showKyc ? 1 : 0) + (progressiveMissing.length > 0 ? 1 : 0);
+  const totalCount = alerts.length;
 
   const visibleAlerts = showAllAlerts ? alerts : alerts.slice(0, 2);
   const hasMoreAlerts = alerts.length > 2;
@@ -348,79 +324,6 @@ export function HomeAlertCenter({
                   {showAllAlerts ? "Show fewer alerts" : `+ ${alerts.length - 2} more alerts`}
                 </button>
               )}
-
-              {/* KYC status */}
-              {showKyc && (
-                <Link href="/profile">
-                  <div
-                    className={`flex cursor-pointer items-start gap-2.5 rounded-xl border px-3 py-2.5 transition-transform active:scale-[0.98] ${
-                      kycStatus === "rejected"
-                        ? "border-error/30 bg-error/10"
-                        : kycStatus === "pending" || kycAllSubmitted
-                          ? "border-blue-400/30 bg-blue-500/10"
-                          : "border-warning/30 bg-warning/10"
-                    }`}
-                    role="alert"
-                  >
-                    <span className={`mt-0.5 flex-shrink-0 ${
-                      kycStatus === "rejected" ? "text-error" : kycStatus === "pending" || kycAllSubmitted ? "text-blue-400" : "text-warning"
-                    }`}>
-                      {kycStatus === "rejected" ? <X size={14} /> : kycStatus === "pending" || kycAllSubmitted ? <Clock size={14} /> : <AlertTriangle size={14} />}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className={`text-[11px] font-bold ${
-                        kycStatus === "rejected" ? "text-error" : kycStatus === "pending" || kycAllSubmitted ? "text-blue-300" : "text-warning"
-                      }`}>
-                        {kycStatus === "rejected" ? "KYC Rejected — Action Required" : kycStatus === "pending" || kycAllSubmitted ? "KYC Under Review" : "KYC Incomplete — Cannot Accept Rides"}
-                      </p>
-                      {kycStatus === "rejected" && rejectionReason && (
-                        <p className="mt-0.5 text-[10px] text-error/80">Reason: {rejectionReason}</p>
-                      )}
-                      {!kycAllSubmitted && kycStatus !== "pending" && kycStatus !== "approved" && (
-                        <div className="mt-1.5 space-y-0.5">
-                          {kycChecks.map((item) => (
-                            <div key={item.key} className="flex items-center gap-1.5">
-                              <span className={`h-2 w-2 flex-shrink-0 rounded-full ${item.done ? "bg-success" : "border border-current opacity-60"}`} style={{ color: kycStatus === "rejected" ? "var(--color-error)" : "var(--color-warning)" }} />
-                              <span className={`text-[10px] ${item.done ? "text-success" : kycStatus === "rejected" ? "text-error/80" : "text-warning/80"}`}>
-                                {item.label} {item.done && "✓"}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className={`mt-1.5 text-[10px] font-bold underline underline-offset-2 ${
-                        kycStatus === "rejected" ? "text-error" : kycStatus === "pending" || kycAllSubmitted ? "text-blue-300" : "text-warning"
-                      }`}>
-                        {kycStatus === "rejected" ? "Re-upload documents" : kycStatus === "pending" || kycAllSubmitted ? "View profile" : "Complete profile"} →
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              )}
-
-              {/* Progressive verification */}
-              {progressiveMissing.length > 0 && (
-                <div className="flex items-start gap-2.5 rounded-xl border border-warning/20 bg-warning/10 px-3 py-2.5" role="alert">
-                  <Lock size={14} className="mt-0.5 flex-shrink-0 text-warning" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-bold text-warning">Complete verification to unlock all features</p>
-                    <div className="mt-1 space-y-0.5">
-                      {progressiveMissing.map((v: string) => (
-                        <p key={v} className="flex items-center gap-1 text-[10px] text-warning/80">
-                          <span className="h-1 w-1 flex-shrink-0 rounded-full bg-warning" />
-                          {v === "phone_verified" || v === "phone" ? "Phone number not verified" :
-                           v === "email_verified" || v === "email" ? "Email address not verified" :
-                           v === "documents_approved" || v === "documents" ? "CNIC documents not approved" : v}
-                        </p>
-                      ))}
-                    </div>
-                    <Link href="/profile" className="mt-1.5 inline-block text-[10px] font-bold text-warning underline underline-offset-2">
-                      Go to Profile →
-                    </Link>
-                  </div>
-                </div>
-              )}
-
             </div>
           )}
         </div>
