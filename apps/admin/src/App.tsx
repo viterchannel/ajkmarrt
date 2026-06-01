@@ -101,7 +101,6 @@ const VerificationBonuses = lazy(() => import("@/pages/verification-bonuses"));
 const LocationRequests = lazy(() => import("@/pages/LocationRequests"));
 const CitiesAreas = lazy(() => import("@/pages/CitiesAreas"));
 const AppConfiguration = lazy(() => import("@/pages/app-configuration"));
-const CodRemittances = lazy(() => import("@/pages/CodRemittances"));
 
 const QUERY_RETRY_COUNT = 1;
 const QUERY_RETRY_DELAY_MS = 1_000;
@@ -296,9 +295,6 @@ function AppRoutes() {
         </Route>
         <Route path="/pending-riders">
           <ProtectedRoute component={PendingRiders} requirePermission="riders.approve" />
-        </Route>
-        <Route path="/cod-remittances">
-          <ProtectedRoute component={CodRemittances} requirePermission="finance.transactions.view" />
         </Route>
         <Route path="/vendors">
           <ProtectedRoute component={Vendors} requirePermission="vendors.view" />

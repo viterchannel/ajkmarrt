@@ -57,7 +57,6 @@ import verificationBonusesRoutes from "./admin/verification-bonuses.js";
 import kycQueueRoutes from "./admin/kyc-queue.js";
 import revenueAnalyticsRoutes from "./admin/revenue-analytics.js";
 import riderApprovalRoutes from "./admin/rider-approval.js";
-import codRemittancesRoutes from "./admin/cod-remittances.js";
 import sosRoutes from "./sos.js";
 export {
   adminAuth,
@@ -107,7 +106,6 @@ router.use(verificationBonusesRoutes);
 router.use(kycQueueRoutes);
 router.use(revenueAnalyticsRoutes);
 router.use(riderApprovalRoutes);
-router.use(codRemittancesRoutes);
 router.use(analyticsRoutes);
 router.use(searchAnalyticsRoutes);
 router.use("/qr-codes", qrCodesRoutes);

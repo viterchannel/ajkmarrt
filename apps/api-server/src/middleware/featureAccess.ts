@@ -86,52 +86,17 @@ export function checkFeatureAccess(featureName: string) {
         /* Fetch rider_min_balance live from DB so admin changes take effect
            immediately without an app restart.
            Key: "rider_min_balance" (same key used by platform-config route →
-           rider.minBalance and the admin settings panel UI field).
+           rider.minBalance and the admin settings panel UI field). */
+        const [minBalRow] = await db
+          .select({ value: platformSettingsTable.value })
+          .from(platformSettingsTable)
+          .where(eq(platformSettingsTable.key, "rider_min_balance"))
+          .limit(1);
 
-           Double-spend prevention: both the balance read and the gate decision
-           run inside a transaction with SELECT … FOR UPDATE on the user row.
-           This serializes concurrent accept_ride attempts so the second request
-           reads the freshly-deducted balance (after the first request's handler
-           has committed its deduction) rather than the stale pre-deduction value.
-           Without this lock two simultaneous accepts could both pass gate 3
-           and both deduct from the same wallet balance. */
-        let platformMinBalance = 0;
-        let riderBalance = 0;
-        let balanceBelowMin = false;
-        try {
-          await db.transaction(async (tx) => {
-            /* Acquire a row-level write lock on the user so concurrent accept
-               requests are serialized behind this gate check.  The handler that
-               runs after this middleware also uses FOR UPDATE when deducting,
-               ensuring end-to-end serialization of the balance check + deduct. */
-            const [lockedUser] = await tx
-              .select({ walletBalance: usersTable.walletBalance })
-              .from(usersTable)
-              .where(eq(usersTable.id, userId))
-              .for("update");
+        const platformMinBalance = parseFloat(minBalRow?.value ?? "0");
+        const riderBalance = parseFloat(String(user.walletBalance ?? "0"));
 
-            const [minBalRow] = await tx
-              .select({ value: platformSettingsTable.value })
-              .from(platformSettingsTable)
-              .where(eq(platformSettingsTable.key, "rider_min_balance"))
-              .limit(1);
-
-            platformMinBalance = parseFloat(minBalRow?.value ?? "0");
-            riderBalance = parseFloat(String(lockedUser?.walletBalance ?? "0"));
-            balanceBelowMin = platformMinBalance > 0 && riderBalance < platformMinBalance;
-          });
-        } catch (balErr) {
-          logger.warn({ balErr, userId }, "[featureAccess] gate 3 balance transaction failed — failing closed");
-          res.status(503).json({
-            success: false,
-            blocked: true,
-            reason: "gate_check_error",
-            message: "Service temporarily unavailable. Please try again.",
-          });
-          return;
-        }
-
-        if (balanceBelowMin) {
+        if (platformMinBalance > 0 && riderBalance < platformMinBalance) {
           db.insert(riderGateEventsTable)
             .values({
               riderId: userId,

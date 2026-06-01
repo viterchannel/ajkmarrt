@@ -257,64 +257,6 @@ async function purgeStaleLocations(): Promise<void> {
   }
 }
 
-/* ── Ghost-rider auto-offline ────────────────────────────────────────────────
-   Detects riders who are still in live_locations but have not sent a GPS ping
-   for more than 90 seconds (app crash, background kill, network loss without
-   an explicit offline toggle).  Their isOnline flag is set to false and their
-   live_locations row is deleted so the fleet map and dispatch engine see them
-   as offline.  Runs every 90 seconds — tight enough to minimise ghost-rider
-   window without hammering the DB.                                           */
-const GHOST_RIDER_PING_STALE_MS = 90 * 1000;
-
-async function markGhostRidersOffline(): Promise<void> {
-  const cutoff = new Date(Date.now() - GHOST_RIDER_PING_STALE_MS);
-
-  try {
-    /* Find riders whose lastPingAt is older than the stale threshold.
-       Riders with lastPingAt IS NULL are excluded — they may be pre-migration
-       rows that have never had a ping timestamp written; those are handled by
-       purgeStaleLocations (2-hour cutoff based on updatedAt). */
-    const ghostRows = await db
-      .select({ userId: liveLocationsTable.userId })
-      .from(liveLocationsTable)
-      .where(
-        sql`role = 'rider' AND last_ping_at IS NOT NULL AND last_ping_at < ${cutoff}`
-      );
-
-    if (ghostRows.length === 0) {
-      logger.debug("[scheduler] ghost-rider check ran, 0 stale riders found");
-      return;
-    }
-
-    const ghostIds = ghostRows.map((r) => r.userId);
-
-    await db.transaction(async (tx) => {
-      /* Mark riders offline in users table */
-      await tx.execute(sql`
-        UPDATE users
-        SET is_online = false, updated_at = NOW()
-        WHERE id = ANY(${ghostIds}::text[])
-          AND is_online = true
-      `);
-
-      /* Remove their live_locations rows */
-      await tx
-        .delete(liveLocationsTable)
-        .where(sql`user_id = ANY(${ghostIds}::text[]) AND role = 'rider'`);
-    });
-
-    logger.info(
-      { count: ghostIds.length, ghostIds },
-      "[scheduler] marked ghost riders offline (no GPS ping > 90s)"
-    );
-  } catch (err) {
-    logger.warn(
-      { err: err instanceof Error ? err.message : String(err) },
-      "[scheduler] ghost-rider cleanup failed"
-    );
-  }
-}
-
 async function purgeOldLocationHistory(): Promise<void> {
   const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const deleted = await db
@@ -412,7 +354,6 @@ const ALL_JOBS = [
   "otp-token-cleanup",
   "user-session-cleanup",
   "live-location-cleanup",
-  "ghost-rider-auto-offline",
   "login-history-archival",
   "location-history-cleanup",
   "deleted-user-pii-purge",
@@ -427,7 +368,6 @@ export function startScheduler(): void {
   register("otp-token-cleanup", purgeExpiredOtpTokens, 30 * 60_000);
   register("user-session-cleanup", purgeExpiredUserSessions, 60 * 60_000);
   register("live-location-cleanup", purgeStaleLocations, 30 * 60_000);
-  register("ghost-rider-auto-offline", markGhostRidersOffline, GHOST_RIDER_PING_STALE_MS);
   register("login-history-archival", archiveOldLoginHistory, 24 * 60 * 60_000);
   register("location-history-cleanup", purgeOldLocationHistory, 24 * 60 * 60_000);
   register("deleted-user-pii-purge", purgeDeletedUserPii, 24 * 60 * 60_000);

@@ -295,9 +295,7 @@ async function processLocationUpdate(opts: {
   /* ── Snapshot prev location from cache BEFORE updating live_locations ── */
   const cachedPrev = effectiveRole === "rider" ? _riderLastLocCache.get(userId) : undefined;
 
-  /* Update live_locations — also stamps lastPingAt so the ghost-rider
-     cleanup job can detect riders who stopped sending GPS pings without
-     explicitly toggling offline (app crash, background kill, etc.). */
+  /* Update live_locations */
   await db
     .insert(liveLocationsTable)
     .values({
@@ -306,7 +304,6 @@ async function processLocationUpdate(opts: {
       longitude: lon.toString(),
       role: effectiveRole,
       action: opts.action ?? null,
-      lastPingAt: now,
       updatedAt: now,
     })
     .onConflictDoUpdate({
@@ -316,7 +313,6 @@ async function processLocationUpdate(opts: {
         longitude: lon.toString(),
         role: effectiveRole,
         action: opts.action ?? null,
-        lastPingAt: now,
         updatedAt: now,
       },
     });
