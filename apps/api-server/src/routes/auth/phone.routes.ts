@@ -200,6 +200,10 @@ router.post(
 
       // ── Bypass path: OTP suspended — issue JWT immediately for existing users ──
       if (!result.otpRequired && existingUser?.id) {
+        logger.warn(
+          { userId: existingUser.id, phone, ip, env: process.env["NODE_ENV"] },
+          "[phone.routes] OTP bypass activated — issuing JWT without OTP verification. Ensure Global OTP Suspension is intentional."
+        );
         const [fullUser] = await db
           .select()
           .from(usersTable)

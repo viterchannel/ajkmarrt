@@ -87,6 +87,11 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
           ? tDual("sessionExpired", language)
           : ((e as Error)?.message) || tDual("sessionExpired", language);
       setRoleError(msg);
+      if (roleErrorTimerRef.current) clearTimeout(roleErrorTimerRef.current);
+      roleErrorTimerRef.current = setTimeout(() => {
+        roleErrorTimerRef.current = null;
+        setRoleError(null);
+      }, 3500);
       return;
     }
 
@@ -113,6 +118,11 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
     if (roles.length > 0 && !roles.includes("rider")) {
       api.clearTokens();
       setRoleError(tDual("accessDenied", language));
+      if (roleErrorTimerRef.current) clearTimeout(roleErrorTimerRef.current);
+      roleErrorTimerRef.current = setTimeout(() => {
+        roleErrorTimerRef.current = null;
+        setRoleError(null);
+      }, 3500);
       return;
     }
 
@@ -458,7 +468,7 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
     <ThemeProvider role="rider" theme={riderTheme}>
       <SharedLoginScreen
         role="rider"
-        logoSrc="/ajkmart-logo.png"
+        logoSrc={import.meta.env.BASE_URL + "ajkmart-logo.png"}
         logoAlt="AJKMart"
         smartLogin
         enableBiometric={authConfig.biometricEnabled}

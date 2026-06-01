@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import type { AuthUser } from "../AuthProvider";
 import { AuthContext } from "../AuthProvider";
 
@@ -45,6 +45,15 @@ export function useLoginFlow({
 }: UseLoginFlowOptions = {}) {
   const ctx = useContext(AuthContext);
 
+  /* Stable refs so callbacks can be updated on every render without
+     causing useCallback/useEffect to re-fire and create stale closures. */
+  const onSuccessRef = useRef(onSuccess);
+  onSuccessRef.current = onSuccess;
+  const translateErrorRef = useRef(translateError);
+  translateErrorRef.current = translateError;
+  const onDevOtpRef = useRef(onDevOtp);
+  onDevOtpRef.current = onDevOtp;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [method, setMethod] = useState<LoginMethod | null>(null);
@@ -59,7 +68,7 @@ export function useLoginFlow({
   }
 
   function applyTranslation(raw: string): string {
-    return translateError ? translateError(raw) : raw;
+    return translateErrorRef.current ? translateErrorRef.current(raw) : raw;
   }
 
   async function apiFetch<T>(path: string, body: Record<string, unknown>): Promise<ApiResponse<T>> {
@@ -162,12 +171,12 @@ export function useLoginFlow({
                 refreshToken?: string;
                 user?: AuthUser;
               }>("/api/auth/send-otp", sendBody);
-              if (sendRes.data?.devOtp && onDevOtp) onDevOtp(sendRes.data.devOtp);
+              if (sendRes.data?.devOtp && onDevOtpRef.current) onDevOtpRef.current(sendRes.data.devOtp);
 
               // Bypass path: backend issued JWT without needing OTP — log in immediately
               if (sendRes.data?.otpRequired === false && sendRes.data?.accessToken && sendRes.data?.user) {
                 ctx?.login(sendRes.data.user, sendRes.data.accessToken);
-                onSuccess?.(sendRes.data.user, sendRes.data.accessToken, sendRes.data.refreshToken);
+                onSuccessRef.current?.(sendRes.data.user, sendRes.data.accessToken, sendRes.data.refreshToken);
                 result.otpBypassed = true;
               }
             } catch (sendErr) {
@@ -244,7 +253,7 @@ export function useLoginFlow({
           return;
         }
         ctx?.login(data.user, data.accessToken);
-        onSuccess?.(data.user, data.accessToken, data.refreshToken);
+        onSuccessRef.current?.(data.user, data.accessToken, data.refreshToken);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "OTP verification failed";
         setError(applyTranslation(msg));
@@ -254,7 +263,7 @@ export function useLoginFlow({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [identifier, identifierType, baseURL, role, onSuccess]
+    [identifier, identifierType, baseURL, role]
   );
 
   /**
@@ -286,7 +295,7 @@ export function useLoginFlow({
           return;
         }
         ctx?.login(data.user, data.accessToken);
-        onSuccess?.(data.user, data.accessToken, data.refreshToken);
+        onSuccessRef.current?.(data.user, data.accessToken, data.refreshToken);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Password login failed";
         setError(applyTranslation(msg));
@@ -296,7 +305,7 @@ export function useLoginFlow({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [identifier, baseURL, role, onSuccess]
+    [identifier, baseURL, role]
   );
 
   /**
@@ -318,7 +327,7 @@ export function useLoginFlow({
         setTwoFactorPending(false);
         ctx?.setTwoFactorPending(false);
         ctx?.login(data.user, data.accessToken);
-        onSuccess?.(data.user, data.accessToken, data.refreshToken);
+        onSuccessRef.current?.(data.user, data.accessToken, data.refreshToken);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "2FA verification failed";
         setError(applyTranslation(msg));
@@ -328,7 +337,7 @@ export function useLoginFlow({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tempToken, baseURL, onSuccess]
+    [tempToken, baseURL]
   );
 
   /**
@@ -360,7 +369,7 @@ export function useLoginFlow({
         setTwoFactorPending(false);
         ctx?.setTwoFactorPending(false);
         ctx?.login(data.user, data.accessToken);
-        onSuccess?.(data.user, data.accessToken, data.refreshToken);
+        onSuccessRef.current?.(data.user, data.accessToken, data.refreshToken);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "OTP verification failed";
         setError(applyTranslation(msg));
@@ -370,7 +379,7 @@ export function useLoginFlow({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tempToken, baseURL, onSuccess]
+    [tempToken, baseURL]
   );
 
   return {

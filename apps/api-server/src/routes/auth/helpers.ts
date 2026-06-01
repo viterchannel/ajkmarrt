@@ -540,7 +540,6 @@ export async function issueTokensForUser(
       avatar: user.avatar,
       walletBalance: parseFloat(user.walletBalance ?? "0"),
       isActive: user.isActive,
-      cnic: user.idCardNumber,
       city: user.city,
       emailVerified: user.emailVerified ?? false,
       phoneVerified: user.phoneVerified ?? false,
