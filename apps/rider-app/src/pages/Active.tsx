@@ -1015,7 +1015,7 @@ export default function Active() {
               </div>
               <button
                 onClick={() => retrySyncRef.current?.()}
-                className="flex flex-shrink-0 items-center gap-1.5 rounded-2xl bg-error px-3 py-2 text-xs font-bold text-white shadow-md shadow-red-200 transition-transform active:scale-95"
+                className="flex flex-shrink-0 items-center gap-1.5 rounded-2xl bg-error px-3 py-2 text-xs font-bold text-white shadow-md shadow-error/30 transition-transform active:scale-95"
               >
                 <RefreshCw size={13} /> Retry
               </button>
@@ -1023,7 +1023,7 @@ export default function Active() {
           )}
           <div className="flex flex-1 items-center justify-center p-6">
             <div className="text-center">
-              <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] border border-white/10 bg-gradient-to-br from-gray-50 to-gray-100 shadow-inner">
+              <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] border border-white/[0.08] bg-white/[0.04] shadow-inner">
                 <Bike size={52} className="text-[#B0B0B0]" />
               </div>
               <h2 className="text-xl font-extrabold text-[#B0B0B0]">{T("noActiveTask")}</h2>
@@ -1032,7 +1032,7 @@ export default function Active() {
               </p>
               <button
                 onClick={() => refetch()}
-                className="mx-auto mt-6 flex items-center gap-2 rounded-xl bg-brand px-7 py-3.5 text-sm font-bold text-white shadow-sm transition-transform active:scale-[0.97]"
+                className="mx-auto mt-6 flex items-center gap-2 rounded-xl bg-brand px-7 py-3.5 text-sm font-bold text-black shadow-sm transition-transform active:scale-[0.97]"
               >
                 <RefreshCw size={15} /> {T("refresh")}
               </button>
@@ -1135,7 +1135,7 @@ export default function Active() {
           </div>
           <button
             onClick={() => retrySyncRef.current?.()}
-            className="flex flex-shrink-0 items-center gap-1.5 rounded-2xl bg-error px-3 py-2 text-xs font-bold text-white shadow-md shadow-red-200 transition-transform active:scale-95"
+            className="flex flex-shrink-0 items-center gap-1.5 rounded-2xl bg-error px-3 py-2 text-xs font-bold text-white shadow-md shadow-error/30 transition-transform active:scale-95"
           >
             <RefreshCw size={13} /> Retry
           </button>
@@ -1245,6 +1245,7 @@ export default function Active() {
             currency={currency}
             deliveryFeeConfig={config.deliveryFee}
             riderEarningPct={riderEarningPct}
+            startedAt={startedAt}
             updateOrderMut={updateOrderMut}
             proofPhoto={proofPhoto}
             proofFile={proofFile}
@@ -1275,6 +1276,7 @@ export default function Active() {
             riderPos={riderPos}
             currency={currency}
             riderEarningPct={riderEarningPct}
+            startedAt={startedAt}
             config={
               config as {
                 rides?: { riderEarningPct?: number };

@@ -31,6 +31,8 @@ import {
   TurnByTurnPanel,
   type OrderItem,
 } from "./ActiveHelpers";
+import { ActiveHeroCard } from "./ActiveHeroCard";
+import { ActiveStepper } from "./ActiveStepper";
 
 function orderTypeGradient(type?: string | null): string {
   const t = (type || "").toLowerCase();
@@ -58,6 +60,7 @@ export interface ActiveOrderPanelProps {
   currency: string;
   deliveryFeeConfig: unknown;
   riderEarningPct: number;
+  startedAt?: string | null;
   updateOrderMut: {
     mutate: (args: { id: string; status: string; photoUrl?: string }) => void;
     isPending: boolean;
@@ -90,6 +93,7 @@ export function ActiveOrderPanel({
   currency,
   deliveryFeeConfig,
   riderEarningPct,
+  startedAt,
   updateOrderMut,
   proofPhoto,
   proofFile: _proofFile,
@@ -141,6 +145,15 @@ export function ActiveOrderPanel({
 
   return (
     <>
+      <ActiveHeroCard
+        kind="order"
+        order={order}
+        orderStep={orderStep}
+        riderPos={riderPos}
+        currency={currency}
+        startedAt={startedAt}
+      />
+
       {/* Order header card */}
       <div className="animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-lg shadow-black/40">
         <div
@@ -167,37 +180,8 @@ export function ActiveOrderPanel({
           </div>
         </div>
 
-        <div className="px-5 pt-5 pb-4">
-          <div className="relative flex items-center justify-between">
-            {ORDER_LABELS.map((label, i) => (
-              <div key={i} className="z-10 flex flex-col items-center gap-2" style={{ flex: 1 }}>
-                <div
-                  className={`flex h-11 w-11 items-center justify-center rounded-2xl border-2 transition-all duration-500 ${
-                    i < orderStep
-                      ? "border-success bg-success text-white shadow-lg shadow-green-200"
-                      : i === orderStep
-                        ? "border-brand bg-brand text-white shadow-lg ring-4 shadow-brand/20 ring-brand/30"
-                        : "border-white/10 bg-card-dark text-[#B0B0B0]"
-                  }`}
-                >
-                  {i < orderStep ? <CheckCircle size={16} /> : ORDER_STEP_ICONS[i]}
-                </div>
-                <p
-                  className={`max-w-[70px] text-center text-[10px] leading-tight font-bold ${
-                    i <= orderStep ? "text-white" : "text-[#B0B0B0]"
-                  }`}
-                >
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="relative mx-10 -mt-8 mb-6 h-1 rounded-full bg-border-dark">
-            <div
-              className="absolute top-0 left-0 h-full rounded-full bg-brand transition-all duration-700 ease-out"
-              style={{ width: `${orderStep === 0 ? 0 : orderStep === 1 ? 50 : 100}%` }}
-            />
-          </div>
+        <div className="px-4 pt-4 pb-4">
+          <ActiveStepper steps={ORDER_LABELS} currentStep={orderStep} />
         </div>
       </div>
 
@@ -335,7 +319,7 @@ export function ActiveOrderPanel({
               disabled={updateOrderMut.isPending}
               onTouchStart={() => setPressedBtn("pickup")}
               onTouchEnd={() => setPressedBtn(null)}
-              className={`flex w-full items-center justify-center gap-2.5 rounded-2xl bg-brand py-4 text-base font-black text-white shadow-lg transition-transform disabled:opacity-60 ${pressedBtn === "pickup" ? "scale-[0.97]" : ""}`}
+              className={`flex w-full items-center justify-center gap-2.5 rounded-2xl bg-brand py-4 text-base font-black text-black shadow-lg transition-transform disabled:opacity-60 min-h-[52px] ${pressedBtn === "pickup" ? "scale-[0.97]" : ""}`}
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-card-dark/20">
                 <Package size={18} />
@@ -349,7 +333,7 @@ export function ActiveOrderPanel({
                 setCancelTarget("order");
                 setShowCancelConfirm(true);
               }}
-              className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-error/30 bg-red-900/20/50 py-3 text-sm font-bold text-error transition-colors active:bg-error/15"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-error/30 bg-error/10 py-3 text-sm font-bold text-error transition-colors active:bg-error/15"
             >
               <X size={14} /> {T("cantPickUp")}
             </button>
@@ -617,7 +601,7 @@ export function ActiveOrderPanel({
                 setShowCancelConfirm(true);
               }}
               disabled={updateOrderMut.isPending}
-              className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-error/30 bg-red-900/20/50 py-3 text-sm font-bold text-error transition-colors active:bg-error/15 disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-error/30 bg-error/10 py-3 text-sm font-bold text-error transition-colors active:bg-error/15 disabled:opacity-60"
             >
               <X size={14} /> {T("cannotDeliverCancel")}
             </button>

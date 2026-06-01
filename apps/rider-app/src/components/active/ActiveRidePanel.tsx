@@ -15,6 +15,8 @@ import {
   TurnByTurnPanel,
 } from "./ActiveHelpers";
 import { SignaturePad } from "./SignaturePad";
+import { ActiveHeroCard } from "./ActiveHeroCard";
+import { ActiveStepper } from "./ActiveStepper";
 
 export interface ActiveRidePanelProps {
   ride: Record<string, unknown>;
@@ -23,6 +25,7 @@ export interface ActiveRidePanelProps {
   riderPos: { lat: number; lng: number } | null;
   currency: string;
   riderEarningPct: number;
+  startedAt?: string | null;
   config: {
     rides?: { riderEarningPct?: number };
     finance: { riderEarningPct?: number };
@@ -56,6 +59,7 @@ export function ActiveRidePanel({
   riderPos,
   currency,
   riderEarningPct,
+  startedAt,
   config,
   updateRideMut,
   handleCompleteRide,
@@ -90,6 +94,16 @@ export function ActiveRidePanel({
   const riderEarning = parseFloat(String(ride.fare ?? 0)) * (riderEarningPct / 100);
 
   return (
+    <div className="space-y-4">
+      <ActiveHeroCard
+        kind="ride"
+        ride={ride}
+        rideStep={rideStep}
+        riderPos={riderPos}
+        currency={currency}
+        startedAt={startedAt}
+      />
+
     <div className="animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-lg shadow-black/40">
       <div className="relative flex items-center gap-3 overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 px-4 py-4">
         <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-card-dark/10" />
@@ -133,37 +147,8 @@ export function ActiveRidePanel({
 
       <div className="space-y-4 p-4">
         {rideStep >= 0 && (
-          <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-gray-50 to-purple-50/30 p-5">
-            <div className="relative mb-5 flex justify-between">
-              {RIDE_LABELS.map((label, i) => (
-                <div key={i} className="z-10 flex flex-col items-center gap-2" style={{ flex: 1 }}>
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-2xl border-2 transition-all duration-500 ${
-                      i < rideStep
-                        ? "border-success bg-success text-white shadow-lg shadow-green-200"
-                        : i === rideStep
-                          ? "border-brand bg-brand text-white shadow-lg ring-4 shadow-brand/20 ring-brand/30"
-                          : "border-white/10 bg-border-dark text-[#B0B0B0]"
-                    }`}
-                  >
-                    {i < rideStep ? <CheckCircle size={14} /> : RIDE_STEP_ICONS[i]}
-                  </div>
-                  <p
-                    className={`max-w-[60px] text-center text-[9px] font-bold ${i <= rideStep ? "text-white" : "text-[#B0B0B0]"}`}
-                  >
-                    {label}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="relative h-1.5 overflow-hidden rounded-full bg-border-dark">
-              <div
-                className="absolute top-0 left-0 h-full rounded-full bg-brand transition-all duration-700 ease-out"
-                style={{
-                  width: `${rideStep < 0 ? 0 : (rideStep / (RIDE_STEPS.length - 1)) * 100}%`,
-                }}
-              />
-            </div>
+          <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-4">
+            <ActiveStepper steps={RIDE_LABELS} currentStep={rideStep} />
           </div>
         )}
 
@@ -476,7 +461,7 @@ export function ActiveRidePanel({
               disabled={updateRideMut.isPending}
               onTouchStart={() => setPressedBtn("arrived")}
               onTouchEnd={() => setPressedBtn(null)}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-4 font-black text-white shadow-lg transition-transform disabled:opacity-60 ${pressedBtn === "arrived" ? "scale-[0.97]" : ""}`}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-4 font-black text-black shadow-lg transition-transform disabled:opacity-60 min-h-[52px] ${pressedBtn === "arrived" ? "scale-[0.97]" : ""}`}
             >
               <MapPin size={16} /> {T("arrivedAtPickup")}
             </button>
@@ -502,7 +487,7 @@ export function ActiveRidePanel({
               disabled={updateRideMut.isPending}
               onTouchStart={() => setPressedBtn("start")}
               onTouchEnd={() => setPressedBtn(null)}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-4 font-black text-white shadow-lg transition-transform disabled:opacity-60 ${pressedBtn === "start" ? "scale-[0.97]" : ""}`}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-4 font-black text-black shadow-lg transition-transform disabled:opacity-60 min-h-[52px] ${pressedBtn === "start" ? "scale-[0.97]" : ""}`}
             >
               <Car size={16} /> {T("startRide")}
             </button>
@@ -540,6 +525,7 @@ export function ActiveRidePanel({
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }
