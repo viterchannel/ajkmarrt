@@ -75,13 +75,27 @@ function timeAgo(dateStr?: string | null): string {
   return `${days}d ago`;
 }
 
-const VEHICLES = ["bike", "car", "van", "rickshaw", "bicycle", "on_foot"];
+const VEHICLES_FALLBACK: Array<{ key: string; label: string }> = [
+  { key: "bike",      label: "Bike / Motorcycle" },
+  { key: "car",       label: "Car" },
+  { key: "rickshaw",  label: "Rickshaw / QingQi" },
+  { key: "van",       label: "Van" },
+  { key: "bicycle",   label: "Bicycle" },
+  { key: "on_foot",   label: "On Foot" },
+];
+
+function formatCnic(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 13);
+  if (digits.length <= 5) return digits;
+  if (digits.length <= 12) return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+  return `${digits.slice(0, 5)}-${digits.slice(5, 12)}-${digits.slice(12)}`;
+}
 
 const INPUT =
-  "w-full h-12 px-4 bg-input border border-border rounded-lg text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 focus:bg-input transition-all";
+  "w-full bg-[#2A2A2A] border border-white/[0.10] rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all";
 const SELECT =
-  "w-full h-12 px-3 bg-input border border-border rounded-lg text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 appearance-none transition-all";
-const LABEL = "text-xs font-bold text-[#B0B0B0] uppercase tracking-wider mb-1.5 block";
+  "w-full bg-[#2A2A2A] border border-white/[0.10] rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 appearance-none transition-all";
+const LABEL = "text-xs font-bold text-white/50 uppercase tracking-wider mb-1 block";
 
 type EditSection = "personal" | "vehicle" | "bank" | null;
 
@@ -143,6 +157,29 @@ export default function Profile() {
     staleTime: 5 * 60 * 1000,
   });
   const CITIES: string[] = citiesData?.cities?.length ? citiesData.cities : CITIES_FALLBACK;
+
+  const { data: vehicleTypesData, isLoading: vehicleTypesLoading } = useQuery({
+    queryKey: ["vehicle-types"],
+    queryFn: () => api.getVehicleTypes(),
+    staleTime: 10 * 60 * 1000,
+  });
+  const VEHICLES: Array<{ key: string; label: string }> =
+    vehicleTypesData?.types && vehicleTypesData.types.length > 0
+      ? vehicleTypesData.types
+      : VEHICLES_FALLBACK;
+
+  const { data: banksData, isLoading: banksLoading } = useQuery({
+    queryKey: ["rider-banks"],
+    queryFn: () =>
+      fetch("/api/rider/banks")
+        .then((r) => r.json() as Promise<{ success: boolean; data?: { banks: Array<{ value: string; label: string }> } }>)
+        .then((json) => json.data ?? { banks: [] }),
+    staleTime: 10 * 60 * 1000,
+  });
+  const BANKS_LIST: Array<{ value: string; label: string }> =
+    banksData?.banks && banksData.banks.length > 0
+      ? banksData.banks
+      : BANKS.map((b) => ({ value: b, label: b }));
 
   const { data: cancelStatsData } = useQuery({
     queryKey: ["rider-cancel-stats"],
@@ -290,7 +327,8 @@ export default function Profile() {
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext("2d");
-          if (ctx) ctx.drawImage(img, 0, 0, width, height);
+          if (!ctx) { reject(new Error("Canvas context unavailable")); return canvas; }
+          ctx.drawImage(img, 0, 0, width, height);
           return canvas;
         };
 
@@ -317,7 +355,6 @@ export default function Profile() {
         };
 
         const canvas1200 = scaleCanvas(1200);
-        if (!canvas1200.getContext("2d")) { reject(new Error("Canvas context unavailable")); return; }
 
         tryCompress(canvas1200, 0.7, [0.6, 0.5, 0.4], (blob1200) => {
           if (blob1200.size <= TARGET_SIZE_BYTES) {
@@ -326,6 +363,11 @@ export default function Profile() {
           }
           const canvas800 = scaleCanvas(800);
           tryCompress(canvas800, 0.5, [0.4, 0.3], (blob800) => {
+            /* Surface error if still oversized after all compression passes */
+            if (blob800.size > maxImageMb * 1024 * 1024) {
+              reject(new Error("too_large"));
+              return;
+            }
             resolve(blob800);
           });
         });
@@ -417,8 +459,18 @@ export default function Profile() {
     try {
       const compressed = await compressImage(file);
       uploadBlob = compressed;
-    } catch {
-      /* compression failed — upload with original file */
+    } catch (compressErr: unknown) {
+      const msg = compressErr instanceof Error ? compressErr.message : "";
+      if (msg === "too_large") {
+        setDocCompressing(null);
+        toast({
+          title: "Image too large",
+          description: "Please choose a smaller or lower-resolution photo.",
+          variant: "destructive",
+        });
+        return;
+      }
+      /* other compression failures — fall back to original file */
     } finally {
       setDocCompressing(null);
     }
@@ -1182,7 +1234,9 @@ export default function Profile() {
                   if (editing && editing !== tab) setEditing(null);
                 }}
                 className={`relative flex-1 py-3.5 text-sm font-bold transition-all ${
-                  activeTab === tab ? "text-white" : "text-[#B0B0B0]"
+                  activeTab === tab
+                    ? "border-b-2 border-brand text-brand"
+                    : "border-b-2 border-transparent text-white/40"
                 }`}
               >
                 {tab === "personal"
@@ -1190,9 +1244,6 @@ export default function Profile() {
                   : tab === "vehicle"
                     ? T("vehicleTab")
                     : T("bankTab")}
-                {activeTab === tab && (
-                  <div className="absolute right-1/4 bottom-0 left-1/4 h-[3px] rounded-t-full bg-card-dark" />
-                )}
                 {savedSection === tab && (
                   <span className="absolute top-1 right-2">
                     <CheckCircle
@@ -1279,12 +1330,15 @@ export default function Profile() {
                       <label className={LABEL}>{T("cnicNationalId")}</label>
                       <input
                         value={cnic}
-                        onChange={(e) => setCnic(e.target.value)}
+                        onChange={(e) => setCnic(formatCnic(e.target.value))}
                         inputMode="numeric"
+                        maxLength={15}
                         placeholder="XXXXX-XXXXXXX-X"
                         className={INPUT}
                       />
-                      <p className="mt-1 text-[10px] text-[#B0B0B0]">{T("cnicFormatHint")}</p>
+                      {cnic && !/^\d{5}-\d{7}-\d{1}$/.test(cnic) && (
+                        <p className="mt-1 text-[10px] text-error">Format: XXXXX-XXXXXXX-X</p>
+                      )}
                     </div>
                     <div>
                       <label className={LABEL}>{T("cityLabel")}</label>
@@ -1326,7 +1380,7 @@ export default function Profile() {
                     <button
                       onClick={() => saveSection("personal")}
                       disabled={saving}
-                      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-card-dark font-bold text-white shadow-sm transition-colors active:bg-card-dark disabled:opacity-60"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 font-black text-black transition-colors active:opacity-90 disabled:opacity-60"
                     >
                       {saving ? (
                         <>
@@ -2187,10 +2241,10 @@ export default function Profile() {
                           onChange={(e) => setVehicleType(e.target.value)}
                           className={SELECT}
                         >
-                          <option value="">{T("selectVehicle")}</option>
+                          <option value="">{vehicleTypesLoading ? "Loading…" : T("selectVehicle")}</option>
                           {VEHICLES.map((v) => (
-                            <option key={v} value={v}>
-                              {VEHICLE_LABELS[v] ?? v}
+                            <option key={v.key} value={v.key}>
+                              {v.label}
                             </option>
                           ))}
                         </select>
@@ -2427,7 +2481,7 @@ export default function Profile() {
                     <button
                       onClick={() => saveSection("vehicle")}
                       disabled={saving}
-                      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-card-dark font-bold text-white shadow-sm transition-colors active:bg-card-dark disabled:opacity-60"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 font-black text-black transition-colors active:opacity-90 disabled:opacity-60"
                     >
                       {saving ? (
                         <>
@@ -2540,10 +2594,10 @@ export default function Profile() {
                           onChange={(e) => setBankName(e.target.value)}
                           className={SELECT}
                         >
-                          <option value="">{T("selectBank")}</option>
-                          {BANKS.map((b) => (
-                            <option key={b} value={b}>
-                              {b}
+                          <option value="">{banksLoading ? "Loading…" : T("selectBank")}</option>
+                          {BANKS_LIST.map((b) => (
+                            <option key={b.value} value={b.value}>
+                              {b.label}
                             </option>
                           ))}
                         </select>
@@ -2576,7 +2630,7 @@ export default function Profile() {
                     <button
                       onClick={() => saveSection("bank")}
                       disabled={saving}
-                      className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-card-dark font-bold text-white shadow-sm transition-colors active:bg-card-dark disabled:opacity-60"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 font-black text-black transition-colors active:opacity-90 disabled:opacity-60"
                     >
                       {saving ? (
                         <>

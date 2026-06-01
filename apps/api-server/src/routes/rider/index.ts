@@ -7458,15 +7458,65 @@ router.post("/ai-chat", async (req: Request, res: Response) => {
 
 /* ── Vehicle Types ─────────────────────────────────────────────────────────────
    GET /rider/vehicle-types
-   Returns the supported vehicle categories that riders can register with. */
+   Returns the supported vehicle categories that riders can register with.
+   Also returns `types` array with {key, label} for the new dropdown format. */
 router.get("/vehicle-types", async (_req: Request, res: Response) => {
   try {
-    const vehicleTypes = ["Bike", "Car", "Rickshaw", "Van", "Truck"];
-    sendSuccess(res, { vehicleTypes });
+    const types = [
+      { key: "bike",       label: "Bike / Motorcycle" },
+      { key: "car",        label: "Car" },
+      { key: "rickshaw",   label: "Rickshaw / QingQi" },
+      { key: "van",        label: "Van" },
+      { key: "bicycle",    label: "Bicycle" },
+      { key: "on_foot",    label: "On Foot" },
+    ];
+    sendSuccess(res, { types, vehicleTypes: types.map((t) => t.key) });
   } catch (err) {
     logger.error(
       { error: err instanceof Error ? err.message : String(err) },
       "[rider/vehicle-types] error"
+    );
+    sendError(res, "Internal server error", 500);
+  }
+});
+
+/* ── Bank List ─────────────────────────────────────────────────────────────────
+   GET /rider/banks
+   Returns the bank/mobile-wallet list.  Sources from platform setting
+   `rider_bank_list` (JSON string of [{value,label}]) if configured,
+   otherwise returns the curated fallback list. */
+const _FALLBACK_BANKS = [
+  { value: "EasyPaisa",    label: "EasyPaisa" },
+  { value: "JazzCash",     label: "JazzCash" },
+  { value: "MCB",          label: "MCB" },
+  { value: "HBL",          label: "HBL" },
+  { value: "UBL",          label: "UBL" },
+  { value: "Meezan Bank",  label: "Meezan Bank" },
+  { value: "Bank Alfalah", label: "Bank Alfalah" },
+  { value: "NBP",          label: "NBP" },
+  { value: "Allied Bank",  label: "Allied Bank" },
+  { value: "Other",        label: "Other" },
+];
+router.get("/banks", async (_req: Request, res: Response) => {
+  try {
+    const settings = await getCachedSettings();
+    const raw = (settings as Record<string, unknown>)?.rider_bank_list as string | undefined;
+    let banks: Array<{ value: string; label: string }> = _FALLBACK_BANKS;
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw) as unknown;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          banks = parsed as Array<{ value: string; label: string }>;
+        }
+      } catch {
+        /* malformed setting — use fallback */
+      }
+    }
+    sendSuccess(res, { banks });
+  } catch (err) {
+    logger.error(
+      { error: err instanceof Error ? err.message : String(err) },
+      "[rider/banks] error"
     );
     sendError(res, "Internal server error", 500);
   }
