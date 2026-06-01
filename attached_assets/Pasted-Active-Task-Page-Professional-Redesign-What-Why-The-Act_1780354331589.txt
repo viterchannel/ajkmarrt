@@ -1,0 +1,54 @@
+Active Task Page — Professional Redesign
+What & Why
+The Active page works functionally but lacks professional visual quality. Key gaps: no prominent hero card for customer/vendor info, step progress stepper is not visually clear, distance/ETA is missing, and current-task earnings are not visible. Additionally, two existing code bugs need fixing: bg-red-900/20/50 is an invalid Tailwind class (lines 352 and 620 of ActiveOrderPanel.tsx), and the cancel button styling is broken.
+
+Color & Contrast Reference (apply throughout this task)
+Use	Token	Hex	Text on it
+Primary CTA (Pick Up, Deliver, Arrived)	bg-brand	#FFD700 gold	text-black ← NOT text-white
+Active stepper step	bg-brand	#FFD700 gold	text-black
+Completed stepper step	bg-success	#4CAF50 green	text-white
+Upcoming stepper step	bg-card-dark border-white/20	—	text-white/40
+Task earnings pill	bg-brand/15 border-brand/30 text-brand	gold tint	—
+Cancel / danger buttons	bg-error/10 border-2 border-error/30 text-error	—	—
+Info cards	bg-card-dark border border-white/[0.08]	—	text-white
+Distance / ETA strip	bg-success/10 border-success/20 text-success	—	—
+Never use text-white on bg-brand — gold + white fails WCAG AA. Fix bug: Replace all bg-red-900/20/50 (invalid class) → bg-error/10.
+
+Done looks like
+A Hero Info Card at the top of both panels: for orders — vendor name + store address + Call button (row 1), customer name + delivery address + Call button (row 2). For rides — passenger name, pickup → dropoff with a route arrow. Bold, instantly scannable typography.
+A Visual Step Progress Bar replaces text-only status: for orders (2 steps), for rides (4 steps). Active step: gold ring. Completed: green checkmark fill. Upcoming: grey ring.
+A Task Earnings pill (top-right of hero card): "Rs. X.XX" in a gold-tinted badge using delivery/ride fee data already in the API response.
+A Distance + ETA strip: "📍 1.2 km · ~8 min" computed client-side (Haversine formula). Shown below hero card when GPS coordinates are available.
+ElapsedBadge (already exists) moved into the hero card header row.
+Bug fix: bg-red-900/20/50 invalid Tailwind class replaced with bg-error/10 in both cancel button instances in ActiveOrderPanel.tsx.
+Bug fix: All bg-brand text-white on action buttons → bg-brand text-black in newly added/modified components.
+Consistent bg-card-dark rounded-2xl border border-white/[0.08] card style throughout.
+Out of scope
+Leaflet map component visual changes.
+Admin Chat drawer or SOS button.
+Signature pad UI.
+Post-delivery feedback screen.
+Steps
+Fix existing code bugs first (4 confirmed bugs) Fix all of these in the files listed:
+
+ActiveOrderPanel.tsx lines 352 & 620: bg-red-900/20/50 → bg-error/10 (invalid Tailwind class — double opacity modifier).
+ActiveOrderPanel.tsx + ActiveRidePanel.tsx: all bg-brand ... text-white on action buttons → bg-brand ... text-black (WCAG AA — gold + white fails contrast).
+Active.tsx line 1035: Refresh button bg-brand ... text-white → bg-brand ... text-black.
+Active.tsx line 1018 & 1138: shadow-red-200 → shadow-error/30 (light pink shadow is jarring on dark UI; shadow-red-200 is a Tailwind light-mode color).
+Active.tsx line 1026: Empty state icon container bg-gradient-to-br from-gray-50 to-gray-100 → bg-white/[0.04] border border-white/[0.08] rounded-2xl (white/light gradient is completely wrong on the dark #0A0A0A app background).
+ActiveHeroCard component Create ActiveHeroCard.tsx in apps/rider-app/src/components/active/. For orders: two-row layout — Row 1 (vendor/pickup): store icon + store name + store address + CallButton; Row 2 (customer/dropoff): person icon + customer name + delivery address + CallButton. For rides: passenger name centered + pickup address → dropoff address with a chevron arrow. Card style: bg-card-dark rounded-2xl border border-white/[0.08] p-4. Typography: name = text-sm font-bold text-white, address = text-xs text-white/50.
+
+ActiveStepper component Create ActiveStepper.tsx. For orders: 2 steps ("Go to Store", "Deliver"). For rides: 4 steps ("Accepted", "Arrived", "In Transit", "Done"). Each step node: 28px circle. Done = bg-success text-white with checkmark. Active = bg-brand text-black with step number. Upcoming = border-2 border-white/20 text-white/30 with step number. Connector line between nodes: green for completed segments, grey for upcoming. Render as a full-width horizontal row.
+
+Task Earnings pill + ElapsedBadge in hero In ActiveHeroCard, top-right corner: a pill showing estimated task earnings — bg-brand/15 border border-brand/30 text-brand text-xs font-bold rounded-full px-2.5 py-1. For orders use order.deliveryFee, for rides use ride.fare. Place ElapsedBadge (imported from ActiveHelpers.tsx) in the hero card's top-left header row next to the task type label.
+
+DistanceStrip component Inside ActiveHeroCard, below the address rows: a thin strip showing distance and ETA computed client-side. Import rider's current GPS coords from Active.tsx state (already tracked via watchPosition). Compute Haversine distance to destination (vendor coords for order step 1, customer coords for step 2; pickup for ride arrived, dropoff for in-transit). Display: 📍 X.X km · ~Y min (assume 25 km/h). Style: bg-success/10 border border-success/20 rounded-xl px-3 py-1.5 text-xs text-success. Hide if coords unavailable.
+
+Layout alignment pass Ensure all cards in ActiveOrderPanel and ActiveRidePanel use consistent horizontal padding (px-4), vertical spacing (space-y-3), and max-width container (max-w-2xl mx-auto). Action buttons at the bottom: full-width w-full, minimum height min-h-[52px], rounded-2xl. Primary button: bg-brand text-black font-black. Cancel/secondary: bg-error/10 border-2 border-error/30 text-error font-bold.
+
+Relevant files
+apps/rider-app/src/pages/Active.tsx
+apps/rider-app/src/components/active/ActiveOrderPanel.tsx
+apps/rider-app/src/components/active/ActiveRidePanel.tsx
+apps/rider-app/src/components/active/ActiveHelpers.tsx
+apps/rider-app/src/index.css

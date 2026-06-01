@@ -1,0 +1,66 @@
+Earnings Page — Professional Redesign (Full Stack)
+What & Why
+The Earnings page has all the right data but presents it poorly: no chart on the main page (only in /summary), no trend vs yesterday, no clear commission breakdown, and the withdraw CTA is hard to find. The period filter tabs use bg-brand text-white which fails WCAG AA contrast on gold background. This redesign makes earnings instantly scannable and actionable.
+
+Color & Contrast Reference (apply throughout this task)
+Use	Token	Hex	Text on it
+Primary CTA (Withdraw)	bg-brand	#FFD700 gold	text-black ← NOT text-white
+Active period tab	bg-brand	#FFD700 gold	text-black ← fix existing text-white bug
+Chart bar (today)	bg-brand	#FFD700 gold	—
+Chart bars (other days)	bg-white/20	—	—
+Earnings value (positive)	text-success	#4CAF50	—
+Trend up indicator	text-success	#4CAF50	—
+Trend down indicator	text-error	#F44336	—
+Warning / pending payout	text-warning	#FF9800	—
+Cards	bg-card-dark border border-white/[0.08]	#1A1A1A	text-white
+Paid badge	bg-success/15 text-success	—	—
+Processing badge	bg-warning/15 text-warning	—	—
+Rejected badge	bg-error/15 text-error	—	—
+Fix existing bug: Earnings.tsx lines 216, 576 — period tab active state uses bg-brand text-white. Change text-white → text-black.
+
+Done looks like
+Wallet + Withdraw hero card at top: current wallet balance (28px bold), gold "Withdraw →" button with text-black (not white), "Pending: Rs. X" line in amber if applicable.
+Period filter tabs (Today / Week / Month): active tab = bg-brand text-black (bug fixed from text-white).
+7-day bar chart on the main /earnings page — today's bar = bg-brand, other days = bg-white/20. Tapping a bar shows that day's ride count.
+Trend indicator: "↑ Rs. 200 vs yesterday" (text-success) or "↓ Rs. 150 vs yesterday" (text-error) below today's earnings value. Backend adds yesterdayEarnings.
+Commission breakdown card: collapsible — "Gross · Platform fee (20%) · You keep". Always visible below stats.
+By Service Type pills: 🍔 Food (orange), 📦 Parcel (blue), 🛵 Rides (green) with mini progress bars.
+History item cards: dark card style, service icon, customer name, time, earnings in text-success font-bold.
+Payout status badges in /summary: "Paid" (bg-success/15 text-success), "Processing" (bg-warning/15 text-warning), "Rejected" (bg-error/15 text-error).
+All existing bg-brand text-white instances on this page corrected to bg-brand text-black.
+Out of scope
+Withdrawal flow / payout mechanics.
+New payment methods.
+Tax document generation.
+Daily goal modal logic.
+Steps
+Backend — add yesterdayEarnings to /rider/earnings Using the same date-range earnings query pattern already used for today/week/month, add a yesterday key to the response: { earnings: number, deliveries: number } for the previous calendar day (midnight to midnight in the rider's timezone or UTC).
+
+Fix ALL existing bg-brand text-white contrast bugs (7 confirmed instances) All instances in Earnings.tsx where bg-brand + text-white are combined must have text-white → text-black. Confirmed line-by-line:
+
+Lines 216 & 576 — period tab active state (bg-brand text-white shadow-sm pill).
+Line 594 — earnings summary highlight card (rounded-3xl bg-brand p-5 text-white). Also fix sub-labels inside: text-white/40 → text-black/40, text-white/30 → text-black/30.
+Line 616 — "Personal" goal badge (rounded-full bg-brand ... text-white).
+Line 791 — category badge (rounded-full bg-brand ... text-white).
+Line 877 — action button (bg-brand py-2.5 text-xs font-bold text-white).
+Line 1002 — submit/withdraw button (bg-brand py-3 text-sm font-bold text-white). Also fix in History.tsx lines 570 & 581 (same period tab pattern). Total: all bg-brand elements must render text-black, never text-white.
+Wallet hero card + Withdraw CTA Redesign the top section of Earnings.tsx: a bg-card-dark rounded-2xl border border-white/[0.08] hero card showing wallet balance (28px font-extrabold text-white), a bg-brand text-black font-black rounded-2xl py-3 Withdraw button linking to /wallet, and an amber "Pending: Rs. X" line (text-warning text-xs) if pending payout > 0. Balance already available from useAuth.
+
+7-day bar chart on main earnings page Extract the chart logic from EarningsSummary.tsx into a shared EarningsBarChart component (apps/rider-app/src/components/earnings/EarningsBarChart.tsx). Import and render it in Earnings.tsx below the period-filter stats cards. Today's bar: bg-brand rounded-t-lg. Other days: bg-white/20 rounded-t-lg. Bar tap shows a tooltip with that day's delivery count. Reuse the same api.getWalletPage query already used in summary.
+
+Trend indicator Below the "Earned Today" value in Earnings.tsx, add a trend row using the new yesterdayEarnings API field. Format: ↑ Rs. X more than yesterday (text-success text-xs) or ↓ Rs. X less than yesterday (text-error text-xs). Show only when period is "Today" and yesterdayEarnings.earnings is available.
+
+Commission breakdown card Add a CommissionCard component below the main stats cards. Shows: Gross (earningsData.today.breakdown.gross), Platform fee (gross − net with %) and Net take-home. Collapsible accordion, default collapsed. Card style: bg-card-dark rounded-2xl border border-white/[0.08]. Values use text-success for net, text-error/70 for fee.
+
+By Service Type — icon pills Replace plain text service rows with coloured pill cards in a 3-column grid: 🍔 Food (bg-orange-500/10 border-orange-500/20 text-orange-400), 📦 Parcel (bg-blue-500/10 border-blue-500/20 text-blue-400), 🛵 Rides (bg-success/10 border-success/20 text-success). Each pill: icon, amount bold, mini progress bar (% of total).
+
+History cards + receipt modal polish Apply bg-card-dark rounded-2xl border border-white/[0.08] to each history item. Left: colored service icon (same color scheme as service pills). Center: customer name (font-semibold text-white text-sm) + time (text-white/40 text-xs). Right: earnings (text-success font-extrabold text-sm). Receipt modal header: task ID + date + share icon button. Full-width layout, no horizontal overflow.
+
+Payout status badges in /earnings/summary In EarningsSummary.tsx, each payout card: replace plain text status with colored pill badges. Amount: right-aligned, font-extrabold text-white text-base. Apply consistent bg-card-dark rounded-2xl card style.
+
+Relevant files
+apps/rider-app/src/pages/Earnings.tsx
+apps/rider-app/src/pages/EarningsSummary.tsx
+apps/rider-app/src/pages/History.tsx
+apps/rider-app/src/lib/api.ts
+apps/api-server/src/routes/rider/index.ts

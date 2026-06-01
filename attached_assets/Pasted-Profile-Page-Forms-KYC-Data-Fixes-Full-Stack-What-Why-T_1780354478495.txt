@@ -1,0 +1,61 @@
+Profile Page — Forms, KYC & Data Fixes (Full Stack)
+What & Why
+The Profile page forms and KYC section have data integrity bugs and UX issues: CNIC has no auto-formatting, vehicle types are hardcoded and may mismatch the backend, bank list is static, image compression fails silently, and KYC document cards are visually inconsistent. Input fields use background-color: #2A2A2A from global CSS but have no consistent focus/error visual hierarchy in the Profile forms specifically.
+
+Color & Contrast Reference (apply throughout this task)
+Use	Token	Hex	Text on it
+Input background	bg-[#2A2A2A]	#2A2A2A	text-white
+Input focus ring	brand gold (set in index.css)	#FFD700	— (global, no override needed)
+Input error border	border-error	#F44336	—
+Inline error text	text-error text-xs	#F44336	—
+KYC: Approved badge	bg-success/15 text-success border-success/20	—	—
+KYC: Pending badge	bg-warning/15 text-warning border-warning/20	—	—
+KYC: Rejected badge	bg-error/15 text-error border-error/20	—	—
+KYC: upload button	border border-brand/40 text-brand bg-brand/10	outlined gold	text-brand
+Save/Submit buttons	bg-brand text-black font-black	gold	dark text — NEVER text-white
+Disabled inputs	opacity-50 cursor-not-allowed bg-[#1A1A1A]	—	text-white/40
+Tab active indicator	border-b-2 border-brand text-brand	gold underline	—
+Cards	bg-card-dark border border-white/[0.08] rounded-2xl	—	text-white
+Done looks like
+CNIC input auto-formats as rider types: 35201-1234567-1. No manual hyphens needed. Validation uses formatted pattern.
+Vehicle types from API (api.getVehicleTypes() already exists but unused). Dropdown always matches backend. Skeleton shown while loading.
+Bank list from GET /rider/banks (new backend endpoint). Falls back to static constants on error.
+Image compression errors surfaced via toast: "Image too large — please choose a smaller photo." No silent oversized uploads.
+KYC document cards: each doc (CNIC Front, CNIC Back, License, Vehicle Photo) gets its own bg-card-dark rounded-2xl card — thumbnail preview, status badge, rejection reason inline (red), re-upload button (outlined gold). Approved docs show lock icon.
+Tab forms: consistent input style (bg-[#2A2A2A] border border-white/[0.10] rounded-xl), field-level inline errors (text-error text-xs mt-1), disabled fields clearly styled.
+Save buttons: bg-brand text-black font-black rounded-2xl — NEVER text-white on gold.
+Active tab indicator: border-b-2 border-brand text-brand gold underline (NOT bg-brand text-white pill).
+All layout sections use consistent px-4 horizontal padding, space-y-4 vertical spacing.
+Out of scope
+Map/geocoding picker for address field.
+Email OTP or phone OTP flow changes.
+New KYC document types.
+Account deletion flow.
+Steps
+Backend — GET /rider/banks endpoint Add GET /rider/banks in apps/api-server/src/routes/rider/index.ts. Requires rider auth. Returns { banks: Array<{ value: string, label: string }> }. Source from platform settings key rider_bank_list if it exists, otherwise return the same curated list currently hardcoded in frontend constants (apps/rider-app/src/lib/constants.ts).
+
+CNIC auto-format input In Profile.tsx, create a formatCnic(raw: string): string utility: strip non-digits, apply mask XXXXX-XXXXXXX-X. Replace the raw CNIC text input with a controlled input that calls formatCnic on every onChange. Validation regex: /^\d{5}-\d{7}-\d{1}$/. Show inline error text-error text-xs mt-1 below the field. Remove the separate maskCnic display function — the input itself formats live.
+
+Vehicle types from API In Profile.tsx, replace the hardcoded VEHICLES array with useQuery({ queryKey: ['vehicle-types'], queryFn: api.getVehicleTypes }). Populate the vehicle type select from the response. While loading: show a shimmer-block skeleton inside the dropdown. On error: fall back to the hardcoded constant list silently (no toast needed).
+
+Bank list from API In Profile.tsx, add useQuery({ queryKey: ['rider-banks'], queryFn: () => fetch('/api/rider/banks').then(r => r.json()) }). Populate the bank name dropdown from data.banks. While loading: show skeleton. On error: fall back to static BANKS import.
+
+Image compression error surfacing Locate the compressImage call in Profile.tsx (avatar upload and KYC document uploads). Wrap in try/catch. If the resulting blob size exceeds maxImageMb OR the canvas operation throws, call: toast({ title: "Image too large", description: "Please choose a smaller or lower-resolution photo.", variant: "destructive" }) and return early without uploading.
+
+KYC document cards redesign Replace the current KYC section layout with individual document cards for each type. Each card: bg-card-dark rounded-2xl border border-white/[0.08] p-4. Layout: left side thumbnail (48×48px, rounded-xl object-cover, or grey placeholder if none). Right side: document label (text-sm font-bold text-white), status badge (per table above), rejection reason in text-error text-xs if rejected. Bottom: re-upload button border border-brand/40 text-brand bg-brand/10 rounded-xl px-3 py-2 text-xs font-bold if not approved, or a lock icon + "Approved" if locked. Full card layout: flex flex-col gap-3.
+
+Tab indicator bug fix + form input consistency Confirmed bug (line 1213 of Profile.tsx): Active tab indicator uses bg-card-dark — this is #1A1A1A on a #1A1A1A card background, making it completely invisible. Fix: change bg-card-dark → bg-brand so the gold underline tab indicator is visible. Then audit all <input>, <select>, <textarea> in Personal, Vehicle, and Bank tabs. Ensure each uses: bg-[#2A2A2A] border border-white/[0.10] rounded-xl px-3 py-2.5 text-white text-sm w-full as the base class (global CSS already sets background-color: #2A2A2A and font-size: 16px — do not override these). Add text-error text-xs mt-1 inline error messages below fields that fail validation. Disabled fields: add opacity-50 cursor-not-allowed explicitly.
+
+Save buttons contrast fix All Save/Update/Submit buttons across the three tabs: replace bg-brand text-white → bg-brand text-black font-black rounded-2xl py-3 w-full. Verify no other text-white appears on bg-brand in Profile.tsx after this pass.
+
+Layout alignment pass Ensure the Personal, Vehicle, and Bank tab form bodies use space-y-4 between field groups. All form sections: max-w-2xl mx-auto px-4. KYC cards section: grid grid-cols-1 gap-3 sm:grid-cols-2. Labels above inputs: text-xs font-bold text-white/50 uppercase tracking-wider mb-1.
+
+Relevant files
+apps/rider-app/src/pages/Profile.tsx
+apps/rider-app/src/lib/api.ts
+apps/rider-app/src/lib/constants.ts
+apps/api-server/src/routes/rider/index.ts
+apps/rider-app/src/index.css
+Dependencies
+
+Profile Page — Header, Stats & Quick Actions Redesign

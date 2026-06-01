@@ -1,0 +1,44 @@
+Profile Page — Header, Stats & Quick Actions Redesign
+What & Why
+The Profile page header, stats bar, quality score card, and quick actions grid exist but are visually inconsistent with the professional dashboard standard. Stats cards lack bold hierarchy, the quality score uses plain text layout, and the quick actions grid is plain. This task polishes the top half of the profile page to match the dashboard's design language.
+
+Color & Contrast Reference (apply throughout this task)
+Use	Token	Hex	Text on it
+Primary CTA (if any)	bg-brand	#FFD700 gold	text-black — NEVER text-white
+Avatar tier badge (Gold)	bg-yellow-400/10 border-yellow-400/20 text-yellow-400	—	—
+Avatar tier badge (Silver)	bg-blue-400/10 border-blue-400/20 text-blue-400	—	—
+Avatar tier badge (Active)	bg-success/10 border-success/20 text-success	—	—
+Stats icon (Deliveries)	text-indigo-400	—	—
+Stats icon (Earnings)	text-success	#4CAF50	—
+Stats icon (Rating)	text-warning	#FF9800	—
+Quality score (≥80)	text-success stroke-success	#4CAF50	—
+Quality score (≥60)	text-warning stroke-warning	#FF9800	—
+Quality score (<60)	text-error stroke-error	#F44336	—
+Cards	bg-card-dark border border-white/[0.08] rounded-2xl	—	text-white
+Quick action cards	bg-card-dark border border-white/[0.08] rounded-2xl	—	colored icons, text-white/70 label
+Done looks like
+Avatar section: 80px circular avatar, camera overlay icon tap-to-upload, brand-color initials fallback. Tier badge (same getRiderTier logic from HomeHeader) below the name. "Last online · X ago" and "Member since Month Year" as small grey pills.
+Stats bar: 4 horizontal cards in a scrollable row — Total Deliveries (text-indigo-400), Total Earnings (text-success), Wallet Balance (text-brand, taps to /wallet), Rating (text-warning star icon). Values: text-2xl font-extrabold. Labels: text-[10px] uppercase tracking-widest text-white/30. Animated slideUp stagger.
+Quality Score card: SVG circular progress ring (stroke color changes per threshold above). Score number centered in ring. Below: 3-column mini-grid — Acceptance (text-success), Cancellation Rate (text-error), Rating (text-warning). No plain text layout.
+Quick Actions 3×2 grid: bg-card-dark rounded-2xl border border-white/[0.08]. Each card: centered colored icon (24px), label text-[11px] font-bold text-white/70. Tap feedback active:scale-[0.96]. Icons: Wallet (text-brand), Earnings (text-success), History (text-indigo-400), Reviews (text-warning), Help (text-blue-400), Settings (text-white/50).
+All layout sections centered within max-w-2xl mx-auto px-4.
+Out of scope
+Profile form fields (Personal, Vehicle, Bank tabs) — next task.
+KYC document upload section — next task.
+Penalty history, Reviews, Settings sub-components.
+Steps
+Avatar + name section Redesign the profile header area. Circular avatar h-20 w-20 rounded-full. Brand-color initials fallback (bg-brand/20 text-brand font-extrabold). Camera overlay: semi-transparent dark pill at bottom-right of avatar circle, tap triggers upload. Tier badge below name: import and reuse getRiderTier() from HomeHeader.tsx. "Last online" + "Member since" as text-[10px] text-white/30 pills in a row below the tier badge.
+
+Stats bar redesign Replace current stats bar with a horizontally scrollable row of 4 cards (flex flex-row gap-2.5 overflow-x-auto px-4 hide-scrollbar). Each card: bg-card-dark rounded-2xl border border-white/[0.08] p-3.5 min-w-[90px] flex flex-col items-center. Icon (colored per table), value (text-xl font-extrabold), label (text-[9px] uppercase tracking-widest text-white/25). Wallet card: wrap in <Link href="/wallet"> with active:bg-white/[0.07]. Animate each card with slideUp stagger (animationDelay: i * 60ms).
+
+Quality Score card with SVG ring Replace current quality score section with a card containing: an SVG circular ring (r=36, circumference ≈ 226px, stroke-dashoffset computed from score). Stroke color set per threshold (success/warning/error). Score number centered in the ring (text-2xl font-extrabold). Below ring: 3-column grid grid-cols-3 gap-2 mt-3. Each cell: icon + value (font-bold) + label (text-[9px] text-white/30). Use existing cancelStatsData already fetched in Profile.tsx.
+
+Quick Actions 3×2 grid Replace current quick actions section with a grid grid-cols-3 gap-2.5 grid. Each cell: bg-card-dark rounded-2xl border border-white/[0.08] p-3.5 flex flex-col items-center gap-2 active:scale-[0.96] transition-transform. Icon (28px, colored per table above). Label: text-[11px] font-bold text-white/70 text-center. Six actions: Wallet, Earnings, History, Reviews, Help, Settings — links confirmed in App.tsx.
+
+Layout alignment pass Ensure all sections use max-w-2xl mx-auto container. Consistent vertical spacing: space-y-4 between header, stats, quality, quick actions. Avatar section: flex flex-col items-center py-6. Stats bar: full-width with px-4 and horizontal scroll. No section should overflow horizontally on mobile viewports.
+
+Relevant files
+apps/rider-app/src/pages/Profile.tsx
+apps/rider-app/src/components/home/HomeHeader.tsx
+apps/rider-app/src/components/home/HomeStats.tsx
+apps/rider-app/src/index.css
