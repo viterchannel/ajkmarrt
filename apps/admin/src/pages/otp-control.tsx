@@ -474,7 +474,7 @@ export default function OtpControl() {
       if (d?.rideId || d?.otp !== undefined) {
         setOtpLookupResult(d);
       } else {
-        setOtpLookupError(d?.error ?? "Ride not found.");
+        setOtpLookupError("Ride not found or unexpected server response.");
       }
     } catch (e: unknown) {
       if (isApiError(e) && e.status === 404) {
@@ -555,7 +555,7 @@ export default function OtpControl() {
       } else {
         toast({
           title: "Error",
-          description: d?.error ?? "Failed",
+          description: "Unexpected response from server. Please try again.",
           variant: "destructive",
         });
       }
@@ -2470,7 +2470,7 @@ function ViewCurrentOtpSection() {
       if (d?.otp) {
         setResult(d as LiveOtpResult);
       } else {
-        setError(d?.error ?? "Failed to generate OTP.");
+        setError("Unexpected response from server. Please try again.");
       }
     } catch (e: unknown) {
       if (isApiError(e) && e.status === 404) {
