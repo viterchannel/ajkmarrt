@@ -17,7 +17,5 @@ export { OrderRequestCard } from "./OrderRequestCard";
 export { RequestAge } from "./RequestAge";
 export { RequestListHeader } from "./RequestListHeader";
 export { RideRequestCard } from "./RideRequestCard";
-export { SilenceControls } from "./SilenceControls";
 export { SkeletonHome } from "./SkeletonHome";
-export { StatsGrid } from "./StatsGrid";
 export { FixedBanners, InlineWarnings } from "./SystemWarnings";

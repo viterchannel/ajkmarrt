@@ -1,0 +1,115 @@
+Banner Fatigue (16+ blocks) → Professional app mein sirf 1–2 active warnings dikhti hain, baqi ek collapsible “Notifications” ya “Alerts” drawer mein hoti hain.
+
+Duplicate Stats & Controls → Ek hi data alag-alag labels ke saath dikhna (e.g., “Rides Today” vs “Rides Done”) user ko confuse karta hai. B2B UI mein ek single source of truth hota hai.
+
+Redundant Actions — “Go Online” 2 jagah, sound control 2 jagah, profile links 4 jagah. Yeh amateurish impression deta hai.
+
+1927 Lines Monolith → Maintainability mushkil hai, performance slow hoti hai, aur chhoti changes bhi bada impact daal sakti hain.
+
+Excessive Polling (7+ intervals) → Mobile battery drain karega aur server load badhayega — enterprise apps WebSocket ya smart sync use karte hain.
+
+Accessibility Gaps → Screen readers ke liye duplicate controls aur missing live announcements professional app mein unacceptable hain.
+
+Best Approach: “Professional” Banane ke Liye Kya Karein (Step-by-Step)
+Maine changes ko priority ke hisaab se arrange kiya hai. Har step ke saath yeh bhi bataya hai ke wo kaise B2B look degi.
+
+🔴 Top Priority — Cognitive Load Kam Karein (Banner Clutter)
+Action:
+
+Sirf critical blocking warnings (e.g., phone not verified, account restricted) top fixed banner ki tarah dikhao.
+
+Baqi sab (GPS, zone, cancel stats, ignore stats, low wallet, KYC progress) ko ek “Notifications Center” ya collapsible Alert Panel mein daalo — ek bell icon ke saath unread count dikhaye.
+
+Profile completion ke sab banners (KYC, progressive verification, incomplete profile) ko ek single “Complete Your Profile” checklist banner mein merge karo jisme progress bar ho.
+
+Professional impact: Screen clean lagega, rider immediately jaanta hai use kya action lena hai. B2B dashboards ki tarah important alerts prominent, secondary info grouped.
+
+🟠 High Priority — Duplicate UI Elements Hatayein
+Action:
+
+StatsGrid hatayein ya TodaySummaryWidget ke saath merge karein. Sirf ek 3-column stats row rakhein jisme:
+
+Earned Today | Rides Done | Acceptance (ya Online Time agar offline nahi hai)
+
+SilenceControls ko OnlineToggleCard ke andar shift karo. Sound on/off button sirf ek ho, mute timer (15/30/60 min) usi ke popover mein mile.
+
+Online toggle sirf ek jagah rakhein — best hai OnlineToggleCard hi rakho, aur HomeRequestList mein “Go Online” button ko hata do ya sirf “Listening for requests…” ki tarah passive status dikhao.
+
+Professional impact: Har function ka ek clear master control hoga. Duplicate controls rookie app ka nishaan hain.
+
+🟡 Mid Priority — Information Architecture Behtar Karein
+Action:
+
+Offline hone par TodaySummaryWidget aur GoalSection ko hide karo ya “Last Session Summary” label ke saath grey-out karo. Unnecessary stats na dikhao.
+
+GoalSection jab goal set na ho to usay full banner ki shakal na dekar ek subtle “Set a goal” link banao jo neeche stats ke paas ho.
+
+RequestListHeader aur “LIVE” badge sirf tab dikhe jab actual requests active hon — listening state mein sirf “Waiting for new orders…” jaise passive indicator dikhao.
+
+Professional impact: Context-aware UI — wahi dikhta hai jo waqt ke mutabiq kaam ka ho, jaise Uber ya DoorDash ke driver app.
+
+🟢 Medium Priority — Code Architecture (Monolith ko Toro)
+Action:
+
+Home.tsx ko in components mein split karo:
+
+HomeHeader (greeting, wallet balance, online toggle + sound)
+
+HomeStatsAndGoal (stats + goal section)
+
+HomeAlertCenter (critical banner + grouped inline warnings)
+
+HomeRequestList (request cards, active task)
+
+Har component ki apni state ho, par parent se data props ke zariye aaye.
+
+Global state (Zustand/Context) use karo taake props drilling na ho.
+
+Professional impact: Code maintainable, reusable, aur performance optimized hoga. Enterprise apps hamesha component-driven architecture use karte hain.
+
+🔵 Lower Priority — Performance & Battery
+Action:
+
+Polling intervals review karo. Jab app background mein jaye to polling rok do (Visibility API).
+
+WebSocket se real-time updates aise handle karo ke heavy re-rendering na ho.
+
+currentIdsSig memoize karo taake har render par string computation na ho.
+
+useCallback ko stable rakho (dependency array fix karo) taake child components unnecessary re-render na karein.
+
+Professional impact: App responsive lagega, battery life improve hogi — B2B users long shifts mein bharosa karenge.
+
+🟣 Finishing — Accessibility & Dark Mode
+Action:
+
+Screen reader ke liye duplicate controls ki aria-label fix karo, yaa duplicate element hi hata do.
+
+Dynamic warnings ke liye aria-live="polite" region add karo.
+
+Hardcoded light mode colors (like amber-50) ko Tailwind dark mode classes (e.g., dark:from-amber-900) se replace karo.
+
+Professional impact: Inclusive design aur modern look. Large B2B companies aaj-kal accessibility audits mandatory hoti hain.
+
+Suggested Redesign Wireframe (After All Fixes)
+text
+┌─────────────────────────────────┐
+│ 📍 Greeting, Wallet Balance     │ ← Header
+│ [Online Toggle 🔘 + Sound]     │
+├─────────────────────────────────┤
+│ [Alert Center 🔔 3]             │ ← Critical warnings only; icon with count
+├─────────────────────────────────┤
+│ Earned Today   Rides Done   Acc │ ← Unified Stats Bar
+│ Rs. 1,250       5            94%│
+│ Goal: 80% complete  [Set Goal]  │ ← Subtle goal progress (if set)
+├─────────────────────────────────┤
+│ ▼ Inline Notices (collapsible)  │ ← GPS/Zone/Cancel etc hidden here
+├─────────────────────────────────┤
+│ ⚠️ Phone not verified [Verify]  │ ← Single blocking banner (conditional)
+├─────────────────────────────────┤
+│ 📋 Requests (LIVE 2)            │ ← Request list header
+│   Card 1                        │
+│   Card 2                        │
+└─────────────────────────────────┘
+Yeh layout dekhne mein professional lagega, har cheez ki ek jagah hogi, aur user ko immediately pata chalega ke use kya karna hai.
+
