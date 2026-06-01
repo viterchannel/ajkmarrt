@@ -48,6 +48,7 @@ import { Link } from "wouter";
 import { ProfileFooter } from "../components/profile/ProfileFooter";
 import { InfoRow, SavedCheckmark, SkeletonProfile } from "../components/profile/ProfileHelpers";
 import { ProfilePenaltyHistory } from "../components/profile/ProfilePenaltyHistory";
+import { getRiderTier, getInitials } from "../components/home/HomeHeader";
 import { ProfileReviews } from "../components/profile/ProfileReviews";
 import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { SafeImage } from "../components/ui/SafeImage";
@@ -61,22 +62,6 @@ const log = createLogger("[Profile]");
 
 const fc = (n: string | number | null | undefined, currencySymbol = "Rs.") =>
   _sharedFcP(n != null ? String(n) : (n as null | undefined), currencySymbol);
-
-function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
-  if (!rating || rating === 0) return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
-  if (rating >= 4.5) return { label: "Gold Partner", cls: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" };
-  if (rating >= 4.0) return { label: "Silver Partner", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
-  if (rating >= 3.5) return { label: "Active Rider", cls: "text-success bg-success/10 border-success/20" };
-  return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
-}
-
-function getInitials(name?: string | null): string {
-  if (!name) return "R";
-  const parts = name.trim().split(" ").filter(Boolean);
-  if (parts.length === 0) return "R";
-  if (parts.length === 1) return parts[0]![0]?.toUpperCase() ?? "R";
-  return ((parts[0]![0] ?? "") + (parts[parts.length - 1]![0] ?? "")).toUpperCase();
-}
 
 function timeAgo(dateStr?: string | null): string {
   if (!dateStr) return "recently";
@@ -1001,23 +986,20 @@ export default function Profile() {
             ) : null;
           })()}
 
-          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-            <span className="text-[10px] text-white/30">
+          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">
+            <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[10px] text-white/30">
               {user?.isOnline
                 ? "Online now"
                 : `Last online · ${timeAgo((user as any)?.lastSeen ?? (user as any)?.updatedAt)}`}
             </span>
             {user?.createdAt && (
-              <>
-                <span className="text-white/20">·</span>
-                <span className="text-[10px] text-white/30">
-                  Member since{" "}
-                  {new Date(user.createdAt).toLocaleDateString("en-PK", {
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </span>
-              </>
+              <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[10px] text-white/30">
+                Member since{" "}
+                {new Date(user.createdAt).toLocaleDateString("en-PK", {
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
             )}
           </div>
         </div>
@@ -1118,26 +1100,29 @@ export default function Profile() {
                     </span>
                   </div>
                 </div>
-                {/* 3-row mini stats */}
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
-                    <span className="text-[10px] font-semibold text-white/40">Acceptance</span>
-                    <span className="text-[13px] font-extrabold text-success">
-                      {acceptanceRate.toFixed(1)}%
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
-                    <span className="text-[10px] font-semibold text-white/40">Cancel Rate</span>
-                    <span className="text-[13px] font-extrabold text-error">
-                      {cancelRate.toFixed(1)}%
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-1.5">
-                    <span className="text-[10px] font-semibold text-white/40">Rating</span>
-                    <span className={`text-[13px] font-extrabold ${ratingColor}`}>
-                      ★ {rating.toFixed(1)}
-                    </span>
-                  </div>
+              </div>
+              {/* 3-column mini-grid */}
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <div className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.03] px-2 py-2">
+                  <CheckCircle size={12} className="text-success mb-1" />
+                  <span className="text-[13px] font-extrabold text-success">
+                    {acceptanceRate.toFixed(1)}%
+                  </span>
+                  <span className="mt-0.5 text-[9px] font-semibold text-white/30">Acceptance</span>
+                </div>
+                <div className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.03] px-2 py-2">
+                  <XCircle size={12} className="text-error mb-1" />
+                  <span className="text-[13px] font-extrabold text-error">
+                    {cancelRate.toFixed(1)}%
+                  </span>
+                  <span className="mt-0.5 text-[9px] font-semibold text-white/30">Cancellation</span>
+                </div>
+                <div className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.03] px-2 py-2">
+                  <Star size={12} className={`mb-1 ${ratingColor}`} />
+                  <span className={`text-[13px] font-extrabold ${ratingColor}`}>
+                    {rating.toFixed(1)}
+                  </span>
+                  <span className="mt-0.5 text-[9px] font-semibold text-white/30">Rating</span>
                 </div>
               </div>
               {(ignoreStatsData?.dailyIgnores ?? 0) > 0 && (

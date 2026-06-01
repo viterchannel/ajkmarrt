@@ -20,7 +20,7 @@ interface HomeHeaderProps {
   unreadNotifications?: number;
 }
 
-function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
+export function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
   if (!rating || rating === 0) return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
   if (rating >= 4.5) return { label: "Gold Partner", cls: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" };
   if (rating >= 4.0) return { label: "Silver Partner", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
@@ -28,12 +28,12 @@ function getRiderTier(rating: number | null | undefined): { label: string; cls: 
   return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
 }
 
-function getInitials(name?: string | null): string {
+export function getInitials(name?: string | null): string {
   if (!name) return "R";
   const parts = name.trim().split(" ").filter(Boolean);
   if (parts.length === 0) return "R";
-  if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "R";
-  return ((parts[0][0] ?? "") + (parts[parts.length - 1][0] ?? "")).toUpperCase();
+  if (parts.length === 1) return parts[0]![0]?.toUpperCase() ?? "R";
+  return ((parts[0]![0] ?? "") + (parts[parts.length - 1]![0] ?? "")).toUpperCase();
 }
 
 export function HomeHeader({
