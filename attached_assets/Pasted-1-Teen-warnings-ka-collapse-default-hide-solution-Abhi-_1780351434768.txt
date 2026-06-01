@@ -1,0 +1,133 @@
+1. Teen warnings ka collapse/default hide solution
+Abhi tumhari screen mein teen lines (phone, email, CNIC) default expanded dikh rahi hain.
+Professional apps mein ek summary card hota hai jo tap karne par expand hota hai. Pehle maine "Profile 40% complete" progress bar suggest kiya tha, ab use aur polish karte hain.
+
+Change karo aise:
+
+Default mein ek collapsed card dikhao:
+
+text
+┌──────────────────────────────┐
+│ 📋 Profile 40% complete  ▼  │
+│ Add bank account to unlock.. │
+└──────────────────────────────┘
+Card mein progress bar + single most critical reminder (like "Add bank account" ya "CNIC pending approval").
+
+Right side mein chevron (▼) dikhao jo expand/collapse indicate kare.
+
+Tap karne pe card expand ho aur teen items list ki tarah dikhe:
+
+text
+┌──────────────────────────────┐
+│ 📋 Profile 40% complete  ▲  │
+│ ✅ Phone verified            │
+│ ⚠️ CNIC documents not approved│
+│ ⚠️ Bank account not added    │
+│ [Verify CNIC] [Add Bank]     │
+└──────────────────────────────┘
+Har item ke saath ek chhota action button (Verify / Add) ho sakta hai, ya tap karne par respective page khule.
+
+Is tarah default screen par sirf ek chhoti card dikhegi, teen warnings nahi. Professional lagega aur clutter kam hoga.
+
+2. Overall Visual ko professional banane ke specific improvements
+Maan lo tum React Native ya Flutter use kar rahe ho, par design principles same hain.
+
+A. Card-based layout with proper spacing
+Har section (Profile, Today's Performance, Status) ko distinct white cards mein rakho. Background light grey rakho (#F5F7FA jaise).
+
+Cards mein consistent padding (16-20px), rounded corners (12-16px), aur subtle shadow (elevation 2-4) ya border.
+
+Sections ke beech mein gap 16-20px rakho.
+
+B. Typography hierarchy
+Headings: Bold, 18-20px, dark color (#1A1A1A).
+
+Values (Rs. 0, 0 Rides): Extra bold, large font (24-28px), brand color ya dark grey.
+
+Labels: 12-14px, regular weight, grey (#6B7280).
+
+Empty states ("No rides yet") — italic ya greyed out, 14px.
+
+C. Icons har stat ke saath
+Earned Today: 💰 ya dollar icon
+
+Rides Done: 🚴 ya bike icon
+
+Acceptance & Rating: bar chart ya star icon
+
+Icons ko values ke left mein rakho, color brand ke according (green/orange/blue).
+
+Ye stats ko instantly scannable banayega.
+
+D. Online/Offline toggle aur status
+Toggle ko card ke andar top right ya dedicated status card mein rakho.
+
+"You are Offline" text toggle ke neeche nahi, balki toggle ke left side mein bold status ("Online" green dot, "Offline" grey dot) + subtitle "Go online to start receiving orders".
+
+Session time (online since 10m) ko status ke saath chhota text mein dikhao, offline pe bilkul hide.
+
+E. Empty states meaningful banao
+Acceptance / Rating jab tak rides nahi, dono ko ek combined grey card mein "No rides completed yet" likh kar hide karo ya poori tarah se section hi collapse karo. Optionally, "Complete your first ride to unlock ratings" jaise friendly message.
+
+F. Color scheme consistent
+Primary action color: green (#10B981) for online, accept, success.
+
+Danger: red for critical warnings (CNIC rejected).
+
+Warning: amber (#F59E0B) for pending.
+
+Neutral: grey for offline, empty states.
+
+Text: dark grey, not pure black (#111827).
+
+G. Max trips / Active order limit
+Sirf online hone par dikhao, ek chhote pill/badge ki tarah "Active: 0/3" toggle ke paas ya performance card ke footer mein.
+
+Offline pe bilkul mat dikhao.
+
+3. Suggested Professional Dashboard Redesign (Detailed)
+Main ab ek refined wireframe deta hoon jo bilkul modern aur B2B-grade lagega:
+
+text
+┌────────────────────────────────────┐
+│  ☰  AJKMart Rider       🔔  👤    │  (App bar with notification badge)
+│                                    │
+│  Good Morning, toqeer 👋           │
+│  Last online 02:35 am              │  (small grey text)
+├────────────────────────────────────┤
+│  ┌──────────────────────────────┐  │
+│  │ 📋 Profile 40% complete  ▼  │  │  (Collapsed default)
+│  │ Add bank account to enable..│  │
+│  └──────────────────────────────┘  │
+├────────────────────────────────────┤
+│  ┌──────────────────────────────┐  │
+│  │ 💰 Today's Performance       │  │
+│  │                              │  │
+│  │ Rs. 0         0 Rides        │  │  (horizontal row)
+│  │ Earned Today  Completed      │  │
+│  │                              │  │
+│  │ ✅ Acceptance 100%  ⭐ 5.0   │  │  (greyed if no rides, else solid)
+│  │   (based on 0 rides)         │  │
+│  └──────────────────────────────┘  │
+├────────────────────────────────────┤
+│  ┌──────────────────────────────┐  │
+│  │ 🟢 Online since 10 min       │  │  (status card)
+│  │ Active orders: 1 / 3         │  │  (pill badge)
+│  │                    [Go Offline]│  │  (toggle)
+│  └──────────────────────────────┘  │
+├────────────────────────────────────┤
+│  ┌──────────────────────────────┐  │
+│  │ 📦 No active orders          │  │  (empty state friendly)
+│  │ You'll see new requests here │  │
+│  └──────────────────────────────┘  │
+│                                    │
+│  Quick Actions                     │
+│  [💰 My Earnings]  [📞 Support]    │
+└────────────────────────────────────┘
+Agar rider offline hai:
+
+Status card grey "⭕ You are Offline" with message "Toggle to go online and receive orders."
+
+Performance card same rahega, bas acceptance/rating no-ride state.
+
+Active orders section hide ho sakta hai.
