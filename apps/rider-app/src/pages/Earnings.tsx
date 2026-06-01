@@ -435,6 +435,18 @@ export default function Earnings() {
   });
   const chartTxs = walletChartData?.items ?? [];
 
+  const { data: pendingWithdrawData } = useQuery({
+    queryKey: ["rider-pending-withdrawals"],
+    queryFn: () => api.getWalletPage({ limit: 20, type: "withdraw" }),
+    staleTime: 60_000,
+  });
+  const pendingWithdrawTotal = (pendingWithdrawData?.items ?? [])
+    .filter((tx) => {
+      const ref = tx.reference ?? "";
+      return !ref.startsWith("paid:") && !ref.startsWith("rejected:");
+    })
+    .reduce((s, tx) => s + Number(tx.amount), 0);
+
   type PeriodBreakdown = {
     food: { earnings: number; count: number };
     parcel: { earnings: number; count: number };
@@ -490,6 +502,7 @@ export default function Earnings() {
     await qc.invalidateQueries({ queryKey: ["rider-earnings"] });
     await qc.invalidateQueries({ queryKey: ["rider-monthly-statements"] });
     await qc.invalidateQueries({ queryKey: ["rider-earnings-chart-wallet"] });
+    await qc.invalidateQueries({ queryKey: ["rider-pending-withdrawals"] });
   }, [qc]);
 
   const goalMutation = useMutation({
@@ -563,6 +576,11 @@ export default function Earnings() {
               {formatCurrency(user?.walletBalance ?? "0")}
             </p>
             <p className="mt-1 text-[11px] text-white/30">{T("earningsAfterDelivery")}</p>
+            {pendingWithdrawTotal > 0 && (
+              <p className="mt-1.5 text-[11px] font-semibold text-warning">
+                Pending payout: {formatCurrency(pendingWithdrawTotal)}
+              </p>
+            )}
             <button
               onClick={() => navigate("/wallet")}
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-black active:opacity-80 transition-opacity"

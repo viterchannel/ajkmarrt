@@ -3,14 +3,14 @@ import { formatCurrency as _sharedFc } from "@workspace/api-zod";
 import { tDual } from "@workspace/i18n";
 import {
   ArrowLeft,
-  BarChart3,
   CheckCircle,
   Clock,
   TrendingUp,
   XCircle,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
+import EarningsBarChart from "../components/earnings/EarningsBarChart";
 import { PullToRefresh } from "../components/PullToRefresh";
 import { ErrorState } from "../components/ui/ErrorState";
 import { ShimmerBlock } from "../components/ui/shimmer";
@@ -55,71 +55,6 @@ function PayoutStatusBadge({ reference }: { reference?: string | null }) {
   );
 }
 
-function SevenDayChart({ transactions, currency }: { transactions: PayoutTx[]; currency: string }) {
-  const { language } = useLanguage();
-  const T = (key: Parameters<typeof tDual>[0]) => tDual(key, language);
-
-  const days = useMemo(() => {
-    const result: { label: string; amount: number; date: string }[] = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      d.setHours(0, 0, 0, 0);
-      const next = new Date(d);
-      next.setDate(next.getDate() + 1);
-      const earned = transactions
-        .filter(
-          (t) =>
-            t.type === "credit" &&
-            new Date(t.createdAt) >= d &&
-            new Date(t.createdAt) < next
-        )
-        .reduce((s, t) => s + Number(t.amount), 0);
-      result.push({
-        label: i === 0 ? T("today") : d.toLocaleDateString("en-PK", { weekday: "short" }),
-        amount: earned,
-        date: d.toLocaleDateString("en-PK", { day: "numeric", month: "short" }),
-      });
-    }
-    return result;
-  }, [transactions]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const maxVal = Math.max(...days.map((d) => d.amount), 1);
-  const bestIdx = days.reduce((best, d, i) => (d.amount > days[best]!.amount ? i : best), 0);
-
-  return (
-    <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-      <div className="mb-4 flex items-center gap-2">
-        <BarChart3 size={15} className="text-[#B0B0B0]" />
-        <p className="text-sm font-bold text-white">7-Day Earnings</p>
-      </div>
-      <div className="flex h-20 items-end gap-2">
-        {days.map((d, i) => (
-          <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-            <div className="flex w-full items-end justify-center" style={{ height: 56 }}>
-              <div
-                className={`w-full max-w-[24px] rounded-md transition-all duration-500 ${
-                  i === bestIdx ? "bg-brand" : "bg-border-dark"
-                }`}
-                style={{
-                  height: Math.max((d.amount / maxVal) * 56, d.amount > 0 ? 4 : 2),
-                }}
-                title={`${d.date}: ${fc(d.amount, currency)}`}
-              />
-            </div>
-            <p
-              className={`text-[9px] font-semibold ${
-                i === bestIdx ? "text-brand" : "text-[#B0B0B0]"
-              }`}
-            >
-              {d.label}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function StatCard({
   label,
@@ -300,7 +235,7 @@ export default function EarningsSummary() {
             </div>
           </div>
         ) : (
-          <SevenDayChart transactions={chartTxs} currency={currency} />
+          <EarningsBarChart transactions={chartTxs} currency={currency} />
         )}
 
         <div className="rounded-3xl border border-white/10 bg-card-dark overflow-hidden shadow-sm">

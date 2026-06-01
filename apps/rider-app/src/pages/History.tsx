@@ -187,21 +187,33 @@ function RideReceiptSheet({
         </div>
 
         <div className="flex flex-shrink-0 items-center justify-between px-5 pt-2 pb-4 border-b border-white/10">
-          <div>
-            <h3 className="text-base font-extrabold text-white">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base font-extrabold text-white truncate">
               {item.kind === "ride"
                 ? T(`${item.type}Ride` as "bikeRide" | "carRide")
                 : T(`${item.type}Delivery` as "bikeDelivery" | "carDelivery")}
             </h3>
-            <p className="mt-0.5 text-xs text-[#B0B0B0]">{formatDate(item.createdAt, tz)}</p>
+            <div className="mt-0.5 flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-[#B0B0B0]">{formatDate(item.createdAt, tz)}</span>
+              <span className="text-[10px] font-bold text-brand/60">#{item.id.slice(-6).toUpperCase()}</span>
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            aria-label={T("closeReceiptAriaLabel")}
-            className="flex h-9 w-9 items-center justify-center rounded-2xl bg-border-dark text-[#B0B0B0] active:bg-[#3A3A3A]"
-          >
-            <X size={16} />
-          </button>
+          <div className="ml-3 flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleShare}
+              aria-label="Share receipt"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-border-dark text-brand active:bg-[#3A3A3A]"
+            >
+              <Share2 size={15} />
+            </button>
+            <button
+              onClick={onClose}
+              aria-label={T("closeReceiptAriaLabel")}
+              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-border-dark text-[#B0B0B0] active:bg-[#3A3A3A]"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-5">
