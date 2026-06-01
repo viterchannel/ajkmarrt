@@ -102,22 +102,19 @@ router.get("/otp/status", async (_req, res) => {
 
 /* ─── POST /admin/otp/disable ─────────────────────────────────────────────── */
 router.post("/otp/disable", async (req, res) => {
-  const minutes = Number(req.body?.minutes);
+  const rawMinutes = req.body?.minutes;
+  const minutes = rawMinutes !== undefined ? Number(rawMinutes) : undefined;
   const reason: string | undefined =
     typeof req.body?.reason === "string" && req.body.reason.trim()
       ? req.body.reason.trim()
       : undefined;
   const adminReq = req as AdminRequest;
 
-  if (!minutes || minutes < 1 || minutes > 1440) {
-    return sendValidationError(res, "Minutes must be between 1 and 1440 (max 24 hours)");
+  if (minutes !== undefined && (minutes < 1 || minutes > 5256000)) {
+    return sendValidationError(res, "Minutes must be between 1 and 5256000");
   }
 
   try {
-    const _auditDetails = reason
-      ? `Disabled OTP for ${minutes} minutes. Reason: ${reason}`
-      : `Disabled OTP for ${minutes} minutes`;
-
     const result = await AuditService.executeWithAudit(
       {
         adminId: adminReq.adminId,
@@ -126,7 +123,7 @@ router.post("/otp/disable", async (req, res) => {
         action: "admin_otp_global_disable",
         resourceType: "otp_config",
         resource: "global_disable",
-        details: `Disabled OTP for ${minutes} minutes${reason ? ` — reason: ${reason}` : ""}`,
+        details: `OTP suspended indefinitely${reason ? ` — reason: ${reason}` : ""}`,
       },
       () => UserService.disableOtpGlobally(minutes)
     );
@@ -136,22 +133,20 @@ router.post("/otp/disable", async (req, res) => {
       userAgent: req.headers["user-agent"] ?? undefined,
       metadata: {
         adminId: adminReq.adminId,
-        minutes,
         disabledUntil: result.disabledUntil,
         reason: reason ?? null,
         result: "success",
       },
     });
 
-    /* Fire internal admin notification via NotificationService so all admins are aware */
     try {
       const s = await getPlatformSettings();
       const appName = s["app_name"] ?? "AJKMart";
       const adminName = adminReq.adminName ?? adminReq.adminId ?? "Unknown admin";
       const paragraphs: string[] = [
-        `Admin ${adminName} (ID: ${adminReq.adminId}) has suspended OTP verification for all users for ${minutes} minute${minutes === 1 ? "" : "s"}.`,
+        `Admin ${adminName} (ID: ${adminReq.adminId}) has suspended OTP verification globally. Users can log in without OTP until an admin manually restores OTP.`,
         ...(reason ? [`Reason: ${reason}`] : []),
-        `OTPs will auto-resume at ${new Date(result.disabledUntil).toUTCString()}. Users can log in without OTP during this window.`,
+        `To restore OTP, go to the OTP Control Center and toggle OTP back on.`,
       ];
       await NotificationService.sendSecurityAlert({
         subject: `[${appName}] Global OTP Suspension Activated`,
@@ -163,13 +158,21 @@ router.post("/otp/disable", async (req, res) => {
       logger.warn({ err: alertErr }, "[admin/otp] admin notification send failed (non-fatal)");
     }
 
-    /* Invalidate in-process settings cache so the next login request
-       picks up the suspension immediately without waiting for TTL expiry. */
     invalidatePlatformSettingsCache();
 
-    sendSuccess(res, { ...result, minutesGranted: minutes });
+    sendSuccess(res, result);
   } catch (error: unknown) {
     sendServerError(res, error, "disable OTP globally");
+  }
+});
+
+/* ─── GET /admin/otp/bypasses ────────────────────────────────────────────── */
+router.get("/otp/bypasses", async (_req, res) => {
+  try {
+    const bypasses = await UserService.getActiveBypasses();
+    sendSuccess(res, { bypasses });
+  } catch (error: unknown) {
+    sendServerError(res, error, "fetch active bypasses");
   }
 });
 

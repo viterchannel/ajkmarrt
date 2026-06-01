@@ -961,52 +961,17 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
     });
   };
 
-  const [bypassMinutes, setBypassMinutes] = useState<15 | 30 | 60>(15);
-  const [bypassActive, setBypassActive] = useState<boolean>(
+  const [bypassActive] = useState<boolean>(
     !!(user.otpBypassUntil && new Date(user.otpBypassUntil) > new Date())
   );
-  const [bypassUntil, setBypassUntil] = useState<string | null>(
+  const [bypassUntil] = useState<string | null>(
     user.otpBypassUntil && new Date(user.otpBypassUntil) > new Date() ? user.otpBypassUntil : null
   );
+  const [showViewOtpConfirm, setShowViewOtpConfirm] = useState(false);
 
   const securityMutation = useUpdateUserSecurity();
 
   const resetOtpMutation = useAdminResetOtp();
-
-  const setBypassMutation = useMutation({
-    mutationFn: (minutes: number) =>
-      adminFetch(`/users/${user.id}/otp/bypass`, {
-        method: "POST",
-        body: JSON.stringify({ minutes }),
-      }),
-    onSuccess: (d: any) => {
-      setBypassActive(true);
-      setBypassUntil(d.bypassUntil);
-      void qc.invalidateQueries({ queryKey: ["admin-users"] });
-      toast({
-        title: "OTP bypass enabled",
-        description: `User can log in without OTP until ${new Date(d.bypassUntil).toLocaleTimeString()}`,
-      });
-    },
-    onError: (e: any) => {
-      if (isCsrfFetchError(e)) return;
-      toast({ title: "Failed to set bypass", description: e.message, variant: "destructive" });
-    },
-  });
-
-  const cancelBypassMutation = useMutation({
-    mutationFn: () => adminFetch(`/users/${user.id}/otp/bypass`, { method: "DELETE" }),
-    onSuccess: () => {
-      setBypassActive(false);
-      setBypassUntil(null);
-      void qc.invalidateQueries({ queryKey: ["admin-users"] });
-      toast({ title: "OTP bypass cancelled" });
-    },
-    onError: (e: any) => {
-      if (isCsrfFetchError(e)) return;
-      toast({ title: "Failed to cancel bypass", description: e.message, variant: "destructive" });
-    },
-  });
 
   const _disable2fa = useDisable2FA();
   const disable2faMutation = {
@@ -1416,7 +1381,7 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                     size="sm"
                     variant="outline"
                     className="shrink-0 rounded-lg border-violet-400 text-xs text-violet-700 hover:bg-violet-50"
-                    onClick={handleViewOtp}
+                    onClick={() => setShowViewOtpConfirm(true)}
                     disabled={otpQuery.isFetching}
                   >
                     {otpQuery.isFetching ? (
@@ -1432,6 +1397,36 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                     )}
                   </Button>
                 </div>
+                {showViewOtpConfirm && (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-2.5">
+                    <p className="text-xs font-semibold text-amber-800 flex items-center gap-1.5">
+                      <Eye className="h-3.5 w-3.5 text-amber-600" />
+                      View current OTP for {user.name ?? user.phone}?
+                    </p>
+                    <p className="text-[11px] text-amber-700">
+                      This action is recorded in the OTP audit log with your admin ID, IP, and timestamp.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-[11px] rounded-lg"
+                        onClick={() => setShowViewOtpConfirm(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="h-7 text-[11px] rounded-lg bg-violet-600 text-white hover:bg-violet-700 gap-1"
+                        onClick={() => { handleViewOtp(); setShowViewOtpConfirm(false); }}
+                      >
+                        <Eye className="h-3 w-3" />
+                        Confirm &amp; View
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {showOtpData && otpQuery.data && (
                   <div className="space-y-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2">
                     <div className="flex items-center justify-between">
@@ -1506,11 +1501,11 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                 )}
               </div>
               <Link
-                to="/otp-control"
+                to="/otp-bypass-management"
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 transition-colors hover:text-indigo-700 hover:underline"
               >
                 <Shield className="h-3.5 w-3.5" />
-                Manage in OTP Control Center →
+                Manage Bypass in OTP Bypass Management →
               </Link>
 
               <div className="border-border/50 space-y-2 border-t pt-2">
@@ -1552,99 +1547,6 @@ function SecurityModal({ user, onClose }: { user: any; onClose: () => void }) {
                 </div>
               </div>
 
-              {/* Bypass OTP Controls */}
-              <div className="border-border/50 space-y-2 border-t pt-2">
-                <div className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <p className="text-foreground text-sm font-semibold">Bypass OTP (Quick-Set)</p>
-                    <p className="text-muted-foreground text-xs">
-                      Allow login without OTP for a limited window
-                    </p>
-                  </div>
-                  <Select
-                    value={String(bypassMinutes)}
-                    onValueChange={(v) => setBypassMinutes(Number(v) as 15 | 30 | 60)}
-                  >
-                    <SelectTrigger className="h-8 w-24 rounded-lg text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="15">15 min</SelectItem>
-                      <SelectItem value="30">30 min</SelectItem>
-                      <SelectItem value="60">1 hour</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {!bypassActive ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="shrink-0 rounded-lg border-amber-400 text-xs text-amber-700 hover:bg-amber-50"
-                      onClick={() => setBypassMutation.mutate(bypassMinutes)}
-                      disabled={setBypassMutation.isPending}
-                    >
-                      {setBypassMutation.isPending ? (
-                        <>
-                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                          Enabling...
-                        </>
-                      ) : (
-                        "Enable"
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="shrink-0 rounded-lg border-red-300 text-xs text-red-700 hover:bg-red-50"
-                      onClick={() => cancelBypassMutation.mutate()}
-                      disabled={cancelBypassMutation.isPending}
-                    >
-                      {cancelBypassMutation.isPending ? (
-                        <>
-                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                          Cancelling...
-                        </>
-                      ) : (
-                        "Cancel"
-                      )}
-                    </Button>
-                  )}
-                </div>
-                {bypassActive && bypassUntil && (
-                  <div className="flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2">
-                    <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
-                    <p className="text-xs font-semibold text-amber-800">
-                      Bypass active — expires {new Date(bypassUntil).toLocaleTimeString()}
-                    </p>
-                  </div>
-                )}
-                {!bypassActive && (
-                  <p className="text-muted-foreground mt-0.5 text-xs">
-                    No bypass active — user must verify OTP
-                  </p>
-                )}
-                {bypassActive ? (
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 border-amber-300 bg-amber-100 text-[10px] text-amber-700"
-                  >
-                    ACTIVE
-                  </Badge>
-                ) : (
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 border-green-200 bg-green-50 text-[10px] text-green-700"
-                  >
-                    NORMAL
-                  </Badge>
-                )}
-                <a
-                  href="/admin/otp-control"
-                  className="shrink-0 text-xs font-semibold text-indigo-600 underline underline-offset-2 transition-colors hover:text-indigo-800"
-                >
-                  Manage →
-                </a>
-              </div>
             </div>
           </div>
 

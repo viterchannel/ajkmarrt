@@ -71,6 +71,7 @@ const Loyalty = lazy(() => import("@/pages/loyalty"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const Notifications = lazy(() => import("@/pages/notifications"));
 const OtpControl = lazy(() => import("@/pages/otp-control"));
+const OtpBypassManagement = lazy(() => import("@/pages/otp-bypass-management"));
 const Popups = lazy(() => import("@/pages/popups"));
 const PromoCodes = lazy(() => import("@/pages/promo-codes"));
 const PromotionsHub = lazy(() => import("@/pages/promotions-hub"));
@@ -454,6 +455,9 @@ function AppRoutes() {
         </Route>
         <Route path="/otp-control">
           <ProtectedRoute component={OtpControl} requirePermission="system.settings.edit" />
+        </Route>
+        <Route path="/otp-bypass-management">
+          <ProtectedRoute component={OtpBypassManagement} requirePermission="system.settings.edit" />
         </Route>
         <Route path="/business-rules">
           <ProtectedRoute component={BusinessRulesPage} requirePermission="system.settings.view" />

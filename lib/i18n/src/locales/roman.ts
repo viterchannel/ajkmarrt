@@ -1289,6 +1289,7 @@ const roman: Record<string, string> = {
     navAuthMethods: "Auth Methods",
     users: "Users",
     navOtpControl: "OTP Control",
+    navOtpBypassManagement: "OTP Bypass",
     navSmsGateways: "SMS Gateways",
     bookingId: "Booking ID",
     noResults: "Koi nateeja nahi",

@@ -1217,6 +1217,7 @@ export const en = {
   navLaunchControl: "Launch Control",
   navAuthMethods: "Auth Methods",
   navOtpControl: "OTP Control",
+  navOtpBypassManagement: "OTP Bypass",
   navSmsGateways: "SMS Gateways",
   users: "Users",
   bookingId: "Booking ID",

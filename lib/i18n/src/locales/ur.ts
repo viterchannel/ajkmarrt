@@ -1286,6 +1286,7 @@ const ur: Record<string, string> = {
     navAuthMethods: "آتھ میتھڈز",
     users: "صارفین",
     navOtpControl: "OTP کنٹرول",
+    navOtpBypassManagement: "OTP Bypass",
     navSmsGateways: "SMS گیٹ ویز",
     bookingId: "بکنگ آئی ڈی",
     noResults: "کوئی نتیجہ نہیں",

@@ -493,6 +493,12 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         requirePermission: "system.settings.edit",
       },
       {
+        nameKey: "navOtpBypassManagement" as TranslationKey,
+        href: "/otp-bypass-management",
+        icon: UserCheck,
+        requirePermission: "system.settings.edit",
+      },
+      {
         nameKey: "navAccountRestrictions" as TranslationKey,
         href: "/business-rules",
         icon: Shield,
@@ -601,6 +607,7 @@ export const NAV_DESCRIPTIONS: Readonly<Record<string, string>> = {
   "/auth-methods": "Per-role login methods (Phone, Email, OAuth, 2FA, Biometric)",
   "/launch-control": "Pre-launch readiness checklist",
   "/otp-control": "OTP delivery providers and policies",
+  "/otp-bypass-management": "Manage per-user OTP bypasses and view bypass history",
   "/deep-links": "Deep link generator and analytics",
   "/webhooks": "Outgoing webhook endpoints",
   "/business-rules": "Account conditions and automation rules",

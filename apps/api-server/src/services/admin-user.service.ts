@@ -550,15 +550,39 @@ export class UserService {
   /**
    * Disable OTP globally
    */
-  static async disableOtpGlobally(minutes: number) {
-    if (!minutes || minutes <= 0 || minutes > 1440) {
-      throw new Error("minutes must be between 1 and 1440");
+  static async disableOtpGlobally(minutes?: number) {
+    const actualMinutes = minutes ?? 5256000;
+    if (actualMinutes <= 0 || actualMinutes > 5256000) {
+      throw new Error("minutes must be between 1 and 5256000");
     }
 
-    const disabledUntil = new Date(Date.now() + minutes * 60 * 1000);
+    const disabledUntil = new Date(Date.now() + actualMinutes * 60 * 1000);
     await this.upsertSetting("otp_global_disabled_until", disabledUntil.toISOString());
 
-    return { disabledUntil: disabledUntil.toISOString(), minutes };
+    return { disabledUntil: disabledUntil.toISOString(), minutes: actualMinutes };
+  }
+
+  static async getActiveBypasses() {
+    const now = new Date();
+    const users = await db
+      .select({
+        id: usersTable.id,
+        name: usersTable.name,
+        phone: usersTable.phone,
+        email: usersTable.email,
+        otpBypassUntil: usersTable.otpBypassUntil,
+      })
+      .from(usersTable)
+      .where(gt(usersTable.otpBypassUntil, now))
+      .orderBy(usersTable.otpBypassUntil);
+
+    return users.map((u) => ({
+      id: u.id,
+      name: u.name,
+      phone: u.phone,
+      email: u.email,
+      bypassUntil: u.otpBypassUntil ? u.otpBypassUntil.toISOString() : null,
+    }));
   }
 
   /**

@@ -1,0 +1,90 @@
+OTP Control Center mein se:
+
+✅ Global OTP Toggle (On/Off)
+Sirf ek simple switch — "OTP Active / Inactive". Jab SMS gateway down ho, tab off kar do.
+Pre-set timers (30 min, 1 hour, etc.) mat rakho. Bas manual toggle, aur auto-resume mat do. Ek warning message dikhao ki “OTP suspended, registrations hongi unverified.”
+
+✅ OTP Channel Priority (WhatsApp → SMS → Email)
+Yeh useful hai agar multiple channels use kar rahe ho. Drag-and-drop rakh sakte ho, bas simple list view bhi chalega.
+
+✅ Rate Limiting Settings
+Per phone (5) aur per IP (20) limit with rolling window. Yeh security ke liye must hai.
+Save button ke saath rakh lo.
+
+✅ OTP Audit Log (Filtered)
+Sirf failed attempts, suspicious activity aur admin actions (bypass, suspension) dikhao. Har OTP send ka log full nahi chahiye — bas summary ya searchable last 100 events. Full log overwhelm karega.
+
+User Permissions (User Detail Page) mein se:
+
+✅ View Current OTP
+Support call ke time kaam aata hai — bas current code dikhao. “Generate New OTP” button mat rakho seedha yahan, Control Center se karo.
+
+✅ OTP Bypass Status
+Simple read-only info: “Bypass Active till ...”, “Normal”. Koi quick-set timer yahan mat rakho — bas link do “Manage in OTP Control Center”.
+
+3. Ye features hata do ya simplify karo (Remove/Simplify)
+OTP Control Center se hatao:
+
+❌ “Generate a fresh login OTP for a user” yahan se.
+Ye support tool user detail page par hona chahiye, Control Center mein generic rakhne ki zaroorat nahi. Ek dedicated “User OTP Lookup” tool rakh sakte ho admin sidebar mein.
+
+❌ Per-User OTP Bypass search/section
+Control Center mein alag se user search daalna overkill hai. Ye bypass manage karna user detail page se hi better hai.
+
+❌ Delivery OTP Viewer (Ride/Delivery ID lookup)
+Agar tumhara core business ride/delivery nahi hai, toh ye bilkul irrelevant hai. Hata do. Agar hai, toh isse alag “Operations” panel mein rakho, OTP settings ke saath na ghusao.
+
+❌ OTP Whitelist
+Testing ke liye chahiye? Sirf development/staging env mein rakho. Production mein whitelist ki zaroorat B2B mein mushkil se hoti hai. Agar App Store review ke liye chahiye, toh ek simple env variable se kar lo, UI mein mat lao.
+
+❌ Rate-Limited Users (auto-refresh list)
+Ye real-time monitoring ke liye hai, normal admin ke kaam ka nahi. Bas log mein dekh lena jab zaroorat ho.
+
+User Permissions page se hatao:
+
+❌ “Bypass OTP (Quick-Set)” with 15 min timer
+Bahut dangerous hai — koi bhi admin galti se user ko bypass de sakta hai bina audit trail ke. Sirf Control Center mein detailed bypass option do, yahan bas status dikhao.
+
+❌ “View Current OTP” ke saath “Show live OTP” button
+Seedha code dikhana theek hai, par confirmation step zaroor rakho. Aur “Generate OTP” button yahan mat rakho — support call ke dauran hi allowed ho.
+
+4. Ideal B2B OTP Setup ka Summary
+B2B site ke liye ye minimalist approach best hai:
+
+Settings Page (simple tab):
+
+OTP Enable/Disable toggle (global)
+
+Channel Order (WhatsApp, SMS, Email)
+
+Rate Limit config (phone 5, IP 20, window 60 min)
+
+Save button
+
+User Detail Page:
+
+OTP Status: Normal / Bypassed (with expiry)
+
+Button: “View Current OTP” (confirmation dialog ke saath, log hota hai)
+
+Link: “Manage OTP Bypasses” → opens a dedicated admin tool (simple list + add/remove with reason)
+
+Dedicated Admin Tool (sidebar link):
+
+OTP Bypass Management: list of all active bypasses, add new bypass (user, expiry, reason), revoke.
+
+Bypass Audit Log: last 50 actions (who, when, why)
+
+Option to suspend OTP globally (simple toggle)
+
+Remove all these:
+
+Timed suspension auto-resume
+
+Delivery OTP lookup (unless core feature)
+
+Whitelist UI in production
+
+Per-user quick bypass timers
+
+Overwhelming real-time rate-limit dashboards
