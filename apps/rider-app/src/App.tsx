@@ -12,6 +12,7 @@ import { AnnouncementBar } from "./components/AnnouncementBar";
 import { BottomNav } from "./components/BottomNav";
 import { VerificationGateModal } from "./components/VerificationGateModal";
 import { ApprovalGateOverlay } from "./components/ApprovalGateOverlay";
+import { ModuleDisabledScreen, SessionExpiredScreen } from "./components/ErrorScreens";
 import { VerificationGateProvider, useVerificationGate } from "./lib/VerificationGateContext";
 import { useGlobal403Handler } from "./lib/useGlobal403Handler";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -122,80 +123,12 @@ function RedirectTo({ to }: { to: string }) {
 /**
  * ModuleDisabled — shown when a rider navigates directly to a route whose
  * platform module has been disabled (e.g. /wallet when modules.wallet = false).
- * Provides a clear explanation and a way back to home instead of a blank page
- * or the generic 404 screen.
+ * Uses the reusable ErrorScreen component for consistent styling and theme compliance.
  */
 function ModuleDisabled() {
-  const [, navigate] = useLocation();
   const { language } = useLanguage();
   const T = (key: TranslationKey) => tDual(key, language);
-  return (
-    <div
-      style={{
-        minHeight: "calc(100vh - 64px)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 12,
-        padding: "0 24px",
-        background: "var(--color-surface)",
-        textAlign: "center",
-      }}
-    >
-      <div
-        style={{
-          width: 64,
-          height: 64,
-          borderRadius: 18,
-          background: "rgba(240,185,11,0.10)",
-          border: "1px solid rgba(240,185,11,0.20)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 4,
-        }}
-      >
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="var(--color-brand)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-        </svg>
-      </div>
-      <h2 style={{ color: "#E8E9EF", fontSize: 18, fontWeight: 700, margin: 0 }}>
-        {T("featureNotAvailable")}
-      </h2>
-      <p style={{ color: RIDER_TOKENS.textSecondary, fontSize: 14, lineHeight: 1.6, margin: 0, maxWidth: 280 }}>
-        {T("featureDisabledMsg")}
-      </p>
-      <button
-        onClick={() => navigate("/", { replace: true })}
-        aria-label={T("backToHome")}
-        style={{
-          marginTop: 8,
-          height: 44,
-          paddingInline: 28,
-          borderRadius: 12,
-          border: "none",
-          background: "linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))",
-          color: "var(--color-surface)",
-          fontSize: 14,
-          fontWeight: 700,
-          cursor: "pointer",
-        }}
-      >
-        {T("backToHome")}
-      </button>
-    </div>
-  );
+  return <ModuleDisabledScreen T={T} />;
 }
 
 function getRouterBase(): string {
@@ -250,82 +183,11 @@ function SessionExpiredOverlay({
     SESSION_EXPIRY_KEY_MAP["session_expired"];
   const msg = { title: T(keys!.titleKey), detail: T(keys!.detailKey) };
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(11,14,17,0.96)",
-        backdropFilter: "blur(6px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999,
-        padding: 16,
-      }}
-    >
-      <div
-        style={{
-          background: "var(--color-card-dark)",
-          border: "1px solid var(--color-border-dark)",
-          borderRadius: 20,
-          padding: "28px 24px",
-          width: "100%",
-          maxWidth: 360,
-          textAlign: "center",
-          boxShadow: "0 24px 64px rgba(0,0,0,0.7)",
-        }}
-      >
-        <div
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: "50%",
-            background: RIDER_TOKENS.brandAlpha(0.12),
-            border: `1px solid ${RIDER_TOKENS.brandAlpha(0.3)}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 20px",
-          }}
-        >
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-brand)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-        </div>
-        <h2 style={{ color: "#E8E9EF", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>
-          {msg.title}
-        </h2>
-        <p style={{ color: RIDER_TOKENS.textSecondary, fontSize: 14, lineHeight: 1.6, margin: "0 0 24px" }}>
-          {msg.detail}
-        </p>
-        <button
-          onClick={onDismiss}
-          style={{
-            width: "100%",
-            height: 48,
-            borderRadius: 12,
-            border: "none",
-            background: "linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))",
-            color: "var(--color-surface)",
-            fontSize: 15,
-            fontWeight: 700,
-            cursor: "pointer",
-          }}
-        >
-          {T("signInAgain")}
-        </button>
-      </div>
-    </div>
+    <SessionExpiredScreen
+      onDismiss={onDismiss}
+      title={msg.title}
+      detail={msg.detail}
+    />
   );
 }
 
@@ -453,12 +315,12 @@ function MagicLinkPage() {
           gap: 16,
           padding: 24,
           background: "var(--color-surface)",
-          color: "#fff",
+          color: "var(--color-foreground)",
           fontFamily: "Inter, sans-serif",
         }}
       >
         <div style={{ fontSize: 40 }}>🔗</div>
-        <p style={{ margin: 0, textAlign: "center", color: "#f87171", maxWidth: 320 }}>
+        <p style={{ margin: 0, textAlign: "center", color: "var(--color-error)", maxWidth: 320 }}>
           {errorMsg}
         </p>
         <button
@@ -589,14 +451,14 @@ function IdCardGateModal({
             <line x1="2" y1="10" x2="22" y2="10" />
           </svg>
         </div>
-        <h2 style={{ color: "#E8E9EF", fontSize: 20, fontWeight: 700, textAlign: "center", margin: "0 0 8px" }}>
+        <h2 style={{ color: "var(--color-foreground)", fontSize: 20, fontWeight: 700, textAlign: "center", margin: "0 0 8px" }}>
           {T("idVerificationRequired")}
         </h2>
         <p style={{ color: RIDER_TOKENS.textSecondary, fontSize: 13, lineHeight: 1.6, textAlign: "center", margin: "0 0 24px" }}>
           {T("cnicEnterToVerify")}
         </p>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>
+          <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--color-muted-foreground)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>
             {T("cnicNumberLabel")}
           </label>
           <input
@@ -613,8 +475,8 @@ function IdCardGateModal({
               padding: "0 14px",
               borderRadius: 12,
               background: "rgba(255,255,255,0.06)",
-              border: `1.5px solid ${error ? "#ef4444" : cnic && isValidCnic(cnic) ? "var(--color-brand)" : "rgba(255,255,255,0.12)"}`,
-              color: "#E8E9EF",
+              border: `1.5px solid ${error ? "var(--color-error)" : cnic && isValidCnic(cnic) ? "var(--color-brand)" : "rgba(255,255,255,0.12)"}`,
+              color: "var(--color-foreground)",
               fontSize: 16,
               fontWeight: 600,
               letterSpacing: "0.04em",
@@ -623,7 +485,7 @@ function IdCardGateModal({
             }}
           />
           {error && (
-            <p style={{ color: "#ef4444", fontSize: 11, margin: "6px 0 0", fontWeight: 600 }}>
+            <p style={{ color: "var(--color-error)", fontSize: 11, margin: "6px 0 0", fontWeight: 600 }}>
               {error}
             </p>
           )}
@@ -1437,8 +1299,8 @@ function AppRoutes() {
               width: 64,
               height: 64,
               borderRadius: 16,
-              background: "rgba(239,68,68,0.12)",
-              border: "1px solid rgba(239,68,68,0.3)",
+              background: "rgba(244, 67, 54, 0.12)",
+              border: "1px solid rgba(244, 67, 54, 0.3)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1459,7 +1321,7 @@ function AppRoutes() {
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
           </div>
-          <h2 style={{ color: "#E8E9EF", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>
+          <h2 style={{ color: "var(--color-foreground)", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>
             {T("secureStorageUnavailable")}
           </h2>
           <p style={{ color: RIDER_TOKENS.textSecondary, fontSize: 14, lineHeight: 1.6, margin: "0 0 24px" }}>
@@ -1540,7 +1402,7 @@ function AppRoutes() {
               margin: "0 auto",
             }}
           />
-          <p style={{ color: "#E8E9EF", marginTop: 16, fontWeight: 600, fontSize: 15 }}>
+          <p style={{ color: "var(--color-foreground)", marginTop: 16, fontWeight: 600, fontSize: 15 }}>
             {T("loadingRiderPortal")}
           </p>
           {splashTimedOut && (
@@ -2228,7 +2090,7 @@ function ForceUpdateScreen({
             <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
           </svg>
         </div>
-        <h2 style={{ color: "#E8E9EF", fontSize: 22, fontWeight: 800, margin: "0 0 10px" }}>
+        <h2 style={{ color: "var(--color-foreground)", fontSize: 22, fontWeight: 800, margin: "0 0 10px" }}>
           {T("updateRequired")}
         </h2>
         <p style={{ color: RIDER_TOKENS.textSecondary, fontSize: 14, lineHeight: 1.6, margin: "0 0 28px" }}>
