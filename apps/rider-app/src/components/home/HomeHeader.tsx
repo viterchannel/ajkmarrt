@@ -1,4 +1,4 @@
-import { AlertTriangle, Bell, ChevronRight, Smartphone, Volume2, VolumeX, Wallet } from "lucide-react";
+import { Bell, ChevronRight, Volume2, VolumeX, Wallet } from "lucide-react";
 import { Link } from "wouter";
 import { LiveClock, formatCurrency } from "../dashboard";
 import type { TranslationKey } from "@workspace/i18n";
@@ -13,7 +13,6 @@ interface HomeHeaderProps {
   effectiveOnline: boolean;
   toggling: boolean;
   silenceOn: boolean;
-  blockingReason: string | null;
   onToggleOnline: () => void;
   onToggleSilence: () => void;
   newFlash: boolean;
@@ -45,7 +44,6 @@ export function HomeHeader({
   effectiveOnline,
   toggling,
   silenceOn,
-  blockingReason,
   onToggleOnline,
   onToggleSilence,
   newFlash,
@@ -53,7 +51,6 @@ export function HomeHeader({
 }: HomeHeaderProps) {
   const tier = getRiderTier((user?.stats as any)?.rating ?? null);
   const firstName = user?.name?.split(" ")[0] || "Rider";
-  const isBlocked = !!blockingReason && !effectiveOnline;
   const initials = getInitials(user?.name);
   const hasUnread = unreadNotifications > 0;
 
@@ -169,7 +166,7 @@ export function HomeHeader({
         {/* Online toggle card */}
         <button
           onClick={onToggleOnline}
-          disabled={toggling || isBlocked}
+          disabled={toggling}
           className={`flex flex-col gap-1.5 rounded-2xl border p-3.5 text-left transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 ${
             effectiveOnline
               ? "border-success/20 bg-success/[0.06]"
@@ -232,37 +229,6 @@ export function HomeHeader({
           {silenceOn ? <VolumeX size={11} /> : <Volume2 size={11} />}
           {silenceOn ? "Alerts muted" : "Alerts on"}
         </button>
-
-        {isBlocked && (
-          <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-xl border border-warning/20 bg-warning/8 px-2.5 py-1.5">
-            {blockingReason === "phone_not_verified" ? (
-              <Smartphone size={11} className="flex-shrink-0 text-warning" />
-            ) : (
-              <AlertTriangle size={11} className="flex-shrink-0 text-warning" />
-            )}
-            <p className="min-w-0 flex-1 truncate text-[10px] font-medium text-warning">
-              {blockingReason === "phone_not_verified" && "Phone not verified"}
-              {blockingReason === "account_not_approved" && "Pending approval"}
-              {blockingReason === "insufficient_wallet_balance" && "Low wallet balance"}
-            </p>
-            {blockingReason === "phone_not_verified" && (
-              <Link
-                href="/profile"
-                className="flex-shrink-0 text-[10px] font-bold text-warning underline"
-              >
-                Verify
-              </Link>
-            )}
-            {blockingReason === "insufficient_wallet_balance" && (
-              <Link
-                href="/wallet"
-                className="flex-shrink-0 text-[10px] font-bold text-warning underline"
-              >
-                Top up
-              </Link>
-            )}
-          </div>
-        )}
       </div>
     </header>
   );
