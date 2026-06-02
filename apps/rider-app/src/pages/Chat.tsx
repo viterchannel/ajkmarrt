@@ -1209,7 +1209,7 @@ export default function Chat() {
           <div className="flex gap-2">
             <button
               onClick={toggleMute}
-              className={`rounded-lg px-3 py-1 text-sm font-bold ${muted ? "bg-error" : "bg-white/20"}`}
+              className={`rounded-lg px-3 py-1 text-sm font-bold ${muted ? "bg-error" : "bg-muted/40"}`}
             >
               {muted ? T("chatUnmute") : T("chatMute")}
             </button>
@@ -1222,7 +1222,7 @@ export default function Chat() {
 
       <div className="px-4 pt-4 pb-2">
         <div className="mb-3 flex items-center justify-between">
-          <h1 className="flex items-center gap-2 text-2xl font-extrabold text-white"><MessageSquare size={24} /> {T("chatMessages")}</h1>
+          <h1 className="flex items-center gap-2 text-2xl font-extrabold text-foreground"><MessageSquare size={24} /> {T("chatMessages")}</h1>
           {ajkId && (
             <button
               onClick={() => navigator.clipboard.writeText(ajkId)}
@@ -1272,7 +1272,7 @@ export default function Chat() {
                 ← {T("back")}
               </button>
               <div className="flex-1">
-                <p className="font-bold text-white">{selectedConv.otherUser?.name || T("chatUserFallback")}</p>
+                <p className="font-bold text-foreground">{selectedConv.otherUser?.name || T("chatUserFallback")}</p>
                 <p className="text-xs text-muted-foreground">{selectedConv.otherUser?.ajkId}</p>
               </div>
               {selectedConv.id !== ADMIN_SUPPORT_ID && (
@@ -1417,7 +1417,7 @@ export default function Chat() {
                   onClick={() => selectConversation(conv)}
                   className="flex w-full items-center gap-3 rounded-2xl p-3 text-left hover:bg-muted"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-lg font-bold text-white">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-lg font-bold text-foreground">
                     {(conv.otherUser?.name || "?").charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -1429,7 +1429,7 @@ export default function Chat() {
                         {conv.lastMessage?.content || T("chatNoMessages")}
                       </p>
                       {conv.unreadCount > 0 && (
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success text-[10px] font-bold text-white">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-success text-[10px] font-bold text-foreground">
                           {conv.unreadCount}
                         </span>
                       )}
@@ -1472,7 +1472,7 @@ export default function Chat() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => acceptRequest(req.id)}
-                        className="rounded-xl bg-success px-4 py-2 text-sm font-bold text-white"
+                        className="rounded-xl bg-success px-4 py-2 text-sm font-bold text-foreground"
                       >
                         {T("accept")}
                       </button>
@@ -1499,7 +1499,7 @@ export default function Chat() {
               />
               <button
                 onClick={searchUser}
-                className="h-12 rounded-xl bg-success px-6 text-sm font-bold text-white"
+                className="h-12 rounded-xl bg-success px-6 text-sm font-bold text-foreground"
               >
                 {T("chatSearchTab")}
               </button>
@@ -1514,7 +1514,7 @@ export default function Chat() {
                 </div>
                 <button
                   onClick={() => sendRequest(searchResult.id)}
-                  className="rounded-xl bg-success px-4 py-2 text-sm font-bold text-white"
+                  className="rounded-xl bg-success px-4 py-2 text-sm font-bold text-foreground"
                 >
                   {T("chatSendRequest")}
                 </button>
@@ -1526,7 +1526,7 @@ export default function Chat() {
           <div className="flex min-h-0 flex-1 flex-col">
             {/* Header card */}
             <div className="mb-4 flex flex-shrink-0 items-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 p-4 text-white">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/40">
                 <Bot size={22} />
               </div>
               <div className="flex-1">
@@ -1538,7 +1538,7 @@ export default function Chat() {
               {aiMessages.length > 0 && (
                 <button
                   onClick={() => setAiMessages([])}
-                  className="rounded-lg bg-white/20 p-1.5"
+                  className="rounded-lg bg-muted/40 p-1.5"
                   title={T("chatClearChat")}
                 >
                   <Trash2 size={14} />
@@ -1591,15 +1591,15 @@ export default function Chat() {
                   </div>
                   <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-muted px-4 py-3">
                     <span
-                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/20"
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted/40"
                       style={{ animationDelay: "0ms" }}
                     />
                     <span
-                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/20"
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted/40"
                       style={{ animationDelay: "150ms" }}
                     />
                     <span
-                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/20"
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted/40"
                       style={{ animationDelay: "300ms" }}
                     />
                   </div>
@@ -1700,7 +1700,7 @@ export default function Chat() {
             <button
               onClick={sendMessage}
               disabled={sending}
-              className="h-12 rounded-xl bg-success px-6 font-bold text-white disabled:opacity-50"
+              className="h-12 rounded-xl bg-success px-6 font-bold text-foreground disabled:opacity-50"
             >
               {T("send")}
             </button>
@@ -1713,7 +1713,7 @@ export default function Chat() {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-t-3xl bg-card p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-base font-extrabold text-white">
+              <h3 className="flex items-center gap-2 text-base font-extrabold text-foreground">
                 <Flag size={16} className="text-warning" /> {T("chatReport")}{" "}
                 {selectedConv.otherUser?.name || T("chatUserFallback")}
               </h3>
@@ -1746,7 +1746,7 @@ export default function Chat() {
               <button
                 onClick={handleReport}
                 disabled={!reportReason.trim()}
-                className="flex-1 rounded-2xl bg-warning py-3 text-sm font-bold text-white disabled:opacity-50"
+                className="flex-1 rounded-2xl bg-warning py-3 text-sm font-bold text-foreground disabled:opacity-50"
               >
                 {T("chatSubmitReport")}
               </button>

@@ -125,7 +125,7 @@ export function HomeRequestList({
         {dismissed.size > 0 && (
           <button
             onClick={onClearDismissed}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-muted"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-4 py-2 text-xs font-bold text-foreground transition-colors hover:bg-muted"
             aria-label={`${T("show")} ${dismissed.size} ${dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}`}
           >
             <Eye size={12} /> {T("show")} {dismissed.size} {dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}

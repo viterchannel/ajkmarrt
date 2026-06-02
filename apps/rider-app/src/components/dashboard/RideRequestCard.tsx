@@ -189,7 +189,7 @@ export const RideRequestCard = memo(function RideRequestCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-center gap-2">
-            <p className="text-[15px] font-extrabold tracking-tight text-white">
+            <p className="text-[15px] font-extrabold tracking-tight text-foreground">
               {svcName} Request
             </p>
             {isDispatched && (

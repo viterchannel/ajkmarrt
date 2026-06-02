@@ -47,7 +47,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
     <div className="space-y-3 rounded-3xl border border-border bg-card p-5">
       <p className="text-center text-xs leading-relaxed font-medium text-muted-foreground">
         {config.platform.appName} {T("riderPortal")} · {T("contactSupport")}:{" "}
-        <a href={`tel:${config.platform.supportPhone}`} className="font-semibold text-white">
+        <a href={`tel:${config.platform.supportPhone}`} className="font-semibold text-foreground">
           {config.platform.supportPhone}
         </a>
       </p>
@@ -61,7 +61,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
           <Mail size={11} />
           <a
             href={`mailto:${config.platform.supportEmail}`}
-            className="text-white hover:text-muted-foreground"
+            className="text-foreground hover:text-muted-foreground"
           >
             {config.platform.supportEmail}
           </a>

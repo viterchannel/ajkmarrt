@@ -107,13 +107,13 @@ export function VerificationGateModal({
               </svg>
             </div>
             <div>
-              <h3 style={{ color: "#E8E9EF", fontSize: 15, fontWeight: 700, margin: 0 }}>Verification Required</h3>
-              <p style={{ color: "#6B7280", fontSize: 11, margin: 0 }}>Complete these steps to continue</p>
+              <h3 style={{ color: "var(--color-foreground)", fontSize: 15, fontWeight: 700, margin: 0 }}>Verification Required</h3>
+              <p style={{ color: "var(--color-muted-foreground)", fontSize: 11, margin: 0 }}>Complete these steps to continue</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "none", color: "#9CA3AF", fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--color-muted)", border: "none", color: "var(--color-muted-foreground)", fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             aria-label="Close"
           >
             ✕
@@ -121,7 +121,7 @@ export function VerificationGateModal({
         </div>
 
         {message && (
-          <p style={{ color: "#9CA3AF", fontSize: 13, marginBottom: 14, lineHeight: 1.5 }}>{message}</p>
+          <p style={{ color: "var(--color-muted-foreground)", fontSize: 13, marginBottom: 14, lineHeight: 1.5 }}>{message}</p>
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
@@ -144,7 +144,7 @@ export function VerificationGateModal({
                 }}
               >
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
-                <span style={{ color: "#FCA5A5", fontSize: 13, fontWeight: 600, flex: 1 }}>
+                <span style={{ color: "var(--color-error)", fontSize: 13, fontWeight: 600, flex: 1 }}>
                   {item.label}
                 </span>
               </div>
@@ -163,7 +163,7 @@ export function VerificationGateModal({
                   background: "rgba(239,68,68,0.12)",
                   border: "none",
                   borderTop: "1px solid rgba(239,68,68,0.12)",
-                  color: "#F87171",
+                  color: "var(--color-error)",
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: "pointer",
@@ -186,9 +186,9 @@ export function VerificationGateModal({
               width: "100%",
               height: 44,
               borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.04)",
-              color: "#6B7280",
+              border: "1px solid var(--color-border)",
+              background: "var(--color-muted)",
+              color: "var(--color-muted-foreground)",
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",

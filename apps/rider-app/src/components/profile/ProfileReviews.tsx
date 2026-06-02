@@ -29,7 +29,7 @@ export function ProfileReviews({ language, currency: _currency }: ProfileReviews
             <Star size={16} className="text-yellow-500" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white">{T("customerReviews")}</p>
+            <p className="text-sm font-bold text-foreground">{T("customerReviews")}</p>
             <p className="text-[11px] text-muted-foreground">
               {reviewsData?.total
                 ? `${reviewsData.total} ${T("reviews")} · ${reviewsData.avgRating?.toFixed(1)} avg`

@@ -60,6 +60,7 @@ import { SocketProvider, useSocket } from "./lib/socket";
 import { parseKycStatusChangedPayload, parseRiderApprovalUpdatePayload, parseRiderLocationAckPayload } from "./lib/socketEvents";
 import { getRiderModules, usePlatformConfig } from "./lib/useConfig";
 import { useBrandTheme } from "./lib/useBrandTheme";
+import { useTheme } from "./lib/useTheme";
 import { LanguageProvider, useLanguage } from "./lib/useLanguage";
 import { FontSizeProvider } from "./lib/FontSizeContext";
 import { queryClient } from "@/lib/queryClient";
@@ -208,7 +209,7 @@ function KycBanner({
     <button
       onClick={onDismiss}
       aria-label={kycBanner.status === "approved" ? T("kycApproved") : T("kycRejected")}
-      className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-semibold text-white shadow-xl ${kycBanner.status === "approved" ? "bg-success/90" : "bg-error/90"}`}
+      className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-semibold text-foreground shadow-xl ${kycBanner.status === "approved" ? "bg-success/90" : "bg-error/90"}`}
     >
       <div className="font-bold">
         {kycBanner.status === "approved" ? T("kycApproved") : T("kycRejected")}
@@ -474,8 +475,8 @@ function IdCardGateModal({
               height: 48,
               padding: "0 14px",
               borderRadius: 12,
-              background: "rgba(255,255,255,0.06)",
-              border: `1.5px solid ${error ? "var(--color-error)" : cnic && isValidCnic(cnic) ? "var(--color-brand)" : "rgba(255,255,255,0.12)"}`,
+              background: "var(--color-muted)",
+              border: `1.5px solid ${error ? "var(--color-error)" : cnic && isValidCnic(cnic) ? "var(--color-brand)" : "var(--color-border)"}`,
               color: "var(--color-foreground)",
               fontSize: 16,
               fontWeight: 600,
@@ -524,7 +525,7 @@ function IdCardGateModal({
             T("submitCnic")
           )}
         </button>
-        <p style={{ color: "#4B5563", fontSize: 11, textAlign: "center", marginTop: 12, lineHeight: 1.5 }}>
+        <p style={{ color: "var(--color-muted-foreground)", fontSize: 11, textAlign: "center", marginTop: 12, lineHeight: 1.5 }}>
           {T("cnicEncryptedNote")}
         </p>
       </div>
@@ -609,6 +610,7 @@ function AppRoutes() {
   const user = (apiUnreachable && cachedDashboard) ? cachedDashboard : _user;
   const isOfflineCachedMode = apiUnreachable && !!cachedDashboard;
   const { config } = usePlatformConfig();
+  useTheme();   /* Apply theme class (light/dark) to <html> — must run globally */
   useBrandTheme();
   const modules = getRiderModules(config);
   const { language } = useLanguage();
@@ -1409,7 +1411,7 @@ function AppRoutes() {
             <div
               style={{
                 marginTop: 20,
-                background: "rgba(255,255,255,0.05)",
+                background: "var(--color-muted)",
                 borderRadius: 16,
                 padding: 16,
                 maxWidth: 280,
@@ -1474,7 +1476,7 @@ function AppRoutes() {
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: "0.2em",
-              color: "rgba(255,255,255,0.2)",
+              color: "var(--color-border)",
               textTransform: "uppercase",
             }}
           >
@@ -1572,9 +1574,9 @@ function AppRoutes() {
               width: "100%",
               height: 48,
               borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.04)",
-              color: "#9CA3AF",
+              border: "1px solid var(--color-border)",
+              background: "var(--color-muted)",
+              color: "var(--color-muted-foreground)",
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
@@ -1641,7 +1643,7 @@ function AppRoutes() {
           <div className="mb-4 flex items-center justify-center text-5xl text-error">
             <XCircle size={48} />
           </div>
-          <h2 className="mb-2 text-xl font-bold text-white">{T("accountRejected")}</h2>
+          <h2 className="mb-2 text-xl font-bold text-foreground">{T("accountRejected")}</h2>
           <p className="mb-2 text-sm leading-relaxed text-muted-foreground">
             {T("accountRejectedMsg")}
           </p>
@@ -1685,7 +1687,7 @@ function AppRoutes() {
           <div className="mb-4 text-5xl">
             <span>🚫</span>
           </div>
-          <h2 className="mb-2 text-xl font-bold text-white">{T("accountSuspended")}</h2>
+          <h2 className="mb-2 text-xl font-bold text-foreground">{T("accountSuspended")}</h2>
           <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
             {T("accountSuspendedMsg")}
           </p>
@@ -1738,17 +1740,17 @@ function AppRoutes() {
     return (
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col">
         {isOfflineCachedMode && (
-          <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-white shadow">
+          <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-foreground shadow">
             No internet — showing last known data
           </div>
         )}
         {isLimited && !isOfflineCachedMode && (
-          <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-white shadow">
+          <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-foreground shadow">
             ⚠️ Limited service — some features may be temporarily unavailable
           </div>
         )}
         {refreshFailToast && (
-          <div className="pointer-events-none fixed top-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-warning px-4 py-2 text-xs font-bold text-white shadow-lg">
+          <div className="pointer-events-none fixed top-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-warning px-4 py-2 text-xs font-bold text-foreground shadow-lg">
             {/* U1: At minimum the dynamic data piece is i18n-aware via T("offline"); the
                 static refresh-failure phrase is platform-config copy that follows
                 the rest of admin-driven content (config.content), not the bundled
@@ -1774,7 +1776,7 @@ function AppRoutes() {
           {fcmNotif && (
             <button
               onClick={() => setFcmNotif(null)}
-              className="pointer-events-auto w-full rounded-2xl bg-success/90 px-4 py-3 text-left text-sm font-semibold text-white shadow-xl"
+              className="pointer-events-auto w-full rounded-2xl bg-success/90 px-4 py-3 text-left text-sm font-semibold text-foreground shadow-xl"
             >
               <div className="truncate font-bold">{fcmNotif.title}</div>
               <div className="truncate text-xs opacity-90">{fcmNotif.body}</div>
@@ -1795,17 +1797,17 @@ function AppRoutes() {
     <VerificationGateProvider>
     <div className="relative mx-auto flex min-h-screen max-w-md flex-col">
       {isOfflineCachedMode && (
-        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-white shadow">
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-foreground shadow">
           No internet — showing last known data
         </div>
       )}
       {isLimited && !isOfflineCachedMode && (
-        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-white shadow">
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-foreground shadow">
           ⚠️ Limited service — some features may be temporarily unavailable
         </div>
       )}
       {refreshFailToast && (
-        <div className="pointer-events-none fixed top-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-warning px-4 py-2 text-xs font-bold text-white shadow-lg">
+        <div className="pointer-events-none fixed top-4 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-warning px-4 py-2 text-xs font-bold text-foreground shadow-lg">
           Connection issue — profile sync failed
         </div>
       )}
@@ -1826,7 +1828,7 @@ function AppRoutes() {
         {fcmNotif && (
           <button
             onClick={() => setFcmNotif(null)}
-            className="pointer-events-auto w-full rounded-2xl bg-success/90 px-4 py-3 text-left text-sm font-semibold text-white shadow-xl"
+            className="pointer-events-auto w-full rounded-2xl bg-success/90 px-4 py-3 text-left text-sm font-semibold text-foreground shadow-xl"
           >
             <div className="truncate font-bold">{fcmNotif.title}</div>
             <div className="truncate text-xs opacity-90">{fcmNotif.body}</div>
@@ -2055,7 +2057,7 @@ function ForceUpdateScreen({
       <div
         style={{
           background: "var(--color-card-dark, #1a1d23)",
-          border: "1px solid var(--color-border-dark, rgba(255,255,255,0.08))",
+          border: "1px solid var(--color-border)",
           borderRadius: 24,
           padding: "36px 28px",
           width: "100%",
@@ -2139,7 +2141,7 @@ function ForceUpdateScreen({
             </a>
           )
         ) : (
-          <p style={{ color: "#9CA3AF", fontSize: 13 }}>
+          <p style={{ color: "var(--color-muted-foreground)", fontSize: 13 }}>
             {T("updateFromAppStore")}
           </p>
         )}

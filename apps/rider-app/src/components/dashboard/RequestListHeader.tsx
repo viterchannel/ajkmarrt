@@ -18,7 +18,7 @@ export const RequestListHeader = memo(function RequestListHeader({
       <div className="flex items-center gap-2.5">
         {totalRequests > 0 ? (
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/20">
-            <Zap size={14} className="text-white" />
+            <Zap size={14} className="text-foreground" />
           </div>
         ) : (
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/40">
@@ -26,7 +26,7 @@ export const RequestListHeader = memo(function RequestListHeader({
           </div>
         )}
         <div>
-          <p className={`text-sm font-extrabold tracking-tight ${totalRequests > 0 ? "text-white" : "text-foreground"}`}>
+          <p className={`text-sm font-extrabold tracking-tight ${totalRequests > 0 ? "text-foreground" : "text-foreground"}`}>
             {totalRequests > 0
               ? `${totalRequests} Request${totalRequests > 1 ? "s" : ""} Available`
               : T("listeningForRequests")}
@@ -37,7 +37,7 @@ export const RequestListHeader = memo(function RequestListHeader({
         </div>
       </div>
       {totalRequests > 0 && (
-        <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-white/90 backdrop-blur-sm">
+        <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-extrabold tracking-widest text-foreground/90 backdrop-blur-sm">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
           LIVE
         </span>

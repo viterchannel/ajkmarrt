@@ -156,7 +156,7 @@ function FullscreenMap({
       role="dialog"
       aria-label="Route map fullscreen"
     >
-      <div className="flex flex-shrink-0 items-center justify-between bg-card px-4 py-3 text-white">
+      <div className="flex flex-shrink-0 items-center justify-between bg-card px-4 py-3 text-foreground">
         <p className="text-sm font-extrabold tracking-tight">Route Preview</p>
         <div className="flex items-center gap-2">
           {mapsHref !== "#" && (

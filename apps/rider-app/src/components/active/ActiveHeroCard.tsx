@@ -80,7 +80,7 @@ export function ActiveHeroCard({
               <p className="text-[10px] font-bold tracking-wider text-warning/80 uppercase">
                 Store
               </p>
-              <p className="truncate text-sm font-black text-white">
+              <p className="truncate text-sm font-black text-foreground">
                 {(order.vendorStoreName as string) || "Store"}
               </p>
               {!!order.vendorAddress && (
@@ -98,7 +98,7 @@ export function ActiveHeroCard({
             )}
           </div>
 
-          <div className="h-px bg-white/[0.06]" />
+          <div className="h-px bg-border/30" />
 
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-500/10">
@@ -108,7 +108,7 @@ export function ActiveHeroCard({
               <p className="text-[10px] font-bold tracking-wider text-blue-400/80 uppercase">
                 Customer
               </p>
-              <p className="truncate text-sm font-black text-white">
+              <p className="truncate text-sm font-black text-foreground">
                 {(order.customerName as string) || "Customer"}
               </p>
               {!!order.deliveryAddress && (
@@ -159,7 +159,7 @@ export function ActiveHeroCard({
         </div>
 
         {!!ride.customerName && (
-          <p className="mb-3 text-center text-base font-black text-white">
+          <p className="mb-3 text-center text-base font-black text-foreground">
             {ride.customerName as string}
           </p>
         )}
@@ -169,7 +169,7 @@ export function ActiveHeroCard({
             <MapPin size={14} className="flex-shrink-0 text-success" />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-bold text-success/70 uppercase">Pickup</p>
-              <p className="truncate text-xs font-bold text-white">
+              <p className="truncate text-xs font-bold text-foreground">
                 {(ride.pickupAddress as string) || "Pickup location"}
               </p>
             </div>
@@ -179,7 +179,7 @@ export function ActiveHeroCard({
             <MapPin size={14} className="flex-shrink-0 text-error" />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-bold text-error/70 uppercase">Drop-off</p>
-              <p className="truncate text-xs font-bold text-white">
+              <p className="truncate text-xs font-bold text-foreground">
                 {(ride.dropAddress as string) || "Drop-off location"}
               </p>
             </div>

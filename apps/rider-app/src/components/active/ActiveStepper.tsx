@@ -35,7 +35,7 @@ export function ActiveStepper({ steps, currentStep, icons }: ActiveStepperProps)
               </div>
               <p
                 className={`max-w-[64px] text-center text-[9px] font-bold leading-tight ${
-                  i <= currentStep ? "text-white" : "text-muted-foreground"
+                  i <= currentStep ? "text-foreground" : "text-muted-foreground"
                 }`}
               >
                 {label}

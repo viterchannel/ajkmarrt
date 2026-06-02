@@ -64,7 +64,7 @@ export function PostDeliverySheet({
       <div className="w-full max-w-md animate-[slideUp_0.3s_ease-out] rounded-t-3xl bg-card px-5 pb-8 pt-5 shadow-2xl">
         <div className="mb-1 flex items-center justify-between">
           <div>
-            <p className="text-lg font-black text-white">
+            <p className="text-lg font-black text-foreground">
               {kind === "order" ? "Order Delivered!" : "Ride Completed!"}
             </p>
             <p className="text-xs text-muted-foreground">Rate the customer &amp; leave a tip (optional)</p>
@@ -150,7 +150,7 @@ export function PostDeliverySheet({
                   value={customTip}
                   onChange={(e) => setCustomTip(e.target.value)}
                   placeholder="0.00"
-                  className="flex-1 text-sm font-bold outline-none text-white"
+                  className="flex-1 text-sm font-bold outline-none text-foreground"
                   autoFocus
                 />
               </div>
@@ -203,10 +203,10 @@ export function CancellationReasonModal({
       <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card shadow-2xl">
         <div className="flex flex-col items-center gap-3 border-b border-error/30 bg-gradient-to-br from-red-50 to-pink-50 px-6 py-6">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 shadow-lg shadow-red-200">
-            <UserX className="h-8 w-8 text-white" />
+            <UserX className="h-8 w-8 text-foreground" />
           </div>
           <div className="text-center">
-            <p className="text-xl font-black text-white">Ride Cancelled</p>
+            <p className="text-xl font-black text-foreground">Ride Cancelled</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Cancelled by <span className="font-bold text-error">{byLabel}</span>
             </p>
@@ -318,7 +318,7 @@ export function ActiveModals({
           >
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <p className="flex items-center gap-2 font-black text-white">
+                <p className="flex items-center gap-2 font-black text-foreground">
                   <MessageSquare size={16} className="text-blue-400" /> Admin Chat
                 </p>
                 <p className="text-xs text-muted-foreground">Admin can see your messages</p>
@@ -386,10 +386,10 @@ export function ActiveModals({
           <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card shadow-2xl">
             <div className="flex flex-col items-center gap-3 border-b border-blue-500/30 bg-gradient-to-br from-blue-50 to-indigo-50 px-6 py-6">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-200">
-                <Shield className="h-8 w-8 text-white" />
+                <Shield className="h-8 w-8 text-foreground" />
               </div>
               <div className="text-center">
-                <p className="text-xl font-black text-white">Enter Customer OTP</p>
+                <p className="text-xl font-black text-foreground">Enter Customer OTP</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Ask the customer for their 4-digit trip code
                 </p>
@@ -467,10 +467,10 @@ export function ActiveModals({
           <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card shadow-2xl">
             <div className="flex flex-col items-center gap-3 border-b border-error/30 bg-gradient-to-br from-red-50 to-pink-50 px-6 py-6">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 shadow-lg shadow-red-200">
-                <AlertTriangle className="h-8 w-8 text-white" />
+                <AlertTriangle className="h-8 w-8 text-foreground" />
               </div>
               <div className="text-center">
-                <p className="text-xl font-black text-white">
+                <p className="text-xl font-black text-foreground">
                   {T("cancelConfirm")} {cancelTarget === "order" ? T("deliveryLabel") : T("ride")}?
                 </p>
                 <p className="mt-1.5 text-sm text-muted-foreground">{T("actionNotReversible")}</p>
@@ -523,7 +523,7 @@ export function ActiveModals({
                 <AlertTriangle size={28} className="text-warning" />
               </div>
               <div className="text-center">
-                <p className="text-base font-extrabold text-white">No Photo Taken</p>
+                <p className="text-base font-extrabold text-foreground">No Photo Taken</p>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                   Delivering without proof photo may cause disputes. Are you sure?
                 </p>

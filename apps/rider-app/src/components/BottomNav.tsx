@@ -135,7 +135,7 @@ export function BottomNav() {
       {/* Offline / sync banner */}
       {pendingCount > 0 && !bannerDismissed && (
         <div
-          className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold text-white ${
+          className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold text-foreground ${
             syncing ? "bg-warning" : isOnline ? "bg-error" : "bg-warning"
           }`}
         >
@@ -190,7 +190,7 @@ export function BottomNav() {
                   )}
                   {/* Unread notifications badge — shown on profile since notifications moved there */}
                   {item.href === "/profile" && unread > 0 && (
-                    <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-extrabold text-white shadow-sm">
+                    <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-extrabold text-foreground shadow-sm">
                       {unread > 9 ? "9+" : unread}
                     </span>
                   )}
@@ -200,13 +200,13 @@ export function BottomNav() {
                       <span className="relative flex items-center gap-0.5 rounded-full bg-success px-1.5 py-0.5">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60"></span>
                         <span className="relative h-1.5 w-1.5 rounded-full bg-white"></span>
-                        <span className="relative text-[10px] font-extrabold leading-none text-white tracking-wide">LIVE</span>
+                        <span className="relative text-[10px] font-extrabold leading-none text-foreground tracking-wide">LIVE</span>
                       </span>
                     </span>
                   )}
                   {/* Unread chat badge on Active tab (when no active job pulse is shown) */}
                   {item.href === "/active" && chatBadge > 0 && !(hasActive && location !== "/active") && (
-                    <span className="absolute -top-1 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-error px-0.5 text-[10px] font-extrabold text-white shadow-sm">
+                    <span className="absolute -top-1 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-error px-0.5 text-[10px] font-extrabold text-foreground shadow-sm">
                       {chatBadge > 99 ? "99+" : chatBadge}
                     </span>
                   )}

@@ -185,7 +185,7 @@ export function ElapsedBadge({ startIso }: { startIso?: string | null }) {
         </span>
       </div>
       <span
-        className={`text-lg leading-none font-black text-white tabular-nums ${urgent ? "animate-pulse" : ""}`}
+        className={`text-lg leading-none font-black text-foreground tabular-nums ${urgent ? "animate-pulse" : ""}`}
       >
         {label}
       </span>
@@ -355,7 +355,7 @@ export function SosButton({
     <>
       {confirming && !sent && (
         <div className="mb-2 rounded-xl border border-red-400/40 bg-red-950/70 p-3 text-xs font-medium text-red-100">
-          <p className="mb-0.5 font-bold text-white">⚠️ Send Emergency SOS?</p>
+          <p className="mb-0.5 font-bold text-foreground">⚠️ Send Emergency SOS?</p>
           <p className="text-red-300">
             This alerts our support team immediately. Only use in a real emergency.
           </p>
@@ -451,7 +451,7 @@ export function SosButton({
         }}
         disabled={sent || loading}
         aria-label={T("sosEmergency")}
-        className={`flex items-center justify-center gap-2 self-end rounded-xl px-5 py-2.5 text-sm font-black shadow-lg transition-all ${sent ? "cursor-default bg-muted text-muted-foreground shadow-none" : "text-white shadow-red-400/40 active:scale-[0.96]"}`}
+        className={`flex items-center justify-center gap-2 self-end rounded-xl px-5 py-2.5 text-sm font-black shadow-lg transition-all ${sent ? "cursor-default bg-muted text-muted-foreground shadow-none" : "text-foreground shadow-red-400/40 active:scale-[0.96]"}`}
         style={
           sent
             ? undefined
@@ -618,10 +618,10 @@ export function TurnByTurnPanel({
         className="flex w-full items-center gap-3 bg-gradient-to-r from-indigo-50 to-blue-50 px-4 py-3 text-left"
       >
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 shadow-md shadow-indigo-200">
-          <Navigation size={14} className="text-white" />
+          <Navigation size={14} className="text-foreground" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-black text-white">Turn-by-Turn to {label}</p>
+          <p className="text-sm font-black text-foreground">Turn-by-Turn to {label}</p>
           {route && currentInstruction && (
             <p className="truncate text-xs font-semibold text-indigo-400">{currentInstruction}</p>
           )}
@@ -681,7 +681,7 @@ export function TurnByTurnPanel({
                       </div>
                       <div className="min-w-0 flex-1">
                         <p
-                          className={`leading-tight font-semibold ${isActive ? "text-indigo-400" : "text-white"}`}
+                          className={`leading-tight font-semibold ${isActive ? "text-indigo-400" : "text-foreground"}`}
                         >
                           {step.instruction}
                         </p>
@@ -817,13 +817,13 @@ export function EstimatedArrivalBadge({
   return (
     <div className="flex items-center gap-2 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3">
       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-200">
-        <Navigation size={16} className="text-white" />
+        <Navigation size={16} className="text-foreground" />
       </div>
       <div className="flex-1">
         <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase">
           Est. Arrival to Pickup
         </p>
-        <p className="text-base font-black text-white">
+        <p className="text-base font-black text-foreground">
           {etaMin} min{" "}
           <span className="text-xs font-semibold text-muted-foreground">
             ({distKm < 1 ? `${Math.round(distKm * 1000)}m` : `${distKm.toFixed(1)} km`})
@@ -901,14 +901,14 @@ export function DropoffEtaBadge({
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-success/30 bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3.5">
       <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-md shadow-green-200">
-        <Navigation size={20} className="text-white" />
+        <Navigation size={20} className="text-foreground" />
         <span className="absolute -top-1 -right-1 h-3 w-3 animate-pulse rounded-full bg-success ring-2 ring-white" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-bold tracking-wider text-success uppercase">
           ETA to Drop-off
         </p>
-        <p className="text-xl font-black text-white leading-tight">
+        <p className="text-xl font-black text-foreground leading-tight">
           ~{etaMin} min{" "}
           <span className="text-sm font-semibold text-muted-foreground">({distStr})</span>
         </p>

@@ -114,7 +114,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="mb-0.5 flex flex-wrap items-center gap-2">
-            <p className="text-[15px] font-extrabold tracking-tight text-white">
+            <p className="text-[15px] font-extrabold tracking-tight text-foreground">
               {orderType.charAt(0).toUpperCase() + orderType.slice(1)} Delivery
             </p>
             <RequestAge createdAt={o.createdAt} />

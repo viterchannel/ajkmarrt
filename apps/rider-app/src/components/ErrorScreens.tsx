@@ -44,7 +44,7 @@ export function ErrorScreen({
         </div>
 
         {/* Title */}
-        <h2 className="mb-2 text-center text-lg font-bold text-white">{title}</h2>
+        <h2 className="mb-2 text-center text-lg font-bold text-foreground">{title}</h2>
 
         {/* Message */}
         {message && (

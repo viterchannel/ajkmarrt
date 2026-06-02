@@ -78,7 +78,7 @@ function StatCard({
       <p className={`text-xs font-semibold ${highlight ? "text-black/60" : "text-muted-foreground"}`}>
         {label}
       </p>
-      <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-black" : "text-white"}`}>
+      <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-black" : "text-foreground"}`}>
         {value}
       </p>
       {sub && (

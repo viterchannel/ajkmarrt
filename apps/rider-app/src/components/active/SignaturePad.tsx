@@ -105,7 +105,7 @@ export function SignaturePad({ onConfirm, onCancel }: SignaturePadProps) {
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
-          <p className="text-base font-black text-white">{T("drawSignature")}</p>
+          <p className="text-base font-black text-foreground">{T("drawSignature")}</p>
           <p className="text-xs text-muted-foreground">{T("signWithFinger")}</p>
         </div>
         <button

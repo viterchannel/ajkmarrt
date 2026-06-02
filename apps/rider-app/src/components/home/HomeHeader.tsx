@@ -20,11 +20,11 @@ interface HomeHeaderProps {
 }
 
 export function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
-  if (!rating || rating === 0) return { label: "Standard", cls: "text-muted-foreground bg-white/[0.06] border-border" };
+  if (!rating || rating === 0) return { label: "Standard", cls: "text-muted-foreground bg-muted/20 border-border" };
   if (rating >= 4.5) return { label: "Gold Partner", cls: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" };
   if (rating >= 4.0) return { label: "Silver Partner", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
   if (rating >= 3.5) return { label: "Active Rider", cls: "text-success bg-success/10 border-success/20" };
-  return { label: "Standard", cls: "text-muted-foreground bg-white/[0.06] border-border" };
+  return { label: "Standard", cls: "text-muted-foreground bg-muted/20 border-border" };
 }
 
 export function getInitials(name?: string | null): string {
@@ -75,7 +75,7 @@ export function HomeHeader({
           {/* Notification bell */}
           <Link
             href="/notifications"
-            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-border/80 bg-white/[0.04] transition-colors active:bg-white/[0.08]"
+            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-border/80 bg-muted/10 transition-colors active:bg-muted/30"
             aria-label={hasUnread ? `${unreadNotifications} unread notifications` : "Notifications"}
           >
             <Bell size={15} className={hasUnread ? "text-foreground" : "text-muted-foreground"} />
@@ -148,7 +148,7 @@ export function HomeHeader({
         {/* Wallet card */}
         <Link
           href="/wallet"
-          className="flex flex-col gap-1.5 rounded-2xl border border-border/80 bg-white/[0.04] p-3.5 transition-colors active:bg-white/[0.07]"
+          className="flex flex-col gap-1.5 rounded-2xl border border-border/80 bg-muted/10 p-3.5 transition-colors active:bg-muted/40"
           aria-label="View wallet balance"
         >
           <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -170,7 +170,7 @@ export function HomeHeader({
           className={`flex flex-col gap-1.5 rounded-2xl border p-3.5 text-left transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 ${
             effectiveOnline
               ? "border-success/20 bg-success/[0.06]"
-              : "border-border/80 bg-white/[0.04]"
+              : "border-border/80 bg-muted/10"
           }`}
           role="switch"
           aria-checked={effectiveOnline}
@@ -182,7 +182,7 @@ export function HomeHeader({
                 className={`h-2 w-2 rounded-full ${
                   effectiveOnline
                     ? "animate-pulse bg-success shadow-lg shadow-green-400/50"
-                    : "bg-white/20"
+                    : "bg-muted/40"
                 }`}
               />
               <p
@@ -196,7 +196,7 @@ export function HomeHeader({
             {/* Mini toggle pill */}
             <div
               className={`relative h-5 w-9 flex-shrink-0 rounded-full transition-colors ${
-                effectiveOnline ? "bg-success" : "bg-white/20"
+                effectiveOnline ? "bg-success" : "bg-muted/40"
               }`}
             >
               <div
@@ -222,7 +222,7 @@ export function HomeHeader({
           className={`flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-[10px] font-bold transition-all ${
             silenceOn
               ? "border-error/20 bg-error/10 text-error"
-              : "border-border bg-white/5 text-muted-foreground"
+              : "border-border bg-muted/10 text-muted-foreground"
           }`}
           aria-label={silenceOn ? "Unmute notification sounds" : "Mute notification sounds"}
         >

@@ -287,7 +287,7 @@ function RideReceiptSheet({
             {item.fare != null && (
               <div className="flex items-center justify-between border-b border-border/30 px-4 py-3">
                 <span className="text-sm text-muted-foreground">{T("fare")}</span>
-                <span className="text-sm font-bold text-white">
+                <span className="text-sm font-bold text-foreground">
                   {formatCurrency(item.fare)}
                 </span>
               </div>
@@ -295,7 +295,7 @@ function RideReceiptSheet({
             {item.distance != null && (
               <div className="flex items-center justify-between border-b border-border/30 px-4 py-3">
                 <span className="text-sm text-muted-foreground">{T("receiptDistance")}</span>
-                <span className="text-sm font-bold text-white">
+                <span className="text-sm font-bold text-foreground">
                   {parseFloat(String(item.distance)).toFixed(1)} km
                 </span>
               </div>
@@ -308,7 +308,7 @@ function RideReceiptSheet({
             )}
             <div className="flex items-center justify-between px-4 py-3">
               <span className="text-sm text-muted-foreground">{T("receiptDateAndTime")}</span>
-              <span className="text-sm font-bold text-white">
+              <span className="text-sm font-bold text-foreground">
                 {formatDate(item.createdAt, tz)}
               </span>
             </div>

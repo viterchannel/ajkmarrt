@@ -9,8 +9,8 @@ import { checkApiHealth } from "./lib/checkApiHealth";
 import { auditRiderEnv } from "./lib/envValidation";
 import { initErrorReporter, reportError } from "./lib/error-reporter";
 
-// Apply dark theme unconditionally — the rider app always runs in dark mode.
-document.documentElement.classList.add("dark");
+// Theme is applied by useTheme() hook on first render. Don't pre-apply a class here —
+// it would unconditionally override the theme system and break light mode support.
 
 // Run env audit once at module load — warnings appear in dev only.
 auditRiderEnv();

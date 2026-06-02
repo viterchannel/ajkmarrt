@@ -16,7 +16,7 @@ export function MaintenanceScreen({ message, appName = "AJKMart" }: Props) {
       <div className="absolute bottom-[-15%] left-[-10%] h-64 w-64 rounded-full bg-success/[0.04]" />
       <div className="relative z-10 w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-2xl">
         <div className="mb-4 text-6xl">🔧</div>
-        <h1 className="mb-2 text-2xl font-extrabold text-white">
+        <h1 className="mb-2 text-2xl font-extrabold text-foreground">
           {appName} {T("maintenanceTitle")}
         </h1>
         <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-card" />

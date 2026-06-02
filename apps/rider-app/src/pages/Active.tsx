@@ -1180,10 +1180,10 @@ export default function Active() {
       {adminMessages.length > 0 && (
         <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 shadow-lg">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-black/20">
-            <MessageSquare size={16} className="text-white" />
+            <MessageSquare size={16} className="text-foreground" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-extrabold text-white">{T("messageFromAdmin")}</p>
+            <p className="text-xs font-extrabold text-foreground">{T("messageFromAdmin")}</p>
             <p className="mt-0.5 truncate text-[11px] leading-relaxed text-blue-100">
               {adminMessages[adminMessages.length - 1]?.text ?? "New message"}
             </p>

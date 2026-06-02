@@ -164,7 +164,7 @@ function PasswordChangeSection({
         <button
           onClick={handleChangePassword}
           disabled={pwLoading || !newPw}
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-colors hover:bg-muted/70 disabled:opacity-60"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-foreground transition-colors hover:bg-muted/70 disabled:opacity-60"
         >
           {pwLoading ? <Loader2 size={16} className="animate-spin" /> : <Lock size={16} />}
           {pwLoading ? T("pleaseWait") : T("updatePassword")}
@@ -329,7 +329,7 @@ export default function SecuritySettings() {
                   if (backupCodesSaved) setView("main");
                 }}
                 disabled={!backupCodesSaved}
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-all disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-brand/40 focus:outline-none"
+                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-foreground transition-all disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-brand/40 focus:outline-none"
               >
                 <ShieldCheck size={16} /> {T("doneReturnSecurity")}
               </button>
@@ -433,7 +433,7 @@ export default function SecuritySettings() {
                 </p>
                 <Link
                   href="/settings/login-history"
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-colors hover:bg-muted/70"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-foreground transition-colors hover:bg-muted/70"
                 >
                   <Clock size={15} />
                   {T("viewLoginHistory")}
@@ -479,7 +479,7 @@ export default function SecuritySettings() {
                   className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors disabled:opacity-60 ${
                     is2faEnabled
                       ? "border-2 border-error/30 text-error hover:bg-error/10"
-                      : "bg-brand text-white hover:bg-muted/70"
+                      : "bg-brand text-foreground hover:bg-muted/70"
                   }`}
                 >
                   {loading ? (
@@ -511,7 +511,7 @@ export default function SecuritySettings() {
             paddingRight: "16px",
           }}
         >
-          <div className="pointer-events-auto w-full max-w-sm rounded-2xl bg-brand px-5 py-3 text-center text-sm font-semibold text-white shadow-2xl">
+          <div className="pointer-events-auto w-full max-w-sm rounded-2xl bg-brand px-5 py-3 text-center text-sm font-semibold text-foreground shadow-2xl">
             {toast}
           </div>
         </div>

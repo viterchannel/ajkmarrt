@@ -374,7 +374,7 @@ export default function WithdrawModal({
               <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-warning/15">
                 <Clock size={52} className="text-warning" />
               </div>
-              <h3 className="text-2xl font-extrabold text-white">Queued for Later</h3>
+              <h3 className="text-2xl font-extrabold text-foreground">Queued for Later</h3>
               <p className="mt-2 text-muted-foreground">
                 <span className="font-extrabold text-warning">{fc(Number(amount))}</span>{" "}
                 withdrawal queued
@@ -408,7 +408,7 @@ export default function WithdrawModal({
               <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-success/15">
                 <CheckCircle size={52} className="text-success" />
               </div>
-              <h3 className="text-2xl font-extrabold text-white">{T("requestSubmitted")}</h3>
+              <h3 className="text-2xl font-extrabold text-foreground">{T("requestSubmitted")}</h3>
               <p className="mt-2 text-muted-foreground">
                 <span className="font-extrabold text-success">{fc(Number(amount))}</span>{" "}
                 {T("withdrawalSubmitted")}
@@ -472,7 +472,7 @@ export default function WithdrawModal({
           {/* CONFIRM */}
           {step === "confirm" && (
             <div className="p-6">
-              <h3 className="mb-1 text-xl font-extrabold text-white">
+              <h3 className="mb-1 text-xl font-extrabold text-foreground">
                 {T("confirmWithdrawal")}
               </h3>
               <p className="mb-5 text-sm text-muted-foreground">{T("reviewConfirm")}</p>
@@ -598,7 +598,7 @@ export default function WithdrawModal({
                   <MethodLogo id={selectedMethod.id} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-white">{selectedMethod.label}</h3>
+                  <h3 className="text-lg font-extrabold text-foreground">{selectedMethod.label}</h3>
                   <p className="mt-0.5 text-xs text-muted-foreground">{selectedMethod.description}</p>
                 </div>
               </div>
@@ -716,13 +716,13 @@ export default function WithdrawModal({
               >
                 <ArrowLeft size={14} /> {T("back")}
               </button>
-              <h3 className="mb-1 text-xl font-extrabold text-white">{T("selectMethod")}</h3>
+              <h3 className="mb-1 text-xl font-extrabold text-foreground">{T("selectMethod")}</h3>
               <p className="mb-4 text-sm text-muted-foreground">{T("selectPaymentMethod")}</p>
               <div className="mb-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-5 py-4">
                 <span className="text-sm font-semibold text-success/70">
                   {T("withdrawalAmount")}
                 </span>
-                <span className="text-2xl font-extrabold text-white">{fc(Number(amount))}</span>
+                <span className="text-2xl font-extrabold text-foreground">{fc(Number(amount))}</span>
               </div>
               {loadingMethods ? (
                 <div className="space-y-3">
@@ -748,7 +748,7 @@ export default function WithdrawModal({
                         <MethodLogo id={m.id} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-extrabold text-white">{m.label}</p>
+                        <p className="font-extrabold text-foreground">{m.label}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{m.description}</p>
                       </div>
                       <ChevronRight size={20} className="text-muted-foreground" />
@@ -763,7 +763,7 @@ export default function WithdrawModal({
           {step === "amount" && (
             <div className="p-6">
               <div className="mb-5 flex items-center justify-between">
-                <h3 className="text-xl font-extrabold text-white">{T("withdrawFunds")}</h3>
+                <h3 className="text-xl font-extrabold text-foreground">{T("withdrawFunds")}</h3>
                 <button
                   onClick={onClose}
                   className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
@@ -896,10 +896,10 @@ export default function WithdrawModal({
                           instantPayout ? "bg-success" : "bg-muted"
                         }`}
                       >
-                        <Zap size={18} className={instantPayout ? "text-white" : "text-muted-foreground"} />
+                        <Zap size={18} className={instantPayout ? "text-foreground" : "text-muted-foreground"} />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-white">Instant Payout</p>
+                        <p className="text-sm font-bold text-foreground">Instant Payout</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
                           {instantPayout
                             ? "Within minutes · "

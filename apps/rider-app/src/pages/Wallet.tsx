@@ -235,7 +235,7 @@ function EarningsChart({ transactions }: { transactions: WalletTx[] }) {
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BarChart3 size={15} className="text-muted-foreground" />
-          <p className="text-sm font-bold text-white">{T("sevenDayEarnings")}</p>
+          <p className="text-sm font-bold text-foreground">{T("sevenDayEarnings")}</p>
         </div>
         <p className="text-base font-black text-brand">{fc(weekTotal, chartCurrency, chartCurrencyCode)}</p>
       </div>
@@ -245,7 +245,7 @@ function EarningsChart({ transactions }: { transactions: WalletTx[] }) {
             <div className="flex w-full items-end justify-center" style={{ height: 56 }}>
               <div
                 className={`w-full max-w-[20px] rounded-md transition-all duration-500 ${
-                  i === bestIdx ? "bg-brand" : "bg-white/10"
+                  i === bestIdx ? "bg-brand" : "bg-muted/20"
                 }`}
                 style={{ height: Math.max((d.amount / maxVal) * 56, d.amount > 0 ? 4 : 2) }}
                 title={`${d.date}: ${fc(d.amount, chartCurrency, chartCurrencyCode)}`}
@@ -344,12 +344,12 @@ function PendingRequestCard({ tx }: { tx: WalletTx }) {
             <MethodIcon method={tx.paymentMethod || parsed.bank} />
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-black text-white">{parsed.bank}</p>
+            <p className="text-sm font-black text-foreground">{parsed.bank}</p>
             <p className="mt-0.5 font-mono text-xs text-muted-foreground">{parsed.account}</p>
           </div>
         </div>
         <div className="flex-shrink-0 text-right">
-          <p className="text-lg font-black text-white">{fc(Number(tx.amount), cardCurrency, cardCurrencyCode)}</p>
+          <p className="text-lg font-black text-foreground">{fc(Number(tx.amount), cardCurrency, cardCurrencyCode)}</p>
           <span
             className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${statusConfig.badge} inline-flex items-center gap-1`}
           >
@@ -721,7 +721,7 @@ export default function Wallet() {
           <p className="mb-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             {T("walletBalance")}
           </p>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">{T("wallet")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{T("wallet")}</h1>
         </div>
         <div className="-mt-4 flex flex-1 items-center justify-center">
           <ErrorState
@@ -751,7 +751,7 @@ export default function Wallet() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-card">
               <Lock size={32} className="text-muted-foreground" />
             </div>
-            <h3 className="mb-2 text-lg font-black text-white">{T("walletDisabled")}</h3>
+            <h3 className="mb-2 text-lg font-black text-foreground">{T("walletDisabled")}</h3>
             <p className="text-sm text-muted-foreground">{T("withdrawalsDisabled")}</p>
           </div>
         </div>
@@ -789,7 +789,7 @@ export default function Wallet() {
           </div>
 
           <div className="mb-1 flex items-end gap-3">
-            <p className="text-[42px] leading-none font-black tracking-tight text-white">
+            <p className="text-[42px] leading-none font-black tracking-tight text-foreground">
               {balanceHidden ? (
                 "••••••"
               ) : isLoading ? (
@@ -838,7 +838,7 @@ export default function Wallet() {
               <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 {T("yourShare" as TranslationKey)}
               </p>
-              <p className="mt-0.5 text-sm font-black text-white">{riderKeepPct}%</p>
+              <p className="mt-0.5 text-sm font-black text-foreground">{riderKeepPct}%</p>
             </div>
             <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
               <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
@@ -856,7 +856,7 @@ export default function Wallet() {
                 <p className="flex items-center gap-1 text-[10px] font-bold tracking-wider text-purple-300 uppercase">
                   <Sparkles size={9} /> {T("promoBalance")}
                 </p>
-                <p className="mt-0.5 text-xl font-black text-white">
+                <p className="mt-0.5 text-xl font-black text-foreground">
                   {balanceHidden ? "••••" : fc(promoBalance, currency, currencyCode)}
                 </p>
                 <p className="mt-0.5 text-[10px] text-muted-foreground">{T("bonusesCashbackLoyalty")}</p>
@@ -989,7 +989,7 @@ export default function Wallet() {
                         }
                         setShowWithdraw(true);
                       }}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-black text-white shadow-lg shadow-white/10 transition-all active:bg-muted"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-black text-foreground shadow-lg shadow-white/10 transition-all active:bg-muted"
                     >
                       <ArrowUpFromLine size={15} /> {T("withdraw")}
                     </button>
@@ -1001,7 +1001,7 @@ export default function Wallet() {
                         setVerifGateDismissible(false);
                         setShowVerifGateModal(true);
                       }}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-black text-white shadow-lg shadow-white/10 transition-all active:bg-muted"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-black text-foreground shadow-lg shadow-white/10 transition-all active:bg-muted"
                     >
                       <Lock size={14} /> {T("verificationRequired")}
                     </button>
@@ -1029,7 +1029,7 @@ export default function Wallet() {
                   {depositEnabled && (
                     <button
                       onClick={() => setShowDeposit(true)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-muted/20 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-all active:bg-card/15"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-muted/20 py-3.5 text-sm font-bold text-foreground backdrop-blur-sm transition-all active:bg-card/15"
                     >
                       <ArrowDownToLine size={15} /> {T("deposit")}
                     </button>
@@ -1104,7 +1104,7 @@ export default function Wallet() {
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">{T("codCashBalance")}</p>
+                  <p className="text-sm font-bold text-foreground">{T("codCashBalance")}</p>
                   <p className="text-[10px] text-muted-foreground">{T("cashOnDelivery")}</p>
                 </div>
               </div>
@@ -1128,7 +1128,7 @@ export default function Wallet() {
 
             <div className="grid grid-cols-3 gap-2 border-t border-border/30 px-5 pt-3 pb-3 text-center">
               <div className="rounded-xl bg-card py-2">
-                <p className="text-xs font-black text-white">{fc(codCollected, currency, currencyCode)}</p>
+                <p className="text-xs font-black text-foreground">{fc(codCollected, currency, currencyCode)}</p>
                 <p className="text-[9px] font-medium text-muted-foreground">{T("collected")}</p>
               </div>
               <div className="rounded-xl bg-card py-2">
@@ -1166,7 +1166,7 @@ export default function Wallet() {
               {codNetOwed > 0 && (
                 <button
                   onClick={() => setShowRemittance(true)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-white transition-colors active:bg-card"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-foreground transition-colors active:bg-card"
                 >
                   <Banknote size={16} /> {T("remitCodCashBtn")}
                 </button>
@@ -1224,7 +1224,7 @@ export default function Wallet() {
                         <Banknote size={16} className="text-blue-400" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-white">
+                        <p className="text-xs font-semibold text-foreground">
                           {parts[0] || "Remittance"}
                         </p>
                         <div className="mt-0.5 flex items-center gap-1.5">
@@ -1262,7 +1262,7 @@ export default function Wallet() {
           >
             <div className="flex items-center gap-2.5">
               <ArrowDownToLine size={16} className="text-success" />
-              <span className="text-sm font-bold text-white">{T("depositHistory")}</span>
+              <span className="text-sm font-bold text-foreground">{T("depositHistory")}</span>
             </div>
             {showDeposits ? (
               <ChevronUp size={16} className="text-muted-foreground" />
@@ -1316,7 +1316,7 @@ export default function Wallet() {
                               <ArrowDownToLine size={16} className="text-success" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-semibold text-white">
+                              <p className="text-xs font-semibold text-foreground">
                                 {dep.method || "Deposit"}
                               </p>
                               <div className="mt-0.5 flex items-center gap-1.5">
@@ -1360,7 +1360,7 @@ export default function Wallet() {
               onClick={() => setShowRequests(!showRequests)}
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-sm font-bold text-white">{T("withdrawalRequests")}</span>
+                <span className="text-sm font-bold text-foreground">{T("withdrawalRequests")}</span>
                 {pendingRequests.length > 0 && (
                   <span className="flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-bold text-warning">
                     <Clock size={9} /> {pendingRequests.length} {T("pending")}
@@ -1392,7 +1392,7 @@ export default function Wallet() {
 
         {withdrawalRequests.length === 0 && (
           <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
-            <p className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
+            <p className="mb-4 flex items-center gap-2 text-sm font-bold text-foreground">
               <Sparkles size={15} className="text-success" /> {T("howItWorks")}
             </p>
             <div className="space-y-3">
@@ -1427,7 +1427,7 @@ export default function Wallet() {
                     {s.step}
                   </div>
                   <div className="min-w-0 pt-0.5">
-                    <p className="flex items-center gap-1.5 text-sm font-bold text-white">
+                    <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
                       {s.icon} {s.title}
                     </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{s.desc}</p>
@@ -1441,7 +1441,7 @@ export default function Wallet() {
         <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           <div className="px-5 pt-5 pb-3">
             <div className="mb-3 flex items-center justify-between">
-              <p className="text-sm font-bold text-white">{T("transactionHistoryTitle")}</p>
+              <p className="text-sm font-bold text-foreground">{T("transactionHistoryTitle")}</p>
               <span className="text-[10px] font-medium text-muted-foreground">
                 {filtered.length} {T("records")}
               </span>
@@ -1510,7 +1510,7 @@ export default function Wallet() {
                         <div key={t.id} className="flex items-center gap-3 px-5 py-3.5">
                           <TxIcon type={t.type} />
                           <div className="min-w-0 flex-1">
-                            <p className="line-clamp-1 text-sm leading-snug font-semibold text-white">
+                            <p className="line-clamp-1 text-sm leading-snug font-semibold text-foreground">
                               {t.description}
                             </p>
                             <div className="mt-0.5 flex flex-wrap items-center gap-1.5">

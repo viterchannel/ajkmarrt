@@ -171,10 +171,10 @@ export function RideRouteMap({
         className="flex w-full items-center gap-3 bg-gradient-to-r from-blue-50 to-sky-50 px-4 py-3 text-left"
       >
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 shadow-md shadow-blue-200">
-          <MapPin size={14} className="text-white" />
+          <MapPin size={14} className="text-foreground" />
         </div>
         <div className="flex-1">
-          <p className="text-xs font-black tracking-wide text-white uppercase">Route Map</p>
+          <p className="text-xs font-black tracking-wide text-foreground uppercase">Route Map</p>
           <p className="text-[11px] text-blue-400">
             {open ? "Tap to collapse" : "Tap to view map"} · {tile.provider.toUpperCase()}
           </p>

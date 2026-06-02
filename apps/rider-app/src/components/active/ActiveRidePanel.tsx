@@ -110,18 +110,18 @@ export function ActiveRidePanel({
         <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-card/5" />
         <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-border bg-card/20 shadow-inner backdrop-blur-md">
           {type === "bike" ? (
-            <Bike size={22} className="text-white" />
+            <Bike size={22} className="text-foreground" />
           ) : (
-            <Car size={22} className="text-white" />
+            <Car size={22} className="text-foreground" />
           )}
         </div>
         <div className="relative min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-lg font-black text-white capitalize">
+            <p className="text-lg font-black text-foreground capitalize">
               {type === "bike" ? T("bikeRide") : T("carRide")}
             </p>
             {(ride as { isPoolRide?: boolean }).isPoolRide && (
-              <span className="flex items-center gap-1 rounded-full border border-white/30 bg-card/20 px-2 py-0.5 text-[9px] font-bold tracking-wide text-white">
+              <span className="flex items-center gap-1 rounded-full border border-foreground/30 bg-card/20 px-2 py-0.5 text-[9px] font-bold tracking-wide text-foreground">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                 </svg>
@@ -134,11 +134,11 @@ export function ActiveRidePanel({
           </p>
         </div>
         <div className="relative text-right">
-          <p className="text-xl font-black tracking-tight text-white">
+          <p className="text-xl font-black tracking-tight text-foreground">
             {formatCurrency(ride.fare as number, currency)}
           </p>
           <div className="mt-1 rounded-lg border border-border bg-card/15 px-2.5 py-1 backdrop-blur-sm">
-            <p className="text-[10px] font-bold text-white">
+            <p className="text-[10px] font-bold text-foreground">
               {T("youEarnLabel")} {formatCurrency(riderEarning, currency)}
             </p>
           </div>
@@ -162,7 +162,7 @@ export function ActiveRidePanel({
                 <p className="text-[10px] font-bold tracking-wider text-success uppercase">
                   {T("pickup")}
                 </p>
-                <p className="mt-0.5 text-sm font-bold text-white">
+                <p className="mt-0.5 text-sm font-bold text-foreground">
                   {ride.pickupAddress as string}
                 </p>
               </div>
@@ -182,7 +182,7 @@ export function ActiveRidePanel({
                 <p className="text-[10px] font-bold tracking-wider text-error uppercase">
                   {T("dropOff")}
                 </p>
-                <p className="mt-0.5 text-sm font-bold text-white">
+                <p className="mt-0.5 text-sm font-bold text-foreground">
                   {ride.dropAddress as string}
                 </p>
               </div>
@@ -200,7 +200,7 @@ export function ActiveRidePanel({
                 <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase">
                   {T("passenger")}
                 </p>
-                <p className="text-base font-black text-white">{ride.customerName as string}</p>
+                <p className="text-base font-black text-foreground">{ride.customerName as string}</p>
                 {!!ride.customerPhone && (
                   <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                     <Phone size={10} /> {ride.customerPhone as string}

@@ -972,7 +972,7 @@ export default function Profile() {
           </div>
           <button
             onClick={() => setPendingVerification(false)}
-            className="flex-shrink-0 text-warning/70 hover:text-white"
+            className="flex-shrink-0 text-warning/70 hover:text-foreground"
           >
             <X size={16} />
           </button>
@@ -1977,10 +1977,10 @@ export default function Profile() {
                                         <>
                                           <img src={cnicFrontPreview} alt="CNIC Front" className="h-full w-full object-cover" />
                                           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
-                                            <Camera size={16} className="text-white" />
-                                            <span className="text-[10px] font-bold text-white">Change</span>
+                                            <Camera size={16} className="text-foreground" />
+                                            <span className="text-[10px] font-bold text-foreground">Change</span>
                                           </div>
-                                          <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-white">
+                                          <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-foreground">
                                             Front ✓
                                           </span>
                                         </>
@@ -2009,10 +2009,10 @@ export default function Profile() {
                                         <>
                                           <img src={cnicBackPreview} alt="CNIC Back" className="h-full w-full object-cover" />
                                           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
-                                            <Camera size={16} className="text-white" />
-                                            <span className="text-[10px] font-bold text-white">Change</span>
+                                            <Camera size={16} className="text-foreground" />
+                                            <span className="text-[10px] font-bold text-foreground">Change</span>
                                           </div>
-                                          <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-white">
+                                          <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-foreground">
                                             Back ✓
                                           </span>
                                         </>
@@ -2061,10 +2061,10 @@ export default function Profile() {
                                     <>
                                       <img src={licensePhotoPreview} alt="Driving License" className="h-full w-full object-cover" />
                                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
-                                        <Camera size={16} className="text-white" />
-                                        <span className="text-[10px] font-bold text-white">Change</span>
+                                        <Camera size={16} className="text-foreground" />
+                                        <span className="text-[10px] font-bold text-foreground">Change</span>
                                       </div>
-                                      <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-white">
+                                      <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-foreground">
                                         License ✓
                                       </span>
                                     </>
@@ -2094,10 +2094,10 @@ export default function Profile() {
                                     <>
                                       <img src={regDocPreview} alt="Vehicle Registration" className="h-full w-full object-cover" />
                                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
-                                        <Camera size={16} className="text-white" />
-                                        <span className="text-[10px] font-bold text-white">Change</span>
+                                        <Camera size={16} className="text-foreground" />
+                                        <span className="text-[10px] font-bold text-foreground">Change</span>
                                       </div>
-                                      <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-white">
+                                      <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-foreground">
                                         Reg. Doc ✓
                                       </span>
                                     </>
@@ -2145,10 +2145,10 @@ export default function Profile() {
                                     <>
                                       <img src={vehiclePhotoPreview} alt="Vehicle" className="h-full w-full object-cover" />
                                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
-                                        <Camera size={16} className="text-white" />
-                                        <span className="text-[10px] font-bold text-white">Change</span>
+                                        <Camera size={16} className="text-foreground" />
+                                        <span className="text-[10px] font-bold text-foreground">Change</span>
                                       </div>
-                                      <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-white">
+                                      <span className="absolute bottom-0 left-0 right-0 bg-indigo-600/80 py-0.5 text-center text-[9px] font-bold text-foreground">
                                         Vehicle ✓
                                       </span>
                                     </>
@@ -2193,7 +2193,7 @@ export default function Profile() {
                               <button
                                 onClick={submitVerifyDocuments}
                                 disabled={verifyDocsUploading || !cnicFrontFile || !cnicBackFile || !licensePhotoFile}
-                                className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 ${
+                                className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-foreground shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 ${
                                   isRejected ? "bg-warning hover:bg-warning" : "bg-indigo-600 hover:bg-indigo-700"
                                 }`}
                               >

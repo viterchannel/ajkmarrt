@@ -108,7 +108,7 @@ export function ProfileCompletionCard({
               {profileDone}/{profileTotal}
             </span>
           </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/20">
             <div
               className="h-full rounded-full bg-brand transition-all duration-500"
               style={{ width: `${profilePct}%` }}
@@ -141,12 +141,12 @@ export function ProfileCompletionCard({
           {itemsWithStatus.map((item) => (
             <div
               key={item.key}
-              className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-white/[0.03] px-3 py-2.5"
+              className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-muted/5 px-3 py-2.5"
             >
               <div className="flex items-start gap-2.5 min-w-0">
                 <span
                   className={`h-2 w-2 flex-shrink-0 rounded-full mt-1 ${
-                    item.done ? "bg-success" : "bg-white/20"
+                    item.done ? "bg-success" : "bg-muted/40"
                   }`}
                 />
                 <div className="min-w-0 flex-1">

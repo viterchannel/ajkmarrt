@@ -130,7 +130,7 @@ type TypeInfo = {
 function typeInfo(type: string): TypeInfo {
   if (type === "order")
     return {
-      icon: <Package size={20} className="text-white" />,
+      icon: <Package size={20} className="text-foreground" />,
       label: "Order",
       gradient: "from-blue-500 to-indigo-600",
       badge: "bg-blue-500/15 text-blue-400",
@@ -139,7 +139,7 @@ function typeInfo(type: string): TypeInfo {
     };
   if (type === "wallet")
     return {
-      icon: <Wallet size={20} className="text-white" />,
+      icon: <Wallet size={20} className="text-foreground" />,
       label: "Wallet",
       gradient: "from-green-500 to-emerald-600",
       badge: "bg-success/15 text-success",
@@ -148,7 +148,7 @@ function typeInfo(type: string): TypeInfo {
     };
   if (type === "ride")
     return {
-      icon: <Bike size={20} className="text-white" />,
+      icon: <Bike size={20} className="text-foreground" />,
       label: "Ride",
       gradient: "from-purple-500 to-violet-600",
       badge: "bg-purple-100 text-purple-700",
@@ -157,7 +157,7 @@ function typeInfo(type: string): TypeInfo {
     };
   if (type === "system")
     return {
-      icon: <Settings size={20} className="text-white" />,
+      icon: <Settings size={20} className="text-foreground" />,
       label: "System",
       gradient: "from-gray-500 to-slate-600",
       badge: "bg-muted text-muted-foreground",
@@ -166,7 +166,7 @@ function typeInfo(type: string): TypeInfo {
     };
   if (type === "alert")
     return {
-      icon: <AlertTriangle size={20} className="text-white" />,
+      icon: <AlertTriangle size={20} className="text-foreground" />,
       label: "Alert",
       gradient: "from-amber-500 to-orange-600",
       badge: "bg-warning/15 text-warning",
@@ -174,7 +174,7 @@ function typeInfo(type: string): TypeInfo {
       dotColor: "bg-warning",
     };
   return {
-    icon: <Bell size={20} className="text-white" />,
+    icon: <Bell size={20} className="text-foreground" />,
     label: "Other",
     gradient: "from-gray-500 to-slate-600",
     badge: "bg-muted text-muted-foreground",
@@ -326,7 +326,7 @@ export default function Notifications() {
           className="page-header-gradient rounded-b-[2rem] bg-card px-5 py-8"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
         >
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
             {T("notificationsTitle")}
           </h1>
         </div>
@@ -355,9 +355,9 @@ export default function Notifications() {
           <div>
             <div className="mb-1.5 flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border/60 bg-muted/20 backdrop-blur-sm">
-                <Bell size={16} className="text-white" />
+                <Bell size={16} className="text-foreground" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white">
+              <h1 className="text-2xl font-black tracking-tight text-foreground">
                 {T("notificationsTitle")}
               </h1>
             </div>
@@ -381,7 +381,7 @@ export default function Notifications() {
             <button
               onClick={() => refetch()}
               aria-label="Refresh notifications"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/20 text-white backdrop-blur-sm transition-colors active:bg-muted/20"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/20 text-foreground backdrop-blur-sm transition-colors active:bg-muted/20"
             >
               <RefreshCw size={16} />
             </button>
@@ -390,7 +390,7 @@ export default function Notifications() {
                 onClick={() => markAllMut.mutate()}
                 disabled={markAllMut.isPending}
                 aria-label="Mark all notifications as read"
-                className="flex h-10 items-center gap-1.5 rounded-xl border border-border/60 bg-muted/20 px-4 text-sm font-bold text-white backdrop-blur-sm transition-colors active:bg-muted/20 disabled:opacity-60"
+                className="flex h-10 items-center gap-1.5 rounded-xl border border-border/60 bg-muted/20 px-4 text-sm font-bold text-foreground backdrop-blur-sm transition-colors active:bg-muted/20 disabled:opacity-60"
               >
                 {markAllMut.isPending ? (
                   <><Loader2 size={15} className="animate-spin" /> Marking...</>
@@ -411,7 +411,7 @@ export default function Notifications() {
                 style={{ animationDelay: `${i * 80}ms`, animation: "slideUp 0.4s ease-out both" }}
               >
                 <div className="mb-1.5 flex justify-center">{s.icon}</div>
-                <p className="text-xl font-black text-white">{statValues[s.key]}</p>
+                <p className="text-xl font-black text-foreground">{statValues[s.key]}</p>
                 <p className="mt-0.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                   {s.label}
                 </p>
@@ -429,7 +429,7 @@ export default function Notifications() {
               onClick={() => setFilter(tab.key)}
               className={`flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
                 filter === tab.key
-                  ? "bg-brand text-white shadow-sm"
+                  ? "bg-brand text-foreground shadow-sm"
                   : "border border-border bg-card text-muted-foreground active:bg-muted"
               }`}
             >
@@ -438,8 +438,8 @@ export default function Notifications() {
                 <span
                   className={`flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[9px] font-black ${
                     filter === tab.key
-                      ? "bg-muted/20 text-white"
-                      : "bg-error text-white shadow-sm"
+                      ? "bg-muted/20 text-foreground"
+                      : "bg-error text-foreground shadow-sm"
                   }`}
                 >
                   {filterCounts[tab.key]}
@@ -463,7 +463,7 @@ export default function Notifications() {
             {filter !== "all" && (
               <button
                 onClick={() => setFilter("all")}
-                className="mx-auto mt-5 flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-sm transition-transform active:scale-[0.97]"
+                className="mx-auto mt-5 flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-foreground shadow-sm transition-transform active:scale-[0.97]"
               >
                 <Eye size={14} /> {T("viewAll")}
               </button>

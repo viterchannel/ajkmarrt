@@ -80,7 +80,7 @@ export function FixedBanners({
           {onRetryConnect && (
             <button
               onClick={onRetryConnect}
-              className="ml-1 rounded bg-card/20 px-2 py-0.5 text-[10px] font-extrabold text-white hover:bg-card/30 active:bg-card/40"
+              className="ml-1 rounded bg-card/20 px-2 py-0.5 text-[10px] font-extrabold text-foreground hover:bg-card/30 active:bg-card/40"
               aria-label="Retry connection"
             >
               Retry sync

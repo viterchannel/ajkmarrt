@@ -215,7 +215,7 @@ export default function DepositModal({
               <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-success/15">
                 <CheckCircle size={52} className="text-success" />
               </div>
-              <h3 className="text-2xl font-extrabold text-white">{T("depositSubmitted")}</h3>
+              <h3 className="text-2xl font-extrabold text-foreground">{T("depositSubmitted")}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{T("adminVerifyWallet24h")}</p>
               <div className="mt-5 space-y-3 rounded-2xl bg-success/10 p-5 text-left">
                 <div className="flex justify-between text-sm">
@@ -251,7 +251,7 @@ export default function DepositModal({
           {step === "amount" && (
             <div className="p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xl font-extrabold text-white">{T("walletDeposit")}</h3>
+                <h3 className="text-xl font-extrabold text-foreground">{T("walletDeposit")}</h3>
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
@@ -323,7 +323,7 @@ export default function DepositModal({
           {step === "method" && (
             <div className="p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xl font-extrabold text-white">{T("paymentMethod")}</h3>
+                <h3 className="text-xl font-extrabold text-foreground">{T("paymentMethod")}</h3>
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
@@ -362,7 +362,7 @@ export default function DepositModal({
                         <MethodLogo id={m.id} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-extrabold text-white">{m.label}</p>
+                        <p className="font-extrabold text-foreground">{m.label}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
                           {m.description || m.label}
                         </p>
@@ -391,7 +391,7 @@ export default function DepositModal({
           {step === "details" && selectedMethod && (
             <div className="p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="flex items-center gap-2 text-xl font-extrabold text-white">
+                <h3 className="flex items-center gap-2 text-xl font-extrabold text-foreground">
                   <MethodLogo id={selectedMethod.id} /> {selectedMethod.label}
                 </h3>
                 <button
@@ -529,7 +529,7 @@ export default function DepositModal({
           {/* CONFIRM STEP */}
           {step === "confirm" && selectedMethod && (
             <div className="p-6">
-              <h3 className="mb-1 text-xl font-extrabold text-white">{T("confirmDeposit")}</h3>
+              <h3 className="mb-1 text-xl font-extrabold text-foreground">{T("confirmDeposit")}</h3>
               <p className="mb-5 text-sm text-muted-foreground">{T("reviewConfirm")}</p>
               <div className="mb-4 space-y-3 rounded-2xl border border-success/20 bg-success/10 p-5">
                 <div className="flex items-center justify-between">

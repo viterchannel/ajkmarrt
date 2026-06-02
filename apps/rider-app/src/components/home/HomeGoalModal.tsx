@@ -31,7 +31,7 @@ export function HomeGoalModal({
       <div className="w-full max-w-sm rounded-t-3xl bg-card p-6 shadow-2xl sm:rounded-3xl">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-extrabold text-white">{T("setDailyGoalTitle")}</h3>
+            <h3 className="text-base font-extrabold text-foreground">{T("setDailyGoalTitle")}</h3>
             <p className="mt-0.5 text-xs text-muted-foreground">
               Admin default: {formatCurrency(config.rider?.dailyGoal ?? 5000, currency)}/day
             </p>
@@ -57,7 +57,7 @@ export function HomeGoalModal({
               value={goalInput}
               onChange={(e) => setGoalInput(e.target.value)}
               placeholder={String(Math.round(config.rider?.dailyGoal ?? 5000))}
-              className="flex-1 bg-transparent py-3 pr-3 text-lg font-extrabold text-white outline-none"
+              className="flex-1 bg-transparent py-3 pr-3 text-lg font-extrabold text-foreground outline-none"
               autoFocus
             />
           </div>
@@ -77,7 +77,7 @@ export function HomeGoalModal({
           <button
             onClick={handleSaveGoal}
             disabled={goalMutation.isPending}
-            className="flex-1 rounded-2xl bg-card py-3 text-sm font-bold text-white transition-colors hover:bg-card disabled:opacity-60"
+            className="flex-1 rounded-2xl bg-card py-3 text-sm font-bold text-foreground transition-colors hover:bg-card disabled:opacity-60"
           >
             {goalMutation.isPending ? "Saving…" : T("saveGoal")}
           </button>

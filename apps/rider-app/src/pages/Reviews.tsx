@@ -48,7 +48,7 @@ function StarDistributionBar({
           <div key={star} className="flex items-center gap-2 text-[11px]">
             <span className="w-3 flex-shrink-0 text-right font-bold text-muted-foreground">{star}</span>
             <Star size={8} className="flex-shrink-0 fill-amber-400 text-warning" />
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/20">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${barColors[star]}`}
                 style={{ width: `${pct}%` }}

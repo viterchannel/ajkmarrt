@@ -357,7 +357,7 @@ function CompletedRidesList({
 
               <button
                 onClick={() => handleShare(selectedRide)}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-success py-3.5 text-sm font-extrabold text-white active:opacity-80"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-success py-3.5 text-sm font-extrabold text-foreground active:opacity-80"
               >
                 <Share2 size={15} /> Share Receipt
               </button>
@@ -740,7 +740,7 @@ export default function Earnings() {
           </div>
           <div className="h-3.5 w-full overflow-hidden rounded-full bg-muted">
             <div
-              className={`h-3.5 rounded-full transition-all duration-700 ${todayPct >= 100 ? "bg-success" : "bg-white/20"}`}
+              className={`h-3.5 rounded-full transition-all duration-700 ${todayPct >= 100 ? "bg-success" : "bg-muted/40"}`}
               style={{ width: `${todayPct}%` }}
             />
           </div>

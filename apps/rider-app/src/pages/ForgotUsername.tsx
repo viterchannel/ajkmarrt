@@ -42,8 +42,8 @@ function ForgotUsernameInner() {
   const card: React.CSSProperties = {
     width: "100%",
     maxWidth: 400,
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.10)",
+    background: "var(--color-muted)",
+    border: "1px solid var(--color-border)",
     borderRadius: 24,
     padding: "36px 32px",
     boxShadow: "0 24px 64px rgba(0,0,0,0.45)",
@@ -53,9 +53,9 @@ function ForgotUsernameInner() {
     width: "100%",
     padding: "13px 16px",
     borderRadius: 14,
-    border: "1.5px solid rgba(255,255,255,0.12)",
-    background: "rgba(255,255,255,0.07)",
-    color: "#E8E9EF",
+    border: "1.5px solid var(--color-border)",
+    background: "var(--color-muted)",
+    color: "var(--color-foreground)",
     fontSize: 15,
     outline: "none",
     boxSizing: "border-box",
@@ -68,7 +68,7 @@ function ForgotUsernameInner() {
     borderRadius: 14,
     border: "none",
     background: theme.primary,
-    color: "#0B0E11",
+    color: "var(--color-background)",
     fontSize: 15,
     fontWeight: 700,
     cursor: loading ? "not-allowed" : "pointer",
@@ -80,9 +80,9 @@ function ForgotUsernameInner() {
     width: "100%",
     padding: "13px 0",
     borderRadius: 14,
-    border: "1.5px solid rgba(255,255,255,0.10)",
-    background: "rgba(255,255,255,0.04)",
-    color: "rgba(255,255,255,0.55)",
+    border: "1.5px solid var(--color-border)",
+    background: "var(--color-muted)",
+    color: "var(--color-muted-foreground)",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
@@ -122,10 +122,10 @@ function ForgotUsernameInner() {
               <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
-          <h1 style={{ color: "#E8E9EF", fontSize: 20, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em" }}>
+          <h1 style={{ color: "var(--color-foreground)", fontSize: 20, fontWeight: 800, margin: "0 0 6px", letterSpacing: "-0.02em" }}>
             {T("recoverYourUsername")}
           </h1>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13.5, margin: 0, lineHeight: 1.5 }}>
+          <p style={{ color: "var(--color-muted-foreground)", fontSize: 13.5, margin: 0, lineHeight: 1.5 }}>
             {step === "enter-phone"
               ? T("forgotUsernameEnterPhoneDesc")
               : T("forgotUsernameFoundDesc")}
@@ -135,7 +135,7 @@ function ForgotUsernameInner() {
         {step === "enter-phone" ? (
           <form onSubmit={(e) => { void handleSubmit(e); }} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
-              <label style={{ display: "block", color: "rgba(255,255,255,0.55)", fontSize: 12.5, fontWeight: 600, marginBottom: 7, letterSpacing: "0.03em", textTransform: "uppercase" }}>
+              <label style={{ display: "block", color: "var(--color-muted-foreground)", fontSize: 12.5, fontWeight: 600, marginBottom: 7, letterSpacing: "0.03em", textTransform: "uppercase" }}>
                 {T("phoneNumber")}
               </label>
               <input
@@ -180,7 +180,7 @@ function ForgotUsernameInner() {
                   textAlign: "center",
                 }}
               >
-                <p style={{ color: "rgba(255,255,255,0.70)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 8px" }}>
+                <p style={{ color: "var(--color-foreground)", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 8px" }}>
                   {T("yourUsername")}
                 </p>
                 <p
@@ -199,14 +199,14 @@ function ForgotUsernameInner() {
             ) : (
               <div
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1.5px solid rgba(255,255,255,0.09)",
+                  background: "var(--color-muted)",
+                  border: "1.5px solid var(--color-border)",
                   borderRadius: 14,
                   padding: "20px 24px",
                   textAlign: "center",
                 }}
               >
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14, margin: 0, lineHeight: 1.6 }}>
+                <p style={{ color: "var(--color-muted-foreground)", fontSize: 14, margin: 0, lineHeight: 1.6 }}>
                   {T("noUsernameLinked")}
                 </p>
               </div>
@@ -231,7 +231,7 @@ function ForgotUsernameInner() {
         )}
       </div>
 
-      <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, marginTop: 24, textAlign: "center" }}>
+      <p style={{ color: "var(--color-muted-foreground)", fontSize: 12, marginTop: 24, textAlign: "center" }}>
         {T("usernameMaskedSecurity")}
       </p>
     </div>

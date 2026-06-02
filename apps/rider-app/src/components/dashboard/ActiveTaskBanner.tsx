@@ -39,8 +39,8 @@ export function ActiveTaskBanner({ activeData, variant }: ActiveTaskBannerProps)
             <div className="h-3 w-3 animate-pulse rounded-full bg-white" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-extrabold tracking-tight text-white">{title}</p>
-            <p className="mt-0.5 truncate text-xs text-white/70">{subtitle}</p>
+            <p className="text-sm font-extrabold tracking-tight text-foreground">{title}</p>
+            <p className="mt-0.5 truncate text-xs text-foreground/70">{subtitle}</p>
           </div>
           <div className="flex flex-shrink-0 items-center gap-1 rounded-xl bg-white/20 px-3 py-2 text-xs font-extrabold text-white backdrop-blur-sm">
             Track <ChevronRight size={12} />

@@ -36,7 +36,7 @@ export function EmptyState({
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="mt-4 rounded-2xl bg-card px-5 py-2.5 text-sm font-bold text-white transition-colors active:bg-muted/70"
+          className="mt-4 rounded-2xl bg-card px-5 py-2.5 text-sm font-bold text-foreground transition-colors active:bg-muted/70"
         >
           {actionLabel}
         </button>

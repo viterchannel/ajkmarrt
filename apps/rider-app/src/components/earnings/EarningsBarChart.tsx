@@ -57,7 +57,7 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
     <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-2">
         <BarChart3 size={15} className="text-muted-foreground" />
-        <p className="text-sm font-bold text-white">{title ?? "7-Day Earnings"}</p>
+        <p className="text-sm font-bold text-foreground">{title ?? "7-Day Earnings"}</p>
       </div>
 
       {active ? (
@@ -83,7 +83,7 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
             <div className="flex w-full items-end justify-center" style={{ height: 56 }}>
               <div
                 className={`w-full max-w-[24px] rounded-t-lg transition-all duration-500 ${
-                  d.isToday ? "bg-brand" : activeIdx === i ? "bg-white/40" : "bg-white/20"
+                  d.isToday ? "bg-brand" : activeIdx === i ? "bg-muted/60" : "bg-muted/40"
                 }`}
                 style={{
                   height: Math.max((d.amount / maxVal) * 56, d.amount > 0 ? 4 : 2),

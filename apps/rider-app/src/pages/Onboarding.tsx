@@ -10,7 +10,7 @@ export interface OnboardingProps {
 const GOLD = "var(--color-brand)";
 const BG = "var(--color-surface)";
 const CARD = "var(--color-card-dark)";
-const BORDER = "rgba(255,255,255,0.12)";
+const BORDER = "var(--color-border)";
 
 interface Slide {
   icon: string;
@@ -113,7 +113,7 @@ export default function Onboarding({ onDone }: OnboardingProps) {
           style={{
             background: "none",
             border: `1px solid ${BORDER}`,
-            color: "#A0A0A0",
+            color: "var(--color-muted-foreground)",
             fontSize: 13,
             fontWeight: 600,
             padding: "6px 16px",
@@ -150,7 +150,7 @@ export default function Onboarding({ onDone }: OnboardingProps) {
             height: 120,
             borderRadius: 36,
             background: CARD,
-            border: `1.5px solid rgba(255,255,255,0.12)`,
+            border: `1.5px solid var(--color-border)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -164,7 +164,7 @@ export default function Onboarding({ onDone }: OnboardingProps) {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <h2
             style={{
-              color: "#FFFFFF",
+              color: "var(--color-foreground)",
               fontSize: 28,
               fontWeight: 900,
               margin: 0,
@@ -184,12 +184,12 @@ export default function Onboarding({ onDone }: OnboardingProps) {
           >
             {current.titleUr}
           </p>
-          <p style={{ color: "#909090", fontSize: 12, fontWeight: 500, margin: 0 }}>
+          <p style={{ color: "var(--color-muted-foreground)", fontSize: 12, fontWeight: 500, margin: 0 }}>
             {current.titleRoman}
           </p>
         </div>
 
-        <p style={{ color: "#B0B0B0", fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+        <p style={{ color: "var(--color-muted-foreground)", fontSize: 14, lineHeight: 1.7, margin: 0 }}>
           {current.descEn}
         </p>
       </div>
@@ -203,7 +203,7 @@ export default function Onboarding({ onDone }: OnboardingProps) {
                 width: i === slide ? 24 : 8,
                 height: 8,
                 borderRadius: 4,
-                background: i === slide ? GOLD : "#3A3A3A",
+                background: i === slide ? GOLD : "var(--color-muted)",
                 transition: "width 0.3s ease, background 0.3s ease",
               }}
             />
@@ -218,8 +218,8 @@ export default function Onboarding({ onDone }: OnboardingProps) {
             height: 52,
             borderRadius: 14,
             border: "none",
-            background: `linear-gradient(135deg, ${GOLD}, #D4A009)`,
-            color: "var(--color-surface)",
+            background: `linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))`,
+            color: "var(--color-foreground)",
             fontSize: 15,
             fontWeight: 800,
             cursor: "pointer",

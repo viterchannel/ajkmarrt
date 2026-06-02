@@ -33,7 +33,7 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
             <Ban size={16} className="text-error" />
           </div>
           <div className="text-left">
-            <p className="text-[14px] font-bold text-white">Penalty History</p>
+            <p className="text-[14px] font-bold text-foreground">Penalty History</p>
             <p className="text-[10px] text-muted-foreground">
               Deductions, ignores &amp; cancellation penalties
             </p>

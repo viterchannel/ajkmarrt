@@ -55,7 +55,7 @@ export function InfoRow({
         {label}
       </span>
       <span
-        className={`text-right text-sm font-semibold ${value ? "text-white" : "text-xs text-muted-foreground italic"}`}
+        className={`text-right text-sm font-semibold ${value ? "text-foreground" : "text-xs text-muted-foreground italic"}`}
       >
         {value || empty || "—"}
       </span>

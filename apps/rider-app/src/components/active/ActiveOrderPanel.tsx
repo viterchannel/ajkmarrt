@@ -45,11 +45,11 @@ function orderTypeGradient(type?: string | null): string {
 
 export function OrderTypeIcon({ type }: { type?: string | null }) {
   const t = (type || "").toLowerCase();
-  if (t === "food") return <Utensils size={20} className="text-white" />;
-  if (t === "pharmacy") return <Pill size={20} className="text-white" />;
-  if (t === "grocery") return <ShoppingCart size={20} className="text-white" />;
-  if (t === "mart") return <ShoppingCart size={20} className="text-white" />;
-  return <Package size={20} className="text-white" />;
+  if (t === "food") return <Utensils size={20} className="text-foreground" />;
+  if (t === "pharmacy") return <Pill size={20} className="text-foreground" />;
+  if (t === "grocery") return <ShoppingCart size={20} className="text-foreground" />;
+  if (t === "mart") return <ShoppingCart size={20} className="text-foreground" />;
+  return <Package size={20} className="text-foreground" />;
 }
 
 export interface ActiveOrderPanelProps {
@@ -165,15 +165,15 @@ export function ActiveOrderPanel({
             <OrderTypeIcon type={type} />
           </div>
           <div className="relative min-w-0 flex-1">
-            <p className="text-lg font-black text-white capitalize">{type} Order</p>
-            <p className="mt-0.5 font-mono text-xs text-white/70">#{id.slice(-6).toUpperCase()}</p>
+            <p className="text-lg font-black text-foreground capitalize">{type} Order</p>
+            <p className="mt-0.5 font-mono text-xs text-foreground/70">#{id.slice(-6).toUpperCase()}</p>
           </div>
           <div className="relative text-right">
-            <p className="text-xl font-black tracking-tight text-white">
+            <p className="text-xl font-black tracking-tight text-foreground">
               {formatCurrency(order.total as string | number, currency)}
             </p>
             <div className="mt-1 rounded-lg border border-border bg-card/15 px-2.5 py-1 backdrop-blur-sm">
-              <p className="text-[10px] font-bold text-white">
+              <p className="text-[10px] font-bold text-foreground">
                 You earn {formatCurrency(riderEarning, currency)}
               </p>
             </div>
@@ -190,9 +190,9 @@ export function ActiveOrderPanel({
         <div className="animate-[slideUp_0.5s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-lg shadow-black/40">
           <div className="flex items-center gap-2 bg-gradient-to-r from-warning to-brand-hover px-4 py-3">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card/20 backdrop-blur-sm">
-              <ShoppingCart size={14} className="text-white" />
+              <ShoppingCart size={14} className="text-foreground" />
             </div>
-            <p className="text-sm font-black tracking-wide text-white uppercase">
+            <p className="text-sm font-black tracking-wide text-foreground uppercase">
               Step 1 — Go to Store
             </p>
           </div>
@@ -200,13 +200,13 @@ export function ActiveOrderPanel({
             <div className="rounded-2xl border border-warning/30 bg-gradient-to-br from-orange-50 to-amber-50 p-4">
               <div className="flex items-start gap-3">
                 <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-400 to-brand-hover shadow-md shadow-orange-200">
-                  <ShoppingCart size={18} className="text-white" />
+                  <ShoppingCart size={18} className="text-foreground" />
                 </div>
                 <div className="flex-1">
                   <p className="text-[10px] font-bold tracking-wider text-warning uppercase">
                     Vendor / Store
                   </p>
-                  <p className="mt-0.5 text-base font-black text-white">
+                  <p className="mt-0.5 text-base font-black text-foreground">
                     {(order.vendorStoreName as string) || "Store"}
                   </p>
                   {!!order.vendorPhone && (
@@ -232,7 +232,7 @@ export function ActiveOrderPanel({
                       <span className="font-medium text-muted-foreground">
                         {item.name} <span className="text-muted-foreground">×{item.quantity}</span>
                       </span>
-                      <span className="font-bold text-white">
+                      <span className="font-bold text-foreground">
                         {formatCurrency(item.price * item.quantity, currency)}
                       </span>
                     </div>
@@ -250,13 +250,13 @@ export function ActiveOrderPanel({
               <div className="rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-200">
-                    <MapPin size={18} className="text-white" />
+                    <MapPin size={18} className="text-foreground" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase">
                       Store Location
                     </p>
-                    <p className="mt-0.5 text-sm font-bold break-words text-white">
+                    <p className="mt-0.5 text-sm font-bold break-words text-foreground">
                       {order.vendorAddress as string}
                     </p>
                   </div>
@@ -346,9 +346,9 @@ export function ActiveOrderPanel({
         <div className="animate-[slideUp_0.5s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-lg shadow-black/40">
           <div className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-3">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card/20 backdrop-blur-sm">
-              <Truck size={14} className="text-white" />
+              <Truck size={14} className="text-foreground" />
             </div>
-            <p className="text-sm font-black tracking-wide text-white uppercase">
+            <p className="text-sm font-black tracking-wide text-foreground uppercase">
               Step 2 — Deliver
             </p>
           </div>
@@ -356,13 +356,13 @@ export function ActiveOrderPanel({
             {!!order.customerName && (
               <div className="flex items-center gap-3 rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-50 to-indigo-50 px-4 py-3.5">
                 <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-200">
-                  <User size={22} className="text-white" />
+                  <User size={22} className="text-foreground" />
                 </div>
                 <div>
                   <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase">
                     Customer
                   </p>
-                  <p className="text-base font-black text-white">
+                  <p className="text-base font-black text-foreground">
                     {order.customerName as string}
                   </p>
                   {!!order.customerPhone && (
@@ -377,13 +377,13 @@ export function ActiveOrderPanel({
             <div className="rounded-2xl border border-error/30 bg-gradient-to-br from-red-50 to-pink-50 p-4">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-pink-600 shadow-md shadow-red-200">
-                  <MapPinned size={18} className="text-white" />
+                  <MapPinned size={18} className="text-foreground" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-bold tracking-wider text-error uppercase">
                     Delivery Address
                   </p>
-                  <p className="mt-0.5 text-sm font-bold break-words text-white">
+                  <p className="mt-0.5 text-sm font-bold break-words text-foreground">
                     {(order.deliveryAddress as string) || "Address not provided"}
                   </p>
                 </div>

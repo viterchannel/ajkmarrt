@@ -220,7 +220,7 @@ export default function Home() {
         >
           <div className="mx-auto flex max-w-md items-center gap-2.5">
             <div className="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-white" />
-            <p className="flex-1 truncate text-sm font-extrabold text-white">
+            <p className="flex-1 truncate text-sm font-extrabold text-foreground">
               {h.T("youHaveActiveTask")}
             </p>
             <ChevronRight size={14} className="flex-shrink-0 text-muted-foreground" />

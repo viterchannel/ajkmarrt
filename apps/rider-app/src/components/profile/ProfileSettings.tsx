@@ -72,7 +72,7 @@ export function ProfileSettings({
     <>
       <div className="animate-[slideUp_0.7s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
         <div className="px-5 py-3.5">
-          <p className="flex items-center gap-2 text-[15px] font-bold text-white">
+          <p className="flex items-center gap-2 text-[15px] font-bold text-foreground">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="15"
@@ -97,7 +97,7 @@ export function ProfileSettings({
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/10">
                 <Languages size={17} className="text-indigo-500" />
               </div>
-              <span className="text-sm font-semibold text-white">{T("languageLabel")}</span>
+              <span className="text-sm font-semibold text-foreground">{T("languageLabel")}</span>
             </div>
             <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-0.5">
               {LANG_OPTIONS.map((opt) => {
@@ -112,7 +112,7 @@ export function ProfileSettings({
                     className={`rounded-full px-3 py-1 text-[10px] font-bold leading-none transition-all duration-150 ${
                       active
                         ? "bg-brand text-surface"
-                        : "text-muted-foreground hover:text-white active:scale-95"
+                        : "text-muted-foreground hover:text-foreground active:scale-95"
                     }`}
                   >
                     {opt.display}
@@ -127,14 +127,14 @@ export function ProfileSettings({
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-500/10">
                 <CaseSensitive size={17} className="text-violet-500" />
               </div>
-              <span className="text-sm font-semibold text-white">{T("textSizeLabel")}</span>
+              <span className="text-sm font-semibold text-foreground">{T("textSizeLabel")}</span>
             </div>
             <div className="flex flex-wrap gap-0.5 rounded-xl bg-muted p-0.5">
               {(["small", "medium", "large"] as const).map((level) => (
                 <button
                   key={level}
                   onClick={() => setFontSizeLevel(level as FontSizeLevel)}
-                  className={`rounded-lg px-2.5 py-1.5 text-[10px] font-bold transition-all ${fontSizeLevel === level ? "bg-card text-white shadow-sm" : "text-muted-foreground"}`}
+                  className={`rounded-lg px-2.5 py-1.5 text-[10px] font-bold transition-all ${fontSizeLevel === level ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"}`}
                 >
                   {level === "small" ? T("textSizeSmall") : level === "medium" ? T("textSizeMedium") : T("textSizeLarge")}
                 </button>
@@ -147,7 +147,7 @@ export function ProfileSettings({
               <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${isDark ? "bg-brand/10" : "bg-warning/10"}`}>
                 {isDark ? <Moon size={17} className="text-brand" /> : <Sun size={17} className="text-warning" />}
               </div>
-              <span className="text-sm font-semibold text-white">{T("darkMode")}</span>
+              <span className="text-sm font-semibold text-foreground">{T("darkMode")}</span>
             </div>
             <button
               role="switch"
@@ -171,7 +171,7 @@ export function ProfileSettings({
                 <Shield size={17} className="text-error" />
               </div>
               <div>
-                <span className="block text-sm font-semibold text-white">
+                <span className="block text-sm font-semibold text-foreground">
                   {T("securitySettingsLink")}
                 </span>
                 <span className="text-[10px] text-muted-foreground">{T("manageSecuritySettings")}</span>
@@ -194,7 +194,7 @@ export function ProfileSettings({
                 )}
               </div>
               <div>
-                <span className="block text-sm font-semibold text-white">
+                <span className="block text-sm font-semibold text-foreground">
                   {T("notificationsLink")}
                 </span>
                 <span className="text-[10px] text-muted-foreground">{T("viewNotifications")}</span>
@@ -225,7 +225,7 @@ export function ProfileSettings({
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-error/15">
                 <Trash2 size={20} className="text-error" />
               </div>
-              <AlertDialogTitle className="text-base font-bold text-white">
+              <AlertDialogTitle className="text-base font-bold text-foreground">
                 {T("deleteAccount")}
               </AlertDialogTitle>
             </div>

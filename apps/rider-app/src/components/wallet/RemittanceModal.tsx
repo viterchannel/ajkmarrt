@@ -207,7 +207,7 @@ export default function RemittanceModal({
               <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-blue-500/15">
                 <CheckCircle size={52} className="text-blue-500" />
               </div>
-              <h3 className="text-2xl font-extrabold text-white">{T("remittanceSubmitted")}</h3>
+              <h3 className="text-2xl font-extrabold text-foreground">{T("remittanceSubmitted")}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{T("remittanceAdminVerify")}</p>
               <div className="mt-5 space-y-3 rounded-2xl bg-blue-500/10 p-5 text-left">
                 <div className="flex justify-between text-sm">
@@ -246,7 +246,7 @@ export default function RemittanceModal({
           {/* CONFIRM */}
           {step === "confirm" && (
             <div className="p-6">
-              <h3 className="mb-1 text-xl font-extrabold text-white">{T("confirmRemittance")}</h3>
+              <h3 className="mb-1 text-xl font-extrabold text-foreground">{T("confirmRemittance")}</h3>
               <p className="mb-5 text-sm text-muted-foreground">{T("reviewConfirm")}</p>
               <div className="mb-4 space-y-3 rounded-2xl border border-blue-100 bg-blue-500/10 p-5">
                 <div className="flex items-center justify-between">
@@ -318,7 +318,7 @@ export default function RemittanceModal({
               >
                 <ArrowLeft size={14} /> {T("back")}
               </button>
-              <h3 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-white">
+              <h3 className="mb-4 flex items-center gap-2 text-xl font-extrabold text-foreground">
                 <MethodLogo id={method.id} /> {method.label}
               </h3>
 
@@ -457,7 +457,7 @@ export default function RemittanceModal({
           {step === "method" && (
             <div className="p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xl font-extrabold text-white">{T("remitCodCash")}</h3>
+                <h3 className="text-xl font-extrabold text-foreground">{T("remitCodCash")}</h3>
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
@@ -506,7 +506,7 @@ export default function RemittanceModal({
                         <MethodLogo id={m.id} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-extrabold text-white">{m.label}</p>
+                        <p className="font-extrabold text-foreground">{m.label}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{m.description}</p>
                       </div>
                       <ChevronRight size={20} className="text-muted-foreground" />
