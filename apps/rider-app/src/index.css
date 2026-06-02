@@ -336,7 +336,7 @@
   }
 }
 .skeleton {
-  background: linear-gradient(90deg, #1A1A1A 25%, #2A2A2A 50%, #1A1A1A 75%);
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
   border-radius: 8px;
@@ -446,8 +446,8 @@ textarea:disabled,
 select:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  background-color: #1A1A1A;
-  color: #6B7280;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
 }
 
 /* Font size 16px prevents iOS zoom on focus */
@@ -456,9 +456,9 @@ textarea,
 select {
   font-size: 16px;
   border-radius: var(--radius-input, 0.5rem); /* 8px inputs */
-  background-color: #2A2A2A;
-  color: #FFFFFF;
-  border: 1.5px solid #2A2A2A;
+  background-color: hsl(var(--input));
+  color: hsl(var(--foreground));
+  border: 1.5px solid hsl(var(--border));
 }
 
 /* ── Glass-card utility classes ────────────────────────────────────────────
@@ -472,6 +472,28 @@ select {
   .border-glass    { border-color:     rgba(255, 255, 255, 0.06); }
 }
 
+/* ── Light mode overrides for glass utilities ─────────────────────────── */
+.light .bg-glass        { background-color: rgba(0, 0, 0, 0.04); }
+.light .bg-glass-raised { background-color: rgba(0, 0, 0, 0.06); }
+.light .bg-glass-dim    { background-color: rgba(0, 0, 0, 0.02); }
+.light .border-glass    { border-color:     rgba(0, 0, 0, 0.06); }
+
+/* ── Light mode page header ────────────────────────────────────────────── */
+.light .page-header-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%);
+}
+
+/* ── Light mode card shadows ───────────────────────────────────────────── */
+.light .card-1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.light .card-2 {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.light .card-3 {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
+}
+
 /* ── Global Branded Shimmer Wave System ────────────────────────────────────
    Dark shimmer — always dark themed.                                        */
 @keyframes shimmer-wave {
@@ -483,9 +505,9 @@ select {
   animation: shimmer-wave 1.6s ease-in-out infinite;
   background-image: linear-gradient(
     90deg,
-    #1A1A1A 25%,
-    #2A2A2A 50%,
-    #1A1A1A 75%
+    hsl(var(--muted)) 25%,
+    hsl(var(--border)) 50%,
+    hsl(var(--muted)) 75%
   );
 }
 .shimmer-block-on-dark {

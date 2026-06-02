@@ -36,7 +36,7 @@ const LANG_OPTIONS: { value: Language; display: string }[] = [
 function LanguageSwitcher() {
   const { language, setLanguage, loading } = useLanguage();
   return (
-    <div className="flex items-center gap-0.5 rounded-full border border-white/10 bg-card-dark p-0.5">
+    <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-0.5">
       {LANG_OPTIONS.map((opt) => {
         const active = language === opt.value;
         return (
@@ -49,7 +49,7 @@ function LanguageSwitcher() {
             className={`rounded-full px-3 py-1.5 text-[11px] font-bold leading-none transition-all duration-150 ${
               active
                 ? "bg-brand text-surface"
-                : "text-[#B0B0B0] hover:text-white active:scale-95"
+                : "text-muted-foreground hover:text-foreground active:scale-95"
             }`}
           >
             {opt.display}
@@ -126,7 +126,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed right-0 bottom-0 left-0 z-40 border-t border-white/10 shadow-[0_-4px_24px_rgba(0,0,0,0.6)]"
+      className="fixed right-0 bottom-0 left-0 z-40 border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.25)]"
       style={{
         backgroundColor: "var(--color-surface)",
         paddingBottom: "max(6px, env(safe-area-inset-bottom, 6px))",
@@ -157,7 +157,7 @@ export function BottomNav() {
         </div>
       )}
 
-      <div className="mx-auto flex max-w-md">
+      <div className="mx-auto flex max-w-2xl">
         {navItems
           .filter((item) => !item.moduleKey || modules[item.moduleKey] !== false)
           .map((item) => {
@@ -180,7 +180,7 @@ export function BottomNav() {
                       size={21}
                       strokeWidth={active ? 2.5 : 1.8}
                       className={`transition-colors duration-200 ${
-                        active ? "text-brand" : "text-[#B0B0B0]"
+                        active ? "text-brand" : "text-muted-foreground"
                       }`}
                     />
                   </span>
@@ -217,7 +217,7 @@ export function BottomNav() {
                 </div>
                 <span
                   className={`text-xs leading-none font-semibold transition-colors duration-200 ${
-                    active ? "font-bold text-brand" : "text-[#B0B0B0]"
+                    active ? "font-bold text-brand" : "text-muted-foreground"
                   }`}
                 >
                   {T(item.labelKey)}

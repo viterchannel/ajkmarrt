@@ -106,10 +106,10 @@ function validateCnic(formatted: string): boolean {
 }
 
 const INPUT =
-  "w-full bg-[#2A2A2A] border border-white/[0.10] rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all";
+  "w-full bg-input border border-border rounded-xl px-3 py-2.5 text-foreground text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all";
 const SELECT =
-  "w-full bg-[#2A2A2A] border border-white/[0.10] rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 appearance-none transition-all";
-const LABEL = "text-xs font-bold text-white/50 uppercase tracking-wider mb-1 block";
+  "w-full bg-input border border-border rounded-xl px-3 py-2.5 text-foreground text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 appearance-none transition-all";
+const LABEL = "text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1 block";
 
 type EditSection = "personal" | "vehicle" | "bank" | null;
 
@@ -901,7 +901,7 @@ export default function Profile() {
     },
     {
       href: "/settings",
-      icon: <Settings size={24} className="text-white/50" />,
+      icon: <Settings size={24} className="text-muted-foreground" />,
       label: "Settings",
     },
   ];
@@ -980,21 +980,21 @@ export default function Profile() {
       )}
 
       <div
-        className="relative border-b border-white/[0.06] bg-page-bg px-5 pb-4"
+        className="relative border-b border-border bg-page-bg px-5 pb-4"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
-        <div className="relative mb-2 flex items-center justify-between">
+        <div className="relative mx-auto max-w-2xl mb-2 flex items-center justify-between">
           <div>
-            <p className="mb-1 text-xs font-semibold tracking-widest text-white/40 uppercase">
+            <p className="mb-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               {T("riderProfileSettings")}
             </p>
-            <h1 className="text-2xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
               {T("myAccountTitle")}
             </h1>
           </div>
           <Link
             href="/notifications"
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.04] text-white transition-colors active:bg-white/[0.08]"
+            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-glass text-foreground transition-colors active:bg-glass-raised"
           >
             <Bell size={18} />
             {unread > 0 && (
@@ -1045,12 +1045,12 @@ export default function Profile() {
               </div>
             ) : (
               <div className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-page-bg bg-card-dark shadow">
-                <Camera size={11} className="text-white/70" />
+                <Camera size={11} className="text-foreground/70" />
               </div>
             )}
           </button>
 
-          <h2 className="mt-3 text-[18px] font-extrabold tracking-tight text-white">
+          <h2 className="mt-3 text-[18px] font-extrabold tracking-tight text-foreground">
             {user?.name || "Rider"}
           </h2>
 
@@ -1064,13 +1064,13 @@ export default function Profile() {
           })()}
 
           <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">
-            <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[10px] text-white/30">
+            <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-[10px] text-muted-foreground">
               {user?.isOnline
                 ? "Online now"
                 : `Last online · ${timeAgo((user as any)?.lastSeen ?? (user as any)?.updatedAt)}`}
             </span>
             {user?.createdAt && (
-              <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[10px] text-white/30">
+              <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-[10px] text-muted-foreground">
                 Member since{" "}
                 {new Date(user.createdAt).toLocaleDateString("en-PK", {
                   month: "short",
@@ -1084,48 +1084,48 @@ export default function Profile() {
         {/* ── Stats bar ── */}
         <div className="flex flex-row gap-2.5 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <div
-            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5"
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-border bg-card p-3.5"
             style={{ animationDelay: "0ms", animationFillMode: "both" }}
           >
             <Package size={18} className="text-indigo-400" />
-            <p className="mt-1.5 text-xl font-extrabold text-white">{totalDeliveries}</p>
-            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+            <p className="mt-1.5 text-xl font-extrabold text-foreground">{totalDeliveries}</p>
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
               {T("deliveriesLabel")}
             </p>
           </div>
 
           <div
-            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5"
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-border bg-card p-3.5"
             style={{ animationDelay: "60ms", animationFillMode: "both" }}
           >
             <TrendingUp size={18} className="text-success" />
             <p className="mt-1.5 text-xl font-extrabold text-success">{fc(totalEarnings, currency)}</p>
-            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
               {T("earnedStat")}
             </p>
           </div>
 
           <Link
             href="/wallet"
-            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5 transition-colors active:bg-white/[0.07]"
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-border bg-card p-3.5 transition-colors active:bg-muted"
             style={{ animationDelay: "120ms", animationFillMode: "both" }}
           >
             <Wallet size={18} className="text-brand" />
             <p className="mt-1.5 text-xl font-extrabold text-brand">
               {fc(user?.walletBalance ?? "0", currency)}
             </p>
-            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
               {T("walletStat")}
             </p>
           </Link>
 
           <div
-            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-white/[0.08] bg-card-dark p-3.5"
+            className="animate-[slideUp_0.4s_ease-out] flex min-w-[90px] flex-1 flex-col items-center rounded-2xl border border-border bg-card p-3.5"
             style={{ animationDelay: "180ms", animationFillMode: "both" }}
           >
             <Star size={18} className="text-warning" />
             <p className="mt-1.5 text-xl font-extrabold text-warning">{rating.toFixed(1)}</p>
-            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-white/25">
+            <p className="mt-0.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
               {T("ratingStat")}
             </p>
           </div>
@@ -1142,8 +1142,8 @@ export default function Profile() {
           const scoreTextColor = qualityScore >= 80 ? "text-success" : qualityScore >= 60 ? "text-warning" : "text-error";
           const ratingColor = rating >= 4.5 ? "text-success" : rating >= 3.5 ? "text-warning" : "text-error";
           return (
-            <div className="animate-[slideUp_0.5s_ease-out] rounded-2xl border border-white/[0.08] bg-card-dark p-4">
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-white/30">
+            <div className="animate-[slideUp_0.5s_ease-out] rounded-2xl border border-border bg-card p-4">
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 Quality Score
               </p>
               <div className="flex items-center gap-4">
@@ -1153,7 +1153,7 @@ export default function Profile() {
                     <circle
                       cx="48" cy="48" r="36"
                       fill="none"
-                      stroke="rgba(255,255,255,0.06)"
+                      stroke="hsl(var(--border))"
                       strokeWidth="7"
                     />
                     <circle
@@ -1172,7 +1172,7 @@ export default function Profile() {
                     <span className={`text-2xl font-extrabold leading-none ${scoreTextColor}`}>
                       {qualityScore}
                     </span>
-                    <span className="text-[8px] font-bold uppercase tracking-wider text-white/30">
+                    <span className="text-[8px] font-bold uppercase tracking-wider text-muted-foreground">
                       score
                     </span>
                   </div>
@@ -1180,30 +1180,30 @@ export default function Profile() {
               </div>
               {/* 3-column mini-grid */}
               <div className="mt-3 grid grid-cols-3 gap-2">
-                <div className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.03] px-2 py-2">
+                <div className="flex flex-col items-center rounded-xl border border-border bg-glass-dim px-2 py-2">
                   <CheckCircle size={12} className="text-success mb-1" />
                   <span className="text-[13px] font-extrabold text-success">
                     {acceptanceRate.toFixed(1)}%
                   </span>
-                  <span className="mt-0.5 text-[9px] font-semibold text-white/30">Acceptance</span>
+                  <span className="mt-0.5 text-[9px] font-semibold text-muted-foreground">Acceptance</span>
                 </div>
-                <div className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.03] px-2 py-2">
+                <div className="flex flex-col items-center rounded-xl border border-border bg-glass-dim px-2 py-2">
                   <XCircle size={12} className="text-error mb-1" />
                   <span className="text-[13px] font-extrabold text-error">
                     {cancelRate.toFixed(1)}%
                   </span>
-                  <span className="mt-0.5 text-[9px] font-semibold text-white/30">Cancellation</span>
+                  <span className="mt-0.5 text-[9px] font-semibold text-muted-foreground">Cancellation</span>
                 </div>
-                <div className="flex flex-col items-center rounded-xl border border-white/[0.06] bg-white/[0.03] px-2 py-2">
+                <div className="flex flex-col items-center rounded-xl border border-border bg-glass-dim px-2 py-2">
                   <Star size={12} className={`mb-1 ${ratingColor}`} />
                   <span className={`text-[13px] font-extrabold ${ratingColor}`}>
                     {rating.toFixed(1)}
                   </span>
-                  <span className="mt-0.5 text-[9px] font-semibold text-white/30">Rating</span>
+                  <span className="mt-0.5 text-[9px] font-semibold text-muted-foreground">Rating</span>
                 </div>
               </div>
               {(ignoreStatsData?.dailyIgnores ?? 0) > 0 && (
-                <p className="mt-3 text-center text-[9px] text-white/25">
+                <p className="mt-3 text-center text-[9px] text-muted-foreground">
                   {ignoreStatsData!.dailyIgnores} request{ignoreStatsData!.dailyIgnores !== 1 ? "s" : ""} ignored today · {ignoreStatsData!.remaining} remaining
                 </p>
               )}
@@ -1230,7 +1230,7 @@ export default function Profile() {
 
         {/* ── Quick Actions 3×2 grid ── */}
         <div className="animate-[slideUp_0.6s_ease-out]">
-          <p className="mb-2.5 px-0.5 text-[10px] font-bold uppercase tracking-widest text-white/30">
+          <p className="mb-2.5 px-0.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
             {T("quickActionsLabel")}
           </p>
           <div className="grid grid-cols-3 gap-2.5">
@@ -1238,10 +1238,10 @@ export default function Profile() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-card-dark p-3.5 transition-transform active:scale-[0.96]"
+                className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-3.5 transition-transform active:scale-[0.96]"
               >
                 {item.icon}
-                <span className="text-center text-[11px] font-bold leading-tight text-white/70">
+                <span className="text-center text-[11px] font-bold leading-tight text-foreground">
                   {item.label}
                 </span>
               </Link>
@@ -1249,8 +1249,8 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="animate-[slideUp_0.65s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
-          <div className="flex border-b border-white/10">
+        <div className="animate-[slideUp_0.65s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+          <div className="flex border-b border-border">
             {(["personal", "vehicle", "bank"] as const).map((tab) => (
               <button
                 key={tab}
@@ -1261,7 +1261,7 @@ export default function Profile() {
                 className={`relative flex-1 py-3.5 text-sm font-bold transition-all ${
                   activeTab === tab
                     ? "border-b-2 border-brand text-brand"
-                    : "border-b-2 border-transparent text-white/40"
+                    : "border-b-2 border-transparent text-muted-foreground"
                 }`}
               >
                 {tab === "personal"
@@ -1284,14 +1284,14 @@ export default function Profile() {
           <div className="transition-all duration-300">
             {activeTab === "personal" && (
               <div className="animate-[fadeIn_0.25s_ease-out]">
-                <div className="flex items-center justify-between border-b border-white/5 px-5 py-3">
+                <div className="flex items-center justify-between border-b border-border/50 px-5 py-3">
                   <div className="flex items-center gap-2">
-                    <User size={15} className="text-white" />
+                    <User size={15} className="text-foreground" />
                     <div>
-                      <p className="text-[14px] font-bold text-white">
+                      <p className="text-[14px] font-bold text-foreground">
                         {T("personalInformation")}
                       </p>
-                      <p className="text-[10px] text-[#B0B0B0]">{T("identityContact")}</p>
+                      <p className="text-[10px] text-muted-foreground">{T("identityContact")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1302,8 +1302,8 @@ export default function Profile() {
                       }
                       className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-bold transition-all ${
                         editing === "personal"
-                          ? "bg-border-dark text-[#B0B0B0]"
-                          : "bg-border-dark text-white active:bg-[#3A3A3A]"
+                          ? "bg-muted text-muted-foreground"
+                          : "bg-muted text-foreground active:bg-muted"
                       }`}
                     >
                       {editing === "personal" ? (
@@ -1323,11 +1323,11 @@ export default function Profile() {
                     <div>
                       <label className={LABEL}>{T("phoneNumber")}</label>
                       <div
-                        className={`${INPUT} flex cursor-not-allowed items-center bg-border-dark text-[#B0B0B0] select-none`}
+                        className={`${INPUT} flex cursor-not-allowed items-center bg-muted text-muted-foreground select-none`}
                       >
                         {user?.phone || "—"}
                       </div>
-                      <p className="mt-1 text-[10px] text-[#B0B0B0]">
+                      <p className="mt-1 text-[10px] text-muted-foreground">
                         Phone number cannot be changed here. Contact support to update it.
                       </p>
                     </div>
@@ -1380,7 +1380,7 @@ export default function Profile() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#B0B0B0]" />
+                        <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                       </div>
                     </div>
                     <div>
@@ -1424,7 +1424,7 @@ export default function Profile() {
                       label={T("fullName")}
                       value={user?.name}
                       empty={T("notSet")}
-                      icon={<User size={12} className="text-[#B0B0B0]" />}
+                      icon={<User size={12} className="text-muted-foreground" />}
                     />
                     <InfoRow
                       label={T("phoneNumber")}
@@ -1465,11 +1465,11 @@ export default function Profile() {
 
                     {/* Phone OTP Verification */}
                     {user?.phone && (
-                      <div className="mx-4 my-3 rounded-2xl border border-white/10 bg-border-dark p-3.5">
+                      <div className="mx-4 my-3 rounded-2xl border border-border bg-muted/50 p-3.5">
                         <div className="mb-2 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Phone size={13} className="text-blue-500" />
-                            <p className="text-xs font-bold text-[#B0B0B0]">Phone Verification</p>
+                            <p className="text-xs font-bold text-muted-foreground">Phone Verification</p>
                           </div>
                           {(verifStatus?.phoneVerified ?? user.phoneVerified) ? (
                             <span className="flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-[10px] font-bold text-success">
@@ -1499,7 +1499,7 @@ export default function Profile() {
                               </button>
                             ) : (
                               <div className="space-y-2">
-                                <p className="text-[10px] text-[#B0B0B0]">Enter the 6-digit OTP sent to {user.phone}</p>
+                                <p className="text-[10px] text-muted-foreground">Enter the 6-digit OTP sent to {user.phone}</p>
                                 <div className="flex gap-2">
                                   <input
                                     type="text"
@@ -1508,7 +1508,7 @@ export default function Profile() {
                                     value={phoneOtp}
                                     onChange={(e) => { setPhoneOtp(e.target.value.replace(/\D/g, "")); if (phoneOtpError) setPhoneOtpError(""); }}
                                     placeholder="000000"
-                                    className="h-10 flex-1 rounded-xl border border-white/10 bg-border-dark px-3 text-center text-sm font-bold tracking-widest focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                    className="h-10 flex-1 rounded-xl border border-border bg-input px-3 text-center text-sm font-bold text-foreground tracking-widest focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
                                   />
                                   <button
                                     onClick={confirmPhoneOtp}
@@ -1519,13 +1519,13 @@ export default function Profile() {
                                   </button>
                                 </div>
                                 {phoneOtpCooldown > 0 ? (
-                                  <p className="text-[10px] text-[#B0B0B0]">
+                                  <p className="text-[10px] text-muted-foreground">
                                     Resend available in {phoneOtpCooldown}s
                                   </p>
                                 ) : (
                                   <button
                                     onClick={() => { setPhoneOtpSent(false); setPhoneOtp(""); setPhoneOtpError(""); }}
-                                    className="text-[10px] text-[#B0B0B0] hover:text-[#B0B0B0]"
+                                    className="text-[10px] text-muted-foreground hover:text-foreground"
                                   >
                                     Resend OTP
                                   </button>
@@ -1541,11 +1541,11 @@ export default function Profile() {
                     )}
 
                     {/* Email OTP Verification */}
-                    <div className="mx-4 my-3 rounded-2xl border border-white/10 bg-border-dark p-3.5">
+                    <div className="mx-4 my-3 rounded-2xl border border-border bg-muted/50 p-3.5">
                       <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Mail size={13} className="text-purple-500" />
-                          <p className="text-xs font-bold text-[#B0B0B0]">Email Verification</p>
+                          <p className="text-xs font-bold text-muted-foreground">Email Verification</p>
                         </div>
                         {(verifStatus?.emailVerified ?? user?.emailVerified) ? (
                           <span className="flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-[10px] font-bold text-success">
@@ -1556,7 +1556,7 @@ export default function Profile() {
                             Not verified
                           </span>
                         ) : (
-                          <span className="rounded-full bg-border-dark px-2.5 py-0.5 text-[10px] text-[#B0B0B0]">
+                          <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] text-muted-foreground">
                             No email set
                           </span>
                         )}
@@ -1579,7 +1579,7 @@ export default function Profile() {
                             </button>
                           ) : (
                             <div className="space-y-2">
-                              <p className="text-[10px] text-[#B0B0B0]">Enter the 6-digit code sent to {user.email}</p>
+                              <p className="text-[10px] text-muted-foreground">Enter the 6-digit code sent to {user.email}</p>
                               <div className="flex gap-2">
                                 <input
                                   type="text"
@@ -1588,7 +1588,7 @@ export default function Profile() {
                                   value={emailOtp}
                                   onChange={(e) => { setEmailOtp(e.target.value.replace(/\D/g, "")); if (emailOtpError) setEmailOtpError(""); }}
                                   placeholder="000000"
-                                  className="h-10 flex-1 rounded-xl border border-white/10 bg-border-dark px-3 text-center text-sm font-bold tracking-widest focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                                  className="h-10 flex-1 rounded-xl border border-border bg-input px-3 text-center text-sm font-bold text-foreground tracking-widest focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                                 />
                                 <button
                                   onClick={confirmEmailOtp}
@@ -1599,13 +1599,13 @@ export default function Profile() {
                                 </button>
                               </div>
                               {emailOtpCooldown > 0 ? (
-                                <p className="text-[10px] text-[#B0B0B0]">
+                                <p className="text-[10px] text-muted-foreground">
                                   Resend available in {emailOtpCooldown}s
                                 </p>
                               ) : (
                                 <button
                                   onClick={() => { setEmailOtpSent(false); setEmailOtp(""); setEmailOtpError(""); }}
-                                  className="text-[10px] text-[#B0B0B0] hover:text-[#B0B0B0]"
+                                  className="text-[10px] text-muted-foreground hover:text-foreground"
                                 >
                                   Resend code
                                 </button>
@@ -1618,18 +1618,18 @@ export default function Profile() {
                         </>
                       )}
                       {!user?.email && (
-                        <p className="text-[10px] text-[#B0B0B0]">
+                        <p className="text-[10px] text-muted-foreground">
                           Add an email address in Edit mode to enable email verification.
                         </p>
                       )}
                     </div>
 
                     {/* CNIC Provided Status card */}
-                    <div className="mx-4 my-3 rounded-2xl border border-white/10 bg-border-dark p-3.5">
+                    <div className="mx-4 my-3 rounded-2xl border border-border bg-muted/50 p-3.5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <FileText size={13} className="text-warning" />
-                          <p className="text-xs font-bold text-[#B0B0B0]">CNIC / National ID</p>
+                          <p className="text-xs font-bold text-muted-foreground">CNIC / National ID</p>
                         </div>
                         {user?.cnicProvided ? (
                           <span className="flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-[10px] font-bold text-success">
@@ -1642,7 +1642,7 @@ export default function Profile() {
                         )}
                       </div>
                       {!user?.cnicProvided && (
-                        <p className="mt-2 text-[10px] text-[#B0B0B0]">
+                        <p className="mt-2 text-[10px] text-muted-foreground">
                           Update your CNIC in Edit mode to complete your profile.
                         </p>
                       )}
@@ -1678,14 +1678,14 @@ export default function Profile() {
                           label: "Rejected",
                         },
                         none: {
-                          bg: "bg-card-dark border-white/10",
-                          badge: "bg-border-dark text-[#B0B0B0]",
+                          bg: "bg-card border-border",
+                          badge: "bg-muted text-muted-foreground",
                           icon: <HelpCircle size={10} className="inline" />,
                           label: "Not Submitted",
                         },
                       }[kycStatus] ?? {
-                        bg: "bg-card-dark border-white/10",
-                        badge: "bg-border-dark text-[#B0B0B0]",
+                        bg: "bg-card border-border",
+                        badge: "bg-muted text-muted-foreground",
                         icon: <HelpCircle size={10} className="inline" />,
                         label: kycStatus,
                       };
@@ -1704,8 +1704,8 @@ export default function Profile() {
                         <div className={`mx-4 my-3 rounded-2xl border p-3.5 ${statusConfig.bg}`}>
                           <div className="mb-3 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <Shield size={14} className="text-[#B0B0B0]" />
-                              <p className="text-xs font-bold text-[#B0B0B0]">Verification Status</p>
+                              <Shield size={14} className="text-muted-foreground" />
+                              <p className="text-xs font-bold text-muted-foreground">Verification Status</p>
                             </div>
                             <span
                               className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${statusConfig.badge}`}
@@ -1720,10 +1720,10 @@ export default function Profile() {
                                 className={`rounded-xl py-1.5 text-center text-[9px] font-semibold ${
                                   d.done
                                     ? "bg-green-900/30 text-success"
-                                    : "bg-border-dark text-[#B0B0B0]"
+                                    : "bg-muted text-muted-foreground"
                                 }`}
                               >
-                                <div className="mb-0.5 text-sm">{d.done ? <CheckCircle size={12} className="inline" /> : <span className="text-[#B0B0B0]">—</span>}</div>
+                                <div className="mb-0.5 text-sm">{d.done ? <CheckCircle size={12} className="inline" /> : <span className="text-muted-foreground">—</span>}</div>
                                 {d.label}
                               </div>
                             ))}
@@ -1736,7 +1736,7 @@ export default function Profile() {
                             </p>
                           )}
                           {kycStatus === "none" && (
-                            <p className="mt-2 text-[10px] text-[#B0B0B0]">
+                            <p className="mt-2 text-[10px] text-muted-foreground">
                               Upload your CNIC, driving licence, and vehicle photo to start KYC.
                             </p>
                           )}
@@ -1808,13 +1808,13 @@ export default function Profile() {
 
                       if (docsApproved) return null;
                       return (
-                        <div className={`mx-4 my-3 rounded-2xl border p-3.5 transition-colors ${isRejected ? "border-error/30 bg-error/10" : "border-white/10 bg-card-dark"}`}>
+                        <div className={`mx-4 my-3 rounded-2xl border p-3.5 transition-colors ${isRejected ? "border-error/30 bg-error/10" : "border-border bg-card"}`}>
                           <div className="mb-2 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               {isRejected
                                 ? <AlertTriangle size={13} className="text-error" />
                                 : <FileText size={13} className="text-indigo-500" />}
-                              <p className={`text-xs font-bold ${isRejected ? "text-error" : "text-[#B0B0B0]"}`}>
+                              <p className={`text-xs font-bold ${isRejected ? "text-error" : "text-muted-foreground"}`}>
                                 {isRejected ? "Re-upload Documents" : "CNIC Verification"}
                               </p>
                             </div>
@@ -1827,7 +1827,7 @@ export default function Profile() {
                                 <Clock size={10} /> Under Review
                               </span>
                             ) : (
-                              <span className="rounded-full bg-border-dark px-2.5 py-0.5 text-[10px] text-[#B0B0B0]">
+                              <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] text-muted-foreground">
                                 Not submitted
                               </span>
                             )}
@@ -1835,7 +1835,7 @@ export default function Profile() {
 
                           {/* Rejection reason banner */}
                           {isRejected && (
-                            <div className="mb-3 rounded-xl border border-error/30 bg-card-dark px-3 py-2.5">
+                            <div className="mb-3 rounded-xl border border-error/30 bg-card px-3 py-2.5">
                               <div className="mb-1 flex items-center gap-1.5">
                                 <AlertTriangle size={11} className="flex-shrink-0 text-error" />
                                 <p className="text-[10px] font-extrabold uppercase tracking-wider text-error">
@@ -1852,13 +1852,13 @@ export default function Profile() {
                           )}
 
                           {docsSubmitted ? (
-                            <p className="text-[10px] text-[#B0B0B0]">
+                            <p className="text-[10px] text-muted-foreground">
                               Your KYC documents are under review. You'll be notified once approved.
                             </p>
                           ) : (
                             <div className="space-y-3">
                               {!isRejected && (
-                                <p className="text-[10px] text-[#B0B0B0]">
+                                <p className="text-[10px] text-muted-foreground">
                                   Upload your CNIC (front &amp; back), driving license, and optionally a vehicle photo.
                                 </p>
                               )}
@@ -1947,7 +1947,7 @@ export default function Profile() {
                               {/* CNIC row */}
                               <div>
                                 <div className="mb-1.5 flex items-center gap-1.5">
-                                  <p className={`text-[9px] font-bold uppercase tracking-wider ${flagCnic ? "text-warning" : "text-[#B0B0B0]"}`}>
+                                  <p className={`text-[9px] font-bold uppercase tracking-wider ${flagCnic ? "text-warning" : "text-muted-foreground"}`}>
                                     CNIC <span className="text-error">*</span>
                                   </p>
                                   {flagCnic && !cnicFrontFile && (
@@ -1985,7 +1985,7 @@ export default function Profile() {
                                           </span>
                                         </>
                                       ) : (
-                                        <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagCnic ? "text-warning group-hover:text-warning" : "text-[#B0B0B0] group-hover:text-indigo-400"}`}>
+                                        <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagCnic ? "text-warning group-hover:text-warning" : "text-muted-foreground group-hover:text-indigo-400"}`}>
                                           <Upload size={18} />
                                           <span className="text-[10px] font-semibold">Front Side</span>
                                           {flagCnic && <span className="text-[8px] font-bold text-warning">Tap to replace</span>}
@@ -2017,7 +2017,7 @@ export default function Profile() {
                                           </span>
                                         </>
                                       ) : (
-                                        <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagCnic ? "text-warning group-hover:text-warning" : "text-[#B0B0B0] group-hover:text-indigo-400"}`}>
+                                        <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagCnic ? "text-warning group-hover:text-warning" : "text-muted-foreground group-hover:text-indigo-400"}`}>
                                           <Upload size={18} />
                                           <span className="text-[10px] font-semibold">Back Side</span>
                                           {flagCnic && <span className="text-[8px] font-bold text-warning">Tap to replace</span>}
@@ -2034,7 +2034,7 @@ export default function Profile() {
                               {/* Driving license */}
                               <div>
                                 <div className="mb-1.5 flex items-center gap-1.5">
-                                  <p className={`text-[9px] font-bold uppercase tracking-wider ${flagLicense ? "text-warning" : "text-[#B0B0B0]"}`}>
+                                  <p className={`text-[9px] font-bold uppercase tracking-wider ${flagLicense ? "text-warning" : "text-muted-foreground"}`}>
                                     Driving License <span className="text-error">*</span>
                                   </p>
                                   {flagLicense && !licensePhotoFile && (
@@ -2069,7 +2069,7 @@ export default function Profile() {
                                       </span>
                                     </>
                                   ) : (
-                                    <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagLicense ? "text-warning group-hover:text-warning" : "text-[#B0B0B0] group-hover:text-indigo-400"}`}>
+                                    <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagLicense ? "text-warning group-hover:text-warning" : "text-muted-foreground group-hover:text-indigo-400"}`}>
                                       <Upload size={18} />
                                       <span className="text-[10px] font-semibold">License Photo</span>
                                       {flagLicense && <span className="text-[8px] font-bold text-warning">Tap to replace</span>}
@@ -2084,12 +2084,12 @@ export default function Profile() {
                               {/* Vehicle Registration document */}
                               <div>
                                 <div className="mb-1.5 flex items-center gap-1.5">
-                                  <p className="text-[9px] font-bold uppercase tracking-wider text-[#B0B0B0]">
-                                    Vehicle Registration <span className="ml-1 font-normal normal-case text-[#B0B0B0]">(optional)</span>
+                                  <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                                    Vehicle Registration <span className="ml-1 font-normal normal-case text-muted-foreground">(optional)</span>
                                   </p>
                                 </div>
                                 <button type="button" onClick={() => regDocVerifyRef.current?.click()}
-                                  className="group relative h-24 w-full overflow-hidden rounded-xl border-2 border-dashed border-white/20 transition-all active:scale-[0.98]">
+                                  className="group relative h-24 w-full overflow-hidden rounded-xl border-2 border-dashed border-border transition-all active:scale-[0.98]">
                                   {regDocPreview ? (
                                     <>
                                       <img src={regDocPreview} alt="Vehicle Registration" className="h-full w-full object-cover" />
@@ -2102,7 +2102,7 @@ export default function Profile() {
                                       </span>
                                     </>
                                   ) : (
-                                    <div className="flex h-full flex-col items-center justify-center gap-1.5 text-[#B0B0B0] group-hover:text-indigo-400">
+                                    <div className="flex h-full flex-col items-center justify-center gap-1.5 text-muted-foreground group-hover:text-indigo-400">
                                       <Upload size={18} />
                                       <span className="text-[10px] font-semibold">Registration Doc</span>
                                     </div>
@@ -2116,9 +2116,9 @@ export default function Profile() {
                               {/* Vehicle photo */}
                               <div>
                                 <div className="mb-1.5 flex items-center gap-1.5">
-                                  <p className={`text-[9px] font-bold uppercase tracking-wider ${flagVehicle ? "text-warning" : "text-[#B0B0B0]"}`}>
+                                  <p className={`text-[9px] font-bold uppercase tracking-wider ${flagVehicle ? "text-warning" : "text-muted-foreground"}`}>
                                     Vehicle Photo
-                                    {!flagVehicle && <span className="ml-1 font-normal normal-case text-[#B0B0B0]">(optional)</span>}
+                                    {!flagVehicle && <span className="ml-1 font-normal normal-case text-muted-foreground">(optional)</span>}
                                     {flagVehicle && <span className="text-error"> *</span>}
                                   </p>
                                   {flagVehicle && !vehiclePhotoFile && (
@@ -2153,7 +2153,7 @@ export default function Profile() {
                                       </span>
                                     </>
                                   ) : (
-                                    <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagVehicle ? "text-warning group-hover:text-warning" : "text-[#B0B0B0] group-hover:text-indigo-400"}`}>
+                                    <div className={`flex h-full flex-col items-center justify-center gap-1.5 ${flagVehicle ? "text-warning group-hover:text-warning" : "text-muted-foreground group-hover:text-indigo-400"}`}>
                                       <Upload size={18} />
                                       <span className="text-[10px] font-semibold">Vehicle Photo</span>
                                       {flagVehicle && <span className="text-[8px] font-bold text-warning">Tap to replace</span>}
@@ -2176,12 +2176,12 @@ export default function Profile() {
                                   ].map((d) => (
                                     <div key={d.label} className="flex flex-1 flex-col items-center gap-0.5">
                                       <div className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
-                                        d.done ? "bg-indigo-600 text-white" : d.flagged ? "bg-warning/20 text-warning" : "bg-border-dark text-[#B0B0B0]"
+                                        d.done ? "bg-indigo-600 text-white" : d.flagged ? "bg-warning/20 text-warning" : "bg-muted text-muted-foreground"
                                       }`}>
                                         {d.done ? "✓" : d.flagged ? "!" : "·"}
                                       </div>
                                       <span className={`text-center text-[8px] font-semibold leading-tight ${
-                                        d.done ? "text-indigo-400" : d.flagged ? "text-warning" : "text-[#B0B0B0]"
+                                        d.done ? "text-indigo-400" : d.flagged ? "text-warning" : "text-muted-foreground"
                                       }`}>
                                         {d.label}
                                       </span>
@@ -2206,7 +2206,7 @@ export default function Profile() {
                                 )}
                               </button>
                               {(!cnicFrontFile || !cnicBackFile || !licensePhotoFile) && (
-                                <p className={`text-center text-[9px] ${isRejected ? "text-warning" : "text-[#B0B0B0]"}`}>
+                                <p className={`text-center text-[9px] ${isRejected ? "text-warning" : "text-muted-foreground"}`}>
                                   {isRejected
                                     ? "Replace the highlighted documents above to re-submit"
                                     : "Add CNIC front, back & license to submit"}
@@ -2224,12 +2224,12 @@ export default function Profile() {
 
             {activeTab === "vehicle" && (
               <div className="animate-[fadeIn_0.25s_ease-out]">
-                <div className="flex items-center justify-between border-b border-white/5 px-5 py-3">
+                <div className="flex items-center justify-between border-b border-border/50 px-5 py-3">
                   <div className="flex items-center gap-2">
-                    <Bike size={15} className="text-white" />
+                    <Bike size={15} className="text-foreground" />
                     <div>
-                      <p className="text-[14px] font-bold text-white">{T("vehicleDetails")}</p>
-                      <p className="text-[10px] text-[#B0B0B0]">{T("yourDeliveryVehicle")}</p>
+                      <p className="text-[14px] font-bold text-foreground">{T("vehicleDetails")}</p>
+                      <p className="text-[10px] text-muted-foreground">{T("yourDeliveryVehicle")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2240,8 +2240,8 @@ export default function Profile() {
                       }
                       className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-bold transition-all ${
                         editing === "vehicle"
-                          ? "bg-border-dark text-[#B0B0B0]"
-                          : "bg-border-dark text-white active:bg-[#3A3A3A]"
+                          ? "bg-muted text-muted-foreground"
+                          : "bg-muted text-foreground active:bg-muted"
                       }`}
                     >
                       {editing === "vehicle" ? (
@@ -2273,7 +2273,7 @@ export default function Profile() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#B0B0B0]" />
+                        <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                       </div>
                     </div>
                     <div>
@@ -2307,16 +2307,16 @@ export default function Profile() {
                     <ConfigFeatureGate
                       feature="docUpload"
                       fallback={
-                        <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-card-dark/20 px-3.5 py-3">
-                          <Lock size={12} className="flex-shrink-0 text-[#B0B0B0]" />
-                          <p className="text-[11px] text-[#B0B0B0]">
+                        <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/30 px-3.5 py-3">
+                          <Lock size={12} className="flex-shrink-0 text-muted-foreground" />
+                          <p className="text-[11px] text-muted-foreground">
                             Document upload is currently unavailable
                           </p>
                         </div>
                       }
                     >
                     <div className="space-y-2 pt-1">
-                      <p className="text-[11px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+                      <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                         Document Photos (for verification)
                       </p>
                       <div className="grid grid-cols-2 gap-2">
@@ -2334,7 +2334,7 @@ export default function Profile() {
                             type="button"
                             onClick={() => cnicDocInputRef.current?.click()}
                             disabled={docUploading === "cnic" || docCompressing === "cnic"}
-                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-white/10 transition-all active:bg-border-dark disabled:opacity-60"
+                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border transition-all active:bg-muted disabled:opacity-60"
                           >
                             {docCompressing === "cnic" ? (
                               <>
@@ -2343,13 +2343,13 @@ export default function Profile() {
                               </>
                             ) : docUploading === "cnic" ? (
                               <>
-                                <RefreshCcw size={14} className="animate-spin text-[#B0B0B0]" />
-                                <span className="text-[10px] text-[#B0B0B0]">Uploading...</span>
+                                <RefreshCcw size={14} className="animate-spin text-muted-foreground" />
+                                <span className="text-[10px] text-muted-foreground">Uploading...</span>
                               </>
                             ) : (
                               <>
-                                <Camera size={14} className="text-[#B0B0B0]" />
-                                <span className="text-[10px] font-semibold text-[#B0B0B0]">
+                                <Camera size={14} className="text-muted-foreground" />
+                                <span className="text-[10px] font-semibold text-muted-foreground">
                                   CNIC Photo
                                 </span>
                               </>
@@ -2379,7 +2379,7 @@ export default function Profile() {
                             type="button"
                             onClick={() => licenseDocInputRef.current?.click()}
                             disabled={docUploading === "license" || docCompressing === "license"}
-                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-white/10 transition-all active:bg-border-dark disabled:opacity-60"
+                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border transition-all active:bg-muted disabled:opacity-60"
                           >
                             {docCompressing === "license" ? (
                               <>
@@ -2388,13 +2388,13 @@ export default function Profile() {
                               </>
                             ) : docUploading === "license" ? (
                               <>
-                                <RefreshCcw size={14} className="animate-spin text-[#B0B0B0]" />
-                                <span className="text-[10px] text-[#B0B0B0]">Uploading...</span>
+                                <RefreshCcw size={14} className="animate-spin text-muted-foreground" />
+                                <span className="text-[10px] text-muted-foreground">Uploading...</span>
                               </>
                             ) : (
                               <>
-                                <Camera size={14} className="text-[#B0B0B0]" />
-                                <span className="text-[10px] font-semibold text-[#B0B0B0]">
+                                <Camera size={14} className="text-muted-foreground" />
+                                <span className="text-[10px] font-semibold text-muted-foreground">
                                   License Photo
                                 </span>
                               </>
@@ -2424,7 +2424,7 @@ export default function Profile() {
                             type="button"
                             onClick={() => regDocInputRef.current?.click()}
                             disabled={docUploading === "regDoc" || docCompressing === "regDoc"}
-                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-white/10 transition-all active:bg-border-dark disabled:opacity-60"
+                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border transition-all active:bg-muted disabled:opacity-60"
                           >
                             {docCompressing === "regDoc" ? (
                               <>
@@ -2433,13 +2433,13 @@ export default function Profile() {
                               </>
                             ) : docUploading === "regDoc" ? (
                               <>
-                                <RefreshCcw size={14} className="animate-spin text-[#B0B0B0]" />
-                                <span className="text-[10px] text-[#B0B0B0]">Uploading...</span>
+                                <RefreshCcw size={14} className="animate-spin text-muted-foreground" />
+                                <span className="text-[10px] text-muted-foreground">Uploading...</span>
                               </>
                             ) : (
                               <>
-                                <Camera size={14} className="text-[#B0B0B0]" />
-                                <span className="text-[10px] font-semibold text-[#B0B0B0]">
+                                <Camera size={14} className="text-muted-foreground" />
+                                <span className="text-[10px] font-semibold text-muted-foreground">
                                   Reg. Document
                                 </span>
                               </>
@@ -2469,7 +2469,7 @@ export default function Profile() {
                             type="button"
                             onClick={() => vehiclePhotoInputRef.current?.click()}
                             disabled={docUploading === "vehiclePhoto" || docCompressing === "vehiclePhoto"}
-                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-white/10 transition-all active:bg-border-dark disabled:opacity-60"
+                            className="flex h-16 w-full flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border transition-all active:bg-muted disabled:opacity-60"
                           >
                             {docCompressing === "vehiclePhoto" ? (
                               <>
@@ -2478,13 +2478,13 @@ export default function Profile() {
                               </>
                             ) : docUploading === "vehiclePhoto" ? (
                               <>
-                                <RefreshCcw size={14} className="animate-spin text-[#B0B0B0]" />
-                                <span className="text-[10px] text-[#B0B0B0]">Uploading...</span>
+                                <RefreshCcw size={14} className="animate-spin text-muted-foreground" />
+                                <span className="text-[10px] text-muted-foreground">Uploading...</span>
                               </>
                             ) : (
                               <>
-                                <Camera size={14} className="text-[#B0B0B0]" />
-                                <span className="text-[10px] font-semibold text-[#B0B0B0]">
+                                <Camera size={14} className="text-muted-foreground" />
+                                <span className="text-[10px] font-semibold text-muted-foreground">
                                   Vehicle Photo
                                 </span>
                               </>
@@ -2521,37 +2521,37 @@ export default function Profile() {
                   </div>
                 ) : user?.vehicleType ? (
                   <div className="p-4">
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-800 to-gray-900 p-4 text-white">
-                      <div className="absolute top-0 right-0 h-20 w-20 translate-x-1/2 -translate-y-1/2 rounded-full bg-card-dark/5" />
+                    <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4">
+                      <div className="absolute top-0 right-0 h-20 w-20 translate-x-1/2 -translate-y-1/2 rounded-full bg-muted/20" />
                       <div className="mb-4 flex items-center justify-between">
-                        <span className="text-[10px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+                        <span className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                           {T("registeredVehicle")}
                         </span>
                         <Bike size={18} className="text-success" />
                       </div>
-                      <p className="mb-1 text-xl font-extrabold tracking-wide">
+                      <p className="mb-1 text-xl font-extrabold tracking-wide text-foreground">
                         {user.vehiclePlate || "---"}
                       </p>
-                      <p className="text-sm font-medium text-[#B0B0B0]">{user.vehicleType}</p>
-                      <div className="mt-3 space-y-2 border-t border-white/10 pt-3">
+                      <p className="text-sm font-medium text-muted-foreground">{user.vehicleType}</p>
+                      <div className="mt-3 space-y-2 border-t border-border pt-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-[#B0B0B0]">{T("plateNumber")}</span>
+                          <span className="text-[10px] text-muted-foreground">{T("plateNumber")}</span>
                           <span className="flex items-center gap-1 rounded-full bg-success/20 px-2 py-0.5 text-[10px] font-bold text-success">
                             <CheckCircle size={9} /> {T("activeVerified")}
                           </span>
                         </div>
                         {user.vehicleRegNo && (
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] text-[#B0B0B0]">Reg. No.</span>
-                            <span className="text-[10px] font-medium text-[#B0B0B0]">
+                            <span className="text-[10px] text-muted-foreground">Reg. No.</span>
+                            <span className="text-[10px] font-medium text-muted-foreground">
                               {user.vehicleRegNo}
                             </span>
                           </div>
                         )}
                         {user.drivingLicense && (
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] text-[#B0B0B0]">License</span>
-                            <span className="text-[10px] font-medium text-[#B0B0B0]">
+                            <span className="text-[10px] text-muted-foreground">License</span>
+                            <span className="text-[10px] font-medium text-muted-foreground">
                               {user.drivingLicense}
                             </span>
                           </div>
@@ -2561,14 +2561,14 @@ export default function Profile() {
                   </div>
                 ) : (
                   <div className="py-8 text-center">
-                    <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-border-dark">
-                      <Bike size={28} className="text-[#B0B0B0]" />
+                    <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+                      <Bike size={28} className="text-muted-foreground" />
                     </div>
-                    <p className="text-sm font-bold text-[#B0B0B0]">{T("noVehicle")}</p>
-                    <p className="mt-1 text-xs text-[#B0B0B0]">{T("addVehicleInfo")}</p>
+                    <p className="text-sm font-bold text-muted-foreground">{T("noVehicle")}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{T("addVehicleInfo")}</p>
                     <button
                       onClick={() => startEdit("vehicle")}
-                      className="mt-3 rounded-xl bg-border-dark px-5 py-2 text-sm font-bold text-white transition-colors active:bg-[#3A3A3A]"
+                      className="mt-3 rounded-xl bg-muted px-5 py-2 text-sm font-bold text-foreground transition-colors active:bg-muted/80"
                     >
                       + {T("addVehicle")}
                     </button>
@@ -2579,12 +2579,12 @@ export default function Profile() {
 
             {activeTab === "bank" && (
               <div className="animate-[fadeIn_0.25s_ease-out]">
-                <div className="flex items-center justify-between border-b border-white/5 px-5 py-3">
+                <div className="flex items-center justify-between border-b border-border/50 px-5 py-3">
                   <div className="flex items-center gap-2">
-                    <Landmark size={15} className="text-white" />
+                    <Landmark size={15} className="text-foreground" />
                     <div>
-                      <p className="text-[14px] font-bold text-white">{T("bankDetails")}</p>
-                      <p className="text-[10px] text-[#B0B0B0]">{T("withdrawalAccount")}</p>
+                      <p className="text-[14px] font-bold text-foreground">{T("bankDetails")}</p>
+                      <p className="text-[10px] text-muted-foreground">{T("withdrawalAccount")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2593,8 +2593,8 @@ export default function Profile() {
                       onClick={() => (editing === "bank" ? cancelEdit("bank") : startEdit("bank"))}
                       className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-bold transition-all ${
                         editing === "bank"
-                          ? "bg-border-dark text-[#B0B0B0]"
-                          : "bg-border-dark text-white active:bg-[#3A3A3A]"
+                          ? "bg-muted text-muted-foreground"
+                          : "bg-muted text-foreground active:bg-muted/80"
                       }`}
                     >
                       {editing === "bank" ? (
@@ -2626,7 +2626,7 @@ export default function Profile() {
                             </option>
                           ))}
                         </select>
-                        <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#B0B0B0]" />
+                        <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                       </div>
                     </div>
                     <div>
@@ -2670,25 +2670,25 @@ export default function Profile() {
                   </div>
                 ) : user?.bankName ? (
                   <div className="p-4">
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 p-4 text-white">
-                      <div className="absolute top-0 right-0 h-24 w-24 translate-x-1/2 -translate-y-1/2 rounded-full bg-card-dark/5" />
-                      <div className="absolute bottom-0 left-0 h-16 w-16 -translate-x-1/2 translate-y-1/2 rounded-full bg-card-dark/5" />
+                    <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4">
+                      <div className="absolute top-0 right-0 h-24 w-24 translate-x-1/2 -translate-y-1/2 rounded-full bg-muted/30" />
+                      <div className="absolute bottom-0 left-0 h-16 w-16 -translate-x-1/2 translate-y-1/2 rounded-full bg-muted/30" />
                       <div className="mb-4 flex items-center justify-between">
-                        <span className="text-[10px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+                        <span className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                           {T("paymentAccount")}
                         </span>
                         <CreditCard size={18} className="text-success" />
                       </div>
-                      <p className="mb-1 font-mono text-lg font-bold tracking-wider">
+                      <p className="mb-1 font-mono text-lg font-bold tracking-wider text-foreground">
                         {maskAccount(user.bankAccount || "")}
                       </p>
-                      <p className="text-sm font-medium text-[#B0B0B0]">{user.bankName}</p>
+                      <p className="text-sm font-medium text-muted-foreground">{user.bankName}</p>
                       {user.bankAccountTitle && (
-                        <p className="mt-1 text-xs text-[#B0B0B0]">{user.bankAccountTitle}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{user.bankAccountTitle}</p>
                       )}
-                      <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-3">
-                        <span className="text-[10px] text-[#B0B0B0]">{T("accountTitle")}</span>
-                        <span className="flex items-center gap-1 rounded-full bg-card-dark/15 px-2 py-0.5 text-[10px] font-bold text-white">
+                      <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+                        <span className="text-[10px] text-muted-foreground">{T("accountTitle")}</span>
+                        <span className="flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-bold text-success">
                           <CheckCircle size={9} /> {T("activeVerified")}
                         </span>
                       </div>
@@ -2696,14 +2696,14 @@ export default function Profile() {
                   </div>
                 ) : (
                   <div className="py-8 text-center">
-                    <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-border-dark">
-                      <Landmark size={28} className="text-[#B0B0B0]" />
+                    <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+                      <Landmark size={28} className="text-muted-foreground" />
                     </div>
-                    <p className="text-sm font-bold text-[#B0B0B0]">{T("noWithdrawalAccount")}</p>
-                    <p className="mt-1 text-xs text-[#B0B0B0]">{T("addVehicleInfo")}</p>
+                    <p className="text-sm font-bold text-muted-foreground">{T("noWithdrawalAccount")}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{T("addVehicleInfo")}</p>
                     <button
                       onClick={() => startEdit("bank")}
-                      className="mt-3 rounded-xl bg-border-dark px-5 py-2 text-sm font-bold text-white transition-colors active:bg-[#3A3A3A]"
+                      className="mt-3 rounded-xl bg-muted px-5 py-2 text-sm font-bold text-foreground transition-colors active:bg-muted/80"
                     >
                       + {T("addAccount")}
                     </button>
@@ -2721,17 +2721,17 @@ export default function Profile() {
           onDeleteAccount={handleDeleteAccount}
         />
 
-        <div className="animate-[slideUp_0.75s_ease-out] overflow-hidden rounded-3xl bg-card-dark">
+        <div className="animate-[slideUp_0.75s_ease-out] overflow-hidden rounded-3xl border border-border bg-card">
           <button
             onClick={() => setPayoutOpen(!payoutOpen)}
-            className="flex w-full items-center justify-between px-5 py-4 transition-colors active:bg-card-dark"
+            className="flex w-full items-center justify-between px-5 py-4 transition-colors active:bg-muted"
           >
-            <p className="flex items-center gap-2 text-[15px] font-bold text-white">
-              <Info size={15} className="text-white/50" /> {T("payoutPolicyLabel")}
+            <p className="flex items-center gap-2 text-[15px] font-bold text-foreground">
+              <Info size={15} className="text-muted-foreground" /> {T("payoutPolicyLabel")}
             </p>
             <ChevronDown
               size={18}
-              className={`text-white/50 transition-transform duration-300 ${payoutOpen ? "rotate-180" : ""}`}
+              className={`text-muted-foreground transition-transform duration-300 ${payoutOpen ? "rotate-180" : ""}`}
             />
           </button>
           <div
@@ -2755,7 +2755,7 @@ export default function Profile() {
                 { icon: <Clock size={13} />, text: T("payoutProcessingTime") },
                 { icon: <Lock size={13} />, text: T("payoutVerificationReq") },
               ].map((p, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-xs text-white/60">
+                <div key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground">
                   <span className="mt-0.5 text-success">{p.icon}</span>
                   <span className="font-medium">{p.text}</span>
                 </div>

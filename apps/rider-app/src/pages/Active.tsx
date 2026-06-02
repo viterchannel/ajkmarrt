@@ -992,14 +992,14 @@ export default function Active() {
       <>
         <div className="flex min-h-screen flex-col bg-page-bg">
           <div
-            className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-10"
+            className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-5 pb-10"
             style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
           >
             <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-            <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
+            <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/[0.3]" />
             <div className="relative">
-              <h1 className="text-2xl font-extrabold tracking-tight text-white">{T("activeTask")}</h1>
-              <p className="mt-0.5 text-sm text-white/40">{T("noCurrentAssignment")}</p>
+              <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{T("activeTask")}</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">{T("noCurrentAssignment")}</p>
             </div>
           </div>
           {syncFailedCount > 0 && !isOffline && (
@@ -1023,11 +1023,11 @@ export default function Active() {
           )}
           <div className="flex flex-1 items-center justify-center p-6">
             <div className="text-center">
-              <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] border border-white/[0.08] bg-white/[0.04] shadow-inner">
-                <Bike size={52} className="text-[#B0B0B0]" />
+              <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] border border-border bg-muted/30 shadow-inner">
+                <Bike size={52} className="text-muted-foreground" />
               </div>
-              <h2 className="text-xl font-extrabold text-[#B0B0B0]">{T("noActiveTask")}</h2>
-              <p className="mx-auto mt-2 max-w-[260px] text-sm leading-relaxed text-[#B0B0B0]">
+              <h2 className="text-xl font-extrabold text-muted-foreground">{T("noActiveTask")}</h2>
+              <p className="mx-auto mt-2 max-w-[260px] text-sm leading-relaxed text-muted-foreground">
                 {T("acceptFromHome")}
               </p>
               <button
@@ -1068,24 +1068,24 @@ export default function Active() {
     <div className="min-h-screen bg-page-bg">
       {/* Header */}
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-7"
+        className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-5 pb-7"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
-        <div className="absolute top-1/2 left-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-card-dark/[0.015]" />
-        <div className="relative flex items-start justify-between gap-3">
+        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-foreground/[0.02]" />
+        <div className="absolute top-1/2 left-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/[0.015]" />
+        <div className="relative mx-auto max-w-2xl flex items-start justify-between gap-3">
           <div className="flex-1">
             <div className="mb-1.5 flex items-center gap-2">
               <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-success shadow-sm shadow-green-400" />
-              <span className="text-[10px] font-bold tracking-widest text-white/40 uppercase">
+              <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                 Live
               </span>
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-white">
+            <h1 className="text-2xl font-black tracking-tight text-foreground">
               {order ? T("activeDelivery") : T("activeRide")}
             </h1>
-            <p className="mt-1 text-sm font-medium text-white/40">
+            <p className="mt-1 text-sm font-medium text-muted-foreground">
               {order
                 ? `${order.type} order — ${order.status === "picked_up" || order.status === "out_for_delivery" ? "Delivering to customer" : "Pick up from store"}`
                 : `${ride?.type || "Ride"} ride in progress`}
@@ -1096,8 +1096,9 @@ export default function Active() {
       </div>
 
       {/* Status banners */}
+      <div className="mx-auto w-full max-w-2xl">
       {isOffline && (
-        <div className="mx-4 mt-3 flex items-center gap-3 rounded-3xl border border-error/60 bg-gradient-to-r from-red-50 to-orange-50 p-3.5 shadow-sm">
+        <div className="mx-4 mt-3 flex items-center gap-3 rounded-3xl border border-error/40 bg-error/10 p-3.5">
           <div className="flex h-9 w-9 flex-shrink-0 animate-pulse items-center justify-center rounded-xl bg-error/15">
             <WifiOff size={18} className="text-error" />
           </div>
@@ -1108,7 +1109,7 @@ export default function Active() {
                 ? ` — ${pendingUpdatesRef.current.length} update${pendingUpdatesRef.current.length > 1 ? "s" : ""} queued`
                 : ""}
             </p>
-            <p className="mt-0.5 text-[11px] leading-relaxed text-error">
+            <p className="mt-0.5 text-[11px] leading-relaxed text-error/80">
               Updates will retry automatically when reconnected.
             </p>
           </div>
@@ -1124,7 +1125,7 @@ export default function Active() {
       )}
 
       {syncFailedCount > 0 && !isOffline && (
-        <div className="mx-4 mt-3 flex items-center gap-3 rounded-3xl border border-error/60 bg-gradient-to-r from-red-50 to-orange-50 p-3.5 shadow-sm">
+        <div className="mx-4 mt-3 flex items-center gap-3 rounded-3xl border border-error/40 bg-error/10 p-3.5">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-error/15">
             <AlertTriangle size={18} className="text-error" />
           </div>
@@ -1143,13 +1144,13 @@ export default function Active() {
       )}
 
       {gpsWarning && (
-        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-start gap-3 rounded-3xl border border-warning/30 bg-gradient-to-r from-amber-50 to-orange-50 p-3.5 shadow-sm">
+        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-start gap-3 rounded-3xl border border-warning/30 bg-warning/10 p-3.5">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-warning/15">
             <AlertTriangle size={18} className="text-warning" />
           </div>
           <div className="flex-1">
             <p className="text-xs font-extrabold text-warning">{T("gpsWarningTitle")}</p>
-            <p className="mt-0.5 text-[11px] leading-relaxed text-warning">{gpsWarning}</p>
+            <p className="mt-0.5 text-[11px] leading-relaxed text-warning/80">{gpsWarning}</p>
           </div>
           <button
             onClick={() => setGpsWarning(null)}
@@ -1162,13 +1163,13 @@ export default function Active() {
       )}
 
       {showProximityWarning && (
-        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl border border-yellow-300 bg-gradient-to-r from-yellow-50 to-amber-50 p-3.5 shadow-sm">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-yellow-100">
-            <MapPin size={18} className="text-yellow-600" />
+        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl border border-warning/30 bg-warning/10 p-3.5">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-warning/15">
+            <MapPin size={18} className="text-warning" />
           </div>
           <div className="flex-1">
-            <p className="text-xs font-extrabold text-yellow-800">{T("farFromStoreTitle")}</p>
-            <p className="mt-0.5 text-[11px] leading-relaxed text-yellow-700">
+            <p className="text-xs font-extrabold text-warning">{T("farFromStoreTitle")}</p>
+            <p className="mt-0.5 text-[11px] leading-relaxed text-warning/80">
               {T("farFromStoreMsg")}
             </p>
           </div>
@@ -1177,8 +1178,8 @@ export default function Active() {
 
       {/* Admin chat banner */}
       {adminMessages.length > 0 && (
-        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 shadow-lg shadow-blue-200">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-card-dark/20">
+        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 shadow-lg">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-black/20">
             <MessageSquare size={16} className="text-white" />
           </div>
           <div className="min-w-0 flex-1">
@@ -1189,7 +1190,7 @@ export default function Active() {
           </div>
           <button
             onClick={() => setShowAdminChat(true)}
-            className="flex-shrink-0 rounded-lg bg-card-dark px-2.5 py-1 text-xs font-bold text-blue-400"
+            className="flex-shrink-0 rounded-lg bg-black/20 px-2.5 py-1 text-xs font-bold text-blue-100"
           >
             View
           </button>
@@ -1205,7 +1206,7 @@ export default function Active() {
 
       {/* Pending sync indicator — shown when a delivery/completion was queued offline */}
       {(hasPendingSync || queueStatus.pendingCount > 0) && (
-        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl border border-warning/40 bg-gradient-to-r from-amber-50 to-orange-50 p-3.5 shadow-sm">
+        <div className="mx-4 mt-3 flex animate-[slideDown_0.3s_ease-out] items-center gap-3 rounded-3xl border border-warning/40 bg-warning/10 p-3.5">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-warning/15">
             <RefreshCw size={16} className="animate-spin text-warning" />
           </div>
@@ -1213,14 +1214,14 @@ export default function Active() {
             {queueStatus.syncing ? (
               <>
                 <p className="text-xs font-extrabold text-warning">{T("syncingLabel")}</p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-warning">
+                <p className="mt-0.5 text-[11px] leading-relaxed text-warning/80">
                   Uploading queued completion to server.
                 </p>
               </>
             ) : (
               <>
                 <p className="text-xs font-extrabold text-warning">{T("pendingSyncLabel")}</p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-warning">
+                <p className="mt-0.5 text-[11px] leading-relaxed text-warning/80">
                   Completion queued offline — will sync automatically when reconnected.
                 </p>
               </>
@@ -1233,9 +1234,10 @@ export default function Active() {
           )}
         </div>
       )}
+      </div>
 
       {/* Main content */}
-      <div className="space-y-4 px-4 py-4">
+      <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-4">
         {order && (
           <ActiveOrderPanel
             order={order as Record<string, unknown>}

@@ -203,16 +203,16 @@ function CompletedRidesList({
   };
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-card-dark shadow-sm overflow-hidden">
+    <div className="rounded-3xl border border-border bg-card-dark shadow-sm overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 bg-card-dark/50">
-        <p className="flex items-center gap-1.5 text-sm font-bold text-white">
-          <Receipt size={14} className="text-white" /> Completed Rides
+        <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
+          <Receipt size={14} className="text-foreground" /> Completed Rides
         </p>
       </div>
 
       {/* Filter bar */}
-      <div className="flex gap-1 mx-4 mb-3 rounded-full border border-white/10 bg-[#0D0D0D] p-1">
+      <div className="flex gap-1 mx-4 mb-3 rounded-full border border-border bg-background p-1">
         {KIND_TABS.map((tab) => (
           <button
             key={tab.key}
@@ -220,7 +220,7 @@ function CompletedRidesList({
             className={`flex-1 rounded-full py-2 text-[11px] font-bold transition-all ${
               kindFilter === tab.key
                 ? "bg-brand text-black shadow-sm"
-                : "text-[#B0B0B0]"
+                : "text-muted-foreground"
             }`}
           >
             {tab.label}
@@ -230,31 +230,31 @@ function CompletedRidesList({
 
       {/* List */}
       {isFetching && offset === 0 ? (
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-border/30">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex items-center gap-3 px-5 py-3.5">
-              <div className="h-8 w-8 animate-pulse rounded-xl bg-border-dark" />
+              <div className="h-8 w-8 animate-pulse rounded-xl bg-muted" />
               <div className="flex-1 space-y-1.5">
-                <div className="h-2.5 w-28 animate-pulse rounded-full bg-border-dark" />
-                <div className="h-2 w-20 animate-pulse rounded-full bg-border-dark" />
+                <div className="h-2.5 w-28 animate-pulse rounded-full bg-muted" />
+                <div className="h-2 w-20 animate-pulse rounded-full bg-muted" />
               </div>
-              <div className="h-3 w-16 animate-pulse rounded-full bg-border-dark" />
+              <div className="h-3 w-16 animate-pulse rounded-full bg-muted" />
             </div>
           ))}
         </div>
       ) : isError ? (
         <div className="px-5 py-8 text-center">
-          <p className="text-sm font-bold text-[#B0B0B0]">{T("couldNotLoadRides")}</p>
-          <p className="mt-0.5 text-xs text-[#B0B0B0]">{T("checkConnectionRetry")}</p>
+          <p className="text-sm font-bold text-muted-foreground">{T("couldNotLoadRides")}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{T("checkConnectionRetry")}</p>
         </div>
       ) : itemsToShow.length === 0 ? (
         <div className="px-5 py-8 text-center">
-          <ClipboardList size={28} className="mx-auto mb-2 text-[#B0B0B0]" />
-          <p className="text-sm font-bold text-[#B0B0B0]">{T("noCompletedRidesYet")}</p>
-          <p className="mt-0.5 text-xs text-[#B0B0B0]">Your ride history will appear here</p>
+          <ClipboardList size={28} className="mx-auto mb-2 text-muted-foreground" />
+          <p className="text-sm font-bold text-muted-foreground">{T("noCompletedRidesYet")}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Your ride history will appear here</p>
         </div>
       ) : (
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-border/30">
           {itemsToShow.map((item) => {
             const kind = getKind(item);
             const amt = getAmount(item);
@@ -262,16 +262,16 @@ function CompletedRidesList({
               <button
                 key={item.id}
                 onClick={() => setSelectedRide(item)}
-                className="flex w-full items-center gap-3 px-5 py-3.5 text-left active:bg-border-dark transition-colors"
+                className="flex w-full items-center gap-3 px-5 py-3.5 text-left active:bg-muted transition-colors"
               >
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-border-dark">
-                  {KIND_ICONS[kind] ?? <ClipboardList size={14} className="text-[#B0B0B0]" />}
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-muted">
+                  {KIND_ICONS[kind] ?? <ClipboardList size={14} className="text-muted-foreground" />}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-white truncate">
+                  <p className="text-sm font-bold text-foreground truncate">
                     #{(item.orderId ?? item.id).slice(-8).toUpperCase()}
                   </p>
-                  <p className="mt-0.5 text-xs text-[#B0B0B0]">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {KIND_LABELS[kind] ?? kind} · {formatDate(item.createdAt)}
                   </p>
                 </div>
@@ -279,7 +279,7 @@ function CompletedRidesList({
                   <p className="text-sm font-extrabold text-success">
                     +{formatCurrency(amt)}
                   </p>
-                  <ChevronRight size={13} className="ml-auto text-[#B0B0B0]" />
+                  <ChevronRight size={13} className="ml-auto text-muted-foreground" />
                 </div>
               </button>
             );
@@ -293,7 +293,7 @@ function CompletedRidesList({
           <button
             onClick={() => setOffset((o) => o + PAGE_SIZE)}
             disabled={isFetching}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 py-3 text-sm font-bold text-[#B0B0B0] active:bg-border-dark disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border py-3 text-sm font-bold text-muted-foreground active:bg-muted disabled:opacity-50"
           >
             {isFetching ? "Loading…" : "Load more"}
           </button>
@@ -307,30 +307,30 @@ function CompletedRidesList({
           onClick={() => setSelectedRide(null)}
         >
           <div
-            className="w-full max-w-md rounded-t-3xl bg-card-dark shadow-2xl"
+            className="w-full max-w-md rounded-t-3xl bg-card shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center pt-3 pb-1">
-              <div className="h-1 w-10 rounded-full bg-border-dark" />
+              <div className="h-1 w-10 rounded-full bg-muted" />
             </div>
             <div className="p-6">
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-border-dark">
-                    {KIND_ICONS[getKind(selectedRide)] ?? <ClipboardList size={16} className="text-[#B0B0B0]" />}
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
+                    {KIND_ICONS[getKind(selectedRide)] ?? <ClipboardList size={16} className="text-muted-foreground" />}
                   </div>
                   <div>
-                    <p className="text-base font-extrabold text-white">
+                    <p className="text-base font-extrabold text-foreground">
                       #{(selectedRide.orderId ?? selectedRide.id).slice(-8).toUpperCase()}
                     </p>
-                    <p className="text-xs text-[#B0B0B0]">
+                    <p className="text-xs text-muted-foreground">
                       {KIND_LABELS[getKind(selectedRide)] ?? getKind(selectedRide)}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedRide(null)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0]"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                 >
                   <X size={16} />
                 </button>
@@ -339,15 +339,15 @@ function CompletedRidesList({
               <div className="space-y-3 rounded-2xl border border-success/20 bg-success/5 p-4">
                 {[
                   { label: "Amount Earned", value: `+${formatCurrency(getAmount(selectedRide))}`, bold: true, color: "text-success" },
-                  { label: "Date", value: formatDate(selectedRide.createdAt), bold: false, color: "text-white" },
-                  ...(selectedRide.origin ? [{ label: "From", value: selectedRide.origin, bold: false, color: "text-white" }] : []),
-                  ...(selectedRide.destination ? [{ label: "To", value: selectedRide.destination, bold: false, color: "text-white" }] : []),
-                  ...(selectedRide.deliveryAddress ? [{ label: "Delivery", value: selectedRide.deliveryAddress, bold: false, color: "text-white" }] : []),
-                  ...(selectedRide.distance ? [{ label: "Distance", value: `${Number(selectedRide.distance).toFixed(1)} km`, bold: false, color: "text-white" }] : []),
-                  ...(selectedRide.vendorStoreName ? [{ label: "Restaurant", value: selectedRide.vendorStoreName, bold: false, color: "text-white" }] : []),
+                  { label: "Date", value: formatDate(selectedRide.createdAt), bold: false, color: "text-foreground" },
+                  ...(selectedRide.origin ? [{ label: "From", value: selectedRide.origin, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.destination ? [{ label: "To", value: selectedRide.destination, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.deliveryAddress ? [{ label: "Delivery", value: selectedRide.deliveryAddress, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.distance ? [{ label: "Distance", value: `${Number(selectedRide.distance).toFixed(1)} km`, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.vendorStoreName ? [{ label: "Restaurant", value: selectedRide.vendorStoreName, bold: false, color: "text-foreground" }] : []),
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between">
-                    <span className="text-sm text-[#B0B0B0]">{row.label}</span>
+                    <span className="text-sm text-muted-foreground">{row.label}</span>
                     <span className={`text-sm ${row.bold ? "font-extrabold" : "font-semibold"} ${row.color} max-w-[60%] text-right truncate`}>
                       {row.value}
                     </span>
@@ -373,23 +373,23 @@ function SkeletonEarnings() {
   return (
     <>
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2 rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+        <div className="space-y-2 rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
           <ShimmerBlock className="h-3 w-16 rounded-full" />
           <ShimmerBlock className="h-8 w-28 rounded-full" />
           <ShimmerBlock className="h-2.5 w-20 rounded-full" />
         </div>
-        <div className="space-y-2 rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+        <div className="space-y-2 rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
           <ShimmerBlock className="h-3 w-16 rounded-full" />
           <ShimmerBlock className="h-8 w-12 rounded-full" />
           <ShimmerBlock className="h-2.5 w-16 rounded-full" />
         </div>
       </div>
-      <div className="space-y-3 rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+      <div className="space-y-3 rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
         <ShimmerBlock className="h-3 w-24 rounded-full" />
         <ShimmerBlock className="h-3.5 w-full rounded-full" />
         <ShimmerBlock className="h-2.5 w-28 rounded-full" />
       </div>
-      <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+      <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
         <ShimmerBlock className="mb-3 h-3 w-24 rounded-full" />
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
@@ -560,25 +560,25 @@ export default function Earnings() {
   return (
     <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
-        <div className="relative">
-          <p className="mb-1 text-xs font-semibold tracking-widest text-white/40 uppercase">
+        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-foreground/[0.02]" />
+        <div className="relative mx-auto max-w-2xl">
+          <p className="mb-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             {T("incomePerformance")}
           </p>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">{T("earnings")}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{T("earnings")}</h1>
 
-          <div className="mt-5 rounded-2xl border border-white/[0.08] bg-card-dark p-5 shadow-lg">
-            <p className="flex items-center gap-1.5 text-xs font-semibold tracking-widest text-white/40 uppercase">
+          <div className="mt-5 rounded-2xl border border-border bg-card p-5 shadow-lg">
+            <p className="flex items-center gap-1.5 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
               <Wallet size={13} /> {T("walletBalance")}
             </p>
-            <p className="mt-2 text-[28px] leading-tight font-extrabold text-white">
+            <p className="mt-2 text-[28px] leading-tight font-extrabold text-foreground">
               {formatCurrency(user?.walletBalance ?? "0")}
             </p>
-            <p className="mt-1 text-[11px] text-white/30">{T("earningsAfterDelivery")}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{T("earningsAfterDelivery")}</p>
             {pendingWithdrawTotal > 0 && (
               <p className="mt-1.5 text-[11px] font-semibold text-warning">
                 Pending payout: {formatCurrency(pendingWithdrawTotal)}
@@ -594,7 +594,7 @@ export default function Earnings() {
         </div>
       </div>
 
-      <div className="space-y-4 px-4 pt-4">
+      <div className="mx-auto w-full max-w-2xl space-y-4 px-4 pt-4">
         <button
           onClick={() => navigate("/earnings/summary")}
           className="flex w-full items-center justify-between rounded-2xl border border-brand/30 bg-brand/10 px-4 py-3 active:opacity-80"
@@ -606,12 +606,12 @@ export default function Earnings() {
           <ChevronDown size={14} className="-rotate-90 text-brand" />
         </button>
 
-        <div className="flex gap-1 rounded-full border border-white/10 bg-card-dark p-1 shadow-sm">
+        <div className="flex gap-1 rounded-full border border-border bg-card p-1 shadow-sm">
           {PERIOD_TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setPeriod(tab.key)}
-              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-black shadow-sm" : "text-[#B0B0B0] hover:text-[#B0B0B0]"}`}
+              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-black shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               {tab.label}
             </button>
@@ -630,8 +630,8 @@ export default function Earnings() {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-3xl border border-white/[0.08] bg-card-dark p-5 shadow-sm">
-                <p className="text-xs font-semibold text-[#B0B0B0]">{T("earnings")}</p>
+              <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+                <p className="text-xs font-semibold text-muted-foreground">{T("earnings")}</p>
                 <p className="mt-1 text-3xl font-extrabold text-success">{formatCurrency(periodData.earnings)}</p>
                 {period === "today" && data?.yesterday != null && (
                   <div className="mt-1 flex items-center gap-1">
@@ -653,15 +653,15 @@ export default function Earnings() {
                   </div>
                 )}
                 {period !== "today" && (
-                  <p className="mt-1 text-xs text-[#B0B0B0]">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {riderKeepPct}% {T("deliveries").toLowerCase()}
                   </p>
                 )}
               </div>
-              <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-                <p className="text-sm font-medium text-[#B0B0B0]">{T("deliveries")}</p>
-                <p className="mt-1 text-3xl font-extrabold text-white">{periodData.deliveries}</p>
-                <p className="mt-1 text-xs text-[#B0B0B0]">{T("completedLabel")}</p>
+              <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+                <p className="text-sm font-medium text-muted-foreground">{T("deliveries")}</p>
+                <p className="mt-1 text-3xl font-extrabold text-foreground">{periodData.deliveries}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{T("completedLabel")}</p>
               </div>
             </div>
 
@@ -670,10 +670,10 @@ export default function Earnings() {
               <Accordion type="single" collapsible>
                 <AccordionItem
                   value="commission"
-                  className="overflow-hidden rounded-2xl border border-white/[0.08] bg-card-dark shadow-sm"
+                  className="overflow-hidden rounded-2xl border border-border bg-card-dark shadow-sm"
                 >
                   <AccordionTrigger className="px-5 py-4 hover:no-underline">
-                    <span className="text-sm font-bold text-white">Commission Breakdown</span>
+                    <span className="text-sm font-bold text-foreground">Commission Breakdown</span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-0 pb-0">
                     {(() => {
@@ -682,14 +682,14 @@ export default function Earnings() {
                       const fee = parseFloat((gross - net).toFixed(2));
                       const feePct = gross > 0 ? Math.round((fee / gross) * 100) : 0;
                       return (
-                        <div className="divide-y divide-white/5">
+                        <div className="divide-y divide-border/30">
                           {[
-                            { label: "Gross Fare", value: formatCurrency(gross), color: "text-white" },
+                            { label: "Gross Fare", value: formatCurrency(gross), color: "text-foreground" },
                             { label: `Platform Fee (${feePct}%)`, value: `−${formatCurrency(fee)}`, color: "text-error/70" },
                             { label: "You Keep", value: formatCurrency(net), color: "text-success font-extrabold" },
                           ].map((row) => (
                             <div key={row.label} className="flex items-center justify-between px-5 py-3.5">
-                              <span className="text-sm text-[#B0B0B0]">{row.label}</span>
+                              <span className="text-sm text-muted-foreground">{row.label}</span>
                               <span className={`text-sm font-bold ${row.color}`}>{row.value}</span>
                             </div>
                           ))}
@@ -706,11 +706,11 @@ export default function Earnings() {
         {/* 7-day earnings bar chart */}
         <EarningsBarChart transactions={chartTxs} currency={currency} />
 
-        <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div>
-              <p className="flex items-center gap-1.5 text-sm font-bold text-white">
-                <Target size={14} className="text-white" />
+              <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
+                <Target size={14} className="text-foreground" />
                 {T("dailyGoal")}
                 {isPersonalGoal && (
                   <span className="rounded-full bg-brand px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-black uppercase">
@@ -718,21 +718,21 @@ export default function Earnings() {
                   </span>
                 )}
               </p>
-              <p className="mt-0.5 text-xs text-[#B0B0B0]">
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 Target: {formatCurrency(dailyGoal)}/day
               </p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={openGoalModal}
-                className="rounded-xl bg-border-dark p-1.5 text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A] active:bg-white/15"
+                className="rounded-xl bg-border-dark p-1.5 text-muted-foreground transition-colors hover:bg-muted active:bg-muted"
                 aria-label="Edit daily goal"
               >
                 <Pencil size={13} />
               </button>
               <div className="text-right">
-                <p className="text-lg font-extrabold text-white">{todayPct}%</p>
-                <p className="text-xs text-[#B0B0B0]">
+                <p className="text-lg font-extrabold text-foreground">{todayPct}%</p>
+                <p className="text-xs text-muted-foreground">
                   {formatCurrency(data?.today?.earnings || 0)}
                 </p>
               </div>
@@ -749,53 +749,53 @@ export default function Earnings() {
               <CheckCircle size={12} /> {T("dailyGoalReached")}
             </p>
           ) : (
-            <p className="mt-2.5 text-xs text-[#B0B0B0]">
+            <p className="mt-2.5 text-xs text-muted-foreground">
               {formatCurrency(dailyGoal - (data?.today?.earnings || 0))} {T("moreToGoal")}
             </p>
           )}
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-          <p className="mb-3.5 flex items-center gap-1.5 text-sm font-bold text-white">
-            <BarChart2 size={14} className="text-white" /> {T("performance")}
+        <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+          <p className="mb-3.5 flex items-center gap-1.5 text-sm font-bold text-foreground">
+            <BarChart2 size={14} className="text-foreground" /> {T("performance")}
           </p>
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-page-bg p-4 text-center">
-              <p className="text-2xl font-extrabold text-white">{totalDeliveries}</p>
-              <p className="mt-1 flex items-center justify-center gap-1 text-xs font-semibold text-[#B0B0B0]">
+            <div className="rounded-2xl bg-background p-4 text-center">
+              <p className="text-2xl font-extrabold text-foreground">{totalDeliveries}</p>
+              <p className="mt-1 flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
                 <ClipboardList size={11} /> {T("totalDeliveries")}
               </p>
             </div>
-            <div className="rounded-2xl bg-page-bg p-4 text-center">
-              <p className="text-2xl font-extrabold text-white">
+            <div className="rounded-2xl bg-background p-4 text-center">
+              <p className="text-2xl font-extrabold text-foreground">
                 {formatCurrency(avgPerDelivery)}
               </p>
-              <p className="mt-1 flex items-center justify-center gap-1 text-xs font-semibold text-[#B0B0B0]">
+              <p className="mt-1 flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
                 <TrendingUp size={11} /> {T("avgPerDelivery")}
               </p>
             </div>
-            <div className="rounded-2xl bg-page-bg p-4 text-center">
-              <p className="text-2xl font-extrabold text-white">
+            <div className="rounded-2xl bg-background p-4 text-center">
+              <p className="text-2xl font-extrabold text-foreground">
                 {formatCurrency(totalEarnings)}
               </p>
-              <p className="mt-1 flex items-center justify-center gap-1 text-xs font-semibold text-[#B0B0B0]">
+              <p className="mt-1 flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
                 <CreditCard size={11} /> {T("allTimeEarned")}
               </p>
             </div>
-            <div className="rounded-2xl bg-page-bg p-4 text-center">
+            <div className="rounded-2xl bg-background p-4 text-center">
               <div className="flex items-center justify-center gap-1">
-                <p className="text-2xl font-extrabold text-white">{rating.toFixed(1)}</p>
+                <p className="text-2xl font-extrabold text-foreground">{rating.toFixed(1)}</p>
                 <Star size={18} className="fill-yellow-400 text-yellow-400" />
               </div>
-              <p className="mt-1 text-xs font-semibold text-[#B0B0B0]">{ratingLabel}</p>
+              <p className="mt-1 text-xs font-semibold text-muted-foreground">{ratingLabel}</p>
             </div>
           </div>
         </div>
 
         {!isLoading && !isError && periodData.breakdown && (
-          <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-5 shadow-sm">
-            <p className="mb-4 flex items-center gap-1.5 text-sm font-bold text-white">
-              <BarChart2 size={14} className="text-white" /> {T("byServiceType")}
+          <div className="rounded-2xl border border-border bg-card-dark p-5 shadow-sm">
+            <p className="mb-4 flex items-center gap-1.5 text-sm font-bold text-foreground">
+              <BarChart2 size={14} className="text-foreground" /> {T("byServiceType")}
             </p>
             {(() => {
               const bd = periodData.breakdown;
@@ -845,8 +845,8 @@ export default function Earnings() {
                         <p className={`text-sm font-extrabold ${item.text}`}>
                           {formatCurrency(item.earnings)}
                         </p>
-                        <p className="text-[9px] font-semibold text-[#B0B0B0]">{item.count} jobs · {item.label}</p>
-                        <div className="h-1 w-full rounded-full bg-white/10 overflow-hidden">
+                        <p className="text-[9px] font-semibold text-muted-foreground">{item.count} jobs · {item.label}</p>
+                        <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
                           <div className={`h-1 rounded-full ${item.bar}`} style={{ width: `${pct}%` }} />
                         </div>
                       </div>
@@ -862,10 +862,10 @@ export default function Earnings() {
           <Accordion type="single" collapsible defaultValue="breakdown">
             <AccordionItem
               value="breakdown"
-              className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm"
+              className="overflow-hidden rounded-3xl border border-border bg-card-dark shadow-sm"
             >
               <AccordionTrigger className="bg-card-dark/50 px-5 py-4 hover:no-underline">
-                <span className="text-sm font-bold text-white">
+                <span className="text-sm font-bold text-foreground">
                   {period === "today"
                     ? `${T("today")} Breakdown`
                     : period === "week"
@@ -874,7 +874,7 @@ export default function Earnings() {
                 </span>
               </AccordionTrigger>
               <AccordionContent className="pt-0 pb-0">
-                <div className="divide-y divide-gray-50">
+                <div className="divide-y divide-border/30">
                   {[
                     {
                       label: `${T("totalEarned")} (${riderKeepPct}%)`,
@@ -884,16 +884,16 @@ export default function Earnings() {
                     {
                       label: `${T("deliveries")} ${T("completedLabel")}`,
                       value: String(periodData.deliveries),
-                      color: "text-white",
+                      color: "text-foreground",
                     },
                     {
                       label: T("avgPerDelivery"),
                       value: formatCurrency(avgPerDelivery),
-                      color: "text-white",
+                      color: "text-foreground",
                     },
                   ].map((row) => (
                     <div key={row.label} className="flex items-center justify-between px-5 py-3.5">
-                      <span className="text-sm text-[#B0B0B0]">{row.label}</span>
+                      <span className="text-sm text-muted-foreground">{row.label}</span>
                       <span className={`text-sm font-extrabold ${row.color}`}>{row.value}</span>
                     </div>
                   ))}
@@ -904,10 +904,10 @@ export default function Earnings() {
         )}
 
         {/* Monthly Tax Summary */}
-        <div className="rounded-3xl border border-white/10 bg-card-dark shadow-sm overflow-hidden">
+        <div className="rounded-3xl border border-border bg-card-dark shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 bg-card-dark/50">
-            <p className="flex items-center gap-1.5 text-sm font-bold text-white">
-              <FileText size={14} className="text-white" /> {T("monthlyTaxSummary")}
+            <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
+              <FileText size={14} className="text-foreground" /> {T("monthlyTaxSummary")}
             </p>
             <span className="rounded-full bg-brand px-2 py-0.5 text-[9px] font-bold tracking-wider text-black uppercase">
               {T("lastSixMonths")}
@@ -915,22 +915,22 @@ export default function Earnings() {
           </div>
 
           {monthlyLoading ? (
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-border/30">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="flex items-center justify-between px-5 py-3.5">
-                  <div className="h-3 w-20 animate-pulse rounded-full bg-border-dark" />
-                  <div className="h-3 w-16 animate-pulse rounded-full bg-border-dark" />
+                  <div className="h-3 w-20 animate-pulse rounded-full bg-muted" />
+                  <div className="h-3 w-16 animate-pulse rounded-full bg-muted" />
                 </div>
               ))}
             </div>
           ) : monthlyStatements.length === 0 ? (
             <div className="px-5 py-8 text-center">
-              <Calendar size={28} className="mx-auto mb-2 text-[#B0B0B0]" />
-              <p className="text-sm font-bold text-[#B0B0B0]">{T("noMonthlyDataYet")}</p>
-              <p className="mt-0.5 text-xs text-[#B0B0B0]">Complete deliveries to see monthly summaries</p>
+              <Calendar size={28} className="mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm font-bold text-muted-foreground">{T("noMonthlyDataYet")}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Complete deliveries to see monthly summaries</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-50">
+            <div className="divide-y divide-border/30">
               {monthlyStatements.map((m) => {
                 const monthKey = `${m.year}-${String(m.month).padStart(2, "0")}`;
                 const isOpen = expandedMonth === monthKey;
@@ -941,17 +941,17 @@ export default function Earnings() {
                   <div key={monthKey}>
                     <button
                       onClick={() => setExpandedMonth(isOpen ? null : monthKey)}
-                      className="flex w-full items-center justify-between px-5 py-3.5 text-left active:bg-card-dark"
+                      className="flex w-full items-center justify-between px-5 py-3.5 text-left active:bg-muted"
                     >
                       <div className="flex items-center gap-2">
                         {isOpen ? (
-                          <ChevronUp size={14} className="text-[#B0B0B0]" />
+                          <ChevronUp size={14} className="text-muted-foreground" />
                         ) : (
-                          <ChevronDown size={14} className="text-[#B0B0B0]" />
+                          <ChevronDown size={14} className="text-muted-foreground" />
                         )}
                         <div>
-                          <p className="text-sm font-bold text-white">{m.label}</p>
-                          <p className="text-[10px] text-[#B0B0B0]">{m.deliveries} deliveries</p>
+                          <p className="text-sm font-bold text-foreground">{m.label}</p>
+                          <p className="text-[10px] text-muted-foreground">{m.deliveries} deliveries</p>
                         </div>
                       </div>
                       <p className="text-sm font-extrabold text-success">
@@ -960,16 +960,16 @@ export default function Earnings() {
                     </button>
 
                     {isOpen && (
-                      <div className="border-t border-white/5 bg-card-dark/50 px-5 pb-4 pt-3">
+                      <div className="border-t border-border/30 bg-card-dark/50 px-5 pb-4 pt-3">
                         <div className="space-y-2 mb-4">
                           {[
-                            { label: "Gross Earnings", value: formatCurrency(m.grossEarnings), color: "text-white" },
+                            { label: "Gross Earnings", value: formatCurrency(m.grossEarnings), color: "text-foreground" },
                             { label: `Platform Commission (${commPct}%)`, value: `−${formatCurrency(m.commission)}`, color: "text-error" },
                             { label: "Net Earnings", value: formatCurrency(m.netEarnings), color: "text-success" },
-                            { label: "Deliveries Completed", value: String(m.deliveries), color: "text-white" },
+                            { label: "Deliveries Completed", value: String(m.deliveries), color: "text-foreground" },
                           ].map((row) => (
                             <div key={row.label} className="flex items-center justify-between">
-                              <span className="text-xs text-[#B0B0B0]">{row.label}</span>
+                              <span className="text-xs text-muted-foreground">{row.label}</span>
                               <span className={`text-xs font-extrabold ${row.color}`}>{row.value}</span>
                             </div>
                           ))}
@@ -1042,28 +1042,28 @@ export default function Earnings() {
 
       {showGoalModal && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center">
-          <div className="w-full max-w-sm rounded-t-3xl bg-card-dark p-6 shadow-2xl sm:rounded-3xl">
+          <div className="w-full max-w-sm rounded-t-3xl bg-card p-6 shadow-2xl sm:rounded-3xl">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-extrabold text-white">{T("setDailyGoalTitle")}</h3>
-                <p className="mt-0.5 text-xs text-[#B0B0B0]">
+                <h3 className="text-base font-extrabold text-foreground">{T("setDailyGoalTitle")}</h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   Admin default: {formatCurrency(adminDailyGoal)}/day
                 </p>
               </div>
               <button
                 onClick={() => setShowGoalModal(false)}
-                className="rounded-xl bg-border-dark p-2 text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A]"
+                className="rounded-xl bg-muted p-2 text-muted-foreground transition-colors hover:bg-muted"
               >
                 <X size={16} />
               </button>
             </div>
 
             <div className="mb-4">
-              <label className="mb-1.5 block text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+              <label className="mb-1.5 block text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 Your Personal Goal ({currency})
               </label>
-              <div className="flex items-center overflow-hidden rounded-2xl border-2 border-white/10 transition-colors focus-within:border-white/20">
-                <span className="px-3 text-sm font-bold text-[#B0B0B0]">{currency}</span>
+              <div className="flex items-center overflow-hidden rounded-2xl border-2 border-border transition-colors focus-within:border-brand/50">
+                <span className="px-3 text-sm font-bold text-muted-foreground">{currency}</span>
                 <input
                   type="number"
                   min="1"
@@ -1097,11 +1097,11 @@ export default function Earnings() {
                     }
                   }}
                   placeholder={String(Math.round(adminDailyGoal))}
-                  className="flex-1 bg-transparent py-3 pr-3 text-lg font-extrabold text-white outline-none"
+                  className="flex-1 bg-transparent py-3 pr-3 text-lg font-extrabold text-foreground outline-none"
                   autoFocus
                 />
               </div>
-              <p className="mt-1.5 text-xs text-[#B0B0B0]">
+              <p className="mt-1.5 text-xs text-muted-foreground">
                 Leave blank to use the admin default ({formatCurrency(adminDailyGoal)}).
               </p>
             </div>
@@ -1113,7 +1113,7 @@ export default function Earnings() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowGoalModal(false)}
-                className="flex-1 rounded-2xl border border-white/10 py-3 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-card-dark"
+                className="flex-1 rounded-2xl border border-border py-3 text-sm font-bold text-muted-foreground transition-colors hover:bg-muted"
               >
                 Cancel
               </button>
