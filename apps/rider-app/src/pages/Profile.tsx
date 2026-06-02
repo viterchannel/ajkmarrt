@@ -1044,7 +1044,7 @@ export default function Profile() {
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
               </div>
             ) : (
-              <div className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-page-bg bg-card-dark shadow">
+              <div className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-page-bg bg-card shadow">
                 <Camera size={11} className="text-foreground/70" />
               </div>
             )}

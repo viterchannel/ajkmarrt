@@ -7,11 +7,11 @@ export function SkeletonProfile() {
   return (
     <div className="min-h-screen bg-page-bg dark:bg-surface">
       <div
-        className="rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-24"
+        className="rounded-b-[2rem] page-header-gradient bg-card px-5 pb-24"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       />
       <div className="-mt-20 space-y-4 px-4">
-        <div className="rounded-3xl bg-card-dark p-5 shadow-lg">
+        <div className="rounded-3xl bg-card p-5 shadow-lg">
           <div className="flex items-start gap-4">
             <ShimmerBlock className="h-16 w-16 rounded-2xl" />
             <div className="flex-1 space-y-2">
@@ -49,13 +49,13 @@ export function InfoRow({
   icon?: React.ReactElement;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-white/5 px-5 py-3.5 last:border-0">
-      <span className="flex flex-shrink-0 items-center gap-2 text-xs font-semibold text-[#B0B0B0]">
+    <div className="flex items-center justify-between gap-3 border-b border-border/30 px-5 py-3.5 last:border-0">
+      <span className="flex flex-shrink-0 items-center gap-2 text-xs font-semibold text-muted-foreground">
         {icon}
         {label}
       </span>
       <span
-        className={`text-right text-sm font-semibold ${value ? "text-white" : "text-xs text-[#B0B0B0] italic"}`}
+        className={`text-right text-sm font-semibold ${value ? "text-white" : "text-xs text-muted-foreground italic"}`}
       >
         {value || empty || "—"}
       </span>

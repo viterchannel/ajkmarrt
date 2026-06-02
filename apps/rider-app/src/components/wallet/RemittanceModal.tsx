@@ -29,7 +29,7 @@ import {
 import type { PayMethod } from "./WithdrawModal";
 const log = createLogger("[RemittanceModal]");
 const INPUT =
-  "w-full h-12 px-4 bg-card-dark border border-white/10 rounded-xl text-sm focus:outline-none focus:border-blue-400 focus:bg-card-dark transition-colors";
+  "w-full h-12 px-4 bg-card border border-border rounded-xl text-sm focus:outline-none focus:border-blue-400 focus:bg-card transition-colors";
 
 function MethodLogo({ id }: { id: string }) {
   if (id === "jazzcash") return <Smartphone size={28} className="text-error" />;
@@ -179,11 +179,11 @@ export default function RemittanceModal({
       aria-label={T("remitCodCash")}
     >
       <div
-        className="flex max-h-[93vh] w-full max-w-md flex-col rounded-t-3xl bg-card-dark shadow-2xl"
+        className="flex max-h-[93vh] w-full max-w-md flex-col rounded-t-3xl bg-card shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-shrink-0 justify-center pt-3 pb-1">
-          <div className="h-1 w-10 rounded-full bg-border-dark" />
+          <div className="h-1 w-10 rounded-full bg-muted" />
         </div>
         {step !== "done" && stepIdx >= 0 && (
           <div className="flex-shrink-0 px-6 pb-3">
@@ -191,11 +191,11 @@ export default function RemittanceModal({
               {STEP_LABELS.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 flex-1 rounded-full transition-all ${i <= stepIdx ? "bg-blue-500" : "bg-border-dark"}`}
+                  className={`h-1 flex-1 rounded-full transition-all ${i <= stepIdx ? "bg-blue-500" : "bg-muted"}`}
                 />
               ))}
             </div>
-            <p className="mt-1 text-right text-[10px] text-[#B0B0B0]">
+            <p className="mt-1 text-right text-[10px] text-muted-foreground">
               {T("step")} {stepIdx + 1}/{STEP_LABELS.length}
             </p>
           </div>
@@ -208,24 +208,24 @@ export default function RemittanceModal({
                 <CheckCircle size={52} className="text-blue-500" />
               </div>
               <h3 className="text-2xl font-extrabold text-white">{T("remittanceSubmitted")}</h3>
-              <p className="mt-2 text-sm text-[#B0B0B0]">{T("remittanceAdminVerify")}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{T("remittanceAdminVerify")}</p>
               <div className="mt-5 space-y-3 rounded-2xl bg-blue-500/10 p-5 text-left">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("methodLabel")}</span>
+                  <span className="text-muted-foreground">{T("methodLabel")}</span>
                   <span className="flex items-center gap-1.5 font-bold">
                     <MethodLogo id={method?.id ?? ""} /> {method?.label}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("toAccount")}</span>
+                  <span className="text-muted-foreground">{T("toAccount")}</span>
                   <span className="font-mono font-bold">{acNo}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("txRef")}</span>
+                  <span className="text-muted-foreground">{T("txRef")}</span>
                   <span className="font-mono font-bold">{txId}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-blue-100 pt-2">
-                  <span className="font-semibold text-[#B0B0B0]">{T("amountRemitted")}</span>
+                  <span className="font-semibold text-muted-foreground">{T("amountRemitted")}</span>
                   <span className="text-2xl font-extrabold text-blue-400">
                     {fc(Number(amount))}
                   </span>
@@ -247,27 +247,27 @@ export default function RemittanceModal({
           {step === "confirm" && (
             <div className="p-6">
               <h3 className="mb-1 text-xl font-extrabold text-white">{T("confirmRemittance")}</h3>
-              <p className="mb-5 text-sm text-[#B0B0B0]">{T("reviewConfirm")}</p>
+              <p className="mb-5 text-sm text-muted-foreground">{T("reviewConfirm")}</p>
               <div className="mb-4 space-y-3 rounded-2xl border border-blue-100 bg-blue-500/10 p-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#B0B0B0]">{T("amountLabel")}</span>
+                  <span className="text-sm text-muted-foreground">{T("amountLabel")}</span>
                   <span className="text-3xl font-extrabold text-blue-400">
                     {fc(Number(amount))}
                   </span>
                 </div>
                 <div className="h-px bg-blue-500/15" />
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("methodLabel")}</span>
+                  <span className="text-muted-foreground">{T("methodLabel")}</span>
                   <span className="flex items-center gap-1.5 font-bold">
                     <MethodLogo id={method?.id ?? ""} /> {method?.label}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("toAccount")}</span>
+                  <span className="text-muted-foreground">{T("toAccount")}</span>
                   <span className="font-mono font-bold">{acNo}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("txRef")}</span>
+                  <span className="text-muted-foreground">{T("txRef")}</span>
                   <span className="font-mono font-bold">{txId}</span>
                 </div>
               </div>
@@ -284,7 +284,7 @@ export default function RemittanceModal({
                     setErr("");
                   }}
                   aria-label={T("edit")}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-white/10 py-3 text-sm font-bold text-[#B0B0B0]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-border py-3 text-sm font-bold text-muted-foreground"
                 >
                   <ArrowLeft size={14} /> {T("edit")}
                 </button>
@@ -314,7 +314,7 @@ export default function RemittanceModal({
               <button
                 onClick={() => setStep("method")}
                 aria-label={T("back")}
-                className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#B0B0B0]"
+                className="mb-4 flex items-center gap-1 text-sm font-semibold text-muted-foreground"
               >
                 <ArrowLeft size={14} /> {T("back")}
               </button>
@@ -360,7 +360,7 @@ export default function RemittanceModal({
 
               <div className="space-y-3">
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("amountLabel")} ({currencySymbol}) *
                   </p>
                   <input
@@ -379,7 +379,7 @@ export default function RemittanceModal({
                   />
                 </div>
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {method.id === "bank" ? T("yourAccountNoSender") : T("yourPhoneSender")} *
                   </p>
                   <input
@@ -394,7 +394,7 @@ export default function RemittanceModal({
                   />
                 </div>
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("txReference")} *
                   </p>
                   <input
@@ -407,10 +407,10 @@ export default function RemittanceModal({
                     aria-label={T("txReference")}
                     className={INPUT}
                   />
-                  <p className="mt-1 text-[10px] text-[#B0B0B0]">{T("txIdFromSms")}</p>
+                  <p className="mt-1 text-[10px] text-muted-foreground">{T("txIdFromSms")}</p>
                 </div>
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("bonusCodeOptional")}
                   </p>
                   <input
@@ -423,10 +423,10 @@ export default function RemittanceModal({
                     aria-label={T("bonusCodeOptional")}
                     className={INPUT}
                   />
-                  <p className="mt-1 text-[10px] text-[#B0B0B0]">{T("bonusCodeHint")}</p>
+                  <p className="mt-1 text-[10px] text-muted-foreground">{T("bonusCodeHint")}</p>
                 </div>
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("noteOptional")}
                   </p>
                   <input
@@ -461,7 +461,7 @@ export default function RemittanceModal({
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0]"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                 >
                   <X size={18} />
                 </button>
@@ -480,7 +480,7 @@ export default function RemittanceModal({
                   </div>
                 </div>
               ) : null}
-              <p className="mb-4 text-sm text-[#B0B0B0]">{T("selectMethodPrompt")}</p>
+              <p className="mb-4 text-sm text-muted-foreground">{T("selectMethodPrompt")}</p>
               {loadingMethods ? (
                 <div className="space-y-3">
                   {[1, 2].map((i) => (
@@ -500,16 +500,16 @@ export default function RemittanceModal({
                       key={m.id}
                       onClick={() => goToDetails(m)}
                       aria-label={m.label}
-                      className="flex w-full items-center gap-4 rounded-2xl border-2 border-white/10 bg-card-dark p-4 text-left transition-all hover:border-blue-400 hover:bg-blue-500/10 active:scale-[0.98]"
+                      className="flex w-full items-center gap-4 rounded-2xl border-2 border-border bg-card p-4 text-left transition-all hover:border-blue-400 hover:bg-blue-500/10 active:scale-[0.98]"
                     >
-                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-card-dark shadow-sm">
+                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-card shadow-sm">
                         <MethodLogo id={m.id} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="font-extrabold text-white">{m.label}</p>
-                        <p className="mt-0.5 text-xs text-[#B0B0B0]">{m.description}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{m.description}</p>
                       </div>
-                      <ChevronRight size={20} className="text-[#B0B0B0]" />
+                      <ChevronRight size={20} className="text-muted-foreground" />
                     </button>
                   ))}
                 </div>

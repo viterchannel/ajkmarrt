@@ -352,7 +352,7 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
             </svg>
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white/90">{tDual("accessDeniedTitle", language)}</h2>
+            <h2 className="text-lg font-bold text-foreground">{tDual("accessDeniedTitle", language)}</h2>
             <p className="mt-1.5 text-[14px] leading-relaxed text-error/90">{roleError}</p>
           </div>
           <div className="flex flex-col gap-3">
@@ -366,7 +366,7 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
             <button
               onClick={() => navigate("/")}
               aria-label={tDual("backToLanding", language)}
-              className="flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-6 py-3 text-[14px] font-medium text-white/60 transition-all duration-200 hover:bg-white/[0.08] hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+              className="flex w-full items-center justify-center rounded-xl border border-border bg-muted/30 px-6 py-3 text-[14px] font-medium text-muted-foreground transition-all duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/20"
             >
               {tDual("backToLanding", language)}
             </button>
@@ -381,12 +381,12 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
     return (
       <ThemeProvider role="rider">
         <div className="flex min-h-screen flex-col items-center justify-center bg-page-bg px-6">
-          <div className="w-full max-w-sm space-y-6 rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-2xl">
+          <div className="w-full max-w-sm space-y-6 rounded-3xl border border-border bg-card p-8 shadow-2xl">
             <div className="space-y-1 text-center">
-              <p className="text-2xl font-black text-white">
+              <p className="text-2xl font-black text-foreground">
                 {tDual("twoFactorRequired", language)}
               </p>
-              <p className="text-sm text-white/50">{tDual("subtitleTotp", language)}</p>
+              <p className="text-sm text-muted-foreground">{tDual("subtitleTotp", language)}</p>
             </div>
             <input
               type="text"
@@ -397,7 +397,7 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
               onChange={(e) => setSocialTotpCode(e.target.value.replace(/\D/g, ""))}
               placeholder="000000"
               aria-label={tDual("enterTotpCode", language)}
-              className="w-full rounded-2xl border border-white/10 bg-white/[0.08] px-4 py-3 text-center text-2xl font-mono tracking-[0.4em] text-white placeholder-white/20 outline-none focus:border-white/30 focus:ring-0"
+              className="w-full rounded-2xl border border-border bg-muted/20 px-4 py-3 text-center text-2xl font-mono tracking-[0.4em] text-foreground placeholder-muted-foreground/30 outline-none focus:border-brand/40 focus:ring-0"
             />
             {socialTotpError && (
               <p className="text-center text-sm text-error" role="alert">{socialTotpError}</p>
@@ -413,7 +413,7 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
             <button
               onClick={() => { setPendingTwoFactor(null); setSocialTotpCode(""); setSocialTotpError(null); }}
               aria-label={tDual("back", language)}
-              className="w-full text-center text-sm text-white/40 hover:text-white/60"
+              className="w-full text-center text-sm text-muted-foreground hover:text-foreground"
             >
               {tDual("back", language)}
             </button>

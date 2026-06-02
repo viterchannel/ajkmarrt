@@ -199,7 +199,7 @@ export function HomeAlertCenter({
           {onRetryConnect && (
             <button
               onClick={onRetryConnect}
-              className="ml-1 rounded bg-card-dark/20 px-2 py-0.5 text-[10px] font-extrabold text-white hover:bg-card-dark/30"
+              className="ml-1 rounded bg-card/20 px-2 py-0.5 text-[10px] font-extrabold text-white hover:bg-card/30"
               aria-label="Retry connection"
             >
               Retry sync
@@ -218,7 +218,7 @@ export function HomeAlertCenter({
           <span className="truncate">{zoneWarning}</span>
           <button
             onClick={onDismissZone}
-            className="ml-1 flex-shrink-0 rounded-full bg-card-dark/20 p-0.5"
+            className="ml-1 flex-shrink-0 rounded-full bg-card/20 p-0.5"
             aria-label="Dismiss zone warning"
           >
             <X size={11} />
@@ -241,7 +241,7 @@ export function HomeAlertCenter({
 
       {/* ── Alert Center (collapsible secondary alerts) ── */}
       {hasAnyAlert && (
-        <div className="rounded-2xl border border-white/10 bg-card-dark shadow-sm">
+        <div className="rounded-2xl border border-border bg-card shadow-sm">
           {/* Header with bell + count */}
           <button
             onClick={() => setCollapsed(!collapsed)}
@@ -260,7 +260,7 @@ export function HomeAlertCenter({
             <span className={`text-xs font-bold ${criticalCount > 0 ? "text-error" : "text-warning"}`}>
               {criticalCount > 0 ? `${criticalCount} critical alert${criticalCount > 1 ? "s" : ""}` : `${totalCount} alert${totalCount > 1 ? "s" : ""}`}
             </span>
-            <span className="ml-auto text-white/40">
+            <span className="ml-auto text-muted-foreground">
               {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
             </span>
           </button>
@@ -321,7 +321,7 @@ export function HomeAlertCenter({
               {hasMoreAlerts && (
                 <button
                   onClick={() => setShowAllAlerts(!showAllAlerts)}
-                  className="w-full text-center text-[10px] font-bold text-white/40 underline underline-offset-2"
+                  className="w-full text-center text-[10px] font-bold text-muted-foreground underline underline-offset-2"
                 >
                   {showAllAlerts ? "Show fewer alerts" : `+ ${alerts.length - 2} more alerts`}
                 </button>
@@ -341,7 +341,7 @@ export function HomeAlertCenter({
           <span className="flex-1">Screen may sleep — keep app open for uninterrupted deliveries.</span>
           <button
             onClick={onDismissWakeLock}
-            className="flex-shrink-0 rounded-full bg-card-dark/20 p-0.5"
+            className="flex-shrink-0 rounded-full bg-card/20 p-0.5"
             aria-label="Dismiss wake lock warning"
           >
             <X size={11} />

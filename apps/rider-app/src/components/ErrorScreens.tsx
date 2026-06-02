@@ -35,7 +35,7 @@ export function ErrorScreen({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-3xl border border-white/10 bg-card-dark p-7 shadow-2xl">
+      <div className="w-full max-w-sm rounded-3xl border border-border bg-card p-7 shadow-2xl">
         {/* Icon container */}
         <div
           className={`mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border ${severityClasses[severity]}`}
@@ -48,7 +48,7 @@ export function ErrorScreen({
 
         {/* Message */}
         {message && (
-          <p className="mb-6 text-center text-sm text-white/60">{message}</p>
+          <p className="mb-6 text-center text-sm text-muted-foreground">{message}</p>
         )}
 
         {/* Action button */}

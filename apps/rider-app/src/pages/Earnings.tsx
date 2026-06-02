@@ -203,9 +203,9 @@ function CompletedRidesList({
   };
 
   return (
-    <div className="rounded-3xl border border-border bg-card-dark shadow-sm overflow-hidden">
+    <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 bg-card-dark/50">
+      <div className="flex items-center justify-between px-5 py-4 bg-card">
         <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
           <Receipt size={14} className="text-foreground" /> Completed Rides
         </p>
@@ -373,27 +373,27 @@ function SkeletonEarnings() {
   return (
     <>
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2 rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+        <div className="space-y-2 rounded-3xl border border-border bg-card p-5 shadow-sm">
           <ShimmerBlock className="h-3 w-16 rounded-full" />
           <ShimmerBlock className="h-8 w-28 rounded-full" />
           <ShimmerBlock className="h-2.5 w-20 rounded-full" />
         </div>
-        <div className="space-y-2 rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+        <div className="space-y-2 rounded-3xl border border-border bg-card p-5 shadow-sm">
           <ShimmerBlock className="h-3 w-16 rounded-full" />
           <ShimmerBlock className="h-8 w-12 rounded-full" />
           <ShimmerBlock className="h-2.5 w-16 rounded-full" />
         </div>
       </div>
-      <div className="space-y-3 rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+      <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-sm">
         <ShimmerBlock className="h-3 w-24 rounded-full" />
         <ShimmerBlock className="h-3.5 w-full rounded-full" />
         <ShimmerBlock className="h-2.5 w-28 rounded-full" />
       </div>
-      <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+      <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
         <ShimmerBlock className="mb-3 h-3 w-24 rounded-full" />
         <div className="grid grid-cols-2 gap-3">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="space-y-2 rounded-2xl bg-border-dark p-4">
+            <div key={i} className="space-y-2 rounded-2xl bg-muted p-4">
               <ShimmerBlock className="mx-auto h-6 w-16 rounded-full" />
               <ShimmerBlock className="mx-auto h-2.5 w-20 rounded-full" />
             </div>
@@ -630,7 +630,7 @@ export default function Earnings() {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+              <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
                 <p className="text-xs font-semibold text-muted-foreground">{T("earnings")}</p>
                 <p className="mt-1 text-3xl font-extrabold text-success">{formatCurrency(periodData.earnings)}</p>
                 {period === "today" && data?.yesterday != null && (
@@ -658,7 +658,7 @@ export default function Earnings() {
                   </p>
                 )}
               </div>
-              <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+              <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
                 <p className="text-sm font-medium text-muted-foreground">{T("deliveries")}</p>
                 <p className="mt-1 text-3xl font-extrabold text-foreground">{periodData.deliveries}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{T("completedLabel")}</p>
@@ -670,7 +670,7 @@ export default function Earnings() {
               <Accordion type="single" collapsible>
                 <AccordionItem
                   value="commission"
-                  className="overflow-hidden rounded-2xl border border-border bg-card-dark shadow-sm"
+                  className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm"
                 >
                   <AccordionTrigger className="px-5 py-4 hover:no-underline">
                     <span className="text-sm font-bold text-foreground">Commission Breakdown</span>
@@ -706,7 +706,7 @@ export default function Earnings() {
         {/* 7-day earnings bar chart */}
         <EarningsBarChart transactions={chartTxs} currency={currency} />
 
-        <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div>
               <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
@@ -725,7 +725,7 @@ export default function Earnings() {
             <div className="flex items-center gap-2">
               <button
                 onClick={openGoalModal}
-                className="rounded-xl bg-border-dark p-1.5 text-muted-foreground transition-colors hover:bg-muted active:bg-muted"
+                className="rounded-xl bg-muted p-1.5 text-muted-foreground transition-colors hover:bg-muted active:bg-muted"
                 aria-label="Edit daily goal"
               >
                 <Pencil size={13} />
@@ -738,7 +738,7 @@ export default function Earnings() {
               </div>
             </div>
           </div>
-          <div className="h-3.5 w-full overflow-hidden rounded-full bg-border-dark">
+          <div className="h-3.5 w-full overflow-hidden rounded-full bg-muted">
             <div
               className={`h-3.5 rounded-full transition-all duration-700 ${todayPct >= 100 ? "bg-success" : "bg-white/20"}`}
               style={{ width: `${todayPct}%` }}
@@ -755,7 +755,7 @@ export default function Earnings() {
           )}
         </div>
 
-        <div className="rounded-3xl border border-border bg-card-dark p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
           <p className="mb-3.5 flex items-center gap-1.5 text-sm font-bold text-foreground">
             <BarChart2 size={14} className="text-foreground" /> {T("performance")}
           </p>
@@ -793,7 +793,7 @@ export default function Earnings() {
         </div>
 
         {!isLoading && !isError && periodData.breakdown && (
-          <div className="rounded-2xl border border-border bg-card-dark p-5 shadow-sm">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
             <p className="mb-4 flex items-center gap-1.5 text-sm font-bold text-foreground">
               <BarChart2 size={14} className="text-foreground" /> {T("byServiceType")}
             </p>
@@ -862,9 +862,9 @@ export default function Earnings() {
           <Accordion type="single" collapsible defaultValue="breakdown">
             <AccordionItem
               value="breakdown"
-              className="overflow-hidden rounded-3xl border border-border bg-card-dark shadow-sm"
+              className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
             >
-              <AccordionTrigger className="bg-card-dark/50 px-5 py-4 hover:no-underline">
+              <AccordionTrigger className="bg-card px-5 py-4 hover:no-underline">
                 <span className="text-sm font-bold text-foreground">
                   {period === "today"
                     ? `${T("today")} Breakdown`
@@ -904,8 +904,8 @@ export default function Earnings() {
         )}
 
         {/* Monthly Tax Summary */}
-        <div className="rounded-3xl border border-border bg-card-dark shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 bg-card-dark/50">
+        <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 bg-card">
             <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
               <FileText size={14} className="text-foreground" /> {T("monthlyTaxSummary")}
             </p>
@@ -960,7 +960,7 @@ export default function Earnings() {
                     </button>
 
                     {isOpen && (
-                      <div className="border-t border-border/30 bg-card-dark/50 px-5 pb-4 pt-3">
+                      <div className="border-t border-border/30 bg-card px-5 pb-4 pt-3">
                         <div className="space-y-2 mb-4">
                           {[
                             { label: "Gross Earnings", value: formatCurrency(m.grossEarnings), color: "text-foreground" },

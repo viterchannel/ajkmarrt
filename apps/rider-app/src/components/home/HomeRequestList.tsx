@@ -84,7 +84,7 @@ export function HomeRequestList({
 }: HomeRequestListProps) {
   if (requestsLoading) {
     return (
-      <div className="space-y-px bg-card-dark p-4">
+      <div className="space-y-px bg-card p-4">
         {[0, 1, 2].map((i) => (
           <div key={i} className="flex items-start gap-3 rounded-2xl p-3">
             <ShimmerBlock className="h-11 w-11 flex-shrink-0 rounded-2xl" />
@@ -101,10 +101,10 @@ export function HomeRequestList({
   }
   if (requestsError) {
     return (
-      <div className="bg-card-dark p-8 text-center">
+      <div className="bg-card p-8 text-center">
         <AlertTriangle size={28} className="mx-auto mb-3 text-error" />
-        <p className="text-sm font-bold text-[#B0B0B0]">{T("couldNotLoadRequests")}</p>
-        <p className="mt-1 text-xs text-[#B0B0B0]">{T("checkConnectionTryAgain")}</p>
+        <p className="text-sm font-bold text-muted-foreground">{T("couldNotLoadRequests")}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{T("checkConnectionTryAgain")}</p>
         <button
           onClick={onRetry}
           className="mt-3 text-xs font-bold text-indigo-400 underline focus-visible:ring-2 focus-visible:ring-indigo-600 focus:outline-none rounded"
@@ -116,16 +116,16 @@ export function HomeRequestList({
   }
   if (totalRequests === 0) {
     return (
-      <div className="bg-card-dark p-8 text-center sm:p-10">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-card-dark sm:h-16 sm:w-16">
-          <Bike size={28} className="text-[#B0B0B0]" />
+      <div className="bg-card p-8 text-center sm:p-10">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-card sm:h-16 sm:w-16">
+          <Bike size={28} className="text-muted-foreground" />
         </div>
-        <p className="text-sm font-bold text-[#B0B0B0] sm:text-base">{T("noRequestsNow")}</p>
-        <p className="mt-1.5 text-xs text-[#B0B0B0]">{T("autoRefreshes")}</p>
+        <p className="text-sm font-bold text-muted-foreground sm:text-base">{T("noRequestsNow")}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{T("autoRefreshes")}</p>
         {dismissed.size > 0 && (
           <button
             onClick={onClearDismissed}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-border-dark px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-border-dark"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-muted"
             aria-label={`${T("show")} ${dismissed.size} ${dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}`}
           >
             <Eye size={12} /> {T("show")} {dismissed.size} {dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}
@@ -135,7 +135,7 @@ export function HomeRequestList({
     );
   }
   return (
-    <div className="divide-y divide-gray-100 bg-card-dark">
+    <div className="divide-y divide-gray-100 bg-card">
       {isOffline && (
         <div className="flex items-center gap-2 bg-error/15 px-4 py-2.5 text-xs font-semibold text-error">
           <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-error" />

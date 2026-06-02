@@ -10,7 +10,7 @@ const MiniMapImpl = lazy(() => import("./MiniMapImpl").then((m) => ({ default: m
 
 function MiniMapSkeleton() {
   return (
-    <div className="relative mt-3 h-28 w-full animate-pulse overflow-hidden rounded-2xl border border-white/10 bg-border-dark shadow-inner" />
+    <div className="relative mt-3 h-28 w-full animate-pulse overflow-hidden rounded-2xl border border-border bg-muted shadow-inner" />
   );
 }
 

@@ -223,7 +223,7 @@ export default function Home() {
             <p className="flex-1 truncate text-sm font-extrabold text-white">
               {h.T("youHaveActiveTask")}
             </p>
-            <ChevronRight size={14} className="flex-shrink-0 text-white/80" />
+            <ChevronRight size={14} className="flex-shrink-0 text-muted-foreground" />
           </div>
         </Link>
       )}

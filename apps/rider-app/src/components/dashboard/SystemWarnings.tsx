@@ -80,7 +80,7 @@ export function FixedBanners({
           {onRetryConnect && (
             <button
               onClick={onRetryConnect}
-              className="ml-1 rounded bg-card-dark/20 px-2 py-0.5 text-[10px] font-extrabold text-white hover:bg-card-dark/30 active:bg-card-dark/40"
+              className="ml-1 rounded bg-card/20 px-2 py-0.5 text-[10px] font-extrabold text-white hover:bg-card/30 active:bg-card/40"
               aria-label="Retry connection"
             >
               Retry sync
@@ -104,7 +104,7 @@ export function FixedBanners({
           <span className="truncate">{zoneWarning}</span>
           <button
             onClick={onDismissZone}
-            className="ml-1 flex-shrink-0 rounded-full bg-card-dark/20 p-0.5"
+            className="ml-1 flex-shrink-0 rounded-full bg-card/20 p-0.5"
             aria-label="Dismiss zone warning"
           >
             <X size={11} />
@@ -146,7 +146,7 @@ export function FixedBanners({
           </span>
           <button
             onClick={onDismissWakeLock}
-            className="flex-shrink-0 rounded-full bg-card-dark/20 p-0.5"
+            className="flex-shrink-0 rounded-full bg-card/20 p-0.5"
             aria-label="Dismiss wake lock warning"
           >
             <X size={11} />
@@ -291,8 +291,8 @@ export function InlineWarnings({
               </div>
               {cancelRate != null && (
                 <div className="mt-2.5 flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-1.5 rounded-xl border border-warning/40 bg-card-dark/90 px-2.5 py-1.5">
-                    <span className="text-[10px] font-semibold text-[#B0B0B0]">Cancel rate</span>
+                  <div className="flex items-center gap-1.5 rounded-xl border border-warning/40 bg-card/90 px-2.5 py-1.5">
+                    <span className="text-[10px] font-semibold text-muted-foreground">Cancel rate</span>
                     <span
                       className={`text-[10px] font-extrabold ${cancelRate > 20 ? "text-error" : "text-warning"}`}
                     >

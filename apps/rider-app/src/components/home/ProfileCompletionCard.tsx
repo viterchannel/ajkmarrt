@@ -93,7 +93,7 @@ export function ProfileCompletionCard({
   };
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-card-dark overflow-hidden">
+    <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-3 px-4 py-3 text-left"
@@ -101,10 +101,10 @@ export function ProfileCompletionCard({
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
-            <p className="text-[11px] font-bold text-white/60 uppercase tracking-wider">
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               Profile {profilePct}% complete
             </p>
-            <span className="text-[10px] font-medium text-white/30">
+            <span className="text-[10px] font-medium text-muted-foreground">
               {profileDone}/{profileTotal}
             </span>
           </div>
@@ -115,7 +115,7 @@ export function ProfileCompletionCard({
             />
           </div>
           {!expanded && firstIncomplete && (
-            <p className="mt-1.5 text-[10px] text-white/40 truncate">
+            <p className="mt-1.5 text-[10px] text-muted-foreground truncate">
               Next: {firstIncomplete.hint}
             </p>
           )}
@@ -123,15 +123,15 @@ export function ProfileCompletionCard({
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={handleDismiss}
-            className="rounded p-0.5 text-white/30 hover:text-white/60"
+            className="rounded p-0.5 text-muted-foreground hover:text-muted-foreground"
             aria-label="Dismiss"
           >
             <X size={12} />
           </button>
           {expanded ? (
-            <ChevronUp size={14} className="text-white/30" />
+            <ChevronUp size={14} className="text-muted-foreground" />
           ) : (
-            <ChevronDown size={14} className="text-white/30" />
+            <ChevronDown size={14} className="text-muted-foreground" />
           )}
         </div>
       </button>
@@ -141,7 +141,7 @@ export function ProfileCompletionCard({
           {itemsWithStatus.map((item) => (
             <div
               key={item.key}
-              className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2.5"
+              className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-white/[0.03] px-3 py-2.5"
             >
               <div className="flex items-start gap-2.5 min-w-0">
                 <span
@@ -152,13 +152,13 @@ export function ProfileCompletionCard({
                 <div className="min-w-0 flex-1">
                   <p
                     className={`text-[11px] font-semibold leading-tight ${
-                      item.done ? "text-success" : "text-white/70"
+                      item.done ? "text-success" : "text-muted-foreground"
                     }`}
                   >
                     {item.label}
                   </p>
                   {!item.done && (
-                    <p className="text-[10px] text-white/30 truncate mt-0.5">{item.hint}</p>
+                    <p className="text-[10px] text-muted-foreground truncate mt-0.5">{item.hint}</p>
                   )}
                 </div>
               </div>

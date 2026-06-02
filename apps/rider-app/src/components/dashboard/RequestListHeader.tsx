@@ -13,7 +13,7 @@ export const RequestListHeader = memo(function RequestListHeader({
 }: RequestListHeaderProps) {
   return (
     <div
-      className={`flex items-center justify-between px-4 py-3.5 ${totalRequests > 0 ? "bg-gradient-to-r from-warning via-warning to-brand-hover" : "bg-card-dark"}`}
+      className={`flex items-center justify-between px-4 py-3.5 ${totalRequests > 0 ? "bg-gradient-to-r from-warning via-warning to-brand-hover" : "bg-card"}`}
     >
       <div className="flex items-center gap-2.5">
         {totalRequests > 0 ? (
@@ -21,18 +21,18 @@ export const RequestListHeader = memo(function RequestListHeader({
             <Zap size={14} className="text-white" />
           </div>
         ) : (
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10">
-            <Radio size={14} className="text-white/70" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/40">
+            <Radio size={14} className="text-muted-foreground" />
           </div>
         )}
         <div>
-          <p className="text-sm font-extrabold tracking-tight text-white">
+          <p className={`text-sm font-extrabold tracking-tight ${totalRequests > 0 ? "text-white" : "text-foreground"}`}>
             {totalRequests > 0
               ? `${totalRequests} Request${totalRequests > 1 ? "s" : ""} Available`
               : T("listeningForRequests")}
           </p>
           {totalRequests > 0 && (
-            <p className="text-[10px] font-medium text-white/60">Tap to accept</p>
+            <p className="text-[10px] font-medium text-muted-foreground">Tap to accept</p>
           )}
         </div>
       </div>

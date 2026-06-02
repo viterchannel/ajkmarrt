@@ -22,7 +22,7 @@ export function ActiveStepper({ steps, currentStep, icons }: ActiveStepperProps)
                     ? "border-success bg-success text-white shadow-sm"
                     : active
                       ? "border-brand bg-brand text-black shadow-sm ring-4 ring-brand/20"
-                      : "border-white/20 bg-card-dark text-white/30"
+                      : "border-border bg-card text-muted-foreground"
                 }`}
               >
                 {done ? (
@@ -35,7 +35,7 @@ export function ActiveStepper({ steps, currentStep, icons }: ActiveStepperProps)
               </div>
               <p
                 className={`max-w-[64px] text-center text-[9px] font-bold leading-tight ${
-                  i <= currentStep ? "text-white" : "text-white/30"
+                  i <= currentStep ? "text-white" : "text-muted-foreground"
                 }`}
               >
                 {label}

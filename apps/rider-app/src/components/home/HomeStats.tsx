@@ -32,7 +32,7 @@ export function HomeStats({
 
   const ratingColor =
     !hasRides || rating == null || rating === 0
-      ? "text-white/25"
+      ? "text-muted-foreground"
       : rating >= 4.5
         ? "text-success"
         : rating >= 3.5
@@ -41,7 +41,7 @@ export function HomeStats({
 
   const acceptColor =
     !hasRides || acceptanceRate == null
-      ? "text-white/25"
+      ? "text-muted-foreground"
       : acceptanceRate >= 80
         ? "text-success"
         : acceptanceRate >= 60
@@ -52,7 +52,7 @@ export function HomeStats({
     <div className="space-y-2">
       {/* Section header */}
       <div className="flex items-center justify-between px-0.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
           Today's Performance
         </p>
       </div>
@@ -62,7 +62,7 @@ export function HomeStats({
         {/* Earnings card */}
         <div
           className={`animate-[slideUp_0.3s_ease-out] rounded-2xl border p-3 text-center backdrop-blur-sm ${
-            todayEarned > 0 ? "bg-success/[0.08] border-success/15" : "bg-white/[0.04] border-white/[0.08]"
+            todayEarned > 0 ? "bg-success/[0.08] border-success/15" : "bg-white/[0.04] border-border/80"
           }`}
           style={{ animationDelay: "0ms", animationFillMode: "both" }}
           role="listitem"
@@ -75,14 +75,14 @@ export function HomeStats({
           <p className={`text-xs font-extrabold leading-tight ${todayEarned > 0 ? "text-success" : "text-white"}`}>
             {formatCurrency(todayEarned, currency)}
           </p>
-          <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/25">
+          <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
             {T("earnedToday")}
           </p>
         </div>
 
         {/* Rides done card */}
         <div
-          className="animate-[slideUp_0.3s_ease-out] rounded-2xl border bg-white/[0.04] border-white/[0.08] p-3 text-center backdrop-blur-sm"
+          className="animate-[slideUp_0.3s_ease-out] rounded-2xl border bg-white/[0.04] border-border/80 p-3 text-center backdrop-blur-sm"
           style={{ animationDelay: "60ms", animationFillMode: "both" }}
           role="listitem"
         >
@@ -92,7 +92,7 @@ export function HomeStats({
             </div>
           </div>
           <p className="text-xs font-extrabold leading-tight text-white">{todayRides}</p>
-          <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/25">
+          <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
             {T("ridesDone")}
           </p>
         </div>
@@ -100,11 +100,11 @@ export function HomeStats({
         {/* When no rides: merged empty-state card for acceptance + rating */}
         {!hasRides ? (
           <div
-            className="col-span-2 animate-[slideUp_0.3s_ease-out] rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3 text-center backdrop-blur-sm"
+            className="col-span-2 animate-[slideUp_0.3s_ease-out] rounded-2xl border border-border/60 bg-white/[0.02] p-3 text-center backdrop-blur-sm"
             style={{ animationDelay: "120ms", animationFillMode: "both" }}
             role="listitem"
           >
-            <p className="text-[10px] font-semibold text-white/20">
+            <p className="text-[10px] font-semibold text-muted-foreground">
               Acceptance rate &amp; rating will appear after your first ride today
             </p>
           </div>
@@ -112,7 +112,7 @@ export function HomeStats({
           <>
             {/* Acceptance rate */}
             <div
-              className="animate-[slideUp_0.3s_ease-out] rounded-2xl border bg-white/[0.04] border-white/[0.08] p-3 text-center backdrop-blur-sm"
+              className="animate-[slideUp_0.3s_ease-out] rounded-2xl border bg-white/[0.04] border-border/80 p-3 text-center backdrop-blur-sm"
               style={{ animationDelay: "120ms", animationFillMode: "both" }}
               role="listitem"
             >
@@ -124,14 +124,14 @@ export function HomeStats({
               <p className={`text-xs font-extrabold leading-tight ${acceptColor}`}>
                 {acceptanceRate != null ? `${Math.round(acceptanceRate)}%` : "—"}
               </p>
-              <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/25">
+              <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Accept.
               </p>
             </div>
 
             {/* Rating */}
             <div
-              className="animate-[slideUp_0.3s_ease-out] rounded-2xl border bg-white/[0.04] border-white/[0.08] p-3 text-center backdrop-blur-sm"
+              className="animate-[slideUp_0.3s_ease-out] rounded-2xl border bg-white/[0.04] border-border/80 p-3 text-center backdrop-blur-sm"
               style={{ animationDelay: "180ms", animationFillMode: "both" }}
               role="listitem"
             >
@@ -143,7 +143,7 @@ export function HomeStats({
               <p className={`text-xs font-extrabold leading-tight ${ratingColor}`}>
                 {rating != null && rating > 0 ? rating.toFixed(1) : "—"}
               </p>
-              <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/25">
+              <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Rating
               </p>
             </div>
@@ -156,11 +156,11 @@ export function HomeStats({
         <div className={`flex items-center gap-2.5 rounded-2xl border p-3 backdrop-blur-sm ${
           activeOrderCount >= maxDeliveries
             ? "border-warning/20 bg-warning/[0.05]"
-            : "border-white/[0.06] bg-white/[0.02]"
+            : "border-border/60 bg-white/[0.02]"
         }`}>
-          <Zap size={14} className={`flex-shrink-0 ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-white/30"}`} />
-          <p className="flex-1 text-xs font-medium text-white/40">Active orders</p>
-          <p className={`text-xs font-extrabold ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-white/60"}`}>
+          <Zap size={14} className={`flex-shrink-0 ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-muted-foreground"}`} />
+          <p className="flex-1 text-xs font-medium text-muted-foreground">Active orders</p>
+          <p className={`text-xs font-extrabold ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-muted-foreground"}`}>
             {activeOrderCount} / {maxDeliveries}
           </p>
         </div>

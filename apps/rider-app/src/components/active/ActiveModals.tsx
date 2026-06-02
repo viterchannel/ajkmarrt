@@ -61,19 +61,19 @@ export function PostDeliverySheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md animate-[slideUp_0.3s_ease-out] rounded-t-3xl bg-card-dark px-5 pb-8 pt-5 shadow-2xl">
+      <div className="w-full max-w-md animate-[slideUp_0.3s_ease-out] rounded-t-3xl bg-card px-5 pb-8 pt-5 shadow-2xl">
         <div className="mb-1 flex items-center justify-between">
           <div>
             <p className="text-lg font-black text-white">
               {kind === "order" ? "Order Delivered!" : "Ride Completed!"}
             </p>
-            <p className="text-xs text-[#B0B0B0]">Rate the customer &amp; leave a tip (optional)</p>
+            <p className="text-xs text-muted-foreground">Rate the customer &amp; leave a tip (optional)</p>
           </div>
           <button
             onClick={handleSkip}
-            className="flex h-8 w-8 items-center justify-center rounded-xl bg-border-dark"
+            className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted"
           >
-            <X size={16} className="text-[#B0B0B0]" />
+            <X size={16} className="text-muted-foreground" />
           </button>
         </div>
 
@@ -96,7 +96,7 @@ export function PostDeliverySheet({
                     className={
                       s <= (hovered || rating)
                         ? "fill-yellow-400 text-yellow-400"
-                        : "text-[#B0B0B0]"
+                        : "text-muted-foreground"
                     }
                     fill={s <= (hovered || rating) ? "currentColor" : "none"}
                   />
@@ -122,7 +122,7 @@ export function PostDeliverySheet({
                   className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${
                     !isCustom && tip === t
                       ? "bg-success text-white shadow-md shadow-green-200"
-                      : "bg-border-dark border border-success/30 text-success"
+                      : "bg-muted border border-success/30 text-success"
                   }`}
                 >
                   {t === 0 ? "No tip" : `${currency}${t}`}
@@ -133,14 +133,14 @@ export function PostDeliverySheet({
                 className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${
                   isCustom
                     ? "bg-success text-white shadow-md shadow-green-200"
-                    : "bg-border-dark border border-success/30 text-success"
+                    : "bg-muted border border-success/30 text-success"
                 }`}
               >
                 Custom
               </button>
             </div>
             {isCustom && (
-              <div className="mt-2 flex items-center gap-2 rounded-xl border border-success/30 bg-border-dark px-3 py-2">
+              <div className="mt-2 flex items-center gap-2 rounded-xl border border-success/30 bg-muted px-3 py-2">
                 <span className="font-bold text-success">{currency}</span>
                 <input
                   type="number"
@@ -161,7 +161,7 @@ export function PostDeliverySheet({
         <div className="mt-5 flex gap-3">
           <button
             onClick={handleSkip}
-            className="flex-1 rounded-2xl border-2 border-white/10 py-3.5 text-sm font-bold text-[#B0B0B0]"
+            className="flex-1 rounded-2xl border-2 border-border py-3.5 text-sm font-bold text-muted-foreground"
           >
             Skip
           </button>
@@ -200,14 +200,14 @@ export function CancellationReasonModal({
         : "System";
   return (
     <div className="fixed inset-0 z-50 flex animate-[fadeIn_0.2s_ease-out] items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-      <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card-dark shadow-2xl">
+      <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card shadow-2xl">
         <div className="flex flex-col items-center gap-3 border-b border-error/30 bg-gradient-to-br from-red-50 to-pink-50 px-6 py-6">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 shadow-lg shadow-red-200">
             <UserX className="h-8 w-8 text-white" />
           </div>
           <div className="text-center">
             <p className="text-xl font-black text-white">Ride Cancelled</p>
-            <p className="mt-1 text-sm text-[#B0B0B0]">
+            <p className="mt-1 text-sm text-muted-foreground">
               Cancelled by <span className="font-bold text-error">{byLabel}</span>
             </p>
           </div>
@@ -221,11 +221,11 @@ export function CancellationReasonModal({
               <p className="text-sm font-semibold text-error">{reason}</p>
             </div>
           ) : (
-            <div className="rounded-2xl border border-white/10 bg-card-dark px-4 py-3 text-center">
-              <p className="text-sm text-[#B0B0B0]">No reason was provided.</p>
+            <div className="rounded-2xl border border-border bg-card px-4 py-3 text-center">
+              <p className="text-sm text-muted-foreground">No reason was provided.</p>
             </div>
           )}
-          <p className="text-center text-xs text-[#B0B0B0]">
+          <p className="text-center text-xs text-muted-foreground">
             This ride has been removed from your active tasks. Check your earnings for any applicable cancellation fee.
           </p>
           <button
@@ -313,7 +313,7 @@ export function ActiveModals({
           onClick={() => setShowAdminChat(false)}
         >
           <div
-            className="w-full max-w-md rounded-t-3xl bg-card-dark p-5 shadow-2xl"
+            className="w-full max-w-md rounded-t-3xl bg-card p-5 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
@@ -321,13 +321,13 @@ export function ActiveModals({
                 <p className="flex items-center gap-2 font-black text-white">
                   <MessageSquare size={16} className="text-blue-400" /> Admin Chat
                 </p>
-                <p className="text-xs text-[#B0B0B0]">Admin can see your messages</p>
+                <p className="text-xs text-muted-foreground">Admin can see your messages</p>
               </div>
               <button onClick={() => setShowAdminChat(false)}>
-                <X size={18} className="text-[#B0B0B0]" />
+                <X size={18} className="text-muted-foreground" />
               </button>
             </div>
-            <div className="mb-3 max-h-64 min-h-[80px] space-y-2 overflow-y-auto rounded-2xl bg-border-dark p-3">
+            <div className="mb-3 max-h-64 min-h-[80px] space-y-2 overflow-y-auto rounded-2xl bg-muted p-3">
               {adminMessages.map((m) => (
                 <div
                   key={`${m.ts}-${m.text}`}
@@ -383,14 +383,14 @@ export function ActiveModals({
       {/* OTP Verification Modal */}
       {showOtpModal && ride && (
         <div className="fixed inset-0 z-50 flex animate-[fadeIn_0.2s_ease-out] items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card-dark shadow-2xl">
+          <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card shadow-2xl">
             <div className="flex flex-col items-center gap-3 border-b border-blue-500/30 bg-gradient-to-br from-blue-50 to-indigo-50 px-6 py-6">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-200">
                 <Shield className="h-8 w-8 text-white" />
               </div>
               <div className="text-center">
                 <p className="text-xl font-black text-white">Enter Customer OTP</p>
-                <p className="mt-1 text-sm text-[#B0B0B0]">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Ask the customer for their 4-digit trip code
                 </p>
               </div>
@@ -422,7 +422,7 @@ export function ActiveModals({
                       setOtpInput(val);
                     }}
                     placeholder="_ _ _ _"
-                    className="w-full rounded-2xl border-2 border-white/10 py-4 text-center text-3xl font-black tracking-[0.5em] focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-2xl border-2 border-border py-4 text-center text-3xl font-black tracking-[0.5em] focus:border-blue-500 focus:outline-none"
                   />
                   {otpAttempts > 0 && (
                     <p className="text-center text-xs font-bold text-error">
@@ -452,7 +452,7 @@ export function ActiveModals({
               )}
               <button
                 onClick={() => setShowOtpModal(false)}
-                className="w-full py-2 text-sm font-bold text-[#B0B0B0]"
+                className="w-full py-2 text-sm font-bold text-muted-foreground"
               >
                 Cancel
               </button>
@@ -464,7 +464,7 @@ export function ActiveModals({
       {/* Cancel Confirm Modal */}
       {showCancelConfirm && (
         <div className="fixed inset-0 z-50 flex animate-[fadeIn_0.2s_ease-out] items-center justify-center bg-black/60 p-4 backdrop-blur-md">
-          <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card-dark shadow-2xl">
+          <div className="w-full max-w-sm animate-[slideUp_0.3s_ease-out] overflow-hidden rounded-3xl bg-card shadow-2xl">
             <div className="flex flex-col items-center gap-3 border-b border-error/30 bg-gradient-to-br from-red-50 to-pink-50 px-6 py-6">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 shadow-lg shadow-red-200">
                 <AlertTriangle className="h-8 w-8 text-white" />
@@ -473,7 +473,7 @@ export function ActiveModals({
                 <p className="text-xl font-black text-white">
                   {T("cancelConfirm")} {cancelTarget === "order" ? T("deliveryLabel") : T("ride")}?
                 </p>
-                <p className="mt-1.5 text-sm text-[#B0B0B0]">{T("actionNotReversible")}</p>
+                <p className="mt-1.5 text-sm text-muted-foreground">{T("actionNotReversible")}</p>
               </div>
             </div>
             <div className="space-y-4 p-5">
@@ -488,7 +488,7 @@ export function ActiveModals({
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowCancelConfirm(false)}
-                  className="flex-1 rounded-xl bg-border-dark py-3 font-bold text-[#B0B0B0] transition-colors active:bg-[#3A3A3A]"
+                  className="flex-1 rounded-xl bg-muted py-3 font-bold text-muted-foreground transition-colors active:bg-muted/80"
                 >
                   {T("goBack")}
                 </button>
@@ -517,14 +517,14 @@ export function ActiveModals({
       {/* No Photo Warning Modal */}
       {showNoPhotoWarning && (
         <div className="pointer-events-auto fixed inset-0 z-50 flex animate-[fadeIn_0.15s_ease-out] items-end justify-center bg-black/50">
-          <div className="mx-auto w-full max-w-sm animate-[slideUp_0.2s_ease-out] rounded-t-3xl bg-card-dark px-6 py-6 shadow-2xl">
+          <div className="mx-auto w-full max-w-sm animate-[slideUp_0.2s_ease-out] rounded-t-3xl bg-card px-6 py-6 shadow-2xl">
             <div className="mb-5 flex flex-col items-center gap-3">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-warning/15">
                 <AlertTriangle size={28} className="text-warning" />
               </div>
               <div className="text-center">
                 <p className="text-base font-extrabold text-white">No Photo Taken</p>
-                <p className="mt-1 text-sm leading-relaxed text-[#B0B0B0]">
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                   Delivering without proof photo may cause disputes. Are you sure?
                 </p>
               </div>
@@ -532,7 +532,7 @@ export function ActiveModals({
             <div className="flex gap-3">
               <button
                 onClick={() => setShowNoPhotoWarning(false)}
-                className="h-12 flex-1 rounded-xl border-2 border-white/10 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-border-dark"
+                className="h-12 flex-1 rounded-xl border-2 border-border text-sm font-bold text-muted-foreground transition-colors hover:bg-muted"
               >
                 Take Photo
               </button>

@@ -23,10 +23,10 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
   });
 
   return (
-    <div className="animate-[slideUp_0.7s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+    <div className="animate-[slideUp_0.7s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between px-5 py-4 transition-colors active:bg-border-dark"
+        className="flex w-full items-center justify-between px-5 py-4 transition-colors active:bg-muted"
       >
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-error/10">
@@ -34,22 +34,22 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
           </div>
           <div className="text-left">
             <p className="text-[14px] font-bold text-white">Penalty History</p>
-            <p className="text-[10px] text-[#B0B0B0]">
+            <p className="text-[10px] text-muted-foreground">
               Deductions, ignores &amp; cancellation penalties
             </p>
           </div>
         </div>
         {open ? (
-          <ChevronUp size={16} className="text-[#B0B0B0]" />
+          <ChevronUp size={16} className="text-muted-foreground" />
         ) : (
-          <ChevronDown size={16} className="text-[#B0B0B0]" />
+          <ChevronDown size={16} className="text-muted-foreground" />
         )}
       </button>
       {open && (
-        <div className="border-t border-white/5">
+        <div className="border-t border-border/30">
           {!penaltyData ? (
             <div className="flex items-center justify-center px-5 py-8">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-gray-700" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-foreground/40" />
             </div>
           ) : (
             (() => {
@@ -57,7 +57,7 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
               if (penalties.length === 0)
                 return (
                   <div className="px-5 py-8 text-center">
-                    <p className="text-sm font-medium text-[#B0B0B0]">No penalties on record</p>
+                    <p className="text-sm font-medium text-muted-foreground">No penalties on record</p>
                   </div>
                 );
               const typeColor: Record<string, string> = {
@@ -67,7 +67,7 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
                 cancel_penalty: "bg-error/15 text-error",
               };
               return (
-                <div className="divide-y divide-gray-50">
+                <div className="divide-y divide-border">
                   {penalties.map((p: any) => (
                     <div key={p.id} className="flex items-start gap-3 px-5 py-3.5">
                       <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl bg-error/10">
@@ -76,7 +76,7 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${typeColor[p.type] ?? "bg-border-dark text-[#B0B0B0]"}`}
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${typeColor[p.type] ?? "bg-muted text-muted-foreground"}`}
                           >
                             {(p.type || "penalty").replace(/_/g, " ")}
                           </span>
@@ -87,9 +87,9 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
                           )}
                         </div>
                         {p.reason && (
-                          <p className="mt-1 text-xs leading-relaxed text-[#B0B0B0]">{p.reason}</p>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{p.reason}</p>
                         )}
-                        <p className="mt-0.5 flex items-center gap-1 text-[10px] text-[#B0B0B0]">
+                        <p className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
                           <Clock size={9} />{" "}
                           {new Date(p.createdAt).toLocaleDateString("en-PK", {
                             day: "numeric",
@@ -106,7 +106,7 @@ export function ProfilePenaltyHistory({ currency }: ProfilePenaltyHistoryProps) 
               );
             })()
           )}
-          <div className="border-t border-white/5 px-5 py-3">
+          <div className="border-t border-border/30 px-5 py-3">
             <Link href="/penalty-history">
               <button className="flex w-full items-center justify-center gap-1.5 py-1 text-xs font-semibold text-error transition-colors hover:text-error">
                 View Full History <ArrowRight size={13} />

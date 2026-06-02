@@ -51,23 +51,23 @@ export function GoalSection({
 
   if (editing) {
     return (
-      <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5">
+      <div className="w-full rounded-2xl border border-border/80 bg-white/[0.04] px-4 py-3.5">
         <div className="mb-2.5 flex items-center justify-between">
-          <p className="flex items-center gap-1.5 text-xs font-bold text-white/50">
+          <p className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
             <Target size={12} />
             {T("dailyGoal")}
           </p>
           <button
             onClick={() => setEditing(false)}
-            className="text-white/40 transition-colors active:text-white"
+            className="text-muted-foreground transition-colors active:text-white"
             aria-label="Cancel"
           >
             <X size={14} />
           </button>
         </div>
         <div className="flex gap-2">
-          <div className="flex flex-1 items-center rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5">
-            <span className="mr-1.5 text-xs font-bold text-white/40">{currency}</span>
+          <div className="flex flex-1 items-center rounded-xl border border-border bg-muted/20 px-3 py-2.5">
+            <span className="mr-1.5 text-xs font-bold text-muted-foreground">{currency}</span>
             <input
               type="number"
               min="1"
@@ -75,7 +75,7 @@ export function GoalSection({
               value={goalInput}
               onChange={(e) => setGoalInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSave()}
-              className="flex-1 bg-transparent text-sm font-bold text-white outline-none placeholder:text-white/20"
+              className="flex-1 bg-transparent text-sm font-bold text-white outline-none placeholder:text-muted-foreground"
               placeholder="e.g. 2000"
               autoFocus
             />
@@ -98,20 +98,20 @@ export function GoalSection({
         type="button"
         aria-label="Set a daily earnings goal"
         onClick={() => openEdit(null)}
-        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-left transition-colors active:bg-white/[0.07]"
+        className="flex w-full items-center gap-3 rounded-2xl border border-border/80 bg-white/[0.04] px-4 py-3 text-left transition-colors active:bg-white/[0.07]"
       >
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08]">
-          <Target size={14} className="text-white/40" />
+          <Target size={14} className="text-muted-foreground" />
         </div>
         <div className="flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {T("dailyGoal")}
           </p>
-          <p className="mt-0.5 text-xs font-semibold text-white/50">
+          <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
             Set a daily earnings target
           </p>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/[0.08] px-3 py-1 text-[10px] font-bold text-white/50">
+        <span className="rounded-full border border-border bg-white/[0.08] px-3 py-1 text-[10px] font-bold text-muted-foreground">
           Set
         </span>
       </button>
@@ -122,13 +122,13 @@ export function GoalSection({
   const reached = todayPct >= 100;
 
   return (
-    <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5">
+    <div className="w-full rounded-2xl border border-border/80 bg-white/[0.04] px-4 py-3.5">
       {/* Header row */}
       <div className="mb-3 flex items-center justify-between">
-        <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-white/30">
-          <Target size={11} className={reached ? "text-success" : "text-white/30"} />
+        <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          <Target size={11} className={reached ? "text-success" : "text-muted-foreground"} />
           {T("dailyGoal")}
-          <span className="rounded-full border border-white/10 bg-white/[0.08] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-white/40">
+          <span className="rounded-full border border-border bg-white/[0.08] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-muted-foreground">
             {T("myGoalBadge")}
           </span>
         </p>
@@ -136,14 +136,14 @@ export function GoalSection({
           {reached && <CheckCircle size={13} className="text-success" />}
           <span
             className={`rounded-full px-2.5 py-0.5 text-[10px] font-extrabold ${
-              reached ? "bg-success/15 text-success" : "bg-white/[0.08] text-white/60"
+              reached ? "bg-success/15 text-success" : "bg-white/[0.08] text-muted-foreground"
             }`}
           >
             {reached ? T("dailyGoalReached") : `${todayPct}%`}
           </span>
           <button
             onClick={() => openEdit(personalGoal)}
-            className="rounded-full border border-white/10 bg-white/[0.08] px-2.5 py-0.5 text-[10px] font-bold text-white/40 transition-colors active:bg-white/15"
+            className="rounded-full border border-border bg-white/[0.08] px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground transition-colors active:bg-white/15"
           >
             Edit
           </button>
@@ -160,10 +160,10 @@ export function GoalSection({
 
       {/* Amounts */}
       <div className="mt-2 flex items-center justify-between">
-        <p className="text-xs font-semibold text-white/40">
+        <p className="text-xs font-semibold text-muted-foreground">
           {formatCurrency(todayEarnings, currency)}
         </p>
-        <p className="text-xs font-semibold text-white/25">
+        <p className="text-xs font-semibold text-muted-foreground">
           of {formatCurrency(personalGoal, currency)}
         </p>
       </div>

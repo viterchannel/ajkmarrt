@@ -58,9 +58,9 @@ export type PayMethod = {
 };
 
 const INPUT =
-  "w-full h-12 px-4 bg-card-dark border border-white/10 rounded-xl text-sm focus:outline-none focus:border-green-400 focus:bg-card-dark transition-colors";
+  "w-full h-12 px-4 bg-card border border-border rounded-xl text-sm focus:outline-none focus:border-green-400 focus:bg-card transition-colors";
 const SELECT =
-  "w-full h-12 px-3 bg-card-dark border border-white/10 rounded-xl text-sm focus:outline-none focus:border-green-400 appearance-none";
+  "w-full h-12 px-3 bg-card border border-border rounded-xl text-sm focus:outline-none focus:border-green-400 appearance-none";
 
 function MethodLogo({ id }: { id: string }) {
   if (id === "jazzcash") return <Smartphone size={28} className="text-error" />;
@@ -344,11 +344,11 @@ export default function WithdrawModal({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[93vh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-card-dark shadow-2xl"
+        className="flex max-h-[93vh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-card shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-shrink-0 justify-center pt-3 pb-1">
-          <div className="h-1 w-10 rounded-full bg-border-dark" />
+          <div className="h-1 w-10 rounded-full bg-muted" />
         </div>
 
         {step !== "done" && stepIdx >= 0 && (
@@ -357,11 +357,11 @@ export default function WithdrawModal({
               {STEP_LABELS.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 flex-1 rounded-full transition-all ${i <= stepIdx ? "bg-success" : "bg-border-dark"}`}
+                  className={`h-1 flex-1 rounded-full transition-all ${i <= stepIdx ? "bg-success" : "bg-muted"}`}
                 />
               ))}
             </div>
-            <p className="mt-1 text-right text-[10px] text-[#B0B0B0]">
+            <p className="mt-1 text-right text-[10px] text-muted-foreground">
               {T("step")} {stepIdx + 1} / {STEP_LABELS.length}
             </p>
           </div>
@@ -375,11 +375,11 @@ export default function WithdrawModal({
                 <Clock size={52} className="text-warning" />
               </div>
               <h3 className="text-2xl font-extrabold text-white">Queued for Later</h3>
-              <p className="mt-2 text-[#B0B0B0]">
+              <p className="mt-2 text-muted-foreground">
                 <span className="font-extrabold text-warning">{fc(Number(amount))}</span>{" "}
                 withdrawal queued
               </p>
-              <p className="mt-1 text-sm text-[#B0B0B0]">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Your withdrawal will be submitted automatically when your connection is restored.
               </p>
               <div className="mt-5 rounded-2xl border border-warning/20 bg-warning/10 p-4 text-left">
@@ -409,44 +409,44 @@ export default function WithdrawModal({
                 <CheckCircle size={52} className="text-success" />
               </div>
               <h3 className="text-2xl font-extrabold text-white">{T("requestSubmitted")}</h3>
-              <p className="mt-2 text-[#B0B0B0]">
+              <p className="mt-2 text-muted-foreground">
                 <span className="font-extrabold text-success">{fc(Number(amount))}</span>{" "}
                 {T("withdrawalSubmitted")}
               </p>
-              <p className="mt-1 text-sm text-[#B0B0B0]">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {instantPayout ? "Funds arriving within minutes." : "1–3 business days to reach your account."}
               </p>
               <div className="mt-5 space-y-3 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-5 text-left">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("paymentMethod")}</span>
+                  <span className="text-muted-foreground">{T("paymentMethod")}</span>
                   <span className="flex items-center gap-1.5 font-bold">
                     <MethodLogo id={selectedMethod?.id ?? ""} /> {selectedMethod?.label}
                   </span>
                 </div>
                 {selectedMethod?.id === "bank" && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#B0B0B0]">{T("bankName")}</span>
+                    <span className="text-muted-foreground">{T("bankName")}</span>
                     <span className="font-bold">{bankName}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">
+                  <span className="text-muted-foreground">
                     {selectedMethod?.id === "bank" ? T("accountNumber") : T("phone")}
                   </span>
                   <span className="font-bold">{acNo}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("accountHolderName")}</span>
+                  <span className="text-muted-foreground">{T("accountHolderName")}</span>
                   <span className="font-bold">{acName}</span>
                 </div>
                 {transactionId && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#B0B0B0]">Transaction ID</span>
+                    <span className="text-muted-foreground">Transaction ID</span>
                     <span className="font-mono font-bold text-success">{transactionId}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between border-t border-success/20 pt-2">
-                  <span className="font-semibold text-[#B0B0B0]">{T("amountLabel")}</span>
+                  <span className="font-semibold text-muted-foreground">{T("amountLabel")}</span>
                   <span className="text-2xl font-extrabold text-success">
                     {fc(Number(amount))}
                   </span>
@@ -475,40 +475,40 @@ export default function WithdrawModal({
               <h3 className="mb-1 text-xl font-extrabold text-white">
                 {T("confirmWithdrawal")}
               </h3>
-              <p className="mb-5 text-sm text-[#B0B0B0]">{T("reviewConfirm")}</p>
+              <p className="mb-5 text-sm text-muted-foreground">{T("reviewConfirm")}</p>
               <div className="mb-4 space-y-3 rounded-2xl border border-success/20 bg-gradient-to-br from-green-50 to-emerald-50 p-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#B0B0B0]">{T("amountLabel")}</span>
+                  <span className="text-sm text-muted-foreground">{T("amountLabel")}</span>
                   <span className="text-3xl font-extrabold text-success">
                     {fc(Number(amount))}
                   </span>
                 </div>
                 <div className="h-px bg-success/15" />
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("paymentMethod")}</span>
+                  <span className="text-muted-foreground">{T("paymentMethod")}</span>
                   <span className="flex items-center gap-1.5 font-bold">
                     <MethodLogo id={selectedMethod?.id ?? ""} /> {selectedMethod?.label}
                   </span>
                 </div>
                 {selectedMethod?.id === "bank" && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#B0B0B0]">{T("bankName")}</span>
+                    <span className="text-muted-foreground">{T("bankName")}</span>
                     <span className="font-bold">{bankName}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">
+                  <span className="text-muted-foreground">
                     {selectedMethod?.id === "bank" ? T("accountNumber") : T("phone")}
                   </span>
                   <span className="font-mono font-bold">{acNo}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("accountHolderName")}</span>
+                  <span className="text-muted-foreground">{T("accountHolderName")}</span>
                   <span className="font-bold">{acName}</span>
                 </div>
                 {note && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#B0B0B0]">{T("note")}</span>
+                    <span className="text-muted-foreground">{T("note")}</span>
                     <span className="font-bold">{note}</span>
                   </div>
                 )}
@@ -529,7 +529,7 @@ export default function WithdrawModal({
                     setStep("details");
                     setErr("");
                   }}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-white/10 py-3 text-sm font-bold text-[#B0B0B0]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-border py-3 text-sm font-bold text-muted-foreground"
                 >
                   <ArrowLeft size={14} /> {T("edit")}
                 </button>
@@ -589,17 +589,17 @@ export default function WithdrawModal({
             <div className="p-6">
               <button
                 onClick={() => setStep("method")}
-                className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#B0B0B0]"
+                className="mb-4 flex items-center gap-1 text-sm font-semibold text-muted-foreground"
               >
                 <ArrowLeft size={14} /> {T("back")}
               </button>
               <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-border-dark">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
                   <MethodLogo id={selectedMethod.id} />
                 </div>
                 <div>
                   <h3 className="text-lg font-extrabold text-white">{selectedMethod.label}</h3>
-                  <p className="mt-0.5 text-xs text-[#B0B0B0]">{selectedMethod.description}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{selectedMethod.description}</p>
                 </div>
               </div>
 
@@ -629,7 +629,7 @@ export default function WithdrawModal({
               <div className="space-y-3">
                 {selectedMethod.id === "bank" && (
                   <div>
-                    <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                    <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                       {T("bankNameLabel")} *
                     </p>
                     <select
@@ -650,7 +650,7 @@ export default function WithdrawModal({
                   </div>
                 )}
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {selectedMethod.id === "bank" ? T("accountNoRequired") : T("phoneRequired")}
                   </p>
                   <input
@@ -667,7 +667,7 @@ export default function WithdrawModal({
                   />
                 </div>
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("accountTitleRequired")}
                   </p>
                   <input
@@ -681,7 +681,7 @@ export default function WithdrawModal({
                   />
                 </div>
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("noteOptional")}
                   </p>
                   <input
@@ -712,12 +712,12 @@ export default function WithdrawModal({
             <div className="p-6">
               <button
                 onClick={() => setStep("amount")}
-                className="mb-4 flex items-center gap-1 text-sm font-semibold text-[#B0B0B0]"
+                className="mb-4 flex items-center gap-1 text-sm font-semibold text-muted-foreground"
               >
                 <ArrowLeft size={14} /> {T("back")}
               </button>
               <h3 className="mb-1 text-xl font-extrabold text-white">{T("selectMethod")}</h3>
-              <p className="mb-4 text-sm text-[#B0B0B0]">{T("selectPaymentMethod")}</p>
+              <p className="mb-4 text-sm text-muted-foreground">{T("selectPaymentMethod")}</p>
               <div className="mb-5 flex items-center justify-between rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-5 py-4">
                 <span className="text-sm font-semibold text-success/70">
                   {T("withdrawalAmount")}
@@ -742,16 +742,16 @@ export default function WithdrawModal({
                     <button
                       key={m.id}
                       onClick={() => goToDetails(m)}
-                      className="flex w-full items-center gap-4 rounded-2xl border-2 border-white/10 bg-card-dark p-4 text-left transition-all hover:border-green-400 hover:bg-success/10 active:scale-[0.98]"
+                      className="flex w-full items-center gap-4 rounded-2xl border-2 border-border bg-card p-4 text-left transition-all hover:border-green-400 hover:bg-success/10 active:scale-[0.98]"
                     >
-                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-card-dark shadow-sm">
+                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-card shadow-sm">
                         <MethodLogo id={m.id} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="font-extrabold text-white">{m.label}</p>
-                        <p className="mt-0.5 text-xs text-[#B0B0B0]">{m.description}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{m.description}</p>
                       </div>
-                      <ChevronRight size={20} className="text-[#B0B0B0]" />
+                      <ChevronRight size={20} className="text-muted-foreground" />
                     </button>
                   ))}
                 </div>
@@ -766,7 +766,7 @@ export default function WithdrawModal({
                 <h3 className="text-xl font-extrabold text-white">{T("withdrawFunds")}</h3>
                 <button
                   onClick={onClose}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0]"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                 >
                   <X size={18} />
                 </button>
@@ -810,7 +810,7 @@ export default function WithdrawModal({
                   <span>Max: {fc(maxPayout)}</span>
                 </div>
               </div>
-              <p className="mb-2 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+              <p className="mb-2 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 {T("quickSelect")}
               </p>
               <div className="mb-5 flex flex-wrap gap-2">
@@ -846,7 +846,7 @@ export default function WithdrawModal({
                       setAmount(String(v));
                       setErr("");
                     }}
-                    className={`rounded-xl border px-3 py-1.5 text-sm font-bold transition-all ${amount === String(v) ? "border-success bg-success text-white" : "border-white/10 bg-card-dark text-[#B0B0B0]"}`}
+                    className={`rounded-xl border px-3 py-1.5 text-sm font-bold transition-all ${amount === String(v) ? "border-success bg-success text-white" : "border-border bg-card text-muted-foreground"}`}
                   >
                     {fc(v)}
                   </button>
@@ -865,7 +865,7 @@ export default function WithdrawModal({
               </div>
               <div className="space-y-4">
                 <div>
-                  <p className="mb-1.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <p className="mb-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("amountLabel")} ({currency}) *
                   </p>
                   <input
@@ -887,20 +887,20 @@ export default function WithdrawModal({
                     className={`flex items-center justify-between rounded-2xl border p-4 transition-colors ${
                       instantPayout
                         ? "border-success/40 bg-success/10"
-                        : "border-white/10 bg-card-dark"
+                        : "border-border bg-card"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                          instantPayout ? "bg-success" : "bg-border-dark"
+                          instantPayout ? "bg-success" : "bg-muted"
                         }`}
                       >
-                        <Zap size={18} className={instantPayout ? "text-white" : "text-[#B0B0B0]"} />
+                        <Zap size={18} className={instantPayout ? "text-white" : "text-muted-foreground"} />
                       </div>
                       <div>
                         <p className="text-sm font-bold text-white">Instant Payout</p>
-                        <p className="mt-0.5 text-xs text-[#B0B0B0]">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           {instantPayout
                             ? "Within minutes · "
                             : "1–3 business days · "}
@@ -915,7 +915,7 @@ export default function WithdrawModal({
                       role="switch"
                       aria-checked={instantPayout}
                       className={`relative h-7 w-12 rounded-full transition-colors ${
-                        instantPayout ? "bg-success" : "bg-border-dark"
+                        instantPayout ? "bg-success" : "bg-muted"
                       }`}
                     >
                       <span

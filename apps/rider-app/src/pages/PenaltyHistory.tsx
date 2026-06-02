@@ -47,7 +47,7 @@ function penaltyColor(type: string): string {
     conduct: "bg-error/10 text-error border-error/30",
     fraud: "bg-error/15 text-error border-error/60",
   };
-  return map[type] ?? "bg-card-dark text-[#B0B0B0] border-white/10";
+  return map[type] ?? "bg-card text-muted-foreground border-border";
 }
 
 function penaltyIcon(type: string) {
@@ -119,22 +119,22 @@ export default function PenaltyHistory() {
 
   return (
     <PullToRefresh onRefresh={handlePullRefresh}>
-      <div className="min-h-screen bg-card-dark pb-20">
+      <div className="min-h-screen bg-card pb-20">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/10 bg-card-dark px-4 pt-4 pb-3">
+        <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-card px-4 pt-4 pb-3">
           <Link href="/profile">
-            <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A]">
+            <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors hover:bg-muted">
               <ArrowLeft size={18} />
             </button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-white">Penalty History</h1>
-            <p className="text-xs text-[#B0B0B0]">Your penalty & deduction records</p>
+            <h1 className="text-lg font-bold text-foreground">Penalty History</h1>
+            <p className="text-xs text-muted-foreground">Your penalty & deduction records</p>
           </div>
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A] disabled:opacity-50"
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
           >
             <RefreshCw size={16} className={isFetching ? "animate-spin" : ""} />
           </button>
@@ -143,15 +143,15 @@ export default function PenaltyHistory() {
         <div className="space-y-4 px-4 pt-4">
           {/* Summary card */}
           {!isLoading && !isError && (
-            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-card-dark p-4 shadow-sm">
+            <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 shadow-sm">
               <div>
-                <p className="text-xs font-medium tracking-wide text-[#B0B0B0] uppercase">
+                <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                   Total Deducted
                 </p>
                 <p className="mt-0.5 text-2xl font-bold text-error">
                   {currency} {_sharedFc(String(totalDeducted), currency)}
                 </p>
-                <p className="mt-1 text-xs text-[#B0B0B0]">
+                <p className="mt-1 text-xs text-muted-foreground">
                   {penalties.length} record{penalties.length !== 1 ? "s" : ""}
                 </p>
               </div>
@@ -190,11 +190,11 @@ export default function PenaltyHistory() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="animate-pulse rounded-xl border border-white/10 bg-card-dark p-4"
+                  className="animate-pulse rounded-xl border border-border bg-card p-4"
                 >
-                  <div className="mb-2 h-4 w-2/5 rounded bg-border-dark" />
-                  <div className="mb-2 h-3 w-3/5 rounded bg-border-dark" />
-                  <div className="h-3 w-1/4 rounded bg-border-dark" />
+                  <div className="mb-2 h-4 w-2/5 rounded bg-muted" />
+                  <div className="mb-2 h-3 w-3/5 rounded bg-muted" />
+                  <div className="h-3 w-1/4 rounded bg-muted" />
                 </div>
               ))}
             </div>
@@ -215,8 +215,8 @@ export default function PenaltyHistory() {
               <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-success/10">
                 <CheckCircle size={40} className="text-success" />
               </div>
-              <p className="text-lg font-semibold text-white">No Penalties</p>
-              <p className="mt-1 max-w-xs text-sm text-[#B0B0B0]">
+              <p className="text-lg font-semibold text-foreground">No Penalties</p>
+              <p className="mt-1 max-w-xs text-sm text-muted-foreground">
                 Great job! You have a clean record with no penalties.
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function PenaltyHistory() {
                 return (
                   <div
                     key={p.id}
-                    className="rounded-xl border border-white/10 bg-card-dark p-4 shadow-sm"
+                    className="rounded-xl border border-border bg-card p-4 shadow-sm"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 flex-1 items-center gap-2.5">
@@ -250,10 +250,10 @@ export default function PenaltyHistory() {
                     </div>
 
                     {p.reason && (
-                      <p className="mt-2 text-sm leading-relaxed text-[#B0B0B0]">{p.reason}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.reason}</p>
                     )}
 
-                    <p className="mt-2 text-xs text-[#B0B0B0]">
+                    <p className="mt-2 text-xs text-muted-foreground">
                       {formatDateTz(
                         p.createdAt,
                         {

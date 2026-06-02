@@ -1166,10 +1166,10 @@ export default function Chat() {
     <div className="flex h-full flex-col bg-surface">
       {incomingCall && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="mx-4 w-full max-w-sm rounded-3xl bg-card-dark p-8 text-center">
-            <div className="mb-4 flex items-center justify-center text-6xl text-[#B0B0B0]"><Phone size={48} /></div>
+          <div className="mx-4 w-full max-w-sm rounded-3xl bg-card p-8 text-center">
+            <div className="mb-4 flex items-center justify-center text-6xl text-muted-foreground"><Phone size={48} /></div>
             <h2 className="mb-2 text-xl font-bold">{T("chatIncomingCall")}</h2>
-            <p className="mb-6 text-[#B0B0B0]">
+            <p className="mb-6 text-muted-foreground">
               {incomingCall.callerName} ({incomingCall.callerAjkId})
             </p>
             <div className="flex justify-center gap-4">
@@ -1238,7 +1238,7 @@ export default function Chat() {
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition ${tab === t ? "bg-brand text-surface" : "bg-border-dark text-[#B0B0B0]"}`}
+                className={`flex flex-shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition ${tab === t ? "bg-brand text-surface" : "bg-muted text-muted-foreground"}`}
               >
                 {t === "ai" && <Sparkles size={13} />}
                 {t === "chats"
@@ -1273,7 +1273,7 @@ export default function Chat() {
               </button>
               <div className="flex-1">
                 <p className="font-bold text-white">{selectedConv.otherUser?.name || T("chatUserFallback")}</p>
-                <p className="text-xs text-[#B0B0B0]">{selectedConv.otherUser?.ajkId}</p>
+                <p className="text-xs text-muted-foreground">{selectedConv.otherUser?.ajkId}</p>
               </div>
               {selectedConv.id !== ADMIN_SUPPORT_ID && (
                 <>
@@ -1286,9 +1286,9 @@ export default function Chat() {
                   <div className="relative">
                     <button
                       onClick={() => setShowConvMenu((v) => !v)}
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-border-dark transition-colors active:bg-[#3A3A3A]"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-muted transition-colors active:bg-muted/80"
                     >
-                      <MoreVertical size={18} className="text-[#B0B0B0]" />
+                      <MoreVertical size={18} className="text-muted-foreground" />
                     </button>
                     {showConvMenu && (
                       <>
@@ -1297,19 +1297,19 @@ export default function Chat() {
                           className="fixed inset-0 z-40"
                           onClick={() => setShowConvMenu(false)}
                         />
-                        <div className="absolute top-12 right-0 z-50 min-w-[160px] overflow-hidden rounded-2xl border border-white/10 bg-card-dark shadow-xl">
+                        <div className="absolute top-12 right-0 z-50 min-w-[160px] overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
                           <button
                             onClick={() => {
                               setShowConvMenu(false);
                               setShowReportModal(true);
                             }}
-                            className="flex w-full items-center gap-3 px-4 py-3 text-sm text-[#B0B0B0] transition-colors hover:bg-border-dark active:bg-border-dark"
+                            className="flex w-full items-center gap-3 px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted active:bg-muted"
                           >
                             <Flag size={15} className="text-warning" /> {T("chatReportUser")}
                           </button>
                           <button
                             onClick={handleBlock}
-                            className="flex w-full items-center gap-3 border-t border-white/10 px-4 py-3 text-sm text-error transition-colors hover:bg-error/10 active:bg-error/15"
+                            className="flex w-full items-center gap-3 border-t border-border px-4 py-3 text-sm text-error transition-colors hover:bg-error/10 active:bg-error/15"
                           >
                             <UserX size={15} /> {T("chatBlockUser")}
                           </button>
@@ -1329,11 +1329,11 @@ export default function Chat() {
                   <button
                     onClick={() => void fetchNextPage()}
                     disabled={isFetchingNextPage}
-                    className="rounded-full bg-border-dark px-4 py-2 text-xs font-semibold text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A] disabled:opacity-50"
+                    className="rounded-full bg-muted px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted/80 disabled:opacity-50"
                   >
                     {isFetchingNextPage ? (
                       <span className="flex items-center gap-1.5">
-                        <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/20 border-t-transparent" />
+                        <span className="h-3 w-3 animate-spin rounded-full border-2 border-border border-t-foreground/30" />
                         {T("loading")}
                       </span>
                     ) : (
@@ -1357,7 +1357,7 @@ export default function Chat() {
                   className={`flex ${msg.senderId === user?.id ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${msg.senderId === user?.id ? "rounded-br-md bg-brand text-surface" : "rounded-bl-md bg-border-dark text-white"}`}
+                    className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${msg.senderId === user?.id ? "rounded-br-md bg-brand text-surface" : "rounded-bl-md bg-muted text-white"}`}
                   >
                     {msg.messageType === "image" && msg.imageUrl ? (
                       <img
@@ -1378,7 +1378,7 @@ export default function Chat() {
                       <p className="text-sm">{msg.content}</p>
                     )}
                     <span
-                      className={`text-[10px] ${msg.senderId === user?.id ? "text-brand/70" : "text-[#B0B0B0]"}`}
+                      className={`text-[10px] ${msg.senderId === user?.id ? "text-brand/70" : "text-muted-foreground"}`}
                     >
                       {new Date(msg.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
@@ -1393,7 +1393,7 @@ export default function Chat() {
                   </div>
                 </div>
               ))}
-              {typing && <div className="text-xs text-[#B0B0B0] italic">{T("chatTyping")}</div>}
+              {typing && <div className="text-xs text-muted-foreground italic">{T("chatTyping")}</div>}
             </div>
           </div>
         ) : tab === "chats" ? (
@@ -1407,15 +1407,15 @@ export default function Chat() {
               </>
             ) : conversations.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="mb-4 flex items-center justify-center text-5xl text-[#B0B0B0]"><MessageSquare size={48} /></p>
-                <p className="font-bold text-[#B0B0B0]">{T("chatNoConversations")}</p>
+                <p className="mb-4 flex items-center justify-center text-5xl text-muted-foreground"><MessageSquare size={48} /></p>
+                <p className="font-bold text-muted-foreground">{T("chatNoConversations")}</p>
               </div>
             ) : (
               conversations.map((conv) => (
                 <button
                   key={conv.id}
                   onClick={() => selectConversation(conv)}
-                  className="flex w-full items-center gap-3 rounded-2xl p-3 text-left hover:bg-border-dark"
+                  className="flex w-full items-center gap-3 rounded-2xl p-3 text-left hover:bg-muted"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-lg font-bold text-white">
                     {(conv.otherUser?.name || "?").charAt(0).toUpperCase()}
@@ -1425,7 +1425,7 @@ export default function Chat() {
                       <p className="truncate font-bold">{conv.otherUser?.name || T("chatUserFallback")}</p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="truncate text-sm text-[#B0B0B0]">
+                      <p className="truncate text-sm text-muted-foreground">
                         {conv.lastMessage?.content || T("chatNoMessages")}
                       </p>
                       {conv.unreadCount > 0 && (
@@ -1444,7 +1444,7 @@ export default function Chat() {
             {requestsLoading ? (
               <>
                 {[28, 24].map((w, i) => (
-                  <div key={i} className="flex items-center justify-between rounded-2xl bg-border-dark p-4">
+                  <div key={i} className="flex items-center justify-between rounded-2xl bg-muted p-4">
                     <div className="space-y-2">
                       <ShimmerBlock className={`h-3.5 w-${w} rounded`} />
                       <ShimmerBlock className={`h-3 w-${i === 0 ? 20 : 16} rounded`} />
@@ -1457,16 +1457,16 @@ export default function Chat() {
                 ))}
               </>
             ) : requests.length === 0 ? (
-              <p className="py-12 text-center text-[#B0B0B0]">{T("chatNoPendingRequests")}</p>
+              <p className="py-12 text-center text-muted-foreground">{T("chatNoPendingRequests")}</p>
             ) : (
               requests.map((req) => (
                 <div
                   key={req.id}
-                  className="flex items-center justify-between rounded-2xl bg-border-dark p-4"
+                  className="flex items-center justify-between rounded-2xl bg-muted p-4"
                 >
                   <div>
                     <p className="font-bold">{req.sender?.name || T("chatUnknownFallback")}</p>
-                    <p className="text-xs text-[#B0B0B0]">{req.sender?.ajkId}</p>
+                    <p className="text-xs text-muted-foreground">{req.sender?.ajkId}</p>
                   </div>
                   {req.status === "pending" && (
                     <div className="flex gap-2">
@@ -1505,10 +1505,10 @@ export default function Chat() {
               </button>
             </div>
             {searchResult && (
-              <div className="flex items-center justify-between rounded-2xl bg-border-dark p-4">
+              <div className="flex items-center justify-between rounded-2xl bg-muted p-4">
                 <div>
                   <p className="font-bold">{searchResult.name}</p>
-                  <p className="text-xs text-[#B0B0B0]">
+                  <p className="text-xs text-muted-foreground">
                     {searchResult.ajkId} · {searchResult.role}
                   </p>
                 </div>
@@ -1550,7 +1550,7 @@ export default function Chat() {
             <div className="flex-1 space-y-3 overflow-y-auto pb-3" ref={aiScrollRef}>
               {aiMessages.length === 0 ? (
                 <div className="space-y-3">
-                  <p className="text-center text-xs font-semibold text-[#B0B0B0]">
+                  <p className="text-center text-xs font-semibold text-muted-foreground">
                     {T("chatSuggestedQuestions")}
                   </p>
                   {SUGGESTED_QUESTIONS.map((q, i) => (
@@ -1559,7 +1559,7 @@ export default function Chat() {
                       onClick={() => {
                         setAiInput(q);
                       }}
-                      className="w-full rounded-xl border border-white/10 bg-border-dark p-3.5 text-left text-sm font-medium text-[#B0B0B0] transition-colors hover:border-brand/40 hover:bg-brand/10"
+                      className="w-full rounded-xl border border-border bg-muted p-3.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:border-brand/40 hover:bg-brand/10"
                     >
                       {q}
                     </button>
@@ -1577,7 +1577,7 @@ export default function Chat() {
                       </div>
                     )}
                     <div
-                      className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === "user" ? "rounded-br-md bg-brand text-surface" : "rounded-bl-md bg-border-dark text-white"}`}
+                      className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === "user" ? "rounded-br-md bg-brand text-surface" : "rounded-bl-md bg-muted text-white"}`}
                     >
                       {msg.content}
                     </div>
@@ -1589,7 +1589,7 @@ export default function Chat() {
                   <div className="mr-2 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-success/15">
                     <Bot size={14} className="text-success" />
                   </div>
-                  <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-border-dark px-4 py-3">
+                  <div className="flex items-center gap-1 rounded-2xl rounded-bl-md bg-muted px-4 py-3">
                     <span
                       className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/20"
                       style={{ animationDelay: "0ms" }}
@@ -1630,7 +1630,7 @@ export default function Chat() {
       </div>
 
       {selectedConv && (
-        <div className="border-t border-white/10 bg-surface p-4">
+        <div className="border-t border-border bg-surface p-4">
           {sendError && (
             <div className="mb-3 flex items-center justify-between rounded-lg bg-error/10 p-3 text-sm text-error">
               <span>{sendError}</span>
@@ -1653,7 +1653,7 @@ export default function Chat() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0] transition-colors active:bg-[#3A3A3A] disabled:opacity-50"
+                  className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors active:bg-muted/80 disabled:opacity-50"
                   title={T("chatAttachFile")}
                 >
                   {uploading ? (
@@ -1711,7 +1711,7 @@ export default function Chat() {
       {/* Report modal */}
       {showReportModal && selectedConv && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-t-3xl bg-card-dark p-6 shadow-2xl">
+          <div className="w-full max-w-sm rounded-t-3xl bg-card p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-base font-extrabold text-white">
                 <Flag size={16} className="text-warning" /> {T("chatReport")}{" "}
@@ -1722,16 +1722,16 @@ export default function Chat() {
                   setShowReportModal(false);
                   setReportReason("");
                 }}
-                className="flex h-8 w-8 items-center justify-center rounded-xl bg-border-dark"
+                className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted"
               >
-                <X size={14} className="text-[#B0B0B0]" />
+                <X size={14} className="text-muted-foreground" />
               </button>
             </div>
             <textarea
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder={T("chatReportDesc")}
-              className="mb-4 min-h-[100px] w-full resize-none rounded-2xl border-2 border-white/10 p-3 text-sm outline-none focus:border-amber-400"
+              className="mb-4 min-h-[100px] w-full resize-none rounded-2xl border-2 border-border p-3 text-sm outline-none focus:border-amber-400"
             />
             <div className="flex gap-2">
               <button
@@ -1739,7 +1739,7 @@ export default function Chat() {
                   setShowReportModal(false);
                   setReportReason("");
                 }}
-                className="flex-1 rounded-2xl border-2 border-white/10 py-3 text-sm font-bold text-[#B0B0B0]"
+                className="flex-1 rounded-2xl border-2 border-border py-3 text-sm font-bold text-muted-foreground"
               >
                 {T("cancel")}
               </button>

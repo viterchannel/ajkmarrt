@@ -28,7 +28,7 @@ interface SettingsRowProps {
 function SettingsRow({ icon, iconBg, label, sublabel, onClick }: SettingsRowProps) {
   return (
     <button
-      className="w-full flex items-center gap-4 px-4 py-4 bg-card-dark hover:bg-border-dark transition-colors text-left"
+      className="w-full flex items-center gap-4 px-4 py-4 bg-card hover:bg-muted/50 transition-colors text-left"
       onClick={onClick}
       aria-label={label}
     >
@@ -37,9 +37,9 @@ function SettingsRow({ icon, iconBg, label, sublabel, onClick }: SettingsRowProp
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold text-foreground">{label}</div>
-        {sublabel && <div className="text-xs text-[#B0B0B0] mt-0.5 truncate">{sublabel}</div>}
+        {sublabel && <div className="mt-0.5 truncate text-xs text-muted-foreground">{sublabel}</div>}
       </div>
-      <ChevronRight size={16} className="text-[#B0B0B0] flex-shrink-0" />
+      <ChevronRight size={16} className="flex-shrink-0 text-muted-foreground" />
     </button>
   );
 }
@@ -55,13 +55,13 @@ interface ToggleRowProps {
 
 function ToggleRow({ icon, iconBg, label, sublabel, checked, onChange }: ToggleRowProps) {
   return (
-    <div className="w-full flex items-center gap-4 px-4 py-4 bg-card-dark">
+    <div className="w-full flex items-center gap-4 px-4 py-4 bg-card">
       <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${iconBg}`}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold text-foreground">{label}</div>
-        {sublabel && <div className="text-xs text-[#B0B0B0] mt-0.5 truncate">{sublabel}</div>}
+        {sublabel && <div className="mt-0.5 truncate text-xs text-muted-foreground">{sublabel}</div>}
       </div>
       <button
         role="switch"
@@ -69,7 +69,7 @@ function ToggleRow({ icon, iconBg, label, sublabel, checked, onChange }: ToggleR
         aria-label={label}
         onClick={() => onChange(!checked)}
         className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
-          checked ? "bg-brand" : "bg-border-dark"
+          checked ? "bg-brand" : "bg-muted"
         }`}
       >
         <span
@@ -85,7 +85,7 @@ function ToggleRow({ icon, iconBg, label, sublabel, checked, onChange }: ToggleR
 function SectionHeader({ title }: { title: string }) {
   return (
     <div className="px-4 pt-5 pb-2">
-      <span className="text-xs font-bold text-[#B0B0B0] uppercase tracking-wider">{title}</span>
+      <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{title}</span>
     </div>
   );
 }
@@ -113,13 +113,13 @@ export default function Settings() {
         <button
           onClick={() => navigate("/profile")}
           aria-label={T("back")}
-          className="flex items-center gap-2 text-[#B0B0B0] hover:text-foreground transition-colors mb-1"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-1"
         >
           <ChevronLeft size={18} />
           <span className="text-sm">{T("back")}</span>
         </button>
         <h1 className="text-xl font-bold text-foreground">{T("settings")}</h1>
-        <p className="text-xs text-[#B0B0B0] mt-0.5">{T("settingsAccountPrefs")}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{T("settingsAccountPrefs")}</p>
       </div>
 
       {/* Security */}
@@ -133,15 +133,15 @@ export default function Settings() {
           onClick={() => navigate("/settings/security")}
         />
         <SettingsRow
-          icon={<Clock size={17} className="text-[#B0B0B0]" />}
-          iconBg="bg-border-dark"
+          icon={<Clock size={17} className="text-muted-foreground" />}
+          iconBg="bg-muted"
           label={T("settingsLoginHistoryLabel")}
           sublabel={T("settingsRecentSignIn")}
           onClick={() => navigate("/settings/login-history")}
         />
       </SectionCard>
 
-      <div className="h-px bg-border-dark mx-4" />
+      <div className="h-px bg-muted mx-4" />
 
       {/* Notifications */}
       <SectionHeader title={T("sectionNotificationsLabel")} />
@@ -155,8 +155,8 @@ export default function Settings() {
           onChange={setOrderNotif}
         />
         <ToggleRow
-          icon={<Bell size={17} className="text-[#B0B0B0]" />}
-          iconBg="bg-border-dark"
+          icon={<Bell size={17} className="text-muted-foreground" />}
+          iconBg="bg-muted"
           label={T("settingsChatMessages")}
           sublabel={T("settingsSupportMessages")}
           checked={chatNotif}
@@ -172,29 +172,29 @@ export default function Settings() {
         />
       </SectionCard>
 
-      <div className="h-px bg-border-dark mx-4" />
+      <div className="h-px bg-muted mx-4" />
 
       {/* Appearance */}
       <SectionHeader title={T("appearanceLabel")} />
       <SectionCard>
-        <div className="px-4 py-4 bg-card-dark">
+        <div className="px-4 py-4 bg-card">
           <ThemeToggle />
         </div>
       </SectionCard>
 
-      <div className="h-px bg-border-dark mx-4" />
+      <div className="h-px bg-muted mx-4" />
 
       {/* Language */}
       <SectionHeader title={T("settingsLanguageApp")} />
       <SectionCard>
-        <div className="px-4 py-4 bg-card-dark">
+        <div className="px-4 py-4 bg-card">
           <div className="flex items-center gap-4 mb-3">
             <div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
               <Globe size={17} className="text-brand" />
             </div>
             <div>
               <div className="text-sm font-semibold text-foreground">{T("settingsLanguageTitle")}</div>
-              <div className="text-xs text-[#B0B0B0] mt-0.5">{T("settingsAppDisplayLang")}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{T("settingsAppDisplayLang")}</div>
             </div>
           </div>
           <div className="flex gap-2">
@@ -212,7 +212,7 @@ export default function Settings() {
                 className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                   language === code
                     ? "bg-brand text-surface"
-                    : "bg-border-dark text-[#B0B0B0] hover:text-foreground"
+                    : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {label}

@@ -230,9 +230,9 @@ function ApprovalGateOverlayInner({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-emerald-50 p-5">
-      <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-card-dark shadow-xl">
+      <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-card shadow-xl">
         {/* Header */}
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 px-6 pt-8 pb-6 text-white">
+        <div className="page-header-gradient bg-card px-6 pt-8 pb-6 text-foreground">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-warning/30 bg-warning/15">
             <span className="text-3xl">
               {socketUpdate?.status === "approved"
@@ -243,18 +243,18 @@ function ApprovalGateOverlayInner({
             </span>
           </div>
           <h2 className="mb-1 text-xl font-extrabold">{T("applicationSubmitted")}</h2>
-          <p className="text-sm text-[#B0B0B0]">
+          <p className="text-sm text-muted-foreground">
             {T("welcome")},{" "}
-            <span className="font-semibold text-white">{user.name || T("riderFallback")}</span>
+            <span className="font-semibold text-foreground">{user.name || T("riderFallback")}</span>
           </p>
-          {submittedLabel && <p className="mt-1 text-xs text-[#B0B0B0]">{submittedLabel}</p>}
+          {submittedLabel && <p className="mt-1 text-xs text-muted-foreground">{submittedLabel}</p>}
 
           {/* Estimated review time */}
           <div className="mt-3 flex items-center gap-2 rounded-xl border border-warning/20 bg-warning/10 px-3 py-2">
             <span className="text-base">🕐</span>
             <div>
               <p className="text-xs font-bold text-warning">Typical review time: {etaLabel}</p>
-              <p className="text-[10px] text-[#B0B0B0]">
+              <p className="text-[10px] text-muted-foreground">
                 You'll be notified immediately upon approval
               </p>
             </div>
@@ -262,13 +262,13 @@ function ApprovalGateOverlayInner({
 
           <div className="mt-3 flex items-center gap-2">
             <span
-              className={`flex h-2 w-2 rounded-full ${connected ? "bg-success animate-pulse" : "bg-[#B0B0B0]"}`}
+              className={`flex h-2 w-2 rounded-full ${connected ? "bg-success animate-pulse" : "bg-muted-foreground"}`}
             />
-            <span className="text-xs text-[#B0B0B0]">
+            <span className="text-xs text-muted-foreground">
               {connected ? "Live — watching for approval" : "Offline — checking periodically"}
             </span>
             {!connected && lastCheckedLabel && (
-              <span className="ml-auto text-xs text-[#B0B0B0]">{lastCheckedLabel}</span>
+              <span className="ml-auto text-xs text-muted-foreground">{lastCheckedLabel}</span>
             )}
           </div>
         </div>
@@ -289,7 +289,7 @@ function ApprovalGateOverlayInner({
 
         {/* Document checklist */}
         <div className="px-6 pt-5">
-          <p className="mb-2.5 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+          <p className="mb-2.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
             Document Checklist
           </p>
           <div className="space-y-2">
@@ -311,7 +311,7 @@ function ApprovalGateOverlayInner({
         {/* Progress steps */}
         <div className="space-y-3 px-6 py-4">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+            <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
               {T("applicationProgress")}
             </p>
             {connected ? (
@@ -320,7 +320,7 @@ function ApprovalGateOverlayInner({
                 Live
               </span>
             ) : (
-              <span className="flex items-center gap-1 text-[10px] text-[#B0B0B0]">
+              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                 <WifiOff size={10} />
                 {lastCheckedLabel ? `Checked ${lastCheckedLabel}` : "Polling…"}
               </span>
@@ -333,7 +333,7 @@ function ApprovalGateOverlayInner({
                 item.done
                   ? "border border-success/20 bg-success/10"
                   : item.locked
-                    ? "border border-white/10 bg-border-dark"
+                    ? "border border-border bg-muted"
                     : "border border-warning/20 bg-warning/10"
               }`}
             >
@@ -342,7 +342,7 @@ function ApprovalGateOverlayInner({
                   item.done
                     ? "bg-success text-white"
                     : item.locked
-                      ? "bg-border-dark text-[#B0B0B0]"
+                      ? "bg-muted text-muted-foreground"
                       : "bg-warning text-white"
                 }`}
               >
@@ -351,14 +351,14 @@ function ApprovalGateOverlayInner({
               <div className="min-w-0 flex-1">
                 <p
                   className={`text-sm font-bold ${
-                    item.done ? "text-success" : item.locked ? "text-[#B0B0B0]" : "text-warning"
+                    item.done ? "text-success" : item.locked ? "text-muted-foreground" : "text-warning"
                   }`}
                 >
                   {item.label}
                 </p>
                 <p
                   className={`mt-0.5 text-xs ${
-                    item.done ? "text-success" : item.locked ? "text-[#B0B0B0]" : "text-warning"
+                    item.done ? "text-success" : item.locked ? "text-muted-foreground" : "text-warning"
                   } ${item.pulse ? "animate-pulse" : ""}`}
                 >
                   {item.sub}
@@ -406,7 +406,7 @@ function ApprovalGateOverlayInner({
                 window.location.reload();
               }
             }}
-            className="w-full rounded-2xl bg-border-dark py-3 text-sm font-semibold text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A]"
+            className="w-full rounded-2xl bg-muted py-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/80"
           >
             {T("signOutLabel")}
           </button>

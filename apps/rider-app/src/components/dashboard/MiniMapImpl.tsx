@@ -156,7 +156,7 @@ function FullscreenMap({
       role="dialog"
       aria-label="Route map fullscreen"
     >
-      <div className="flex flex-shrink-0 items-center justify-between bg-card-dark px-4 py-3 text-white">
+      <div className="flex flex-shrink-0 items-center justify-between bg-card px-4 py-3 text-white">
         <p className="text-sm font-extrabold tracking-tight">Route Preview</p>
         <div className="flex items-center gap-2">
           {mapsHref !== "#" && (
@@ -171,7 +171,7 @@ function FullscreenMap({
           )}
           <button
             onClick={onClose}
-            className="rounded-lg bg-card-dark/10 p-1.5"
+            className="rounded-lg bg-card/10 p-1.5"
             aria-label="Close fullscreen map"
           >
             <X size={18} />
@@ -254,7 +254,7 @@ export const MiniMapImpl = memo(function MiniMapImpl({
           onClose={() => setFullscreen(false)}
         />
       )}
-      <div className="relative mt-3 h-28 w-full overflow-hidden rounded-2xl border border-white/10 bg-border-dark shadow-inner">
+      <div className="relative mt-3 h-28 w-full overflow-hidden rounded-2xl border border-border bg-muted shadow-inner">
         <MapContainer
           center={[centerLat!, centerLng!]}
           zoom={13}
@@ -300,7 +300,7 @@ export const MiniMapImpl = memo(function MiniMapImpl({
 
         <button
           onClick={() => setFullscreen(true)}
-          className="absolute top-1.5 right-1.5 z-[1001] rounded-lg bg-card-dark/90 p-1 text-[#B0B0B0] shadow-sm backdrop-blur-sm transition-colors hover:bg-card-dark"
+          className="absolute top-1.5 right-1.5 z-[1001] rounded-lg bg-card/90 p-1 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-card"
           aria-label="Expand map fullscreen"
         >
           <Maximize2 size={13} />

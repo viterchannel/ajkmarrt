@@ -1637,12 +1637,12 @@ function AppRoutes() {
     qc.clear(); /* S-Sec10 */
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface p-6">
-        <div className="w-full max-w-sm rounded-3xl bg-card-dark p-8 text-center shadow-xl">
+        <div className="w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-xl">
           <div className="mb-4 flex items-center justify-center text-5xl text-error">
             <XCircle size={48} />
           </div>
           <h2 className="mb-2 text-xl font-bold text-white">{T("accountRejected")}</h2>
-          <p className="mb-2 text-sm leading-relaxed text-[#B0B0B0]">
+          <p className="mb-2 text-sm leading-relaxed text-muted-foreground">
             {T("accountRejectedMsg")}
           </p>
           {user.rejectionReason && (
@@ -1668,7 +1668,7 @@ function AppRoutes() {
           </button>
           <button
             onClick={() => logout()}
-            className="w-full rounded-2xl bg-border-dark py-3 text-sm font-semibold text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A]"
+            className="w-full rounded-2xl bg-muted py-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/80"
           >
             {T("signOutLabel")}
           </button>
@@ -1681,12 +1681,12 @@ function AppRoutes() {
     qc.clear(); /* S-Sec10 */
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface p-6">
-        <div className="w-full max-w-sm rounded-3xl bg-card-dark p-8 text-center shadow-xl">
+        <div className="w-full max-w-sm rounded-3xl bg-card p-8 text-center shadow-xl">
           <div className="mb-4 text-5xl">
             <span>🚫</span>
           </div>
           <h2 className="mb-2 text-xl font-bold text-white">{T("accountSuspended")}</h2>
-          <p className="mb-6 text-sm leading-relaxed text-[#B0B0B0]">
+          <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
             {T("accountSuspendedMsg")}
           </p>
           {supportPhone && (
@@ -1699,7 +1699,7 @@ function AppRoutes() {
           )}
           <button
             onClick={() => logout()}
-            className="w-full rounded-2xl bg-border-dark py-3 text-sm font-semibold text-[#B0B0B0] transition-colors hover:bg-[#3A3A3A]"
+            className="w-full rounded-2xl bg-muted py-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/80"
           >
             {T("signOutLabel")}
           </button>

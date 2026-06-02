@@ -10,10 +10,10 @@ interface LoadingStateProps {
 export function LoadingState({ message, rows: _rows = 3, className = "" }: LoadingStateProps) {
   return (
     <div className={`flex flex-col items-center justify-center px-4 py-16 ${className}`}>
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-border-dark">
-        <Loader2 size={22} className="animate-spin text-[#B0B0B0]" />
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-muted">
+        <Loader2 size={22} className="animate-spin text-muted-foreground" />
       </div>
-      <p className="text-sm font-semibold text-[#B0B0B0]">{message ?? "Loading…"}</p>
+      <p className="text-sm font-semibold text-muted-foreground">{message ?? "Loading…"}</p>
     </div>
   );
 }
@@ -24,7 +24,7 @@ export function LoadingRows({ rows = 3 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="flex items-center gap-3 rounded-3xl border border-white/10 bg-card-dark p-4"
+          className="flex items-center gap-3 rounded-3xl border border-border bg-card p-4"
         >
           <ShimmerBlock className="h-10 w-10 flex-shrink-0 rounded-2xl" />
           <div className="flex-1 space-y-2">

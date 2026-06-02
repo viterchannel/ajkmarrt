@@ -101,7 +101,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
     Number.isFinite(vendorLng);
 
   return (
-    <div className="animate-[slideUp_0.3s_ease-out] border-b border-white/5 p-4 last:border-0">
+    <div className="animate-[slideUp_0.3s_ease-out] border-b border-border/30 p-4 last:border-0">
       <div className="flex items-start gap-3">
         <AcceptCountdown
           createdAt={o.createdAt}
@@ -124,8 +124,8 @@ export const OrderRequestCard = memo(function OrderRequestCard({
               <MapPin size={10} /> {vendorStoreName}
             </p>
           ) : null}
-          <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-[#B0B0B0]">
-            <Navigation size={10} className="text-[#B0B0B0]" /> {deliveryAddress || "Destination"}
+          <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-muted-foreground">
+            <Navigation size={10} className="text-muted-foreground" /> {deliveryAddress || "Destination"}
           </p>
         </div>
         {deliveryFee > 0 ? (
@@ -136,7 +136,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
             <p className="text-[9px] font-semibold text-success/60">{T("yourEarnings")}</p>
           </div>
         ) : (
-          <div className="flex-shrink-0 rounded-2xl bg-border-dark px-3 py-1.5 text-right text-[#B0B0B0]">
+          <div className="flex-shrink-0 rounded-2xl bg-muted px-3 py-1.5 text-right text-muted-foreground">
             <p className="text-sm leading-tight font-bold">—</p>
             <p className="text-[9px] font-semibold">{T("yourEarnings")}</p>
           </div>
@@ -146,17 +146,17 @@ export const OrderRequestCard = memo(function OrderRequestCard({
       {(orderTotal != null || itemCount != null || distanceKm != null) && (
         <div className="mt-2 flex flex-wrap items-center gap-3">
           {orderTotal != null && Number.isFinite(orderTotal) && (
-            <div className="rounded-xl border border-white/10 bg-card-dark px-2.5 py-1">
-              <p className="text-xs font-bold text-[#B0B0B0]">
+            <div className="rounded-xl border border-border bg-card px-2.5 py-1">
+              <p className="text-xs font-bold text-muted-foreground">
                 {formatCurrency(orderTotal, currency)}
               </p>
-              <p className="text-[9px] text-[#B0B0B0]">{T("orderTotal")}</p>
+              <p className="text-[9px] text-muted-foreground">{T("orderTotal")}</p>
             </div>
           )}
           {itemCount != null && Number(itemCount) > 0 && (
-            <div className="rounded-xl border border-white/10 bg-card-dark px-2.5 py-1">
-              <p className="text-xs font-bold text-[#B0B0B0]">{Number(itemCount)} items</p>
-              <p className="text-[9px] text-[#B0B0B0]">{T("toCollect")}</p>
+            <div className="rounded-xl border border-border bg-card px-2.5 py-1">
+              <p className="text-xs font-bold text-muted-foreground">{Number(itemCount)} items</p>
+              <p className="text-[9px] text-muted-foreground">{T("toCollect")}</p>
             </div>
           )}
           {distanceKm != null && parseFloat(String(distanceKm)) > 0 && (
@@ -187,7 +187,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
           <div className="flex gap-2">
             <button
               onClick={() => setShowRejectConfirm(false)}
-              className="flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-white/10 bg-card-dark px-3 py-2 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-card-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              className="flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-border bg-card px-3 py-2 text-sm font-bold text-muted-foreground transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               aria-label="Cancel rejection"
             >
               Keep
@@ -238,7 +238,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
                 toast.error(err instanceof Error ? err.message : "Failed to dismiss order");
               }
             }}
-            className="flex min-h-[44px] items-center rounded-xl border border-white/10 px-3 py-2.5 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-card-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="flex min-h-[44px] items-center rounded-xl border border-border px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             aria-label="Dismiss order request"
           >
             <X size={16} />

@@ -1196,7 +1196,7 @@ export default function Active() {
           </button>
           <button
             onClick={() => setAdminMessages(() => [])}
-            className="flex-shrink-0 text-xs text-white/60 hover:text-white"
+            className="flex-shrink-0 text-xs text-muted-foreground hover:text-foreground"
             aria-label={T("dismiss")}
           >
             <X size={14} />

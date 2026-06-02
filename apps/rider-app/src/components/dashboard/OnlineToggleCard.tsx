@@ -79,7 +79,7 @@ export const OnlineToggleCard = memo(function OnlineToggleCard({
             {effectiveOnline ? (
               <Zap size={22} className="text-success" />
             ) : (
-              <Wifi size={22} className="text-white/40" />
+              <Wifi size={22} className="text-muted-foreground" />
             )}
           </div>
           <div>
@@ -91,7 +91,7 @@ export const OnlineToggleCard = memo(function OnlineToggleCard({
                 {effectiveOnline ? T("online") : T("offline")}
               </p>
             </div>
-            <p className="mt-0.5 text-xs text-white/40">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               {effectiveOnline ? T("acceptingOrders") : T("tapToStart")}
             </p>
           </div>
@@ -99,7 +99,7 @@ export const OnlineToggleCard = memo(function OnlineToggleCard({
         <div className="flex items-center gap-2">
           <button
             onClick={onToggleSilence}
-            className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${silenceOn ? "border border-error/20 bg-error/20 text-error" : "border border-white/10 bg-white/10 text-white/40"}`}
+            className={`flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${silenceOn ? "border border-error/20 bg-error/20 text-error" : "border border-border bg-white/10 text-muted-foreground"}`}
             aria-label={silenceOn ? "Unmute notification sounds" : "Mute notification sounds"}
           >
             {silenceOn ? <VolumeX size={15} /> : <Volume2 size={15} />}

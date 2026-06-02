@@ -28,7 +28,7 @@ function SlideIcon({ name }: { name: string }) {
   if (name === "Earn More") return <Wallet size={size} className="text-warning" />;
   if (name === "Navigate Live") return <Navigation size={size} className="text-success" />;
   if (name === "Get Paid Fast") return <Rocket size={size} className="text-purple-400" />;
-  return <Sparkles size={size} className="text-[#B0B0B0]" />;
+  return <Sparkles size={size} className="text-muted-foreground" />;
 }
 
 const SLIDES: Slide[] = [

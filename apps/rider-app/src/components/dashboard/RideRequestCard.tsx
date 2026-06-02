@@ -162,7 +162,7 @@ export const RideRequestCard = memo(function RideRequestCard({
           ? "border-l-4 border-blue-500 bg-gradient-to-r from-blue-500/10 to-transparent"
           : isBargain
             ? "border-l-4 border-orange-400 bg-gradient-to-r from-warning/10 to-transparent"
-            : "hover:bg-card-dark/50"
+            : "hover:bg-card/50"
       } transition-colors`}
     >
       <div className="flex items-start gap-3">
@@ -238,11 +238,11 @@ export const RideRequestCard = memo(function RideRequestCard({
             </div>
           )}
           <div className="mt-1 space-y-1">
-            <p className="flex items-center gap-1.5 truncate text-xs text-[#B0B0B0]">
+            <p className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
               <span className="inline-block h-2 w-2 flex-shrink-0 rounded-full bg-success shadow-sm shadow-success/30" />
               {r.pickupAddress || "Pickup location"}
             </p>
-            <p className="flex items-center gap-1.5 truncate text-xs text-[#B0B0B0]">
+            <p className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
               <span className="inline-block h-2 w-2 flex-shrink-0 rounded-full bg-error shadow-sm shadow-red-500/30" />
               {r.dropAddress || "Drop-off location"}
             </p>
@@ -257,7 +257,7 @@ export const RideRequestCard = memo(function RideRequestCard({
                 >
                   +{formatCurrency(earnings, currency)}
                 </p>
-                <p className="text-[10px] font-semibold text-[#B0B0B0]">{T("yourEarnings")}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground">{T("yourEarnings")}</p>
               </div>
             ) : null}
             {isBargain && offeredFare != null && (
@@ -265,27 +265,27 @@ export const RideRequestCard = memo(function RideRequestCard({
                 <p className="text-sm font-bold text-warning">
                   {formatCurrency(offeredFare, currency)}
                 </p>
-                <p className="text-[10px] font-medium text-[#B0B0B0]">{T("customerOffer")}</p>
+                <p className="text-[10px] font-medium text-muted-foreground">{T("customerOffer")}</p>
               </div>
             )}
             {rideDistKm != null && rideDistKm > 0 && (
               <div>
-                <p className="text-sm font-bold text-[#B0B0B0]">{rideDistKm.toFixed(1)} km</p>
-                <p className="text-[10px] font-medium text-[#B0B0B0]">{T("distance")}</p>
+                <p className="text-sm font-bold text-muted-foreground">{rideDistKm.toFixed(1)} km</p>
+                <p className="text-[10px] font-medium text-muted-foreground">{T("distance")}</p>
               </div>
             )}
             {etaMin != null && (
               <div>
                 <p className="text-sm font-bold text-blue-400">{etaMin} min</p>
-                <p className="text-[10px] font-medium text-[#B0B0B0]">ETA</p>
+                <p className="text-[10px] font-medium text-muted-foreground">ETA</p>
               </div>
             )}
             {r.fare != null && (
               <div>
-                <p className="text-sm font-bold text-[#B0B0B0] line-through">
+                <p className="text-sm font-bold text-muted-foreground line-through">
                   {formatCurrency(r.fare, currency)}
                 </p>
-                <p className="text-[10px] font-medium text-[#B0B0B0]">{T("platformFare")}</p>
+                <p className="text-[10px] font-medium text-muted-foreground">{T("platformFare")}</p>
               </div>
             )}
           </div>
@@ -326,7 +326,7 @@ export const RideRequestCard = memo(function RideRequestCard({
           ) : (
             <button
               onClick={() => onDismiss(r.id)}
-              className="flex min-h-[44px] items-center rounded-xl border border-white/10 px-3 py-2.5 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-card-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              className="flex min-h-[44px] items-center rounded-xl border border-border px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               aria-label="Dismiss ride request"
             >
               <X size={16} />
@@ -392,7 +392,7 @@ export const RideRequestCard = memo(function RideRequestCard({
                     if (counterError) setCounterError("");
                   }}
                   placeholder="Update bid..."
-                  className={`h-10 flex-1 rounded-xl border bg-card-dark px-3 text-sm focus:ring-2 focus:outline-none ${counterError ? "border-error/60 focus:border-error focus:ring-error/20" : "border-white/10 focus:border-white/15 focus:ring-brand/20"}`}
+                  className={`h-10 flex-1 rounded-xl border bg-card px-3 text-sm focus:ring-2 focus:outline-none ${counterError ? "border-error/60 focus:border-error focus:ring-error/20" : "border-border focus:border-brand/20 focus:ring-brand/20"}`}
                   aria-label="Update counter fare amount"
                 />
                 <button
@@ -430,7 +430,7 @@ export const RideRequestCard = memo(function RideRequestCard({
                     if (counterError) setCounterError("");
                   }}
                   placeholder="Your counter fare..."
-                  className={`h-11 flex-1 rounded-xl border bg-card-dark px-4 text-sm focus:ring-2 focus:outline-none ${counterError ? "border-error/60 focus:border-error focus:ring-error/20" : "border-white/10 focus:border-warning focus:ring-warning/20"}`}
+                  className={`h-11 flex-1 rounded-xl border bg-card px-4 text-sm focus:ring-2 focus:outline-none ${counterError ? "border-error/60 focus:border-error focus:ring-error/20" : "border-border focus:border-warning focus:ring-warning/20"}`}
                   aria-label="Enter counter fare amount"
                 />
                 <button
@@ -446,7 +446,7 @@ export const RideRequestCard = memo(function RideRequestCard({
                     setShowCounterForm(false);
                     setCounterError("");
                   }}
-                  className="flex min-h-[44px] items-center rounded-xl bg-border-dark px-3 py-2.5 text-[#B0B0B0] transition-colors hover:bg-border-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                  className="flex min-h-[44px] items-center rounded-xl bg-muted px-3 py-2.5 text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   aria-label="Cancel counter offer"
                 >
                   <X size={15} />
@@ -470,7 +470,7 @@ export const RideRequestCard = memo(function RideRequestCard({
               <button
                 onClick={() => onRejectOffer(r.id)}
                 disabled={rejectOfferPending}
-                className="flex min-h-[44px] items-center rounded-xl bg-border-dark px-3 py-2.5 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-border-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-50"
+                className="flex min-h-[44px] items-center rounded-xl bg-muted px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-50"
                 aria-label="Reject ride offer"
               >
                 <X size={16} />

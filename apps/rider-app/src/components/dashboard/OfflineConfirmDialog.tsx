@@ -16,22 +16,22 @@ export function OfflineConfirmDialog({
       aria-modal="true"
       aria-label="Confirm going offline"
     >
-      <div className="mx-auto w-full max-w-sm animate-[slideUp_0.2s_ease-out] rounded-t-3xl bg-card-dark px-6 py-6 shadow-2xl">
+      <div className="mx-auto w-full max-w-sm animate-[slideUp_0.2s_ease-out] rounded-t-3xl bg-card px-6 py-6 shadow-2xl">
         <p className="mb-1.5 text-base font-extrabold text-white">Go Offline?</p>
-        <p className="mb-5 text-sm text-[#B0B0B0]">
+        <p className="mb-5 text-sm text-muted-foreground">
           You have {totalRequests} request{totalRequests > 1 ? "s" : ""} waiting — go offline
           anyway?
         </p>
         <div className="flex gap-3">
           <button
             onClick={onStayOnline}
-            className="h-12 flex-1 rounded-xl border-2 border-white/10 text-sm font-bold text-[#B0B0B0] transition-colors hover:bg-card-dark"
+            className="h-12 flex-1 rounded-xl border-2 border-border text-sm font-bold text-muted-foreground transition-colors hover:bg-card"
           >
             Stay Online
           </button>
           <button
             onClick={onGoOffline}
-            className="h-12 flex-1 rounded-xl bg-card-dark text-sm font-bold text-white transition-colors hover:bg-card-dark"
+            className="h-12 flex-1 rounded-xl bg-card text-sm font-bold text-white transition-colors hover:bg-card"
           >
             Go Offline
           </button>

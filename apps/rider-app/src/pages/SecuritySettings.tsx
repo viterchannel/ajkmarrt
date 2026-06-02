@@ -92,13 +92,13 @@ function PasswordChangeSection({
             value={currentPw}
             onChange={(e) => setCurrentPw(e.target.value)}
             placeholder={T("currentPasswordHint")}
-            className="h-11 w-full rounded-xl border border-white/10 bg-card-dark px-4 pr-10 text-sm transition-all focus:bg-card-dark focus:ring-2 focus:ring-gray-900 focus:outline-none"
+            className="h-11 w-full rounded-xl border border-border bg-card px-4 pr-10 text-sm transition-all focus:bg-muted/20 focus:ring-2 focus:ring-brand/20 focus:outline-none"
           />
           <button
             type="button"
             onClick={() => setShowCurrent(!showCurrent)}
             aria-label={showCurrent ? T("hidePassword") : T("showPassword")}
-            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#B0B0B0]"
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
           >
             {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
@@ -110,13 +110,13 @@ function PasswordChangeSection({
               value={newPw}
               onChange={(e) => setNewPw(e.target.value)}
               placeholder={T("newPasswordLabel")}
-              className="h-11 w-full rounded-xl border border-white/10 bg-card-dark px-4 pr-10 text-sm transition-all focus:bg-card-dark focus:ring-2 focus:ring-gray-900 focus:outline-none"
+              className="h-11 w-full rounded-xl border border-border bg-card px-4 pr-10 text-sm transition-all focus:bg-muted/20 focus:ring-2 focus:ring-brand/20 focus:outline-none"
             />
             <button
               type="button"
               onClick={() => setShowNew(!showNew)}
               aria-label={showNew ? T("hidePassword") : T("showPassword")}
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-[#B0B0B0]"
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
             >
               {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
@@ -127,7 +127,7 @@ function PasswordChangeSection({
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= strength.level ? strength.color : "bg-border-dark"}`}
+                    className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= strength.level ? strength.color : "bg-muted"}`}
                   />
                 ))}
               </div>
@@ -145,13 +145,13 @@ function PasswordChangeSection({
             value={confirmPw}
             onChange={(e) => setConfirmPw(e.target.value)}
             placeholder={T("confirmNewPassword")}
-            className="h-11 w-full rounded-xl border border-white/10 bg-card-dark px-4 pr-10 text-sm transition-all focus:bg-card-dark focus:ring-2 focus:ring-gray-900 focus:outline-none"
+            className="h-11 w-full rounded-xl border border-border bg-card px-4 pr-10 text-sm transition-all focus:bg-muted/20 focus:ring-2 focus:ring-brand/20 focus:outline-none"
           />
           <button
             type="button"
             onClick={() => setShowConfirm(!showConfirm)}
             aria-label={showConfirm ? T("hidePassword") : T("showPassword")}
-            className="absolute top-1/2 right-3 -translate-y-1/2 text-[#B0B0B0]"
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
           >
             {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
@@ -164,7 +164,7 @@ function PasswordChangeSection({
         <button
           onClick={handleChangePassword}
           disabled={pwLoading || !newPw}
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-colors hover:bg-card-dark disabled:opacity-60"
+          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-colors hover:bg-muted/70 disabled:opacity-60"
         >
           {pwLoading ? <Loader2 size={16} className="animate-spin" /> : <Lock size={16} />}
           {pwLoading ? T("pleaseWait") : T("updatePassword")}
@@ -281,23 +281,23 @@ export default function SecuritySettings() {
     return (
       <div className="min-h-screen bg-page-bg">
         <div
-          className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+          className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
         >
-          <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-card-dark/[0.02]" />
+          <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-muted/20" />
           <div className="absolute bottom-[-20%] left-[-10%] h-48 w-48 rounded-full bg-success/[0.04]" />
           <button
             onClick={() => setView("main")}
-            className="relative z-10 mb-3 flex items-center gap-1 text-sm font-semibold text-white/60"
+            className="relative z-10 mb-3 flex items-center gap-1 text-sm font-semibold text-muted-foreground"
           >
             <ArrowLeft size={14} /> {T("back")}
           </button>
-          <h1 className="relative z-10 text-xl font-bold text-white">
+          <h1 className="relative z-10 text-xl font-bold text-foreground">
             {T("twoFactorAuthentication")}
           </h1>
         </div>
         <div className="relative z-10 -mt-4 space-y-3 px-4">
-          <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+          <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
             <TwoFactorSetup
               qrCodeDataUrl={setupData.qrCodeDataUrl}
               secret={setupData.secret}
@@ -309,8 +309,8 @@ export default function SecuritySettings() {
             />
           </div>
           {is2faEnabled && hasBackupCodes && (
-            <div className="space-y-3 rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-              <p className="text-xs leading-relaxed text-[#B0B0B0]">
+            <div className="space-y-3 rounded-3xl border border-border bg-card p-5 shadow-sm">
+              <p className="text-xs leading-relaxed text-muted-foreground">
                 {T("twoFaBackupSaveNote")}
               </p>
               <label className="flex cursor-pointer items-center gap-2">
@@ -320,7 +320,7 @@ export default function SecuritySettings() {
                   onChange={(e) => setBackupCodesSaved(e.target.checked)}
                   className="h-4 w-4 rounded accent-gray-900"
                 />
-                <span className="text-sm font-semibold text-[#B0B0B0]">
+                <span className="text-sm font-semibold text-muted-foreground">
                   {T("savedBackupCodes")}
                 </span>
               </label>
@@ -344,23 +344,23 @@ export default function SecuritySettings() {
     return (
       <div className="min-h-screen bg-page-bg">
         <div
-          className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+          className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
         >
-          <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-card-dark/[0.02]" />
+          <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-muted/20" />
           <div className="absolute bottom-[-20%] left-[-10%] h-48 w-48 rounded-full bg-success/[0.04]" />
           <button
             onClick={() => setView("main")}
-            className="relative z-10 mb-3 flex items-center gap-1 text-sm font-semibold text-white/60"
+            className="relative z-10 mb-3 flex items-center gap-1 text-sm font-semibold text-muted-foreground"
           >
             <ArrowLeft size={14} /> {T("back")}
           </button>
-          <h1 className="relative z-10 text-xl font-bold text-white">
+          <h1 className="relative z-10 text-xl font-bold text-foreground">
             {T("twoFactorVerification")}
           </h1>
         </div>
         <div className="relative z-10 -mt-4 px-4">
-          <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+          <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
             <TwoFactorVerify
               onVerify={handleDisableVerify}
               verifyLoading={verifyLoading}
@@ -376,16 +376,16 @@ export default function SecuritySettings() {
   return (
     <div className="min-h-screen bg-page-bg">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
-        <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-card-dark/[0.02]" />
+        <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-muted/20" />
         <div className="absolute bottom-[-20%] left-[-10%] h-48 w-48 rounded-full bg-success/[0.04]" />
         <div className="relative z-10 mb-2 flex items-center gap-3">
-          <Link href="/profile" className="text-white/60 transition-colors hover:text-white">
+          <Link href="/profile" className="text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft size={20} />
           </Link>
-          <h1 className="text-xl font-bold text-white">{T("securitySettings")}</h1>
+          <h1 className="text-xl font-bold text-foreground">{T("securitySettings")}</h1>
         </div>
       </div>
 
@@ -393,7 +393,7 @@ export default function SecuritySettings() {
         <Accordion type="multiple" defaultValue={["password", "2fa"]}>
           <AccordionItem
             value="password"
-            className="mb-4 overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm"
+            className="mb-4 overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
           >
             <AccordionTrigger className="px-5 py-4 hover:no-underline">
               <div className="flex items-center gap-3">
@@ -401,8 +401,8 @@ export default function SecuritySettings() {
                   <Lock size={20} className="text-blue-400" />
                 </div>
                 <div className="text-left">
-                  <span className="block text-[15px] font-bold text-white">{T("password")}</span>
-                  <span className="text-xs text-[#B0B0B0]">{T("changePasswordSub")}</span>
+                  <span className="block text-[15px] font-bold text-foreground">{T("password")}</span>
+                  <span className="text-xs text-muted-foreground">{T("changePasswordSub")}</span>
                 </div>
               </div>
             </AccordionTrigger>
@@ -413,7 +413,7 @@ export default function SecuritySettings() {
 
           <AccordionItem
             value="login-history"
-            className="mb-4 overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm"
+            className="mb-4 overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
           >
             <AccordionTrigger className="px-5 py-4 hover:no-underline">
               <div className="flex items-center gap-3">
@@ -421,19 +421,19 @@ export default function SecuritySettings() {
                   <Clock size={20} className="text-purple-500" />
                 </div>
                 <div className="text-left">
-                  <span className="block text-[15px] font-bold text-white">{T("loginHistory")}</span>
-                  <span className="text-xs text-[#B0B0B0]">{T("loginHistorySub")}</span>
+                  <span className="block text-[15px] font-bold text-foreground">{T("loginHistory")}</span>
+                  <span className="text-xs text-muted-foreground">{T("loginHistorySub")}</span>
                 </div>
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <div className="px-5 pb-4">
-                <p className="mb-3 text-xs leading-relaxed text-[#B0B0B0]">
+                <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
                   {T("loginHistoryDesc")}
                 </p>
                 <Link
                   href="/settings/login-history"
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-colors hover:bg-card-dark"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm font-bold text-white transition-colors hover:bg-muted/70"
                 >
                   <Clock size={15} />
                   {T("viewLoginHistory")}
@@ -445,25 +445,25 @@ export default function SecuritySettings() {
 
           <AccordionItem
             value="2fa"
-            className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm"
+            className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
           >
             <AccordionTrigger className="px-5 py-4 hover:no-underline">
               <div className="flex items-center gap-3">
                 <div
-                  className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${is2faEnabled ? "bg-success/15" : "bg-border-dark"}`}
+                  className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${is2faEnabled ? "bg-success/15" : "bg-muted"}`}
                 >
                   {is2faEnabled ? (
                     <ShieldCheck size={20} className="text-success" />
                   ) : (
-                    <Shield size={20} className="text-[#B0B0B0]" />
+                    <Shield size={20} className="text-muted-foreground" />
                   )}
                 </div>
                 <div className="text-left">
-                  <span className="block text-[15px] font-bold text-white">
+                  <span className="block text-[15px] font-bold text-foreground">
                     {T("twoFactorAuthentication")}
                   </span>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-bold ${is2faEnabled ? "bg-success/15 text-success" : "bg-border-dark text-[#B0B0B0]"}`}
+                    className={`rounded-full px-2 py-0.5 text-xs font-bold ${is2faEnabled ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"}`}
                   >
                     {is2faEnabled ? T("twoFactorEnabled") : T("twoFactorDisabled")}
                   </span>
@@ -472,14 +472,14 @@ export default function SecuritySettings() {
             </AccordionTrigger>
             <AccordionContent>
               <div className="px-5 pb-1">
-                <p className="mb-4 text-xs leading-relaxed text-[#B0B0B0]">{T("twoFactorDesc")}</p>
+                <p className="mb-4 text-xs leading-relaxed text-muted-foreground">{T("twoFactorDesc")}</p>
                 <button
                   onClick={handleToggle2fa}
                   disabled={loading}
                   className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors disabled:opacity-60 ${
                     is2faEnabled
                       ? "border-2 border-error/30 text-error hover:bg-error/10"
-                      : "bg-brand text-white hover:bg-card-dark"
+                      : "bg-brand text-white hover:bg-muted/70"
                   }`}
                 >
                   {loading ? (

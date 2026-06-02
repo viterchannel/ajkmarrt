@@ -14,14 +14,14 @@ export function AnnouncementBar({ message }: Props) {
   if (!message || dismissed) return null;
 
   return (
-    <div className="flex items-center justify-between gap-3 bg-card-dark px-4 py-2.5 text-white shadow-sm">
+    <div className="flex items-center justify-between gap-3 bg-card px-4 py-2.5 text-white shadow-sm">
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <span className="flex-shrink-0 text-base">📢</span>
         <p className="truncate text-sm font-medium">{message}</p>
       </div>
       <button
         onClick={() => setDismissed(true)}
-        className="flex-shrink-0 text-lg leading-none font-bold text-white/60 transition-colors hover:text-white"
+        className="flex-shrink-0 text-lg leading-none font-bold text-muted-foreground transition-colors hover:text-white"
         aria-label={T("dismissAnnouncement")}
       >
         ×

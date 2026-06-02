@@ -21,7 +21,7 @@ import { checkSufficientBalance } from "../../lib/wallet/validation";
 import type { PayMethod } from "./WithdrawModal";
 const log = createLogger("[DepositModal]");
 const INPUT =
-  "w-full h-12 px-4 bg-card-dark border border-white/10 rounded-xl text-sm focus:outline-none focus:border-teal-400 focus:bg-card-dark transition-colors";
+  "w-full h-12 px-4 bg-card border border-border rounded-xl text-sm focus:outline-none focus:border-teal-400 focus:bg-card transition-colors";
 
 function MethodLogo({ id }: { id: string }) {
   if (id === "jazzcash") return <Smartphone size={28} className="text-error" />;
@@ -187,11 +187,11 @@ export default function DepositModal({
       aria-label={T("walletDeposit")}
     >
       <div
-        className="flex max-h-[93vh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-card-dark shadow-2xl"
+        className="flex max-h-[93vh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-card shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-shrink-0 justify-center pt-3 pb-1">
-          <div className="h-1 w-10 rounded-full bg-border-dark" />
+          <div className="h-1 w-10 rounded-full bg-muted" />
         </div>
         {step !== "done" && stepIdx >= 0 && (
           <div className="flex-shrink-0 px-6 pb-3">
@@ -199,11 +199,11 @@ export default function DepositModal({
               {STEP_LABELS.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 flex-1 rounded-full transition-all ${i <= stepIdx ? "bg-brand" : "bg-border-dark"}`}
+                  className={`h-1 flex-1 rounded-full transition-all ${i <= stepIdx ? "bg-brand" : "bg-muted"}`}
                 />
               ))}
             </div>
-            <p className="mt-1 text-right text-[10px] text-[#B0B0B0]">
+            <p className="mt-1 text-right text-[10px] text-muted-foreground">
               {T("step")} {stepIdx + 1}/{STEP_LABELS.length}
             </p>
           </div>
@@ -216,20 +216,20 @@ export default function DepositModal({
                 <CheckCircle size={52} className="text-success" />
               </div>
               <h3 className="text-2xl font-extrabold text-white">{T("depositSubmitted")}</h3>
-              <p className="mt-2 text-sm text-[#B0B0B0]">{T("adminVerifyWallet24h")}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{T("adminVerifyWallet24h")}</p>
               <div className="mt-5 space-y-3 rounded-2xl bg-success/10 p-5 text-left">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("methodLabel")}</span>
+                  <span className="text-muted-foreground">{T("methodLabel")}</span>
                   <span className="flex items-center gap-1.5 font-bold">
                     <MethodLogo id={selectedMethod?.id ?? ""} /> {selectedMethod?.label}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("txIdLabel")}</span>
+                  <span className="text-muted-foreground">{T("txIdLabel")}</span>
                   <span className="font-mono font-bold">{txId}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-success/20 pt-2">
-                  <span className="font-semibold text-[#B0B0B0]">{T("amountLabel")}</span>
+                  <span className="font-semibold text-muted-foreground">{T("amountLabel")}</span>
                   <span className="text-2xl font-extrabold text-teal-600">
                     {fc(Number(amount))}
                   </span>
@@ -255,7 +255,7 @@ export default function DepositModal({
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0]"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                 >
                   <X size={18} />
                 </button>
@@ -276,9 +276,9 @@ export default function DepositModal({
                   </p>
                 </div>
               )}
-              <p className="mb-4 text-sm text-[#B0B0B0]">{T("howMuchDeposit")}</p>
+              <p className="mb-4 text-sm text-muted-foreground">{T("howMuchDeposit")}</p>
               <div className="relative mb-2">
-                <span className="absolute top-1/2 left-4 -translate-y-1/2 text-sm font-bold text-[#B0B0B0]">
+                <span className="absolute top-1/2 left-4 -translate-y-1/2 text-sm font-bold text-muted-foreground">
                   {currencySymbol}
                 </span>
                 <input
@@ -298,7 +298,7 @@ export default function DepositModal({
                       key={v}
                       onClick={() => setAmount(String(v))}
                       aria-label={`${T("depositAmount")} ${fc(v)}`}
-                      className="flex-1 rounded-xl bg-border-dark py-2 text-xs font-bold text-[#B0B0B0] active:bg-brand/20 active:text-brand"
+                      className="flex-1 rounded-xl bg-muted py-2 text-xs font-bold text-muted-foreground active:bg-brand/20 active:text-brand"
                     >
                       {fc(v)}
                     </button>
@@ -327,7 +327,7 @@ export default function DepositModal({
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0]"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                 >
                   <X size={18} />
                 </button>
@@ -336,7 +336,7 @@ export default function DepositModal({
                 <p className="text-xs font-medium text-teal-600">{T("depositAmount")}</p>
                 <p className="text-3xl font-extrabold text-success">{fc(Number(amount))}</p>
               </div>
-              <p className="mb-3 text-sm text-[#B0B0B0]">{T("whereToDeposit")}</p>
+              <p className="mb-3 text-sm text-muted-foreground">{T("whereToDeposit")}</p>
               {loadingMethods ? (
                 <div className="space-y-3">
                   {[1, 2].map((i) => (
@@ -356,14 +356,14 @@ export default function DepositModal({
                       key={m.id}
                       onClick={() => goToDetails(m)}
                       aria-label={m.label}
-                      className="flex w-full items-center gap-4 rounded-2xl border-2 border-white/10 bg-card-dark p-4 text-left transition-all hover:border-brand hover:bg-brand/10 active:scale-[0.98]"
+                      className="flex w-full items-center gap-4 rounded-2xl border-2 border-border bg-card p-4 text-left transition-all hover:border-brand hover:bg-brand/10 active:scale-[0.98]"
                     >
-                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-card-dark shadow-sm">
+                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-card shadow-sm">
                         <MethodLogo id={m.id} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="font-extrabold text-white">{m.label}</p>
-                        <p className="mt-0.5 text-xs text-[#B0B0B0]">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           {m.description || m.label}
                         </p>
                         {(m.manualNumber || m.iban) && (
@@ -372,7 +372,7 @@ export default function DepositModal({
                           </p>
                         )}
                       </div>
-                      <ChevronRight size={20} className="text-[#B0B0B0]" />
+                      <ChevronRight size={20} className="text-muted-foreground" />
                     </button>
                   ))}
                 </div>
@@ -380,7 +380,7 @@ export default function DepositModal({
               <button
                 onClick={() => setStep("amount")}
                 aria-label={T("back")}
-                className="mt-4 flex w-full items-center justify-center gap-1 py-2 text-center text-sm font-medium text-[#B0B0B0]"
+                className="mt-4 flex w-full items-center justify-center gap-1 py-2 text-center text-sm font-medium text-muted-foreground"
               >
                 <ArrowLeft size={14} /> {T("back")}
               </button>
@@ -397,7 +397,7 @@ export default function DepositModal({
                 <button
                   onClick={onClose}
                   aria-label={T("close")}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark text-[#B0B0B0]"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground"
                 >
                   <X size={18} />
                 </button>
@@ -462,7 +462,7 @@ export default function DepositModal({
               </div>
               <div className="space-y-3">
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {selectedMethod.id === "bank" ? T("senderIbanLabel") : T("yourPhoneSender")}
                   </label>
                   <input
@@ -474,10 +474,10 @@ export default function DepositModal({
                     aria-label={selectedMethod.id === "bank" ? T("senderIbanLabel") : T("yourPhoneSender")}
                     className={INPUT}
                   />
-                  <p className="mt-1 text-[10px] text-[#B0B0B0]">{T("senderRequiredHint")}</p>
+                  <p className="mt-1 text-[10px] text-muted-foreground">{T("senderRequiredHint")}</p>
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("txIdLabel")} *
                   </label>
                   <input
@@ -487,10 +487,10 @@ export default function DepositModal({
                     aria-label={T("txIdLabel")}
                     className={INPUT}
                   />
-                  <p className="mt-1 text-[10px] text-[#B0B0B0]">{T("txIdHintNote")}</p>
+                  <p className="mt-1 text-[10px] text-muted-foreground">{T("txIdHintNote")}</p>
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-muted-foreground uppercase">
                     {T("noteOptional")}
                   </label>
                   <input
@@ -512,7 +512,7 @@ export default function DepositModal({
                 <button
                   onClick={() => setStep("method")}
                   aria-label={T("back")}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-white/10 py-3 text-sm font-bold text-[#B0B0B0]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-border py-3 text-sm font-bold text-muted-foreground"
                 >
                   <ArrowLeft size={14} /> {T("back")}
                 </button>
@@ -530,28 +530,28 @@ export default function DepositModal({
           {step === "confirm" && selectedMethod && (
             <div className="p-6">
               <h3 className="mb-1 text-xl font-extrabold text-white">{T("confirmDeposit")}</h3>
-              <p className="mb-5 text-sm text-[#B0B0B0]">{T("reviewConfirm")}</p>
+              <p className="mb-5 text-sm text-muted-foreground">{T("reviewConfirm")}</p>
               <div className="mb-4 space-y-3 rounded-2xl border border-success/20 bg-success/10 p-5">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#B0B0B0]">{T("amountLabel")}</span>
+                  <span className="text-sm text-muted-foreground">{T("amountLabel")}</span>
                   <span className="text-3xl font-extrabold text-teal-600">
                     {fc(Number(amount))}
                   </span>
                 </div>
                 <div className="h-px bg-success/15" />
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("methodLabel")}</span>
+                  <span className="text-muted-foreground">{T("methodLabel")}</span>
                   <span className="flex items-center gap-1.5 font-bold">
                     <MethodLogo id={selectedMethod.id} /> {selectedMethod.label}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#B0B0B0]">{T("txIdLabel")}</span>
+                  <span className="text-muted-foreground">{T("txIdLabel")}</span>
                   <span className="font-mono font-bold">{txId}</span>
                 </div>
                 {note && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#B0B0B0]">{T("noteOptional")}</span>
+                    <span className="text-muted-foreground">{T("noteOptional")}</span>
                     <span className="font-bold">{note}</span>
                   </div>
                 )}
@@ -573,7 +573,7 @@ export default function DepositModal({
                     setErr("");
                   }}
                   aria-label={T("edit")}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-white/10 py-3 text-sm font-bold text-[#B0B0B0]"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border-2 border-border py-3 text-sm font-bold text-muted-foreground"
                 >
                   <ArrowLeft size={14} /> {T("edit")}
                 </button>

@@ -105,12 +105,12 @@ function deviceLabel(s: ActiveSession | LoginEntry): string {
 function DeviceIcon({ os }: { os: string | null }) {
   const lower = (os ?? "").toLowerCase();
   if (/android|ios|iphone|ipad|mobile/.test(lower))
-    return <Smartphone size={15} className="text-[#B0B0B0]" />;
+    return <Smartphone size={15} className="text-muted-foreground" />;
   if (/windows|mac|linux/.test(lower))
-    return <Monitor size={15} className="text-[#B0B0B0]" />;
+    return <Monitor size={15} className="text-muted-foreground" />;
   if (/web|browser/.test(lower))
-    return <Laptop size={15} className="text-[#B0B0B0]" />;
-  return <Globe size={15} className="text-[#B0B0B0]" />;
+    return <Laptop size={15} className="text-muted-foreground" />;
+  return <Globe size={15} className="text-muted-foreground" />;
 }
 
 /* ── Skeletons ──────────────────────────────────────────────────────────── */
@@ -118,13 +118,13 @@ function DeviceIcon({ os }: { os: string | null }) {
 function SessionSkeleton() {
   return (
     <div className="flex items-start gap-3 px-5 py-4">
-      <div className="mt-0.5 h-9 w-9 flex-shrink-0 animate-pulse rounded-xl bg-border-dark" />
+      <div className="mt-0.5 h-9 w-9 flex-shrink-0 animate-pulse rounded-xl bg-muted" />
       <div className="flex-1 space-y-2">
-        <div className="h-3.5 w-32 animate-pulse rounded bg-border-dark" />
-        <div className="h-3 w-48 animate-pulse rounded bg-border-dark" />
-        <div className="h-3 w-20 animate-pulse rounded bg-border-dark" />
+        <div className="h-3.5 w-32 animate-pulse rounded bg-muted" />
+        <div className="h-3 w-48 animate-pulse rounded bg-muted" />
+        <div className="h-3 w-20 animate-pulse rounded bg-muted" />
       </div>
-      <div className="h-8 w-16 animate-pulse rounded-xl bg-border-dark" />
+      <div className="h-8 w-16 animate-pulse rounded-xl bg-muted" />
     </div>
   );
 }
@@ -132,13 +132,13 @@ function SessionSkeleton() {
 function HistorySkeleton() {
   return (
     <div className="flex items-start gap-3 px-5 py-4">
-      <div className="mt-0.5 h-8 w-8 flex-shrink-0 animate-pulse rounded-xl bg-border-dark" />
+      <div className="mt-0.5 h-8 w-8 flex-shrink-0 animate-pulse rounded-xl bg-muted" />
       <div className="flex-1 space-y-2">
-        <div className="h-3.5 w-36 animate-pulse rounded bg-border-dark" />
-        <div className="h-3 w-52 animate-pulse rounded bg-border-dark" />
-        <div className="h-3 w-24 animate-pulse rounded bg-border-dark" />
+        <div className="h-3.5 w-36 animate-pulse rounded bg-muted" />
+        <div className="h-3 w-52 animate-pulse rounded bg-muted" />
+        <div className="h-3 w-24 animate-pulse rounded bg-muted" />
       </div>
-      <div className="h-5 w-14 animate-pulse rounded-full bg-border-dark" />
+      <div className="h-5 w-14 animate-pulse rounded-full bg-muted" />
     </div>
   );
 }
@@ -150,7 +150,7 @@ function Toast({ message, type }: { message: string; type: "success" | "error" }
     <div className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center"
       style={{ paddingTop: "calc(env(safe-area-inset-top,0px) + 12px)", padding: "0 16px" }}>
       <div
-        className={`pointer-events-auto w-full max-w-sm rounded-2xl px-5 py-3 text-center text-sm font-semibold text-white shadow-2xl ${
+        className={`pointer-events-auto w-full max-w-sm rounded-2xl px-5 py-3 text-center text-sm font-semibold text-foreground shadow-2xl ${
           type === "error" ? "bg-error" : "bg-brand"
         }`}
       >
@@ -193,34 +193,34 @@ function SessionRow({ session, isFirst, onRevoke, revoking }: SessionRowProps) {
 
   return (
     <div>
-      {!isFirst && <div className="mx-5 border-t border-white/5" />}
+      {!isFirst && <div className="mx-5 border-t border-border/30" />}
       <div className="flex items-start gap-3 px-5 py-4">
         {/* Device icon bubble */}
-        <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-card-dark">
+        <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-card">
           <DeviceIcon os={session.os} />
         </div>
 
         {/* Details */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="truncate text-[13px] font-semibold text-white">
+            <span className="truncate text-[13px] font-semibold text-foreground">
               {deviceLabel(session)}
             </span>
           </div>
           {(session.os || session.browser) && (
-            <p className="mt-0.5 truncate text-xs text-[#B0B0B0]">
+            <p className="mt-0.5 truncate text-xs text-muted-foreground">
               {[session.os, session.browser].filter(Boolean).join(" · ")}
             </p>
           )}
           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {session.ip && isValidIP(session.ip) && (
-              <span className="font-mono text-[11px] text-[#B0B0B0]">{session.ip}</span>
+              <span className="font-mono text-[11px] text-muted-foreground">{session.ip}</span>
             )}
             {session.location && isValidLocation(session.location) && (
-              <span className="text-[11px] text-[#B0B0B0]">{session.location}</span>
+              <span className="text-[11px] text-muted-foreground">{session.location}</span>
             )}
           </div>
-          <p className="mt-0.5 text-[11px] text-[#B0B0B0]" title={formatDateTime(session.lastActiveAt)}>
+          <p className="mt-0.5 text-[11px] text-muted-foreground" title={formatDateTime(session.lastActiveAt)}>
             Active {relativeTime(session.lastActiveAt)}
           </p>
         </div>
@@ -239,7 +239,7 @@ function SessionRow({ session, isFirst, onRevoke, revoking }: SessionRowProps) {
               </button>
               <button
                 onClick={cancelConfirm}
-                className="text-[10px] font-semibold text-[#B0B0B0] hover:text-[#B0B0B0]"
+                className="text-[10px] font-semibold text-muted-foreground hover:text-muted-foreground"
               >
                 Cancel
               </button>
@@ -248,7 +248,7 @@ function SessionRow({ session, isFirst, onRevoke, revoking }: SessionRowProps) {
             <button
               onClick={startConfirm}
               disabled={revoking}
-              className="flex h-8 items-center gap-1 rounded-xl border border-white/10 px-3 text-[11px] font-bold text-[#B0B0B0] transition-colors hover:border-error/30 hover:bg-error/10 hover:text-error disabled:opacity-40"
+              className="flex h-8 items-center gap-1 rounded-xl border border-border px-3 text-[11px] font-bold text-muted-foreground transition-colors hover:border-error/30 hover:bg-error/10 hover:text-error disabled:opacity-40"
             >
               <LogOut size={11} />
               Sign out
@@ -383,18 +383,18 @@ export default function LoginHistory() {
 
       {/* ── Header ────────────────────────────────────────────────── */}
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
-        <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-card-dark/[0.02]" />
+        <div className="absolute top-[-30%] right-[-15%] h-64 w-64 rounded-full bg-muted/20" />
         <div className="absolute bottom-[-20%] left-[-10%] h-48 w-48 rounded-full bg-success/[0.04]" />
         <div className="relative z-10 mb-2 flex items-center gap-3">
-          <Link href="/settings/security" className="text-white/60 transition-colors hover:text-white">
+          <Link href="/settings/security" className="text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-white">Login History</h1>
-            <p className="mt-0.5 text-xs text-white/50">Manage active devices & view sign-in events</p>
+            <h1 className="text-xl font-bold text-foreground">Login History</h1>
+            <p className="mt-0.5 text-xs text-muted-foreground">Manage active devices & view sign-in events</p>
           </div>
         </div>
       </div>
@@ -405,14 +405,14 @@ export default function LoginHistory() {
         {/* ── ACTIVE SESSIONS ─────────────────────────────────────── */}
         <div>
           <div className="mb-2 flex items-center justify-between px-1">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#B0B0B0]">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Active Sessions
             </p>
             {/* "Sign out all other devices" — only shown when there are others */}
             {!sessionsLoading && sessions.length > 1 && (
               revokeAllConfirm ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-[#B0B0B0]">Sign out all others?</span>
+                  <span className="text-[11px] text-muted-foreground">Sign out all others?</span>
                   <button
                     onClick={handleRevokeAll}
                     disabled={revokeAllLoading}
@@ -421,7 +421,7 @@ export default function LoginHistory() {
                     {revokeAllLoading ? <Loader2 size={10} className="animate-spin" /> : <LogOut size={10} />}
                     Yes, sign out
                   </button>
-                  <button onClick={cancelRevokeAll} className="text-[10px] text-[#B0B0B0] hover:text-[#B0B0B0]">
+                  <button onClick={cancelRevokeAll} className="text-[10px] text-muted-foreground hover:text-muted-foreground">
                     Cancel
                   </button>
                 </div>
@@ -429,7 +429,7 @@ export default function LoginHistory() {
                 <button
                   onClick={startRevokeAll}
                   disabled={revokeAllLoading}
-                  className="flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1 text-[11px] font-semibold text-[#B0B0B0] transition-colors hover:border-error/30 hover:bg-error/10 hover:text-error disabled:opacity-40"
+                  className="flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-error/30 hover:bg-error/10 hover:text-error disabled:opacity-40"
                 >
                   <LogOut size={10} />
                   Sign out all others
@@ -438,12 +438,12 @@ export default function LoginHistory() {
             )}
           </div>
 
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+          <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
             {/* Loading */}
             {sessionsLoading && (
               <>
                 <SessionSkeleton />
-                <div className="mx-5 border-t border-white/5" />
+                <div className="mx-5 border-t border-border/30" />
                 <SessionSkeleton />
               </>
             )}
@@ -459,7 +459,7 @@ export default function LoginHistory() {
             {/* Empty */}
             {!sessionsLoading && !sessionsError && sessions.length === 0 && (
               <div className="px-5 py-6 text-center">
-                <p className="text-sm text-[#B0B0B0]">No active sessions found</p>
+                <p className="text-sm text-muted-foreground">No active sessions found</p>
               </div>
             )}
 
@@ -488,16 +488,16 @@ export default function LoginHistory() {
 
         {/* ── SIGN-IN EVENT LOG ────────────────────────────────────── */}
         <div>
-          <p className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-[#B0B0B0]">
+          <p className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-muted-foreground">
             Sign-in Events
           </p>
 
           {/* Loading */}
           {historyLoading && (
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+            <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
               {[0, 1, 2, 3].map((i) => (
                 <div key={i}>
-                  {i > 0 && <div className="mx-5 border-t border-white/5" />}
+                  {i > 0 && <div className="mx-5 border-t border-border/30" />}
                   <HistorySkeleton />
                 </div>
               ))}
@@ -517,21 +517,21 @@ export default function LoginHistory() {
 
           {/* Empty */}
           {!historyLoading && !historyError && entries.length === 0 && (
-            <div className="flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-card-dark px-6 py-10 text-center shadow-sm">
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-card-dark">
-                <Globe size={20} className="text-[#B0B0B0]" />
+            <div className="flex flex-col items-center justify-center rounded-3xl border border-border bg-card px-6 py-10 text-center shadow-sm">
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-card">
+                <Globe size={20} className="text-muted-foreground" />
               </div>
-              <p className="font-semibold text-[#B0B0B0]">No sign-in events yet</p>
-              <p className="mt-1 text-xs text-[#B0B0B0]">Your login events will appear here.</p>
+              <p className="font-semibold text-muted-foreground">No sign-in events yet</p>
+              <p className="mt-1 text-xs text-muted-foreground">Your login events will appear here.</p>
             </div>
           )}
 
           {/* Event log */}
           {!historyLoading && !historyError && entries.length > 0 && (
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+            <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
               {entries.map((entry, i) => (
                 <div key={entry.id}>
-                  {i > 0 && <div className="mx-5 border-t border-white/5" />}
+                  {i > 0 && <div className="mx-5 border-t border-border/30" />}
                   <div className="flex items-start gap-3 px-5 py-4">
 
                     {/* Status icon */}
@@ -545,28 +545,28 @@ export default function LoginHistory() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <DeviceIcon os={entry.os} />
-                        <span className="truncate text-[13px] font-semibold text-white">
+                        <span className="truncate text-[13px] font-semibold text-foreground">
                           {deviceLabel(entry)}
                         </span>
                       </div>
                       {(entry.os || entry.browser) && (
-                        <p className="mt-0.5 truncate text-xs text-[#B0B0B0]">
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
                           {[entry.os, entry.browser].filter(Boolean).join(" · ")}
                         </p>
                       )}
                       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                         {entry.ip && isValidIP(entry.ip) && (
-                          <span className="font-mono text-[11px] text-[#B0B0B0]">{entry.ip}</span>
+                          <span className="font-mono text-[11px] text-muted-foreground">{entry.ip}</span>
                         )}
                         {entry.location && isValidLocation(entry.location) && (
-                          <span className="text-[11px] text-[#B0B0B0]">{entry.location}</span>
+                          <span className="text-[11px] text-muted-foreground">{entry.location}</span>
                         )}
                       </div>
                       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                        <span className="rounded-full bg-border-dark px-2 py-0.5 text-[10px] font-bold text-[#B0B0B0]">
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
                           {methodLabel(entry.method)}
                         </span>
-                        <span className="text-[11px] text-[#B0B0B0]" title={formatDateTime(entry.createdAt)}>
+                        <span className="text-[11px] text-muted-foreground" title={formatDateTime(entry.createdAt)}>
                           {relativeTime(entry.createdAt)}
                         </span>
                       </div>
@@ -583,7 +583,7 @@ export default function LoginHistory() {
           )}
 
           {!historyLoading && !historyError && entries.length > 0 && (
-            <p className="mt-2 px-1 text-center text-[11px] text-[#B0B0B0]">
+            <p className="mt-2 px-1 text-center text-[11px] text-muted-foreground">
               Last 20 events · records older than 90 days are automatically removed
             </p>
           )}

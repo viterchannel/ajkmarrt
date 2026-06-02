@@ -231,10 +231,10 @@ function EarningsChart({ transactions }: { transactions: WalletTx[] }) {
   const bestIdx = days.reduce((best, d, i) => (d.amount > days[best]!.amount ? i : best), 0);
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+    <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BarChart3 size={15} className="text-[#B0B0B0]" />
+          <BarChart3 size={15} className="text-muted-foreground" />
           <p className="text-sm font-bold text-white">{T("sevenDayEarnings")}</p>
         </div>
         <p className="text-base font-black text-brand">{fc(weekTotal, chartCurrency, chartCurrencyCode)}</p>
@@ -252,7 +252,7 @@ function EarningsChart({ transactions }: { transactions: WalletTx[] }) {
               />
             </div>
             <p
-              className={`text-[10px] font-semibold ${i === bestIdx ? "text-brand" : "text-[#B0B0B0]"}`}
+              className={`text-[10px] font-semibold ${i === bestIdx ? "text-brand" : "text-muted-foreground"}`}
             >
               {d.label}
             </p>
@@ -340,12 +340,12 @@ function PendingRequestCard({ tx }: { tx: WalletTx }) {
     <div className={`${statusConfig.bg} border ${statusConfig.border} rounded-2xl p-4`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-card-dark shadow-sm">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-card shadow-sm">
             <MethodIcon method={tx.paymentMethod || parsed.bank} />
           </div>
           <div className="min-w-0">
             <p className="text-sm font-black text-white">{parsed.bank}</p>
-            <p className="mt-0.5 font-mono text-xs text-[#B0B0B0]">{parsed.account}</p>
+            <p className="mt-0.5 font-mono text-xs text-muted-foreground">{parsed.account}</p>
           </div>
         </div>
         <div className="flex-shrink-0 text-right">
@@ -360,18 +360,18 @@ function PendingRequestCard({ tx }: { tx: WalletTx }) {
           </span>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-white/60 pt-3">
-        <p className="text-[10px] text-[#B0B0B0]">
+      <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+        <p className="text-[10px] text-muted-foreground">
           {fd(tx.createdAt)} · {fdr(tx.createdAt)}
         </p>
         {refNo && status !== "rejected" && (
-          <p className="text-[10px] font-bold text-[#B0B0B0]">
+          <p className="text-[10px] font-bold text-muted-foreground">
             {isBankTransfer ? "UTR" : "Ref"}: {refNo}
           </p>
         )}
       </div>
       {status === "rejected" && refNo && (
-        <div className="mt-2 rounded-xl bg-card-dark/70 px-3 py-2">
+        <div className="mt-2 rounded-xl bg-card/70 px-3 py-2">
           <p className="text-xs font-medium text-error">
             {T("reason")}: {refNo}
           </p>
@@ -411,39 +411,39 @@ function SkeletonWallet() {
   return (
     <div className="min-h-screen bg-page-bg">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
-        <div className="absolute top-0 right-0 h-64 w-64 translate-x-1/3 -translate-y-1/2 rounded-full bg-card-dark/[0.03]" />
-        <div className="absolute bottom-0 left-0 h-44 w-44 -translate-x-1/4 translate-y-1/2 rounded-full bg-card-dark/[0.02]" />
+        <div className="absolute top-0 right-0 h-64 w-64 translate-x-1/3 -translate-y-1/2 rounded-full bg-muted/20" />
+        <div className="absolute bottom-0 left-0 h-44 w-44 -translate-x-1/4 translate-y-1/2 rounded-full bg-muted/20" />
         <div className="relative">
           <div className="mb-6 flex animate-pulse items-center justify-between">
-            <div className="h-3 w-24 rounded bg-card-dark/10" />
-            <div className="h-8 w-8 rounded-full bg-card-dark/5" />
+            <div className="h-3 w-24 rounded bg-muted/20" />
+            <div className="h-8 w-8 rounded-full bg-card/5" />
           </div>
-          <div className="mb-6 h-12 w-52 animate-pulse rounded-xl bg-card-dark/10" />
+          <div className="mb-6 h-12 w-52 animate-pulse rounded-xl bg-muted/20" />
           <div className="mb-5 flex animate-pulse gap-3">
-            <div className="h-16 flex-1 rounded-2xl bg-card-dark/5" />
-            <div className="h-16 flex-1 rounded-2xl bg-card-dark/5" />
-            <div className="h-16 flex-1 rounded-2xl bg-card-dark/5" />
+            <div className="h-16 flex-1 rounded-2xl bg-card/5" />
+            <div className="h-16 flex-1 rounded-2xl bg-card/5" />
+            <div className="h-16 flex-1 rounded-2xl bg-card/5" />
           </div>
           <div className="flex animate-pulse gap-3">
-            <div className="h-13 flex-1 rounded-2xl bg-card-dark/15" />
-            <div className="h-13 flex-1 rounded-2xl bg-card-dark/10" />
+            <div className="h-13 flex-1 rounded-2xl bg-card/15" />
+            <div className="h-13 flex-1 rounded-2xl bg-muted/20" />
           </div>
         </div>
       </div>
       <div className="-mt-4 space-y-4 px-5 py-5">
-        <div className="animate-pulse rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
-          <div className="mb-4 h-4 w-32 rounded bg-border-dark" />
+        <div className="animate-pulse rounded-3xl border border-border bg-card p-5 shadow-sm">
+          <div className="mb-4 h-4 w-32 rounded bg-muted" />
           <div className="flex h-20 items-end gap-3">
             {[20, 35, 15, 45, 30, 50, 25].map((h, i) => (
               <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
                 <div
-                  className="w-full max-w-[20px] rounded-md bg-border-dark"
+                  className="w-full max-w-[20px] rounded-md bg-muted"
                   style={{ height: `${h}px` }}
                 />
-                <div className="h-2 w-4 rounded bg-border-dark" />
+                <div className="h-2 w-4 rounded bg-muted" />
               </div>
             ))}
           </div>
@@ -715,10 +715,10 @@ export default function Wallet() {
     return (
       <div className="flex min-h-screen flex-col bg-page-bg">
         <div
-          className="rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-10"
+          className="rounded-b-[2rem] page-header-gradient bg-card px-5 pb-10"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
         >
-          <p className="mb-1 text-xs font-semibold tracking-widest text-white/40 uppercase">
+          <p className="mb-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             {T("walletBalance")}
           </p>
           <h1 className="text-2xl font-extrabold tracking-tight text-white">{T("wallet")}</h1>
@@ -739,20 +739,20 @@ export default function Wallet() {
     return (
       <div className="min-h-screen bg-page-bg">
         <div
-          className="rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-10"
+          className="rounded-b-[2rem] page-header-gradient bg-card px-5 pb-10"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
         >
-          <p className="text-xs font-semibold tracking-widest text-white/40 uppercase">
+          <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             {T("wallet")}
           </p>
         </div>
         <div className="-mt-4 px-5">
-          <div className="rounded-3xl border border-white/10 bg-card-dark p-10 text-center shadow-sm">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-card-dark">
-              <Lock size={32} className="text-[#B0B0B0]" />
+          <div className="rounded-3xl border border-border bg-card p-10 text-center shadow-sm">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-card">
+              <Lock size={32} className="text-muted-foreground" />
             </div>
             <h3 className="mb-2 text-lg font-black text-white">{T("walletDisabled")}</h3>
-            <p className="text-sm text-[#B0B0B0]">{T("withdrawalsDisabled")}</p>
+            <p className="text-sm text-muted-foreground">{T("withdrawalsDisabled")}</p>
           </div>
         </div>
       </div>
@@ -762,28 +762,28 @@ export default function Wallet() {
   return (
     <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <div className="absolute top-0 right-0 h-72 w-72 translate-x-1/3 -translate-y-1/2 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-0 left-0 h-48 w-48 -translate-x-1/4 translate-y-1/2 rounded-full bg-card-dark/[0.02]" />
+        <div className="absolute bottom-0 left-0 h-48 w-48 -translate-x-1/4 translate-y-1/2 rounded-full bg-muted/20" />
         <div className="absolute top-1/2 right-8 h-24 w-24 rounded-full bg-success/[0.03]" />
 
         <div className="relative">
           <div className="mb-1 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <p className="text-xs font-semibold tracking-widest text-white/40 uppercase">
+              <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                 {T("availableBalance")}
               </p>
             </div>
             <button
               onClick={() => setBalanceHidden((v) => !v)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-card-dark/5 transition-colors active:bg-card-dark/10"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-card/5 transition-colors active:bg-muted/20"
             >
               {balanceHidden ? (
-                <EyeOff size={13} className="text-white/40" />
+                <EyeOff size={13} className="text-muted-foreground" />
               ) : (
-                <Eye size={13} className="text-white/40" />
+                <Eye size={13} className="text-muted-foreground" />
               )}
             </button>
           </div>
@@ -793,7 +793,7 @@ export default function Wallet() {
               {balanceHidden ? (
                 "••••••"
               ) : isLoading ? (
-                <span className="animate-pulse text-[28px] text-white/40">loading...</span>
+                <span className="animate-pulse text-[28px] text-muted-foreground">loading...</span>
               ) : (
                 fc(balance, currency, currencyCode)
               )}
@@ -826,25 +826,25 @@ export default function Wallet() {
           </div>
 
           <div className="mb-3 grid grid-cols-3 gap-2.5">
-            <div className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] px-3 py-2.5 backdrop-blur-sm">
-              <p className="text-[10px] font-bold tracking-wider text-white/30 uppercase">
+            <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
+              <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 {T("earnedToday")}
               </p>
               <p className="mt-0.5 text-sm font-black text-success">
                 {balanceHidden ? "••••" : fc(todayEarned, currency, currencyCode)}
               </p>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] px-3 py-2.5 backdrop-blur-sm">
-              <p className="text-[10px] font-bold tracking-wider text-white/30 uppercase">
+            <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
+              <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 {T("yourShare" as TranslationKey)}
               </p>
               <p className="mt-0.5 text-sm font-black text-white">{riderKeepPct}%</p>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] px-3 py-2.5 backdrop-blur-sm">
-              <p className="text-[10px] font-bold tracking-wider text-white/30 uppercase">
+            <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
+              <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 {T("totalWithdrawn")}
               </p>
-              <p className="mt-0.5 text-sm font-black text-[#B0B0B0]">
+              <p className="mt-0.5 text-sm font-black text-muted-foreground">
                 {fc(totalWithdrawn, currency, currencyCode)}
               </p>
             </div>
@@ -859,7 +859,7 @@ export default function Wallet() {
                 <p className="mt-0.5 text-xl font-black text-white">
                   {balanceHidden ? "••••" : fc(promoBalance, currency, currencyCode)}
                 </p>
-                <p className="mt-0.5 text-[10px] text-white/30">{T("bonusesCashbackLoyalty")}</p>
+                <p className="mt-0.5 text-[10px] text-muted-foreground">{T("bonusesCashbackLoyalty")}</p>
               </div>
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl border border-purple-400/20 bg-purple-500/20">
                 <Sparkles size={16} className="text-purple-300" />
@@ -882,8 +882,8 @@ export default function Wallet() {
           )}
 
           {procDays > 0 && (
-            <p className="mb-3 flex items-center gap-1.5 text-[10px] text-white/25">
-              <Clock size={9} className="text-white/25" />
+            <p className="mb-3 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <Clock size={9} className="text-muted-foreground" />
               {T("walletProcessingTime")}: {procDays * 24}–{procDays * 24 + 24}h
             </p>
           )}
@@ -963,7 +963,7 @@ export default function Wallet() {
                     fallback={
                       <button
                         disabled
-                        className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-white/10 bg-card-dark/10 py-3.5 text-sm font-bold text-white/40"
+                        className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-border bg-card/10 py-3.5 text-sm font-bold text-muted-foreground"
                       >
                         <Lock size={14} /> Payout Unavailable
                       </button>
@@ -989,7 +989,7 @@ export default function Wallet() {
                         }
                         setShowWithdraw(true);
                       }}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card-dark py-3.5 text-sm font-black text-white shadow-lg shadow-white/10 transition-all active:bg-border-dark"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-black text-white shadow-lg shadow-white/10 transition-all active:bg-muted"
                     >
                       <ArrowUpFromLine size={15} /> {T("withdraw")}
                     </button>
@@ -1001,14 +1001,14 @@ export default function Wallet() {
                         setVerifGateDismissible(false);
                         setShowVerifGateModal(true);
                       }}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card-dark py-3.5 text-sm font-black text-white shadow-lg shadow-white/10 transition-all active:bg-border-dark"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-black text-white shadow-lg shadow-white/10 transition-all active:bg-muted"
                     >
                       <Lock size={14} /> {T("verificationRequired")}
                     </button>
                   ) : withdrawalEnabled ? (
                     <button
                       disabled
-                      className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-white/10 bg-card-dark/10 py-3.5 text-sm font-bold text-white/40"
+                      className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-border bg-card/10 py-3.5 text-sm font-bold text-muted-foreground"
                     >
                       <Lock size={14} />{" "}
                       {bankBlocked
@@ -1020,7 +1020,7 @@ export default function Wallet() {
                   ) : (
                     <button
                       disabled
-                      className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-white/10 bg-card-dark/10 py-3.5 text-sm font-bold text-white/40"
+                      className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-border bg-card/10 py-3.5 text-sm font-bold text-muted-foreground"
                     >
                       <Lock size={14} /> {T("withdrawalsPaused")}
                     </button>
@@ -1029,7 +1029,7 @@ export default function Wallet() {
                   {depositEnabled && (
                     <button
                       onClick={() => setShowDeposit(true)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-card-dark/10 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-all active:bg-card-dark/15"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-muted/20 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-all active:bg-card/15"
                     >
                       <ArrowDownToLine size={15} /> {T("deposit")}
                     </button>
@@ -1051,7 +1051,7 @@ export default function Wallet() {
       </div>
 
       <div className="-mt-3 space-y-4 px-5 py-5">
-        <div className="rounded-3xl border border-white/10 bg-card-dark p-4 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-4 shadow-sm">
           <div className="grid grid-cols-3 divide-x divide-gray-100">
             {[
               {
@@ -1079,7 +1079,7 @@ export default function Wallet() {
               >
                 <div className="mb-1 flex items-center justify-center gap-1">{s.icon}</div>
                 <p className={`text-sm font-black ${s.color}`}>{s.value}</p>
-                <p className="mt-0.5 text-[9px] leading-tight font-semibold text-[#B0B0B0]">
+                <p className="mt-0.5 text-[9px] leading-tight font-semibold text-muted-foreground">
                   {s.label}
                 </p>
               </div>
@@ -1091,7 +1091,7 @@ export default function Wallet() {
 
         {codOrderCount > 0 && (
           <div
-            className={`overflow-hidden rounded-3xl border shadow-sm ${codNetOwed > 0 ? "border-blue-100 bg-card-dark" : "border-success/20 bg-card-dark"}`}
+            className={`overflow-hidden rounded-3xl border shadow-sm ${codNetOwed > 0 ? "border-blue-100 bg-card" : "border-success/20 bg-card"}`}
           >
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3">
@@ -1105,7 +1105,7 @@ export default function Wallet() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-white">{T("codCashBalance")}</p>
-                  <p className="text-[10px] text-[#B0B0B0]">{T("cashOnDelivery")}</p>
+                  <p className="text-[10px] text-muted-foreground">{T("cashOnDelivery")}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -1114,7 +1114,7 @@ export default function Wallet() {
                 >
                   {fc(codNetOwed, currency, currencyCode)}
                 </p>
-                <p className="flex items-center justify-end gap-1 text-[10px] text-[#B0B0B0]">
+                <p className="flex items-center justify-end gap-1 text-[10px] text-muted-foreground">
                   {codNetOwed > 0 ? (
                     T("remitCodCashBtn")
                   ) : (
@@ -1126,22 +1126,22 @@ export default function Wallet() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 border-t border-white/5 px-5 pt-3 pb-3 text-center">
-              <div className="rounded-xl bg-card-dark py-2">
+            <div className="grid grid-cols-3 gap-2 border-t border-border/30 px-5 pt-3 pb-3 text-center">
+              <div className="rounded-xl bg-card py-2">
                 <p className="text-xs font-black text-white">{fc(codCollected, currency, currencyCode)}</p>
-                <p className="text-[9px] font-medium text-[#B0B0B0]">{T("collected")}</p>
+                <p className="text-[9px] font-medium text-muted-foreground">{T("collected")}</p>
               </div>
-              <div className="rounded-xl bg-card-dark py-2">
+              <div className="rounded-xl bg-card py-2">
                 <p className="text-xs font-black text-success">{fc(codVerified, currency, currencyCode)}</p>
-                <p className="text-[9px] font-medium text-[#B0B0B0]">{T("verified")}</p>
+                <p className="text-[9px] font-medium text-muted-foreground">{T("verified")}</p>
               </div>
-              <div className="rounded-xl bg-card-dark py-2">
+              <div className="rounded-xl bg-card py-2">
                 <p
-                  className={`text-xs font-black ${codNetOwed > 0 ? "text-blue-400" : "text-[#B0B0B0]"}`}
+                  className={`text-xs font-black ${codNetOwed > 0 ? "text-blue-400" : "text-muted-foreground"}`}
                 >
                   {fc(codNetOwed, currency, currencyCode)}
                 </p>
-                <p className="text-[9px] font-medium text-[#B0B0B0]">{T("owed")}</p>
+                <p className="text-[9px] font-medium text-muted-foreground">{T("owed")}</p>
               </div>
             </div>
 
@@ -1166,14 +1166,14 @@ export default function Wallet() {
               {codNetOwed > 0 && (
                 <button
                   onClick={() => setShowRemittance(true)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-white transition-colors active:bg-card-dark"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand py-3 text-sm font-black text-white transition-colors active:bg-card"
                 >
                   <Banknote size={16} /> {T("remitCodCashBtn")}
                 </button>
               )}
               <button
                 onClick={() => setShowCodHistory(!showCodHistory)}
-                className={`${codNetOwed > 0 ? "w-auto px-4" : "flex-1"} flex items-center justify-center gap-1.5 rounded-2xl border border-white/10 bg-border-dark py-3 text-sm font-bold text-[#B0B0B0] transition-colors active:bg-border-dark`}
+                className={`${codNetOwed > 0 ? "w-auto px-4" : "flex-1"} flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-muted py-3 text-sm font-bold text-muted-foreground transition-colors active:bg-muted`}
               >
                 {showCodHistory ? (
                   <>
@@ -1186,7 +1186,7 @@ export default function Wallet() {
             </div>
 
             {showCodHistory && codRemittances.length > 0 && (
-              <div className="divide-y divide-gray-50 border-t border-white/10">
+              <div className="divide-y divide-gray-50 border-t border-border">
                 {codRemittances.map((r) => {
                   const ref = r.reference ?? "pending";
                   const st =
@@ -1228,7 +1228,7 @@ export default function Wallet() {
                           {parts[0] || "Remittance"}
                         </p>
                         <div className="mt-0.5 flex items-center gap-1.5">
-                          <p className="text-[10px] text-[#B0B0B0]">
+                          <p className="text-[10px] text-muted-foreground">
                             {new Date(r.createdAt).toLocaleDateString("en-PK", {
                               day: "numeric",
                               month: "short",
@@ -1252,7 +1252,7 @@ export default function Wallet() {
           </div>
         )}
 
-        <div className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           <button
             className="flex w-full items-center justify-between px-5 py-4"
             onClick={() => {
@@ -1265,16 +1265,16 @@ export default function Wallet() {
               <span className="text-sm font-bold text-white">{T("depositHistory")}</span>
             </div>
             {showDeposits ? (
-              <ChevronUp size={16} className="text-[#B0B0B0]" />
+              <ChevronUp size={16} className="text-muted-foreground" />
             ) : (
-              <ChevronDown size={16} className="text-[#B0B0B0]" />
+              <ChevronDown size={16} className="text-muted-foreground" />
             )}
           </button>
           {showDeposits && (
-            <div className="border-t border-white/5">
+            <div className="border-t border-border/30">
               {!depositsData ? (
                 <div className="flex items-center justify-center px-5 py-8">
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-gray-700" />
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-foreground/40" />
                 </div>
               ) : (
                 (() => {
@@ -1284,7 +1284,7 @@ export default function Wallet() {
                   if (depositList.length === 0)
                     return (
                       <div className="px-5 py-8 text-center">
-                        <p className="text-sm font-medium text-[#B0B0B0]">{T("noDepositsYet")}</p>
+                        <p className="text-sm font-medium text-muted-foreground">{T("noDepositsYet")}</p>
                       </div>
                     );
                   return (
@@ -1320,7 +1320,7 @@ export default function Wallet() {
                                 {dep.method || "Deposit"}
                               </p>
                               <div className="mt-0.5 flex items-center gap-1.5">
-                                <p className="text-[10px] text-[#B0B0B0]">
+                                <p className="text-[10px] text-muted-foreground">
                                   {new Date(dep.createdAt).toLocaleDateString("en-PK", {
                                     day: "numeric",
                                     month: "short",
@@ -1334,7 +1334,7 @@ export default function Wallet() {
                                 </span>
                               </div>
                               {dep.note && (
-                                <p className="mt-0.5 truncate text-[10px] text-[#B0B0B0]">
+                                <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
                                   {dep.note}
                                 </p>
                               )}
@@ -1354,7 +1354,7 @@ export default function Wallet() {
         </div>
 
         {withdrawalRequests.length > 0 && (
-          <div className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+          <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
             <button
               className="flex w-full items-center justify-between px-5 py-4"
               onClick={() => setShowRequests(!showRequests)}
@@ -1368,13 +1368,13 @@ export default function Wallet() {
                 )}
               </div>
               {showRequests ? (
-                <ChevronUp size={16} className="text-[#B0B0B0]" />
+                <ChevronUp size={16} className="text-muted-foreground" />
               ) : (
-                <ChevronDown size={16} className="text-[#B0B0B0]" />
+                <ChevronDown size={16} className="text-muted-foreground" />
               )}
             </button>
             {showRequests && (
-              <div className="space-y-3 border-t border-white/5 px-4 pt-3 pb-4">
+              <div className="space-y-3 border-t border-border/30 px-4 pt-3 pb-4">
                 {withdrawalRequests.map((tx) => (
                   <PendingRequestCard key={tx.id} tx={tx} />
                 ))}
@@ -1391,7 +1391,7 @@ export default function Wallet() {
         )}
 
         {withdrawalRequests.length === 0 && (
-          <div className="rounded-3xl border border-white/10 bg-card-dark p-5 shadow-sm">
+          <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
             <p className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
               <Sparkles size={15} className="text-success" /> {T("howItWorks")}
             </p>
@@ -1430,7 +1430,7 @@ export default function Wallet() {
                     <p className="flex items-center gap-1.5 text-sm font-bold text-white">
                       {s.icon} {s.title}
                     </p>
-                    <p className="mt-0.5 text-xs text-[#B0B0B0]">{s.desc}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{s.desc}</p>
                   </div>
                 </div>
               ))}
@@ -1438,11 +1438,11 @@ export default function Wallet() {
           </div>
         )}
 
-        <div className="overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           <div className="px-5 pt-5 pb-3">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-bold text-white">{T("transactionHistoryTitle")}</p>
-              <span className="text-[10px] font-medium text-[#B0B0B0]">
+              <span className="text-[10px] font-medium text-muted-foreground">
                 {filtered.length} {T("records")}
               </span>
             </div>
@@ -1454,7 +1454,7 @@ export default function Wallet() {
                   className={`flex-shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                     filter === tab.key
                       ? "bg-brand text-white"
-                      : "border border-white/10 bg-border-dark text-[#B0B0B0] active:bg-border-dark"
+                      : "border border-border bg-muted text-muted-foreground active:bg-muted"
                   }`}
                 >
                   {tab.label}
@@ -1464,12 +1464,12 @@ export default function Wallet() {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="border-t border-white/5 px-5 py-12 text-center">
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-card-dark">
-                <CreditCard size={28} className="text-[#B0B0B0]" />
+            <div className="border-t border-border/30 px-5 py-12 text-center">
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-card">
+                <CreditCard size={28} className="text-muted-foreground" />
               </div>
-              <p className="font-bold text-[#B0B0B0]">{T("noTransactionsFilter")}</p>
-              <p className="mt-1 text-sm text-[#B0B0B0]">{T("completeDeliveriesTrack")}</p>
+              <p className="font-bold text-muted-foreground">{T("noTransactionsFilter")}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{T("completeDeliveriesTrack")}</p>
               {filter !== "all" && (
                 <button
                   onClick={() => setFilter("all")}
@@ -1480,14 +1480,14 @@ export default function Wallet() {
               )}
             </div>
           ) : (
-            <div className="border-t border-white/5">
+            <div className="border-t border-border/30">
               {groupedTx.map((group) => (
                 <div key={group.label}>
-                  <div className="flex items-center justify-between border-b border-white/10 bg-border-dark/50 px-5 py-2.5">
-                    <p className="text-[11px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+                  <div className="flex items-center justify-between border-b border-border bg-muted/50 px-5 py-2.5">
+                    <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                       {resolveGroupLabel(group.label)}
                     </p>
-                    <span className="text-[10px] text-[#B0B0B0]">{group.items.length}</span>
+                    <span className="text-[10px] text-muted-foreground">{group.items.length}</span>
                   </div>
                   <div className="divide-y divide-gray-50">
                     {group.items.map((t: WalletTx) => {
@@ -1514,7 +1514,7 @@ export default function Wallet() {
                               {t.description}
                             </p>
                             <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                              <p className="text-[10px] text-[#B0B0B0]">{fdr(t.createdAt)}</p>
+                              <p className="text-[10px] text-muted-foreground">{fdr(t.createdAt)}</p>
                               <span
                                 className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold ${meta.badge}`}
                               >
@@ -1547,7 +1547,7 @@ export default function Wallet() {
                                   : isCredit
                                     ? "text-success"
                                     : wStatus === "rejected"
-                                      ? "text-[#B0B0B0] line-through"
+                                      ? "text-muted-foreground line-through"
                                       : "text-error"
                             }`}
                           >
@@ -1565,14 +1565,14 @@ export default function Wallet() {
               {hasNextPage && (
                 <div ref={loadMoreRef} className="flex items-center justify-center px-5 py-4">
                   {isFetchingNextPage ? (
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-gray-700" />
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-foreground/40" />
                   ) : (
                     <div className="h-5" />
                   )}
                 </div>
               )}
               {!hasNextPage && transactions.length > 0 && (
-                <p className="py-3 text-center text-[10px] text-[#B0B0B0]">
+                <p className="py-3 text-center text-[10px] text-muted-foreground">
                   {T("allTransactionsSecure")}
                 </p>
               )}
@@ -1594,7 +1594,7 @@ export default function Wallet() {
             ].map((p) => (
               <div
                 key={p.label}
-                className="rounded-xl border border-success/20 bg-card-dark px-3 py-2.5"
+                className="rounded-xl border border-success/20 bg-card px-3 py-2.5"
               >
                 <p className="text-[10px] font-bold tracking-wider text-success/60 uppercase">
                   {p.label}
@@ -1605,7 +1605,7 @@ export default function Wallet() {
           </div>
         </div>
 
-        <p className="flex items-center justify-center gap-1.5 pb-2 text-center text-[10px] text-[#B0B0B0]">
+        <p className="flex items-center justify-center gap-1.5 pb-2 text-center text-[10px] text-muted-foreground">
           <ShieldCheck size={10} /> {T("allTransactionsSecure")} {config.platform.appName}
         </p>
       </div>

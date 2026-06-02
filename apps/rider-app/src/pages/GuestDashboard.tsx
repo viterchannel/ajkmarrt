@@ -53,10 +53,10 @@ export function GuestDashboard() {
   const zoneCount = zones.length || null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#141414] text-white">
+    <div className="flex min-h-screen flex-col bg-[#141414] text-foreground">
       {/* Sign-up banner */}
       <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-3 text-center">
-        <p className="text-sm font-bold text-white">
+        <p className="text-sm font-bold text-foreground">
           {T("signUpToStartEarning")}
           {zoneCount
             ? ` — ${zoneCount} ${zoneCount === 1 ? T("activeDeliveryZone") : T("activeDeliveryZones")} ${T("inAJK")}`
@@ -71,7 +71,7 @@ export function GuestDashboard() {
           </button>
           <button
             onClick={() => navigate("/login")}
-            className="rounded-xl border border-white/40 px-4 py-1.5 text-xs font-bold text-white transition-colors active:bg-white/10"
+            className="rounded-xl border border-border px-4 py-1.5 text-xs font-bold text-foreground transition-colors active:bg-muted/50"
           >
             {T("login")}
           </button>
@@ -87,7 +87,7 @@ export function GuestDashboard() {
           <div className="flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-950/40 px-4 py-3">
             <MapPin size={16} className="flex-shrink-0 text-emerald-400" />
             <p className="text-xs font-semibold text-emerald-200">
-              <span className="font-black text-white">{zoneCount}</span>{" "}
+              <span className="font-black text-foreground">{zoneCount}</span>{" "}
               {zoneCount === 1 ? T("activeDeliveryZone") : T("activeDeliveryZones")} {T("inAJK")} — {T("regRidersNeededArea")}
             </p>
           </div>
@@ -96,7 +96,7 @@ export function GuestDashboard() {
         {/* Live public banners feed */}
         {banners.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-black tracking-wider text-[#B0B0B0] uppercase">
+            <p className="text-[10px] font-black tracking-wider text-muted-foreground uppercase">
               {T("currentPromotions")}
             </p>
             {banners.map((b) => (
@@ -114,9 +114,9 @@ export function GuestDashboard() {
                   <span className="text-xl flex-shrink-0">{b.icon}</span>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white truncate">{b.title}</p>
+                  <p className="text-sm font-bold text-foreground truncate">{b.title}</p>
                   {b.subtitle && (
-                    <p className="text-[10px] text-white/80 truncate">{b.subtitle}</p>
+                    <p className="text-[10px] text-foreground/80 truncate">{b.subtitle}</p>
                   )}
                 </div>
               </div>
@@ -125,19 +125,19 @@ export function GuestDashboard() {
         )}
 
         {/* Earnings snapshot — blurred/locked */}
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card-dark p-4">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4">
           <div className="mb-3 flex items-center gap-2">
             <Wallet size={16} className="text-success" />
-            <p className="text-xs font-bold text-[#B0B0B0] uppercase tracking-wider">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               {T("todayEarnings")}
             </p>
           </div>
-          <p className="text-3xl font-black text-white blur-sm select-none">₨ 2,400</p>
-          <p className="mt-1 text-xs text-[#B0B0B0] blur-sm select-none">12 {T("deliveriesCompleted")}</p>
+          <p className="text-3xl font-black text-foreground blur-sm select-none">₨ 2,400</p>
+          <p className="mt-1 text-xs text-muted-foreground blur-sm select-none">12 {T("deliveriesCompleted")}</p>
           <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 backdrop-blur-[2px]">
             <button
               onClick={() => navigate("/register")}
-              className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-black text-white shadow-lg active:bg-emerald-700"
+              className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-black text-foreground shadow-lg active:bg-emerald-700"
             >
               🔒 {T("joinToUnlock")}
             </button>
@@ -146,18 +146,18 @@ export function GuestDashboard() {
 
         {/* Stats row — blurred/locked */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card-dark p-4 text-center">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 text-center">
             <TrendingUp size={20} className="mx-auto mb-1 text-blue-400" />
-            <p className="text-xl font-black text-white blur-sm select-none">₨ 42,800</p>
-            <p className="text-[10px] font-bold text-[#B0B0B0]">{T("thisMonth")}</p>
+            <p className="text-xl font-black text-foreground blur-sm select-none">₨ 42,800</p>
+            <p className="text-[10px] font-bold text-muted-foreground">{T("thisMonth")}</p>
             <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 backdrop-blur-[2px]">
               <span className="text-lg">🔒</span>
             </div>
           </div>
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card-dark p-4 text-center">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 text-center">
             <Bike size={20} className="mx-auto mb-1 text-warning" />
-            <p className="text-xl font-black text-white blur-sm select-none">284</p>
-            <p className="text-[10px] font-bold text-[#B0B0B0]">{T("totalDeliveries")}</p>
+            <p className="text-xl font-black text-foreground blur-sm select-none">284</p>
+            <p className="text-[10px] font-bold text-muted-foreground">{T("totalDeliveries")}</p>
             <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 backdrop-blur-[2px]">
               <span className="text-lg">🔒</span>
             </div>
@@ -165,8 +165,8 @@ export function GuestDashboard() {
         </div>
 
         {/* How it works */}
-        <div className="rounded-2xl border border-white/10 bg-card-dark p-4">
-          <p className="mb-3 text-xs font-black tracking-wider text-[#B0B0B0] uppercase">
+        <div className="rounded-2xl border border-border bg-card p-4">
+          <p className="mb-3 text-xs font-black tracking-wider text-muted-foreground uppercase">
             {T("howItWorks")}
           </p>
           <div className="space-y-3">
@@ -176,10 +176,10 @@ export function GuestDashboard() {
               { step: "3", textKey: "guestStep3" as TranslationKey },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
-                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-xs font-black text-white">
+                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-xs font-black text-foreground">
                   {item.step}
                 </div>
-                <p className="text-xs text-[#B0B0B0]">{T(item.textKey)}</p>
+                <p className="text-xs text-muted-foreground">{T(item.textKey)}</p>
               </div>
             ))}
           </div>
@@ -188,13 +188,13 @@ export function GuestDashboard() {
         {/* CTA */}
         <button
           onClick={() => navigate("/register")}
-          className="w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 py-4 text-sm font-black text-white shadow-lg shadow-emerald-900/40 active:opacity-90"
+          className="w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 py-4 text-sm font-black text-foreground shadow-lg shadow-emerald-900/40 active:opacity-90"
         >
           {T("joinAsFree")}
         </button>
         <button
           onClick={() => navigate("/")}
-          className="w-full rounded-2xl bg-border-dark py-3 text-sm font-semibold text-[#B0B0B0] active:bg-[#2A2A2A]"
+          className="w-full rounded-2xl bg-muted py-3 text-sm font-semibold text-muted-foreground active:bg-[#2A2A2A]"
         >
           {T("backToHome")}
         </button>

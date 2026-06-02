@@ -164,7 +164,7 @@ export function PullToRefresh({
               className={refreshing ? "animate-spin" : ""}
             />
           </div>
-          <span className="text-xs font-medium text-[#B0B0B0]">
+          <span className="text-xs font-medium text-muted-foreground">
             {refreshing ? "Updating..." : progress >= 1 ? "Release to refresh" : "Pull to refresh"}
           </span>
         </div>
@@ -173,7 +173,7 @@ export function PullToRefresh({
       {lastUpdated && agoText && !refreshing && (
         <div className="flex items-center justify-center py-1">
           <span
-            className={`text-[10px] font-medium ${lastRefreshFailed ? "text-warning" : "text-[#B0B0B0]"}`}
+            className={`text-[10px] font-medium ${lastRefreshFailed ? "text-warning" : "text-muted-foreground"}`}
           >
             {lastRefreshFailed ? `Stale — last updated ${agoText}` : `Updated ${agoText}`}
           </span>

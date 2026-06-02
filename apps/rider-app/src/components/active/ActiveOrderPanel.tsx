@@ -155,13 +155,13 @@ export function ActiveOrderPanel({
       />
 
       {/* Order header card */}
-      <div className="animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-lg shadow-black/40">
+      <div className="animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-lg shadow-black/40">
         <div
           className={`bg-gradient-to-r ${orderTypeGradient(type)} relative flex items-center gap-3 overflow-hidden px-4 py-4`}
         >
-          <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-card-dark/10" />
-          <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-card-dark/5" />
-          <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-card-dark/20 shadow-inner backdrop-blur-md">
+          <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-card/10" />
+          <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-card/5" />
+          <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-border bg-card/20 shadow-inner backdrop-blur-md">
             <OrderTypeIcon type={type} />
           </div>
           <div className="relative min-w-0 flex-1">
@@ -172,7 +172,7 @@ export function ActiveOrderPanel({
             <p className="text-xl font-black tracking-tight text-white">
               {formatCurrency(order.total as string | number, currency)}
             </p>
-            <div className="mt-1 rounded-lg border border-white/10 bg-card-dark/15 px-2.5 py-1 backdrop-blur-sm">
+            <div className="mt-1 rounded-lg border border-border bg-card/15 px-2.5 py-1 backdrop-blur-sm">
               <p className="text-[10px] font-bold text-white">
                 You earn {formatCurrency(riderEarning, currency)}
               </p>
@@ -187,9 +187,9 @@ export function ActiveOrderPanel({
 
       {/* Step 1 — Go to Store */}
       {status !== "picked_up" && status !== "out_for_delivery" && status !== "delivered" && (
-        <div className="animate-[slideUp_0.5s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-lg shadow-black/40">
+        <div className="animate-[slideUp_0.5s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-lg shadow-black/40">
           <div className="flex items-center gap-2 bg-gradient-to-r from-warning to-brand-hover px-4 py-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card-dark/20 backdrop-blur-sm">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card/20 backdrop-blur-sm">
               <ShoppingCart size={14} className="text-white" />
             </div>
             <p className="text-sm font-black tracking-wide text-white uppercase">
@@ -210,7 +210,7 @@ export function ActiveOrderPanel({
                     {(order.vendorStoreName as string) || "Store"}
                   </p>
                   {!!order.vendorPhone && (
-                    <p className="mt-1 flex items-center gap-1 text-xs text-[#B0B0B0]">
+                    <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                       <Phone size={10} /> {order.vendorPhone as string}
                     </p>
                   )}
@@ -219,18 +219,18 @@ export function ActiveOrderPanel({
             </div>
 
             {Array.isArray(order.items) && (order.items as unknown[]).length > 0 && (
-              <div className="rounded-2xl border border-white/10 bg-card-dark p-4">
-                <p className="mb-3 flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <p className="mb-3 flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                   <Package size={11} /> Items to Collect ({(order.items as unknown[]).length})
                 </p>
                 <div className="space-y-2">
                   {(order.items as OrderItem[]).slice(0, 5).map((item, i) => (
                     <div
                       key={i}
-                      className="flex justify-between rounded-xl border border-white/10 bg-border-dark px-3 py-2.5 text-sm"
+                      className="flex justify-between rounded-xl border border-border bg-muted px-3 py-2.5 text-sm"
                     >
-                      <span className="font-medium text-[#B0B0B0]">
-                        {item.name} <span className="text-[#B0B0B0]">×{item.quantity}</span>
+                      <span className="font-medium text-muted-foreground">
+                        {item.name} <span className="text-muted-foreground">×{item.quantity}</span>
                       </span>
                       <span className="font-bold text-white">
                         {formatCurrency(item.price * item.quantity, currency)}
@@ -238,7 +238,7 @@ export function ActiveOrderPanel({
                     </div>
                   ))}
                   {(order.items as unknown[]).length > 5 && (
-                    <p className="mt-1 text-center text-xs font-medium text-[#B0B0B0]">
+                    <p className="mt-1 text-center text-xs font-medium text-muted-foreground">
                       +{(order.items as unknown[]).length - 5} {T("moreItems")}
                     </p>
                   )}
@@ -321,7 +321,7 @@ export function ActiveOrderPanel({
               onTouchEnd={() => setPressedBtn(null)}
               className={`flex w-full items-center justify-center gap-2.5 rounded-2xl bg-brand py-4 text-base font-black text-black shadow-lg transition-transform disabled:opacity-60 min-h-[52px] ${pressedBtn === "pickup" ? "scale-[0.97]" : ""}`}
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-card-dark/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-card/20">
                 <Package size={18} />
               </div>
               {T("pickUpOrder")}
@@ -343,9 +343,9 @@ export function ActiveOrderPanel({
 
       {/* Step 2 — Deliver */}
       {(status === "picked_up" || status === "out_for_delivery") && (
-        <div className="animate-[slideUp_0.5s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-lg shadow-black/40">
+        <div className="animate-[slideUp_0.5s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-lg shadow-black/40">
           <div className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card-dark/20 backdrop-blur-sm">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-card/20 backdrop-blur-sm">
               <Truck size={14} className="text-white" />
             </div>
             <p className="text-sm font-black tracking-wide text-white uppercase">
@@ -366,7 +366,7 @@ export function ActiveOrderPanel({
                     {order.customerName as string}
                   </p>
                   {!!order.customerPhone && (
-                    <p className="mt-0.5 flex items-center gap-1 text-xs text-[#B0B0B0]">
+                    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                       <Phone size={10} /> {order.customerPhone as string}
                     </p>
                   )}
@@ -399,8 +399,8 @@ export function ActiveOrderPanel({
             />
 
             {/* Customer contact — full-width row for easy thumb reach */}
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-card-dark">
-              <p className="px-4 pt-3 pb-1 text-[10px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+            <div className="overflow-hidden rounded-2xl border border-border bg-card">
+              <p className="px-4 pt-3 pb-1 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                 Contact Customer
               </p>
               <div className="grid grid-cols-3 gap-2 p-3">
@@ -461,7 +461,7 @@ export function ActiveOrderPanel({
 
               {/* Mode toggle — only shown when no proof captured yet */}
               {!proofPhoto && (
-                <div className="mb-3 flex overflow-hidden rounded-xl border border-blue-500/30 bg-border-dark">
+                <div className="mb-3 flex overflow-hidden rounded-xl border border-blue-500/30 bg-muted">
                   <button
                     onClick={() => setProofMode("photo")}
                     className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
@@ -479,7 +479,7 @@ export function ActiveOrderPanel({
 
               {proofPhoto ? (
                 <div className="space-y-2.5">
-                  <div className="relative h-44 overflow-hidden rounded-2xl bg-border-dark shadow-inner">
+                  <div className="relative h-44 overflow-hidden rounded-2xl bg-muted shadow-inner">
                     <SafeImage
                       src={proofPhoto}
                       alt="Delivery proof"
@@ -501,7 +501,7 @@ export function ActiveOrderPanel({
                       setShowNoPhotoWarning(false);
                       if (photoInputRef.current) photoInputRef.current.value = "";
                     }}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-blue-500/30 bg-border-dark py-2.5 text-xs font-bold text-blue-400 transition-colors active:bg-blue-900/20"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-blue-500/30 bg-muted py-2.5 text-xs font-bold text-blue-400 transition-colors active:bg-blue-900/20"
                   >
                     <Camera size={12} /> {T("retakePhoto")}
                   </button>
@@ -518,7 +518,7 @@ export function ActiveOrderPanel({
                   />
                   <button
                     onClick={() => photoInputRef.current?.click()}
-                    className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-border-dark py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
+                    className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-muted py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
                   >
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15">
                       <Camera className="h-6 w-6 text-blue-500" />
@@ -530,7 +530,7 @@ export function ActiveOrderPanel({
               ) : (
                 <button
                   onClick={() => setShowSignaturePad(true)}
-                  className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-border-dark py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
+                  className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-muted py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15">
                     <PenLine className="h-6 w-6 text-blue-500" />
@@ -570,7 +570,7 @@ export function ActiveOrderPanel({
               onTouchEnd={() => setPressedBtn(null)}
               className={`flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 py-4 text-lg font-black text-white shadow-lg shadow-green-200 transition-transform disabled:opacity-60 ${pressedBtn === "deliver" ? "scale-[0.97]" : ""}`}
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-card-dark/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-card/20">
                 {proofUploading ? (
                   <RefreshCw size={18} className="animate-spin" />
                 ) : (
@@ -587,10 +587,10 @@ export function ActiveOrderPanel({
             </button>
 
             <div>
-              <div className="flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-xl border-2 border-white/10 bg-card-dark py-3 text-sm font-bold text-[#B0B0B0]">
+              <div className="flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-xl border-2 border-border bg-card py-3 text-sm font-bold text-muted-foreground">
                 <ChevronRight size={14} className="rotate-180" /> {T("backToStoreStep")}
               </div>
-              <p className="mt-1 text-center text-[10px] text-[#B0B0B0]">
+              <p className="mt-1 text-center text-[10px] text-muted-foreground">
                 Cannot go back — server already recorded pickup. Contact support if needed.
               </p>
             </div>

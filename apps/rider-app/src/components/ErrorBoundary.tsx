@@ -41,7 +41,7 @@ function DefaultFallback({ reset, error }: { reset: () => void; error: Error | n
     >
       <div className="w-full max-w-sm">
         {/* Brand label */}
-        <p className="mb-5 text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase">
+        <p className="mb-5 text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">
           AJKMart Rider
         </p>
 
@@ -51,20 +51,20 @@ function DefaultFallback({ reset, error }: { reset: () => void; error: Error | n
         </div>
 
         {/* Title */}
-        <h1 className="mb-2 text-lg font-bold tracking-tight text-white/90">
+        <h1 className="mb-2 text-lg font-bold tracking-tight text-foreground">
           Something went wrong
         </h1>
 
         {/* Error message — linked via aria-describedby */}
         <p
           id={errorDescId}
-          className="mb-1 text-sm leading-relaxed text-[#B0B0B0]"
+          className="mb-1 text-sm leading-relaxed text-muted-foreground"
         >
           {error?.message || "An unexpected error occurred. Please try again."}
         </p>
 
         {/* Error ref code — mono, muted; rider can quote to support */}
-        <p className="mb-6 font-mono text-[11px] text-white/20">{errorRef}</p>
+        <p className="mb-6 font-mono text-[11px] text-muted-foreground">{errorRef}</p>
 
         {/* Action buttons */}
         <div className="flex flex-col gap-2.5">
@@ -79,7 +79,7 @@ function DefaultFallback({ reset, error }: { reset: () => void; error: Error | n
           {/* Secondary — hard reload */}
           <button
             onClick={() => window.location.reload()}
-            className="flex h-12 w-full items-center justify-center rounded-xl border border-white/[0.08] bg-card-dark/[0.04] text-sm font-semibold text-[#B0B0B0] transition-colors hover:bg-card-dark/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+            className="flex h-12 w-full items-center justify-center rounded-xl border border-border/80 bg-muted/20 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
           >
             Reload App
           </button>

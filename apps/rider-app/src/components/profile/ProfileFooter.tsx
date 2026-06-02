@@ -44,24 +44,24 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
   const T = (key: TranslationKey) => tDual(key, language);
 
   return (
-    <div className="space-y-3 rounded-3xl border border-white/10 bg-card-dark p-5">
-      <p className="text-center text-xs leading-relaxed font-medium text-[#B0B0B0]">
+    <div className="space-y-3 rounded-3xl border border-border bg-card p-5">
+      <p className="text-center text-xs leading-relaxed font-medium text-muted-foreground">
         {config.platform.appName} {T("riderPortal")} · {T("contactSupport")}:{" "}
         <a href={`tel:${config.platform.supportPhone}`} className="font-semibold text-white">
           {config.platform.supportPhone}
         </a>
       </p>
       {config.platform.supportHours && (
-        <p className="flex items-center justify-center gap-1 text-center text-xs text-[#B0B0B0]">
+        <p className="flex items-center justify-center gap-1 text-center text-xs text-muted-foreground">
           <Clock size={11} /> {config.platform.supportHours}
         </p>
       )}
       {config.platform.supportEmail && (
-        <p className="flex items-center justify-center gap-1 text-center text-xs text-[#B0B0B0]">
+        <p className="flex items-center justify-center gap-1 text-center text-xs text-muted-foreground">
           <Mail size={11} />
           <a
             href={`mailto:${config.platform.supportEmail}`}
-            className="text-white hover:text-[#B0B0B0]"
+            className="text-white hover:text-muted-foreground"
           >
             {config.platform.supportEmail}
           </a>
@@ -103,7 +103,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
               href={config.content.tncUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-[11px] text-[#B0B0B0] underline underline-offset-2"
+              className="flex items-center gap-0.5 text-[11px] text-muted-foreground underline underline-offset-2"
             >
               <FileText size={10} /> {T("termsConditions")}
             </a>
@@ -113,7 +113,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
               href={config.content.privacyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-[11px] text-[#B0B0B0] underline underline-offset-2"
+              className="flex items-center gap-0.5 text-[11px] text-muted-foreground underline underline-offset-2"
             >
               <Lock size={10} /> {T("privacyPolicy")}
             </a>
@@ -123,7 +123,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
               href={config.content.refundPolicyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-[11px] text-[#B0B0B0] underline underline-offset-2"
+              className="flex items-center gap-0.5 text-[11px] text-muted-foreground underline underline-offset-2"
             >
               <RefreshCcw size={10} /> {T("refundPolicy")}
             </a>
@@ -133,7 +133,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
               href={config.content.faqUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-[11px] text-[#B0B0B0] underline underline-offset-2"
+              className="flex items-center gap-0.5 text-[11px] text-muted-foreground underline underline-offset-2"
             >
               <HelpCircle size={10} /> {T("faqLabel")}
             </a>
@@ -143,7 +143,7 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
               href={config.content.aboutUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-[11px] text-[#B0B0B0] underline underline-offset-2"
+              className="flex items-center gap-0.5 text-[11px] text-muted-foreground underline underline-offset-2"
             >
               <Info size={10} /> {T("aboutLabel")}
             </a>
@@ -153,14 +153,14 @@ export function ProfileFooter({ config, language }: ProfileFooterProps) {
               href={`https://wa.me/${config.platform.supportPhone?.replace(/^0/, "92")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-[11px] text-[#B0B0B0] underline underline-offset-2"
+              className="flex items-center gap-0.5 text-[11px] text-muted-foreground underline underline-offset-2"
             >
               <MessageCircle size={10} /> {T("liveChatLabel")}
             </a>
           )}
         </div>
       )}
-      <p className="text-center text-[10px] text-[#B0B0B0]">v{APP_VERSION}</p>
+      <p className="text-center text-[10px] text-muted-foreground">v{APP_VERSION}</p>
     </div>
   );
 }

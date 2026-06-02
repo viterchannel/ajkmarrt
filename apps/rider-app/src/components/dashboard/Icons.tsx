@@ -11,7 +11,7 @@ export function OrderTypeIcon({ type }: { type: string }) {
 export function RideTypeIcon({ type }: { type: string }) {
   if (type === "car") return <Car size={20} className="text-blue-400" />;
   if (type === "rickshaw") return <Bike size={20} className="text-yellow-600" />;
-  if (type === "daba") return <Bus size={20} className="text-[#B0B0B0]" />;
+  if (type === "daba") return <Bus size={20} className="text-muted-foreground" />;
   if (type === "school_shift") return <Bus size={20} className="text-success" />;
   return <Bike size={20} className="text-success" />;
 }

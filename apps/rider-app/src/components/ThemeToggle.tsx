@@ -20,7 +20,7 @@ export function ThemeToggle() {
     <div className="space-y-3">
       <div className="flex items-center gap-2 px-1">
         <Palette size={16} className="text-brand" />
-        <p className="text-xs font-bold uppercase tracking-wider text-white/50">
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           {T("themeSettings")}
         </p>
       </div>
@@ -34,7 +34,7 @@ export function ThemeToggle() {
             className={`relative flex flex-col items-center gap-2 rounded-2xl px-3 py-3 text-xs font-semibold transition-all ${ 
               theme === t.value
                 ? "bg-brand text-black ring-2 ring-brand/50"
-                : "bg-card-dark text-white/70 hover:bg-card-dark hover:text-white/90"
+                : "bg-card text-muted-foreground hover:bg-card hover:text-foreground"
             }`}
           >
             <div className="flex h-8 w-8 items-center justify-center">
@@ -49,7 +49,7 @@ export function ThemeToggle() {
       </div>
 
       {/* Info text */}
-      <p className="px-1 text-[11px] text-white/40">
+      <p className="px-1 text-[11px] text-muted-foreground">
         {theme === "system"
           ? `Currently using ${resolvedTheme} mode`
           : `${theme} mode`}

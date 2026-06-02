@@ -179,22 +179,22 @@ function RideReceiptSheet({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[92vh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-card-dark shadow-2xl"
+        className="flex max-h-[92vh] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-card shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-shrink-0 justify-center pt-3 pb-1">
-          <div className="h-1 w-10 rounded-full bg-border-dark" />
+          <div className="h-1 w-10 rounded-full bg-border" />
         </div>
 
-        <div className="flex flex-shrink-0 items-center justify-between px-5 pt-2 pb-4 border-b border-white/10">
+        <div className="flex flex-shrink-0 items-center justify-between px-5 pt-2 pb-4 border-b border-border">
           <div className="min-w-0 flex-1">
-            <h3 className="text-base font-extrabold text-white truncate">
+            <h3 className="text-base font-extrabold text-foreground truncate">
               {item.kind === "ride"
                 ? T(`${item.type}Ride` as "bikeRide" | "carRide")
                 : T(`${item.type}Delivery` as "bikeDelivery" | "carDelivery")}
             </h3>
             <div className="mt-0.5 flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-[#B0B0B0]">{formatDate(item.createdAt, tz)}</span>
+              <span className="text-xs text-muted-foreground">{formatDate(item.createdAt, tz)}</span>
               <span className="text-[10px] font-bold text-brand/60">#{item.id.slice(-6).toUpperCase()}</span>
             </div>
           </div>
@@ -202,14 +202,14 @@ function RideReceiptSheet({
             <button
               onClick={handleShare}
               aria-label="Share receipt"
-              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-border-dark text-brand active:bg-[#3A3A3A]"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-muted text-brand active:bg-muted/80"
             >
               <Share2 size={15} />
             </button>
             <button
               onClick={onClose}
               aria-label={T("closeReceiptAriaLabel")}
-              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-border-dark text-[#B0B0B0] active:bg-[#3A3A3A]"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-muted text-muted-foreground active:bg-muted/80"
             >
               <X size={16} />
             </button>
@@ -225,14 +225,14 @@ function RideReceiptSheet({
                   ? "bg-success/15 text-success"
                   : cancelled
                     ? "bg-error/15 text-error"
-                    : "bg-border-dark text-[#B0B0B0]"
+                    : "bg-muted text-muted-foreground"
               }`}
             >
               {item.status.replace(/_/g, " ")}
             </span>
             {completed && item.earnings > 0 && (
               <div className="text-right">
-                <p className="text-xs text-[#B0B0B0]">{T("yourEarnings")}</p>
+                <p className="text-xs text-muted-foreground">{T("yourEarnings")}</p>
                 <p className="text-2xl font-black text-success">
                   +{formatCurrency(item.earnings || 0)}
                 </p>
@@ -242,22 +242,22 @@ function RideReceiptSheet({
 
           {/* Route */}
           {(item.origin || item.destination) && (
-            <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-border-dark">
+            <div className="mb-4 overflow-hidden rounded-2xl border border-border bg-muted/20">
               {item.origin && (
                 <div className="flex items-start gap-3 px-4 py-3">
                   <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-success/15">
                     <MapPin size={12} className="text-success" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+                    <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                       {T("pickup")}
                     </p>
-                    <p className="text-sm font-medium text-[#B0B0B0]">{item.origin}</p>
+                    <p className="text-sm font-medium text-muted-foreground">{item.origin}</p>
                   </div>
                 </div>
               )}
               {item.origin && item.destination && (
-                <div className="mx-4 h-px bg-border-dark" />
+                <div className="mx-4 h-px bg-border" />
               )}
               {item.destination && (
                 <div className="flex items-start gap-3 px-4 py-3">
@@ -265,10 +265,10 @@ function RideReceiptSheet({
                     <MapPin size={12} className="text-error" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold tracking-wider text-[#B0B0B0] uppercase">
+                    <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                       {T("dropLabel")}
                     </p>
-                    <p className="text-sm font-medium text-[#B0B0B0]">{item.destination}</p>
+                    <p className="text-sm font-medium text-muted-foreground">{item.destination}</p>
                   </div>
                 </div>
               )}
@@ -276,38 +276,38 @@ function RideReceiptSheet({
           )}
 
           {item.address && !item.origin && (
-            <div className="mb-4 flex items-start gap-3 rounded-2xl border border-white/10 bg-border-dark px-4 py-3">
-              <MapPin size={14} className="mt-0.5 flex-shrink-0 text-[#B0B0B0]" />
-              <p className="text-sm font-medium text-[#B0B0B0]">{item.address}</p>
+            <div className="mb-4 flex items-start gap-3 rounded-2xl border border-border bg-muted/20 px-4 py-3">
+              <MapPin size={14} className="mt-0.5 flex-shrink-0 text-muted-foreground" />
+              <p className="text-sm font-medium text-muted-foreground">{item.address}</p>
             </div>
           )}
 
           {/* Fare breakdown */}
-          <div className="space-y-0 overflow-hidden rounded-2xl border border-white/10">
+          <div className="space-y-0 overflow-hidden rounded-2xl border border-border">
             {item.fare != null && (
-              <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
-                <span className="text-sm text-[#B0B0B0]">{T("fare")}</span>
+              <div className="flex items-center justify-between border-b border-border/30 px-4 py-3">
+                <span className="text-sm text-muted-foreground">{T("fare")}</span>
                 <span className="text-sm font-bold text-white">
                   {formatCurrency(item.fare)}
                 </span>
               </div>
             )}
             {item.distance != null && (
-              <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
-                <span className="text-sm text-[#B0B0B0]">{T("receiptDistance")}</span>
+              <div className="flex items-center justify-between border-b border-border/30 px-4 py-3">
+                <span className="text-sm text-muted-foreground">{T("receiptDistance")}</span>
                 <span className="text-sm font-bold text-white">
                   {parseFloat(String(item.distance)).toFixed(1)} km
                 </span>
               </div>
             )}
             {item.duration != null && (
-              <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
-                <span className="text-sm text-[#B0B0B0]">{T("receiptDuration")}</span>
-                <span className="text-sm font-bold text-white">{item.duration} min</span>
+              <div className="flex items-center justify-between border-b border-border/30 px-4 py-3">
+                <span className="text-sm text-muted-foreground">{T("receiptDuration")}</span>
+                <span className="text-sm font-bold text-foreground">{item.duration} min</span>
               </div>
             )}
             <div className="flex items-center justify-between px-4 py-3">
-              <span className="text-sm text-[#B0B0B0]">{T("receiptDateAndTime")}</span>
+              <span className="text-sm text-muted-foreground">{T("receiptDateAndTime")}</span>
               <span className="text-sm font-bold text-white">
                 {formatDate(item.createdAt, tz)}
               </span>
@@ -317,7 +317,7 @@ function RideReceiptSheet({
           {/* Proof photo */}
           {item.proofPhoto && completed && item.kind === "order" && (
             <div className="mt-4">
-              <p className="mb-2 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+              <p className="mb-2 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 {T("deliveryProof")}
               </p>
               <a
@@ -339,7 +339,7 @@ function RideReceiptSheet({
 
         {/* Action buttons */}
         <div
-          className="flex flex-shrink-0 gap-3 border-t border-white/10 px-5 pt-4 pb-6"
+          className="flex flex-shrink-0 gap-3 border-t border-border px-5 pt-4 pb-6"
           style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)" }}
         >
           <button
@@ -359,7 +359,7 @@ function RideReceiptSheet({
           <button
             onClick={handleDownload}
             aria-label={T("downloadReceiptAriaLabel")}
-            className="flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-card-dark px-4 py-3.5 text-sm font-bold text-[#B0B0B0] active:bg-border-dark"
+            className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3.5 text-sm font-bold text-muted-foreground active:bg-muted"
           >
             <Download size={15} />
           </button>
@@ -514,18 +514,18 @@ export default function History() {
   return (
     <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
+        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/20" />
         <div className="relative">
           <div className="flex items-center justify-between">
             <div>
-              <p className="mb-1 text-xs font-semibold tracking-widest text-white/40 uppercase">
+              <p className="mb-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
                 <Calendar size={11} className="mr-1 inline" /> {totalLoaded} {T("totalRecords")}
               </p>
-              <h1 className="text-2xl font-extrabold tracking-tight text-white">{T("history")}</h1>
+              <h1 className="text-2xl font-extrabold tracking-tight text-foreground">{T("history")}</h1>
               {showingCachedData && (
                 <div className="mt-1.5 flex items-center gap-1.5 rounded-full bg-warning/20 border border-amber-400/30 px-2.5 py-1 w-fit">
                   <WifiOff size={10} className="text-warning" />
@@ -539,32 +539,32 @@ export default function History() {
               }}
               disabled={isFetching}
               aria-label={T("refresh")}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/[0.06] bg-card-dark/[0.08] transition-opacity active:bg-card-dark/[0.12] disabled:opacity-50"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-muted/30 transition-opacity active:bg-muted/50 disabled:opacity-50"
             >
               <RefreshCw
                 size={16}
-                className={`text-white/60 ${isFetching ? "animate-spin" : ""}`}
+                className={`text-muted-foreground ${isFetching ? "animate-spin" : ""}`}
               />
             </button>
           </div>
 
           {!isLoading && (
             <div className="mt-5 grid grid-cols-3 gap-3">
-              <div className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] p-3 text-center backdrop-blur-sm">
-                <p className="text-lg font-extrabold text-white">{formatCurrency(totalEarnings)}</p>
-                <p className="mt-0.5 text-[9px] font-semibold tracking-wider text-white/30 uppercase">
+              <div className="rounded-2xl border border-border/50 bg-muted/20 p-3 text-center backdrop-blur-sm">
+                <p className="text-lg font-extrabold text-foreground">{formatCurrency(totalEarnings)}</p>
+                <p className="mt-0.5 text-[9px] font-semibold tracking-wider text-muted-foreground uppercase">
                   {T("earnings")}
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] p-3 text-center backdrop-blur-sm">
-                <p className="text-lg font-extrabold text-white">{completedItems.length}</p>
-                <p className="mt-0.5 text-[9px] font-semibold tracking-wider text-white/30 uppercase">
+              <div className="rounded-2xl border border-border/50 bg-muted/20 p-3 text-center backdrop-blur-sm">
+                <p className="text-lg font-extrabold text-foreground">{completedItems.length}</p>
+                <p className="mt-0.5 text-[9px] font-semibold tracking-wider text-muted-foreground uppercase">
                   {T("completed")}
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] p-3 text-center backdrop-blur-sm">
+              <div className="rounded-2xl border border-border/50 bg-muted/20 p-3 text-center backdrop-blur-sm">
                 <p className="text-lg font-extrabold text-error">{cancelledItems.length}</p>
-                <p className="mt-0.5 text-[9px] font-semibold tracking-wider text-white/30 uppercase">
+                <p className="mt-0.5 text-[9px] font-semibold tracking-wider text-muted-foreground uppercase">
                   {T("cancelled")}
                 </p>
               </div>
@@ -574,12 +574,12 @@ export default function History() {
       </div>
 
       <div className="sticky top-0 z-10 space-y-3 bg-page-bg px-4 pt-4 pb-2">
-        <div className="flex gap-1 rounded-full border border-white/10 bg-card-dark p-1 shadow-sm">
+        <div className="flex gap-1 rounded-full border border-border bg-card p-1 shadow-sm">
           {PERIOD_TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setPeriod(tab.key)}
-              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-black shadow-sm" : "text-[#B0B0B0] hover:text-[#B0B0B0]"}`}
+              className={`flex-1 rounded-full py-2.5 text-xs font-bold transition-all ${period === tab.key ? "bg-brand text-black shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               {tab.label}
             </button>
@@ -590,13 +590,13 @@ export default function History() {
             <button
               key={tab.key}
               onClick={() => setKind(tab.key)}
-              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all ${kind === tab.key ? "bg-brand text-black shadow-sm" : "border border-white/10 bg-card-dark text-[#B0B0B0]"}`}
+              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all ${kind === tab.key ? "bg-brand text-black shadow-sm" : "border border-border bg-card text-muted-foreground"}`}
             >
               {tab.icon} {tab.label}
             </button>
           ))}
         </div>
-        <p className="px-1 text-[10px] text-[#B0B0B0]">
+        <p className="px-1 text-[10px] text-muted-foreground">
           {T("tapToViewReceipt")}
         </p>
       </div>
@@ -613,11 +613,11 @@ export default function History() {
           />
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-3xl bg-border-dark">
-              <ClipboardList size={32} className="text-[#B0B0B0]" />
+            <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-3xl bg-muted">
+              <ClipboardList size={32} className="text-muted-foreground" />
             </div>
-            <p className="text-base font-bold text-[#B0B0B0]">{T("noRecordsFound")}</p>
-            <p className="mt-1 text-sm text-[#B0B0B0]">
+            <p className="text-base font-bold text-muted-foreground">{T("noRecordsFound")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
               {period !== "all" ? T("widerTimePeriod") : T("deliveriesAppearHere")}
             </p>
           </div>
@@ -642,15 +642,15 @@ export default function History() {
                 <div key={item.id}>
                   {showHeader && (
                     <div className="flex items-center gap-2 pt-2 pb-1">
-                      <Calendar size={12} className="text-[#B0B0B0]" />
-                      <p className="text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+                      <Calendar size={12} className="text-muted-foreground" />
+                      <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                         {group}
                       </p>
-                      <div className="h-px flex-1 bg-border-dark" />
+                      <div className="h-px flex-1 bg-border" />
                     </div>
                   )}
                   <div
-                    className="cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-sm transition-colors active:bg-card-dark"
+                    className="cursor-pointer overflow-hidden rounded-3xl border border-border bg-card shadow-sm transition-colors active:bg-muted/30"
                     onClick={() => setSelectedReceipt(item)}
                   >
                     <div className="flex items-center gap-3.5 p-4">
@@ -660,15 +660,15 @@ export default function History() {
                         <ItemIcon kind={item.kind} type={item.type} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[15px] font-bold text-white capitalize">
+                        <p className="text-[15px] font-bold text-foreground capitalize">
                           {item.kind === "ride"
                             ? `${item.type} ${T("ride")}`
                             : `${item.type} ${T("deliveryLabel")}`}
                         </p>
-                        <p className="mt-0.5 truncate text-xs text-[#B0B0B0]">
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
                           {item.origin || item.address || "—"}
                         </p>
-                        <p className="mt-0.5 text-[11px] text-[#B0B0B0]">
+                        <p className="mt-0.5 text-[11px] text-muted-foreground">
                           {formatDate(item.createdAt, tz)}
                         </p>
                       </div>
@@ -678,7 +678,7 @@ export default function History() {
                             +{formatCurrency(item.earnings || 0)}
                           </p>
                         ) : (
-                          <p className="font-bold text-[#B0B0B0]">
+                          <p className="font-bold text-muted-foreground">
                             {formatCurrency(item.amount || 0)}
                           </p>
                         )}
@@ -688,7 +688,7 @@ export default function History() {
                               ? "bg-success/15 text-success"
                               : cancelled
                                 ? "bg-error/15 text-error"
-                                : "bg-border-dark text-[#B0B0B0]"
+                                : "bg-muted text-muted-foreground"
                           }`}
                         >
                           {item.status.replace(/_/g, " ").toUpperCase()}
@@ -719,7 +719,7 @@ export default function History() {
           <button
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
-            className="w-full rounded-2xl border border-white/10 bg-card-dark py-3 text-sm font-bold text-[#B0B0B0] shadow-sm transition-colors active:bg-card-dark disabled:opacity-60"
+            className="w-full rounded-2xl border border-border bg-card py-3 text-sm font-bold text-muted-foreground shadow-sm transition-colors active:bg-muted/30 disabled:opacity-60"
           >
             {isFetchingNextPage ? (
               <span className="flex items-center justify-center gap-2">

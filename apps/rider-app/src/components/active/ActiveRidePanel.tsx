@@ -104,11 +104,11 @@ export function ActiveRidePanel({
         startedAt={startedAt}
       />
 
-    <div className="animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-white/10 bg-card-dark shadow-lg shadow-black/40">
+    <div className="animate-[slideUp_0.4s_ease-out] overflow-hidden rounded-3xl border border-border bg-card shadow-lg shadow-black/40">
       <div className="relative flex items-center gap-3 overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 px-4 py-4">
-        <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-card-dark/10" />
-        <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-card-dark/5" />
-        <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-card-dark/20 shadow-inner backdrop-blur-md">
+        <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-card/10" />
+        <div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-card/5" />
+        <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-border bg-card/20 shadow-inner backdrop-blur-md">
           {type === "bike" ? (
             <Bike size={22} className="text-white" />
           ) : (
@@ -121,7 +121,7 @@ export function ActiveRidePanel({
               {type === "bike" ? T("bikeRide") : T("carRide")}
             </p>
             {(ride as { isPoolRide?: boolean }).isPoolRide && (
-              <span className="flex items-center gap-1 rounded-full border border-white/30 bg-card-dark/20 px-2 py-0.5 text-[9px] font-bold tracking-wide text-white">
+              <span className="flex items-center gap-1 rounded-full border border-white/30 bg-card/20 px-2 py-0.5 text-[9px] font-bold tracking-wide text-white">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                 </svg>
@@ -137,7 +137,7 @@ export function ActiveRidePanel({
           <p className="text-xl font-black tracking-tight text-white">
             {formatCurrency(ride.fare as number, currency)}
           </p>
-          <div className="mt-1 rounded-lg border border-white/10 bg-card-dark/15 px-2.5 py-1 backdrop-blur-sm">
+          <div className="mt-1 rounded-lg border border-border bg-card/15 px-2.5 py-1 backdrop-blur-sm">
             <p className="text-[10px] font-bold text-white">
               {T("youEarnLabel")} {formatCurrency(riderEarning, currency)}
             </p>
@@ -147,7 +147,7 @@ export function ActiveRidePanel({
 
       <div className="space-y-4 p-4">
         {rideStep >= 0 && (
-          <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-4">
+          <div className="rounded-2xl border border-border/80 bg-card p-4">
             <ActiveStepper steps={RIDE_LABELS} currentStep={rideStep} />
           </div>
         )}
@@ -169,8 +169,8 @@ export function ActiveRidePanel({
             </div>
           </div>
           <div className="relative z-10 -my-1.5 flex justify-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-white/10 bg-card-dark shadow-sm">
-              <ArrowDown size={14} className="text-[#B0B0B0]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-border bg-card shadow-sm">
+              <ArrowDown size={14} className="text-muted-foreground" />
             </div>
           </div>
           <div className="rounded-2xl border border-error/20 bg-gradient-to-br from-red-50 to-pink-50 p-4">
@@ -202,13 +202,13 @@ export function ActiveRidePanel({
                 </p>
                 <p className="text-base font-black text-white">{ride.customerName as string}</p>
                 {!!ride.customerPhone && (
-                  <p className="mt-0.5 flex items-center gap-1 text-xs text-[#B0B0B0]">
+                  <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                     <Phone size={10} /> {ride.customerPhone as string}
                   </p>
                 )}
               </div>
             </div>
-            <div className="border-t border-blue-500/30 bg-border-dark/60 px-3 py-3 space-y-2">
+            <div className="border-t border-blue-500/30 bg-muted/60 px-3 py-3 space-y-2">
               <div className="grid grid-cols-2 gap-2">
                 {!!ride.customerPhone && (
                   <a
@@ -343,7 +343,7 @@ export function ActiveRidePanel({
 
             {/* Mode toggle */}
             {!rideProofPhoto && (
-              <div className="mb-3 flex overflow-hidden rounded-xl border border-blue-500/30 bg-border-dark">
+              <div className="mb-3 flex overflow-hidden rounded-xl border border-blue-500/30 bg-muted">
                 <button
                   onClick={() => setProofMode("photo")}
                   className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
@@ -371,7 +371,7 @@ export function ActiveRidePanel({
 
             {rideProofPhoto ? (
               <div className="space-y-2.5">
-                <div className="relative h-44 overflow-hidden rounded-2xl bg-border-dark shadow-inner">
+                <div className="relative h-44 overflow-hidden rounded-2xl bg-muted shadow-inner">
                   <SafeImage
                     src={rideProofPhoto}
                     alt={T("deliveryProof")}
@@ -391,7 +391,7 @@ export function ActiveRidePanel({
                     setRideProofFile(null);
                     if (ridePhotoInputRef.current) ridePhotoInputRef.current.value = "";
                   }}
-                  className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-blue-500/30 bg-border-dark py-2.5 text-xs font-bold text-blue-400 transition-colors active:bg-blue-900/20"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-xl border-2 border-blue-500/30 bg-muted py-2.5 text-xs font-bold text-blue-400 transition-colors active:bg-blue-900/20"
                 >
                   <Camera size={12} /> {T("retakeOrClear")}
                 </button>
@@ -399,7 +399,7 @@ export function ActiveRidePanel({
             ) : proofMode === "photo" ? (
               <button
                 onClick={() => ridePhotoInputRef.current?.click()}
-                className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-border-dark py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
+                className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-muted py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15">
                   <Camera className="h-6 w-6 text-blue-500" />
@@ -410,7 +410,7 @@ export function ActiveRidePanel({
             ) : (
               <button
                 onClick={() => setShowSignaturePad(true)}
-                className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-border-dark py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
+                className="flex w-full flex-col items-center gap-2.5 rounded-2xl border-2 border-dashed border-blue-500/30 bg-muted py-5 text-blue-500 transition-all hover:bg-blue-900/20 active:scale-[0.98]"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15">
                   <PenLine className="h-6 w-6 text-blue-500" />
@@ -421,7 +421,7 @@ export function ActiveRidePanel({
             )}
 
             {rideProofFile && !rideProofPhoto && (
-              <p className="mt-2 text-center text-[11px] text-[#B0B0B0]">{T("processingLabel")}</p>
+              <p className="mt-2 text-center text-[11px] text-muted-foreground">{T("processingLabel")}</p>
             )}
           </div>
         )}
@@ -500,7 +500,7 @@ export function ActiveRidePanel({
               onTouchEnd={() => setPressedBtn(null)}
               className={`flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 py-4 text-base font-black text-white shadow-lg shadow-green-200 transition-transform disabled:opacity-60 ${pressedBtn === "complete" ? "scale-[0.97]" : ""}`}
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-card-dark/20">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-card/20">
                 {rideProofUploading ? (
                   <RefreshCw size={17} className="animate-spin" />
                 ) : (

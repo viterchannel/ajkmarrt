@@ -54,9 +54,9 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
   const active = activeIdx != null ? days[activeIdx] : null;
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-5 shadow-sm">
+    <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-2">
-        <BarChart3 size={15} className="text-[#B0B0B0]" />
+        <BarChart3 size={15} className="text-muted-foreground" />
         <p className="text-sm font-bold text-white">{title ?? "7-Day Earnings"}</p>
       </div>
 
@@ -92,7 +92,7 @@ export default function EarningsBarChart({ transactions, currency, title }: Earn
             </div>
             <p
               className={`text-[9px] font-semibold ${
-                d.isToday ? "text-brand" : "text-[#B0B0B0]"
+                d.isToday ? "text-brand" : "text-muted-foreground"
               }`}
             >
               {d.label}

@@ -238,7 +238,7 @@ export function PopupEngine() {
           {current.ctaText && (
             <button
               onClick={handleCta}
-              className="flex-shrink-0 rounded-full bg-card-dark/20 px-3 py-1 text-xs font-bold transition-colors hover:bg-card-dark/30"
+              className="flex-shrink-0 rounded-full bg-card/20 px-3 py-1 text-xs font-bold transition-colors hover:bg-card/30"
               style={{ color: tc }}
             >
               {current.ctaText}
@@ -267,7 +267,7 @@ export function PopupEngine() {
           className={`relative overflow-hidden rounded-t-3xl ${animClass}`}
           style={{ background: g }}
         >
-          <div className="mx-auto mt-3 mb-1 h-1 w-9 rounded-full bg-card-dark/30" />
+          <div className="mx-auto mt-3 mb-1 h-1 w-9 rounded-full bg-card/30" />
           <div className="px-6 pt-4 pb-10">
             {current.mediaUrl && (
               <SafeImage
@@ -288,7 +288,7 @@ export function PopupEngine() {
               {current.ctaText && (
                 <button
                   onClick={handleCta}
-                  className="flex-1 rounded-2xl border border-white/30 bg-card-dark/20 py-3 text-sm font-bold transition-colors hover:bg-card-dark/30"
+                  className="flex-1 rounded-2xl border border-border/50 bg-card/20 py-3 text-sm font-bold transition-colors hover:bg-card/30"
                   style={{ color: tc }}
                 >
                   {current.ctaText}
@@ -341,7 +341,7 @@ export function PopupEngine() {
             {current.ctaText && (
               <button
                 onClick={handleCta}
-                className="w-full rounded-2xl border border-white/30 bg-card-dark/20 py-3 text-sm font-bold transition-colors hover:bg-card-dark/30"
+                className="w-full rounded-2xl border border-border/50 bg-card/20 py-3 text-sm font-bold transition-colors hover:bg-card/30"
                 style={{ color: tc }}
               >
                 {current.ctaText}
@@ -381,7 +381,7 @@ export function PopupEngine() {
         {current.ctaText && (
           <button
             onClick={handleCta}
-            className="rounded-2xl border border-white/30 bg-card-dark/20 px-8 py-4 text-base font-bold transition-colors hover:bg-card-dark/30"
+            className="rounded-2xl border border-border/50 bg-card/20 px-8 py-4 text-base font-bold transition-colors hover:bg-card/30"
             style={{ color: tc }}
           >
             {current.ctaText}

@@ -26,7 +26,7 @@ export function RequestAge({ createdAt }: { createdAt: string }) {
   const urgent = diffSec > 90;
   return (
     <span
-      className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${urgent ? "animate-pulse bg-red-900/30 text-error" : "bg-border-dark text-[#B0B0B0]"}`}
+      className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${urgent ? "animate-pulse bg-red-900/30 text-error" : "bg-muted text-muted-foreground"}`}
     >
       <Timer size={9} /> {label}
     </span>

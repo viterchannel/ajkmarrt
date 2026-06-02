@@ -20,11 +20,11 @@ interface HomeHeaderProps {
 }
 
 export function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
-  if (!rating || rating === 0) return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
+  if (!rating || rating === 0) return { label: "Standard", cls: "text-muted-foreground bg-white/[0.06] border-border" };
   if (rating >= 4.5) return { label: "Gold Partner", cls: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" };
   if (rating >= 4.0) return { label: "Silver Partner", cls: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
   if (rating >= 3.5) return { label: "Active Rider", cls: "text-success bg-success/10 border-success/20" };
-  return { label: "Standard", cls: "text-white/40 bg-white/[0.06] border-white/10" };
+  return { label: "Standard", cls: "text-muted-foreground bg-white/[0.06] border-border" };
 }
 
 export function getInitials(name?: string | null): string {
@@ -56,7 +56,7 @@ export function HomeHeader({
 
   return (
     <header
-      className="relative bg-gray-950 border-b border-white/[0.06] px-4 pb-5 text-white sm:px-6"
+      className="page-header-gradient relative bg-card border-b border-border/60 px-4 pb-5 text-foreground sm:px-6"
       style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
     >
       {/* ── Branding bar ── */}
@@ -65,7 +65,7 @@ export function HomeHeader({
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand">
             <span className="text-[10px] font-black text-black">A</span>
           </div>
-          <span className="text-[11px] font-bold tracking-widest text-white/30 uppercase">
+          <span className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase">
             AJKMart Rider
           </span>
         </div>
@@ -75,10 +75,10 @@ export function HomeHeader({
           {/* Notification bell */}
           <Link
             href="/notifications"
-            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] transition-colors active:bg-white/[0.08]"
+            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-border/80 bg-white/[0.04] transition-colors active:bg-white/[0.08]"
             aria-label={hasUnread ? `${unreadNotifications} unread notifications` : "Notifications"}
           >
-            <Bell size={15} className={hasUnread ? "text-white" : "text-white/40"} />
+            <Bell size={15} className={hasUnread ? "text-foreground" : "text-muted-foreground"} />
             {hasUnread && (
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-extrabold text-white leading-none">
                 {unreadNotifications > 9 ? "9+" : unreadNotifications}
@@ -89,7 +89,7 @@ export function HomeHeader({
           {/* Avatar → /profile */}
           <Link
             href="/profile"
-            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.08] transition-colors active:bg-white/[0.15]"
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border/20 bg-muted/20 transition-colors active:bg-muted/40"
             aria-label="Go to profile"
           >
             {user?.avatar ? (
@@ -99,7 +99,7 @@ export function HomeHeader({
                 className="h-full w-full rounded-full object-cover"
               />
             ) : (
-              <span className="text-[10px] font-extrabold text-white/70">{initials}</span>
+              <span className="text-[10px] font-extrabold text-muted-foreground">{initials}</span>
             )}
           </Link>
         </div>
@@ -108,18 +108,18 @@ export function HomeHeader({
       {/* ── Greeting row ── */}
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <p className="text-xs font-semibold tracking-wider text-white/40 uppercase">
+          <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             {greeting}
           </p>
           <h1
             className={`mt-0.5 text-xl font-extrabold tracking-tight transition-colors sm:text-2xl ${
-              newFlash ? "text-success" : "text-white"
+              newFlash ? "text-success" : "text-foreground"
             }`}
           >
             {firstName}
           </h1>
           {/* LiveClock moved here as subtle secondary position */}
-          <p className="mt-0.5 font-mono text-[10px] text-white/20">
+          <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
             <LiveClock />
           </p>
           {newFlash && (
@@ -137,7 +137,7 @@ export function HomeHeader({
               {tier.label}
             </span>
           )}
-          <p className="text-[10px] text-white/25">
+          <p className="text-[10px] text-muted-foreground">
             Last online · {lastSeenLabel}
           </p>
         </div>
@@ -148,17 +148,17 @@ export function HomeHeader({
         {/* Wallet card */}
         <Link
           href="/wallet"
-          className="flex flex-col gap-1.5 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-3.5 transition-colors active:bg-white/[0.07]"
+          className="flex flex-col gap-1.5 rounded-2xl border border-border/80 bg-white/[0.04] p-3.5 transition-colors active:bg-white/[0.07]"
           aria-label="View wallet balance"
         >
-          <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-white/40">
+          <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             <Wallet size={10} />
             {T("wallet")}
           </p>
-          <p className="text-lg font-extrabold leading-none text-white">
+          <p className="text-lg font-extrabold leading-none text-foreground">
             {formatCurrency(user?.walletBalance ?? "0", currency)}
           </p>
-          <p className="flex items-center gap-0.5 text-[10px] font-medium text-white/25">
+          <p className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground">
             View balance <ChevronRight size={9} />
           </p>
         </Link>
@@ -170,7 +170,7 @@ export function HomeHeader({
           className={`flex flex-col gap-1.5 rounded-2xl border p-3.5 text-left transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 ${
             effectiveOnline
               ? "border-success/20 bg-success/[0.06]"
-              : "border-white/[0.08] bg-white/[0.04]"
+              : "border-border/80 bg-white/[0.04]"
           }`}
           role="switch"
           aria-checked={effectiveOnline}
@@ -187,7 +187,7 @@ export function HomeHeader({
               />
               <p
                 className={`text-[10px] font-bold uppercase tracking-wider ${
-                  effectiveOnline ? "text-success" : "text-white/40"
+                  effectiveOnline ? "text-success" : "text-muted-foreground"
                 }`}
               >
                 {effectiveOnline ? T("online") : T("offline")}
@@ -206,10 +206,10 @@ export function HomeHeader({
               />
             </div>
           </div>
-          <p className="text-sm font-extrabold leading-none text-white">
+          <p className="text-sm font-extrabold leading-none text-foreground">
             {effectiveOnline ? T("acceptingOrders") : T("tapToStart")}
           </p>
-          <p className="text-[10px] text-white/25">
+          <p className="text-[10px] text-muted-foreground">
             {effectiveOnline ? "Tap to stop" : "Tap to begin"}
           </p>
         </button>
@@ -222,7 +222,7 @@ export function HomeHeader({
           className={`flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-[10px] font-bold transition-all ${
             silenceOn
               ? "border-error/20 bg-error/10 text-error"
-              : "border-white/10 bg-white/5 text-white/40"
+              : "border-border bg-white/5 text-muted-foreground"
           }`}
           aria-label={silenceOn ? "Unmute notification sounds" : "Mute notification sounds"}
         >

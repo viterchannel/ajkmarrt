@@ -87,28 +87,28 @@ export class MapErrorBoundary extends Component<
 }
 
 function SkeletonBlock({ className }: { className?: string }) {
-  return <div className={`animate-pulse rounded-xl bg-border-dark ${className || ""}`} />;
+  return <div className={`animate-pulse rounded-xl bg-muted ${className || ""}`} />;
 }
 
 export function SkeletonActive() {
   return (
     <div className="min-h-screen bg-page-bg">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
+        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/20" />
         <div className="relative flex items-center justify-between">
           <div className="space-y-2">
-            <SkeletonBlock className="h-7 w-40 !bg-card-dark/10" />
-            <SkeletonBlock className="h-4 w-56 !bg-card-dark/10" />
+            <SkeletonBlock className="h-7 w-40 !bg-card/10" />
+            <SkeletonBlock className="h-4 w-56 !bg-card/10" />
           </div>
-          <SkeletonBlock className="h-16 w-20 rounded-2xl !bg-card-dark/[0.06]" />
+          <SkeletonBlock className="h-16 w-20 rounded-2xl !bg-muted/20" />
         </div>
       </div>
       <div className="space-y-4 px-4 py-4">
-        <div className="overflow-hidden rounded-3xl bg-card-dark shadow-sm">
+        <div className="overflow-hidden rounded-3xl bg-card shadow-sm">
           <SkeletonBlock className="h-16 !rounded-none" />
           <div className="space-y-3 p-4">
             <div className="flex items-center justify-between px-4">
@@ -122,7 +122,7 @@ export function SkeletonActive() {
             <SkeletonBlock className="mx-6 h-2" />
           </div>
         </div>
-        <div className="overflow-hidden rounded-3xl bg-card-dark shadow-sm">
+        <div className="overflow-hidden rounded-3xl bg-card shadow-sm">
           <SkeletonBlock className="h-12 !rounded-none" />
           <div className="space-y-3 p-4">
             <SkeletonBlock className="h-20" />
@@ -174,12 +174,12 @@ export function ElapsedBadge({ startIso }: { startIso?: string | null }) {
   const progress = Math.min(elapsed / 3600, 1);
   return (
     <div
-      className={`relative flex flex-col items-center rounded-2xl border px-4 py-2.5 backdrop-blur-sm ${urgent ? "border-error/30 bg-error/90 shadow-lg shadow-error/20" : "border-white/[0.06] bg-card-dark/[0.06]"}`}
+      className={`relative flex flex-col items-center rounded-2xl border px-4 py-2.5 backdrop-blur-sm ${urgent ? "border-error/30 bg-error/90 shadow-lg shadow-error/20" : "border-border/60 bg-muted/20"}`}
     >
       <div className="mb-1 flex items-center gap-1.5">
-        <Clock size={10} className={urgent ? "text-error/60" : "text-white/40"} />
+        <Clock size={10} className={urgent ? "text-error/60" : "text-muted-foreground"} />
         <span
-          className={`text-[9px] font-bold tracking-widest uppercase ${urgent ? "text-error/60" : "text-white/40"}`}
+          className={`text-[9px] font-bold tracking-widest uppercase ${urgent ? "text-error/60" : "text-muted-foreground"}`}
         >
           Elapsed
         </span>
@@ -189,7 +189,7 @@ export function ElapsedBadge({ startIso }: { startIso?: string | null }) {
       >
         {label}
       </span>
-      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-card-dark/10">
+      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-card/10">
         <div
           className={`h-full rounded-full transition-all duration-1000 ${urgent ? "bg-error/40" : "bg-success"}`}
           style={{ width: `${progress * 100}%` }}
@@ -372,7 +372,7 @@ export function SosButton({
             </button>
             <button
               onClick={() => setConfirming(false)}
-              className="rounded-lg bg-border-dark px-3 py-1.5 text-xs font-bold text-[#B0B0B0]"
+              className="rounded-lg bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
             >
               Cancel
             </button>
@@ -404,7 +404,7 @@ export function SosButton({
             </button>
             <button
               onClick={() => setNoLocWarning(false)}
-              className="rounded-lg bg-border-dark px-3 py-1.5 text-xs font-bold text-[#B0B0B0]"
+              className="rounded-lg bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
             >
               Cancel
             </button>
@@ -451,7 +451,7 @@ export function SosButton({
         }}
         disabled={sent || loading}
         aria-label={T("sosEmergency")}
-        className={`flex items-center justify-center gap-2 self-end rounded-xl px-5 py-2.5 text-sm font-black shadow-lg transition-all ${sent ? "cursor-default bg-border-dark text-[#B0B0B0] shadow-none" : "text-white shadow-red-400/40 active:scale-[0.96]"}`}
+        className={`flex items-center justify-center gap-2 self-end rounded-xl px-5 py-2.5 text-sm font-black shadow-lg transition-all ${sent ? "cursor-default bg-muted text-muted-foreground shadow-none" : "text-white shadow-red-400/40 active:scale-[0.96]"}`}
         style={
           sent
             ? undefined
@@ -630,7 +630,7 @@ export function TurnByTurnPanel({
               {distKm} · ~{etaMin} min
             </p>
           )}
-          {!route && <p className="text-xs text-[#B0B0B0]">Tap for directions</p>}
+          {!route && <p className="text-xs text-muted-foreground">Tap for directions</p>}
         </div>
         <span className="text-xs font-bold text-indigo-400">{open ? "▲" : "▼"}</span>
       </button>
@@ -638,7 +638,7 @@ export function TurnByTurnPanel({
       {open && (
         <div className="px-4 pb-3">
           {loading && (
-            <div className="flex items-center gap-2 py-4 text-sm text-[#B0B0B0]">
+            <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-400 border-t-transparent" />
               {T("fetchingRoute")}
             </div>
@@ -654,7 +654,7 @@ export function TurnByTurnPanel({
           {route && !loading && (
             <>
               <div className="flex items-center justify-between pt-2 pb-1">
-                <span className="text-xs text-[#B0B0B0]">
+                <span className="text-xs text-muted-foreground">
                   {distKm} · ~{etaMin} min · Step {currentStep + 1}/{route.steps.length}
                 </span>
                 <button
@@ -672,7 +672,7 @@ export function TurnByTurnPanel({
                     <div
                       key={i}
                       data-step={i}
-                      className={`flex items-start gap-2 rounded-lg border-b border-white/10 py-1.5 text-sm transition-colors last:border-0 ${isActive ? "-mx-2 bg-indigo-500/10 px-2" : ""} ${isPast ? "opacity-40" : ""}`}
+                      className={`flex items-start gap-2 rounded-lg border-b border-border py-1.5 text-sm transition-colors last:border-0 ${isActive ? "-mx-2 bg-indigo-500/10 px-2" : ""} ${isPast ? "opacity-40" : ""}`}
                     >
                       <div
                         className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${isActive ? "bg-indigo-500 text-white" : "bg-indigo-500/15 text-indigo-400"}`}
@@ -686,10 +686,10 @@ export function TurnByTurnPanel({
                           {step.instruction}
                         </p>
                         {step.streetName && (
-                          <p className="mt-0.5 text-xs text-[#B0B0B0]">{step.streetName}</p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">{step.streetName}</p>
                         )}
                       </div>
-                      <span className="mt-0.5 flex-shrink-0 text-xs text-[#B0B0B0]">
+                      <span className="mt-0.5 flex-shrink-0 text-xs text-muted-foreground">
                         {step.distanceM < 1000
                           ? `${step.distanceM}m`
                           : `${(step.distanceM / 1000).toFixed(1)}km`}
@@ -825,7 +825,7 @@ export function EstimatedArrivalBadge({
         </p>
         <p className="text-base font-black text-white">
           {etaMin} min{" "}
-          <span className="text-xs font-semibold text-[#B0B0B0]">
+          <span className="text-xs font-semibold text-muted-foreground">
             ({distKm < 1 ? `${Math.round(distKm * 1000)}m` : `${distKm.toFixed(1)} km`})
           </span>
         </p>
@@ -910,7 +910,7 @@ export function DropoffEtaBadge({
         </p>
         <p className="text-xl font-black text-white leading-tight">
           ~{etaMin} min{" "}
-          <span className="text-sm font-semibold text-[#B0B0B0]">({distStr})</span>
+          <span className="text-sm font-semibold text-muted-foreground">({distStr})</span>
         </p>
         <p className="text-[10px] text-success">
           Updated {updatedStr} · refreshes every 30s
@@ -921,7 +921,7 @@ export function DropoffEtaBadge({
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
           <span className="text-[10px] font-bold text-success">LIVE</span>
         </div>
-        <span className="text-[10px] text-[#B0B0B0]">{speedKmh} km/h avg</span>
+        <span className="text-[10px] text-muted-foreground">{speedKmh} km/h avg</span>
       </div>
     </div>
   );

@@ -53,7 +53,7 @@ function SkeletonNotifications() {
           ))}
         </div>
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="rounded-3xl border border-white/10 bg-card-dark p-4">
+          <div key={i} className="rounded-3xl border border-border bg-card p-4">
             <div className="flex gap-3">
               <ShimmerBlock className="h-12 w-12 flex-shrink-0 rounded-xl" />
               <div className="flex-1 space-y-2">
@@ -160,7 +160,7 @@ function typeInfo(type: string): TypeInfo {
       icon: <Settings size={20} className="text-white" />,
       label: "System",
       gradient: "from-gray-500 to-slate-600",
-      badge: "bg-border-dark text-[#B0B0B0]",
+      badge: "bg-muted text-muted-foreground",
       iconBg: "bg-gradient-to-br from-gray-500 to-slate-600",
       dotColor: "bg-[#B0B0B0]",
     };
@@ -177,7 +177,7 @@ function typeInfo(type: string): TypeInfo {
     icon: <Bell size={20} className="text-white" />,
     label: "Other",
     gradient: "from-gray-500 to-slate-600",
-    badge: "bg-border-dark text-[#B0B0B0]",
+    badge: "bg-muted text-muted-foreground",
     iconBg: "bg-gradient-to-br from-gray-500 to-slate-600",
     dotColor: "bg-[#B0B0B0]",
   };
@@ -194,7 +194,7 @@ function navTarget(type: string, status?: string): string {
 }
 
 const STAT_CONFIGS = [
-  { label: "Total", key: "total", icon: <Bell size={14} className="text-white/50" /> },
+  { label: "Total", key: "total", icon: <Bell size={14} className="text-muted-foreground" /> },
   { label: "Orders", key: "order", icon: <Package size={14} className="text-blue-300" /> },
   { label: "Wallet", key: "wallet", icon: <Wallet size={14} className="text-success" /> },
   { label: "Rides", key: "ride", icon: <Bike size={14} className="text-purple-300" /> },
@@ -323,7 +323,7 @@ export default function Notifications() {
     return (
       <div className="flex min-h-screen flex-col bg-page-bg">
         <div
-          className="rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 py-8"
+          className="page-header-gradient rounded-b-[2rem] bg-card px-5 py-8"
           style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
         >
           <h1 className="text-2xl font-extrabold tracking-tight text-white">
@@ -344,24 +344,24 @@ export default function Notifications() {
   return (
     <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
-        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
-        <div className="absolute top-1/2 left-1/3 h-24 w-24 rounded-full bg-card-dark/[0.015]" />
+        <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/20" />
+        <div className="absolute top-1/2 left-1/3 h-24 w-24 rounded-full bg-muted/20" />
 
         <div className="relative mb-5 flex items-start justify-between">
           <div>
             <div className="mb-1.5 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/[0.06] bg-card-dark/[0.06] backdrop-blur-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border/60 bg-muted/20 backdrop-blur-sm">
                 <Bell size={16} className="text-white" />
               </div>
               <h1 className="text-2xl font-black tracking-tight text-white">
                 {T("notificationsTitle")}
               </h1>
             </div>
-            <p className="flex items-center gap-2 text-sm font-medium text-white/40">
+            <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               {unread > 0 ? (
                 <>
                   <span className="relative flex h-2.5 w-2.5">
@@ -381,7 +381,7 @@ export default function Notifications() {
             <button
               onClick={() => refetch()}
               aria-label="Refresh notifications"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.06] bg-card-dark/[0.06] text-white backdrop-blur-sm transition-colors active:bg-card-dark/10"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-muted/20 text-white backdrop-blur-sm transition-colors active:bg-muted/20"
             >
               <RefreshCw size={16} />
             </button>
@@ -390,7 +390,7 @@ export default function Notifications() {
                 onClick={() => markAllMut.mutate()}
                 disabled={markAllMut.isPending}
                 aria-label="Mark all notifications as read"
-                className="flex h-10 items-center gap-1.5 rounded-xl border border-white/[0.06] bg-card-dark/[0.06] px-4 text-sm font-bold text-white backdrop-blur-sm transition-colors active:bg-card-dark/10 disabled:opacity-60"
+                className="flex h-10 items-center gap-1.5 rounded-xl border border-border/60 bg-muted/20 px-4 text-sm font-bold text-white backdrop-blur-sm transition-colors active:bg-muted/20 disabled:opacity-60"
               >
                 {markAllMut.isPending ? (
                   <><Loader2 size={15} className="animate-spin" /> Marking...</>
@@ -407,12 +407,12 @@ export default function Notifications() {
             {STAT_CONFIGS.map((s, i) => (
               <div
                 key={s.key}
-                className="rounded-2xl border border-white/[0.06] bg-card-dark/[0.06] p-3 text-center backdrop-blur-sm"
+                className="rounded-2xl border border-border/60 bg-muted/20 p-3 text-center backdrop-blur-sm"
                 style={{ animationDelay: `${i * 80}ms`, animation: "slideUp 0.4s ease-out both" }}
               >
                 <div className="mb-1.5 flex justify-center">{s.icon}</div>
                 <p className="text-xl font-black text-white">{statValues[s.key]}</p>
-                <p className="mt-0.5 text-[10px] font-bold tracking-wider text-white/30 uppercase">
+                <p className="mt-0.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
                   {s.label}
                 </p>
               </div>
@@ -430,7 +430,7 @@ export default function Notifications() {
               className={`flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
                 filter === tab.key
                   ? "bg-brand text-white shadow-sm"
-                  : "border border-white/10 bg-card-dark text-[#B0B0B0] active:bg-card-dark"
+                  : "border border-border bg-card text-muted-foreground active:bg-muted"
               }`}
             >
               {tab.icon} {T(tab.labelKey)}
@@ -438,7 +438,7 @@ export default function Notifications() {
                 <span
                   className={`flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[9px] font-black ${
                     filter === tab.key
-                      ? "bg-card-dark/20 text-white"
+                      ? "bg-muted/20 text-white"
                       : "bg-error text-white shadow-sm"
                   }`}
                 >
@@ -450,14 +450,14 @@ export default function Notifications() {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="animate-[fadeIn_0.4s_ease-out] rounded-3xl border border-white/10 bg-card-dark px-4 py-20 text-center shadow-sm">
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/10/50 bg-border-dark shadow-inner">
-              <Inbox size={44} className="text-[#B0B0B0]" />
+          <div className="animate-[fadeIn_0.4s_ease-out] rounded-3xl border border-border bg-card px-4 py-20 text-center shadow-sm">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-border bg-muted shadow-inner">
+              <Inbox size={44} className="text-muted-foreground" />
             </div>
-            <p className="text-xl font-black text-[#B0B0B0]">
+            <p className="text-xl font-black text-muted-foreground">
               {filter === "all" ? T("noNotificationsYet") : T("noNotifications")}
             </p>
-            <p className="mx-auto mt-2.5 max-w-[260px] text-sm leading-relaxed text-[#B0B0B0]">
+            <p className="mx-auto mt-2.5 max-w-[260px] text-sm leading-relaxed text-muted-foreground">
               {filter === "all" ? T("orderAlertsAppearHere") : T("tryDifferentFilter")}
             </p>
             {filter !== "all" && (
@@ -478,13 +478,13 @@ export default function Notifications() {
               >
                 <div className="mb-3 flex items-center gap-3 px-1">
                   <div className="flex items-center gap-1.5">
-                    <Clock size={11} className="text-[#B0B0B0]" />
-                    <p className="text-[11px] font-black tracking-widest text-[#B0B0B0] uppercase">
+                    <Clock size={11} className="text-muted-foreground" />
+                    <p className="text-[11px] font-black tracking-widest text-muted-foreground uppercase">
                       {group.label}
                     </p>
                   </div>
                   <div className="h-px flex-1 bg-gradient-to-r from-gray-200 to-transparent" />
-                  <span className="rounded-full bg-border-dark px-2 py-0.5 text-[10px] font-bold text-[#B0B0B0]">
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
                     {group.items.length}
                   </span>
                 </div>
@@ -495,10 +495,10 @@ export default function Notifications() {
                     return (
                       <div
                         key={n.id}
-                        className={`overflow-hidden rounded-3xl border bg-card-dark transition-all duration-300 ${dest ? "cursor-pointer" : "cursor-default"} ${
+                        className={`overflow-hidden rounded-3xl border bg-card transition-all duration-300 ${dest ? "cursor-pointer" : "cursor-default"} ${
                           !n.isRead
                             ? "border-t border-r border-b border-l-4 border-t-gray-100 border-r-gray-100 border-b-gray-100 border-l-green-500 shadow-lg shadow-success/10"
-                            : "border-white/10 shadow-sm"
+                            : "border-border shadow-sm"
                         }`}
                         onClick={() => {
                           if (!n.isRead) markOneMut.mutate(n.id);
@@ -513,21 +513,21 @@ export default function Notifications() {
                           <div className="relative flex-shrink-0">
                             <div
                               className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-md ${
-                                !n.isRead ? info.iconBg : "bg-border-dark"
+                                !n.isRead ? info.iconBg : "bg-muted"
                               }`}
                             >
-                              {!n.isRead ? info.icon : <Bell size={20} className="text-[#B0B0B0]" />}
+                              {!n.isRead ? info.icon : <Bell size={20} className="text-muted-foreground" />}
                             </div>
                             {!n.isRead && (
                               <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-success shadow-sm">
-                                <div className="h-1.5 w-1.5 rounded-full bg-card-dark" />
+                                <div className="h-1.5 w-1.5 rounded-full bg-card" />
                               </div>
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-start justify-between gap-2">
                               <p
-                                className={`text-sm leading-snug ${!n.isRead ? "font-black text-white" : "font-semibold text-[#B0B0B0]"}`}
+                                className={`text-sm leading-snug ${!n.isRead ? "font-black text-foreground" : "font-semibold text-muted-foreground"}`}
                               >
                                 {n.title}
                               </p>
@@ -545,12 +545,12 @@ export default function Notifications() {
                               )}
                             </div>
                             <p
-                              className={`mt-1.5 line-clamp-2 text-xs leading-relaxed ${!n.isRead ? "text-[#B0B0B0]" : "text-[#B0B0B0]"}`}
+                              className={`mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground`}
                             >
                               {n.body}
                             </p>
                             <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                              <span className="flex items-center gap-1 rounded-full bg-card-dark px-2 py-0.5 text-[10px] font-medium text-[#B0B0B0]">
+                              <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
                                 <Clock size={9} /> {fd(n.createdAt)}
                               </span>
                               <span
@@ -559,7 +559,7 @@ export default function Notifications() {
                                 {info.label}
                               </span>
                               {dest && (
-                                <span className="flex items-center gap-0.5 rounded-full border border-white/10 bg-border-dark px-2.5 py-1 text-[10px] font-bold text-white">
+                                <span className="flex items-center gap-0.5 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] font-bold text-foreground">
                                   View <ChevronRight size={10} />
                                 </span>
                               )}

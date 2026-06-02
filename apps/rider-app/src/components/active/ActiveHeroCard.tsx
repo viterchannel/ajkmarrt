@@ -59,7 +59,7 @@ export function ActiveHeroCard({
         : (order.deliveryLng as number | null | undefined);
 
     return (
-      <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-4">
+      <div className="rounded-2xl border border-border/80 bg-card p-4">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ElapsedBadge startIso={startedAt} />
@@ -84,7 +84,7 @@ export function ActiveHeroCard({
                 {(order.vendorStoreName as string) || "Store"}
               </p>
               {!!order.vendorAddress && (
-                <p className="truncate text-[11px] text-white/50">
+                <p className="truncate text-[11px] text-muted-foreground">
                   {order.vendorAddress as string}
                 </p>
               )}
@@ -112,7 +112,7 @@ export function ActiveHeroCard({
                 {(order.customerName as string) || "Customer"}
               </p>
               {!!order.deliveryAddress && (
-                <p className="truncate text-[11px] text-white/50">
+                <p className="truncate text-[11px] text-muted-foreground">
                   {order.deliveryAddress as string}
                 </p>
               )}
@@ -146,7 +146,7 @@ export function ActiveHeroCard({
         : (ride.pickupLng as number | null | undefined);
 
     return (
-      <div className="rounded-2xl border border-white/[0.08] bg-card-dark p-4">
+      <div className="rounded-2xl border border-border/80 bg-card p-4">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ElapsedBadge startIso={startedAt} />

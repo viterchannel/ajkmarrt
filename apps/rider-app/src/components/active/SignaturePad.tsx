@@ -103,25 +103,25 @@ export function SignaturePad({ onConfirm, onCancel }: SignaturePadProps) {
       className="fixed inset-0 z-[60] flex flex-col bg-surface"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <p className="text-base font-black text-white">{T("drawSignature")}</p>
-          <p className="text-xs text-[#B0B0B0]">{T("signWithFinger")}</p>
+          <p className="text-xs text-muted-foreground">{T("signWithFinger")}</p>
         </div>
         <button
           onClick={onCancel}
           aria-label={T("close")}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-border-dark focus-visible:ring-2 focus-visible:ring-brand focus:outline-none"
+          className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted focus-visible:ring-2 focus-visible:ring-brand focus:outline-none"
         >
-          <X size={18} className="text-[#B0B0B0]" />
+          <X size={18} className="text-muted-foreground" />
         </button>
       </div>
 
-      <div className="relative flex-1 bg-card-dark p-4">
-        <div className="relative h-full overflow-hidden rounded-2xl border-2 border-dashed border-white/20 bg-border-dark shadow-inner">
+      <div className="relative flex-1 bg-card p-4">
+        <div className="relative h-full overflow-hidden rounded-2xl border-2 border-dashed border-border bg-muted shadow-inner">
           {!hasStrokes && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <p className="text-sm font-medium text-[#B0B0B0]">{T("drawHere")}</p>
+              <p className="text-sm font-medium text-muted-foreground">{T("drawHere")}</p>
             </div>
           )}
           <canvas
@@ -138,13 +138,13 @@ export function SignaturePad({ onConfirm, onCancel }: SignaturePadProps) {
             onTouchEnd={endDraw}
           />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-border-dark mx-8 mt-2" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-muted mx-8 mt-2" />
       </div>
 
-      <div className="flex gap-3 border-t border-white/10 px-4 py-4">
+      <div className="flex gap-3 border-t border-border px-4 py-4">
         <button
           onClick={clear}
-          className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-white/10 bg-border-dark py-3.5 text-sm font-bold text-[#B0B0B0] focus-visible:ring-2 focus-visible:ring-brand focus:outline-none"
+          className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-border bg-muted py-3.5 text-sm font-bold text-muted-foreground focus-visible:ring-2 focus-visible:ring-brand focus:outline-none"
         >
           <RefreshCw size={15} /> {T("clear")}
         </button>

@@ -173,7 +173,7 @@ const STATUS_STYLE: Record<string, string> = {
   confirmed: "bg-blue-500/15 text-blue-400",
   boarded: "bg-success/15 text-success",
   cancelled: "bg-error/15 text-error",
-  completed: "bg-border-dark text-[#B0B0B0]",
+  completed: "bg-muted text-muted-foreground",
 };
 
 function AutoPanMap({ lat, lng }: { lat: number; lng: number }) {
@@ -467,13 +467,13 @@ export default function VanDriver() {
   /* Gate: van service must be explicitly enabled by admin. */
   if (!vanEnabled)
     return (
-      <div className="flex min-h-screen items-center justify-center bg-card-dark p-6">
+      <div className="flex min-h-screen items-center justify-center bg-card p-6">
         <div className="max-w-xs space-y-3 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-border-dark">
-            <Bus size={32} className="text-[#B0B0B0]" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+            <Bus size={32} className="text-muted-foreground" />
           </div>
-          <h2 className="text-lg font-black text-white">{T("vanServiceUnavailable")}</h2>
-          <p className="text-sm text-[#B0B0B0]">
+          <h2 className="text-lg font-black text-foreground">{T("vanServiceUnavailable")}</h2>
+          <p className="text-sm text-muted-foreground">
             {T("vanServiceUnavailableMsg")}
           </p>
         </div>
@@ -482,36 +482,36 @@ export default function VanDriver() {
 
   if (schedulesError)
     return (
-      <div className="flex min-h-screen items-center justify-center bg-card-dark p-6">
+      <div className="flex min-h-screen items-center justify-center bg-card p-6">
         <ErrorState onRetry={() => refetchSchedules()} />
       </div>
     );
 
   if (isLoading)
     return (
-      <div className="flex min-h-screen items-center justify-center bg-card-dark">
+      <div className="flex min-h-screen items-center justify-center bg-card">
         <div className="space-y-3 text-center">
           <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
-          <p className="text-sm text-[#B0B0B0]">{T("loadingSchedule")}</p>
+          <p className="text-sm text-muted-foreground">{T("loadingSchedule")}</p>
         </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-card-dark">
-      <div className="bg-gradient-to-br from-indigo-900 to-indigo-700 px-4 pt-12 pb-6 text-white">
+    <div className="min-h-screen bg-card">
+      <div className="bg-gradient-to-br from-indigo-900 to-indigo-700 px-4 pt-12 pb-6 text-foreground">
         <div className="mb-1 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-card-dark/10">
-            <Bus className="h-5 w-5 text-white" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-card/10">
+            <Bus className="h-5 w-5 text-foreground" />
           </div>
           <div className="flex-1">
             <h1 className="text-xl font-bold">{T("vanService")}</h1>
             <p className="text-sm text-indigo-200">{T("todayRouteAssignments")}</p>
           </div>
           {schedules.length > 0 && schedules[0]?.vanCode && (
-            <div className="rounded-lg bg-card-dark/15 px-3 py-1.5">
+            <div className="rounded-lg bg-card/15 px-3 py-1.5">
               <p className="text-xs text-indigo-200">{T("vanCodeLabel")}</p>
-              <p className="text-lg font-bold text-white">{schedules[0].vanCode}</p>
+              <p className="text-lg font-bold text-foreground">{schedules[0].vanCode}</p>
             </div>
           )}
         </div>
@@ -591,22 +591,22 @@ export default function VanDriver() {
         {!selectedSchedule &&
           metrics &&
           (metrics.tripsThisMonth > 0 || metrics.earningsThisMonth > 0) && (
-            <div className="grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-card-dark p-3 text-center shadow-sm">
+            <div className="grid grid-cols-2 gap-3 rounded-2xl border border-border bg-card p-3 text-center shadow-sm">
               <div>
-                <div className="text-xs font-medium text-[#B0B0B0]">{T("thisMonth")}</div>
-                <div className="text-base font-bold text-white">
+                <div className="text-xs font-medium text-muted-foreground">{T("thisMonth")}</div>
+                <div className="text-base font-bold text-foreground">
                   {metrics.tripsThisMonth}
                 </div>
-                <div className="text-xs text-[#B0B0B0]">
+                <div className="text-xs text-muted-foreground">
                   {T("currencySymbol")} {metrics.earningsThisMonth.toLocaleString()}
                 </div>
               </div>
               <div>
-                <div className="text-xs font-medium text-[#B0B0B0]">{T("lastThirtyDays")}</div>
-                <div className="text-base font-bold text-white">
+                <div className="text-xs font-medium text-muted-foreground">{T("lastThirtyDays")}</div>
+                <div className="text-base font-bold text-foreground">
                   {metrics.cancellationsLast30d}
                 </div>
-                <div className="text-xs text-[#B0B0B0]">{metrics.noShowsLast30d}</div>
+                <div className="text-xs text-muted-foreground">{metrics.noShowsLast30d}</div>
               </div>
             </div>
           )}
@@ -614,10 +614,10 @@ export default function VanDriver() {
         {!selectedSchedule ? (
           <>
             {schedules.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-card-dark p-8 text-center shadow-sm">
-                <Bus className="mx-auto mb-3 h-12 w-12 text-[#B0B0B0]" />
-                <p className="font-medium text-[#B0B0B0]">{T("noSchedulesToday")}</p>
-                <p className="mt-1 text-sm text-[#B0B0B0]">
+              <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+                <Bus className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+                <p className="font-medium text-muted-foreground">{T("noSchedulesToday")}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
                   {T("noSchedulesTodayDetail")}
                 </p>
               </div>
@@ -626,7 +626,7 @@ export default function VanDriver() {
                 <button
                   key={s.id}
                   onClick={() => setSelectedSchedule(s)}
-                  className="w-full rounded-2xl border border-white/10 bg-card-dark p-4 text-left shadow-sm transition-shadow hover:shadow-md"
+                  className="w-full rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition-shadow hover:shadow-md"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -636,8 +636,8 @@ export default function VanDriver() {
                           {s.vanCode}
                         </div>
                       )}
-                      <div className="font-semibold text-white">{s.routeName || s.routeId}</div>
-                      <div className="mt-0.5 text-sm text-[#B0B0B0]">
+                      <div className="font-semibold text-foreground">{s.routeName || s.routeId}</div>
+                      <div className="mt-0.5 text-sm text-muted-foreground">
                         {s.routeFrom} → {s.routeTo}
                       </div>
                       <div className="mt-2 flex items-center gap-3">
@@ -645,7 +645,7 @@ export default function VanDriver() {
                           <Clock className="h-4 w-4" />
                           {s.departureTime}
                         </span>
-                        <span className="flex items-center gap-1 text-sm text-[#B0B0B0]">
+                        <span className="flex items-center gap-1 text-sm text-muted-foreground">
                           <Users className="h-4 w-4" />
                           {s.bookedCount}/{s.totalSeats ?? "?"} {T("bookedLabel")}
                         </span>
@@ -657,7 +657,7 @@ export default function VanDriver() {
                         </span>
                       )}
                     </div>
-                    <ChevronRight className="mt-1 h-5 w-5 text-[#B0B0B0]" />
+                    <ChevronRight className="mt-1 h-5 w-5 text-muted-foreground" />
                   </div>
                 </button>
               ))
@@ -676,8 +676,8 @@ export default function VanDriver() {
               >
                 ← {T("back")}
               </button>
-              <span className="text-[#B0B0B0]">|</span>
-              <span className="font-semibold text-white">{selectedSchedule.routeName}</span>
+              <span className="text-muted-foreground">|</span>
+              <span className="font-semibold text-foreground">{selectedSchedule.routeName}</span>
               {selectedSchedule.vanCode && (
                 <span className="ml-auto rounded-md bg-indigo-500/15 px-2 py-0.5 text-xs font-bold text-indigo-400">
                   {selectedSchedule.vanCode}
@@ -690,7 +690,7 @@ export default function VanDriver() {
               {[
                 { label: T("boardedStatus"), value: boardedCount, color: "text-success bg-success/10" },
                 { label: T("pendingLabel"), value: confirmedCount, color: "text-blue-400 bg-blue-500/10" },
-                { label: T("total"), value: passengers.length, color: "text-[#B0B0B0] bg-card-dark" },
+                { label: T("total"), value: passengers.length, color: "text-muted-foreground bg-card" },
               ].map((s) => (
                 <div key={s.label} className={`rounded-xl p-3 text-center ${s.color}`}>
                   <div className="text-2xl font-bold">{s.value}</div>
@@ -756,11 +756,11 @@ export default function VanDriver() {
                       <Marker position={riderPos} icon={riderMarkerIcon} />
                       <AutoPanMap lat={riderPos[0]} lng={riderPos[1]} />
                     </MapContainer>
-                    <div className="pointer-events-none absolute bottom-1 left-1 z-[1000] rounded-full bg-indigo-600/80 px-2 py-0.5 text-[9px] font-bold text-white">
+                    <div className="pointer-events-none absolute bottom-1 left-1 z-[1000] rounded-full bg-indigo-600/80 px-2 py-0.5 text-[9px] font-bold text-foreground">
                       {T("yourLocation")}
                     </div>
                     {hasRouteCoords && (
-                      <div className="pointer-events-none absolute right-1 bottom-1 z-[1000] rounded-full bg-indigo-600/80 px-2 py-0.5 text-[9px] font-bold text-white">
+                      <div className="pointer-events-none absolute right-1 bottom-1 z-[1000] rounded-full bg-indigo-600/80 px-2 py-0.5 text-[9px] font-bold text-foreground">
                         {selectedSchedule.routeFrom?.split(",")[0]} →{" "}
                         {selectedSchedule.routeTo?.split(",")[0]}
                       </div>
@@ -779,7 +779,7 @@ export default function VanDriver() {
                 }}
                 disabled={startMut.isPending}
                 aria-label={T("startTrip")}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-success py-3 font-semibold text-white transition-colors hover:bg-success/90 disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-success py-3 font-semibold text-foreground transition-colors hover:bg-success/90 disabled:opacity-60"
               >
                 <Play className="h-5 w-5" />
                 {startMut.isPending ? T("startingLabel") : T("startTrip")}
@@ -788,8 +788,8 @@ export default function VanDriver() {
 
             {/* Seat Map */}
             {selectedSchedule.totalSeats && selectedSchedule.totalSeats > 0 && (
-              <div className="rounded-2xl border border-white/10 bg-card-dark p-4 shadow-sm">
-                <p className="mb-3 text-xs font-bold tracking-wider text-[#B0B0B0] uppercase">
+              <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+                <p className="mb-3 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                   {T("seatMap")}
                 </p>
                 <div
@@ -805,11 +805,11 @@ export default function VanDriver() {
                       );
                       const status = passenger?.status;
                       const cls = !passenger
-                        ? "bg-border-dark text-[#B0B0B0]"
+                        ? "bg-muted text-muted-foreground"
                         : status === "boarded" || status === "completed"
-                          ? "bg-success text-white"
+                          ? "bg-success text-foreground"
                           : status === "confirmed"
-                            ? "bg-blue-500 text-white"
+                            ? "bg-blue-500 text-foreground"
                             : "bg-error/15 text-error";
                       return (
                         <div
@@ -829,16 +829,16 @@ export default function VanDriver() {
                 </div>
                 <div className="mt-2.5 flex flex-wrap gap-3">
                   <div className="flex items-center gap-1">
-                    <div className="h-3 w-3 rounded border border-white/10 bg-border-dark" />
-                    <span className="text-[10px] text-[#B0B0B0]">{T("free")}</span>
+                    <div className="h-3 w-3 rounded border border-border bg-muted" />
+                    <span className="text-[10px] text-muted-foreground">{T("free")}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="h-3 w-3 rounded bg-blue-500" />
-                    <span className="text-[10px] text-[#B0B0B0]">{T("confirmed")}</span>
+                    <span className="text-[10px] text-muted-foreground">{T("confirmed")}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="h-3 w-3 rounded bg-success" />
-                    <span className="text-[10px] text-[#B0B0B0]">{T("boardedStatus")}</span>
+                    <span className="text-[10px] text-muted-foreground">{T("boardedStatus")}</span>
                   </div>
                 </div>
               </div>
@@ -846,34 +846,34 @@ export default function VanDriver() {
 
             {/* Passengers */}
             {loadingPassengers ? (
-              <div className="py-8 text-center text-[#B0B0B0]">{T("loadingPassengers")}</div>
+              <div className="py-8 text-center text-muted-foreground">{T("loadingPassengers")}</div>
             ) : passengers.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-card-dark p-6 text-center">
-                <Users className="mx-auto mb-2 h-10 w-10 text-[#B0B0B0]" />
-                <p className="text-sm text-[#B0B0B0]">{T("noPassengersToday")}</p>
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <Users className="mx-auto mb-2 h-10 w-10 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">{T("noPassengersToday")}</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {passengers.map((p) => (
                   <div
                     key={p.id}
-                    className="rounded-xl border border-white/10 bg-card-dark p-4 shadow-sm"
+                    className="rounded-xl border border-border bg-card p-4 shadow-sm"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="font-semibold text-white">
+                        <div className="font-semibold text-foreground">
                           {p.passengerName || p.userName || T("unknownPassenger")}
                         </div>
-                        <div className="text-sm text-[#B0B0B0]">
+                        <div className="text-sm text-muted-foreground">
                           {p.passengerPhone || p.userPhone || ""}
                         </div>
                         <div className="mt-1.5 flex items-center gap-2">
                           <span
-                            className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLE[p.status] || "bg-border-dark text-[#B0B0B0]"}`}
+                            className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLE[p.status] || "bg-muted text-muted-foreground"}`}
                           >
                             {BOOKING_STATUS_LABEL_KEYS[p.status] ? T(BOOKING_STATUS_LABEL_KEYS[p.status]!) : p.status}
                           </span>
-                          <span className="text-xs text-[#B0B0B0]">
+                          <span className="text-xs text-muted-foreground">
                             {PAYMENT_METHOD_LABEL_KEYS[p.paymentMethod] ? T(PAYMENT_METHOD_LABEL_KEYS[p.paymentMethod]!) : p.paymentMethod} · {T("currencySymbol")} {parseFloat(p.fare).toFixed(0)}
                           </span>
                         </div>
@@ -902,7 +902,7 @@ export default function VanDriver() {
                           onClick={() => boardMut.mutate(p.id)}
                           disabled={boardMut.isPending}
                           aria-label={T("boardButton")}
-                        className="ml-3 flex items-center gap-1.5 rounded-lg bg-success px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-success/90 disabled:opacity-60"
+                        className="ml-3 flex items-center gap-1.5 rounded-lg bg-success px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-success/90 disabled:opacity-60"
                         >
                           <CheckCircle className="h-4 w-4" />
                           {T("boardButton")}

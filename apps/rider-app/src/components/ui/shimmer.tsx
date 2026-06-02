@@ -36,7 +36,7 @@ export function ShimmerBlock({
 
 export function ShimmerRow() {
   return (
-    <div className="flex items-center gap-3 rounded-3xl border border-white/10 dark:border-white/[0.06] bg-card-dark dark:bg-card-dark p-4">
+    <div className="flex items-center gap-3 rounded-3xl border border-border dark:border-border/60 bg-card dark:bg-card p-4">
       <ShimmerBlock className="h-10 w-10 flex-shrink-0 rounded-2xl" />
       <div className="flex-1 space-y-2">
         <ShimmerBlock className="h-3.5 w-32" />
@@ -53,11 +53,11 @@ export function ShimmerRow() {
 export function ShimmerHeader({ children }: { children?: ReactNode }) {
   return (
     <div
-      className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+      className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
       style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
     >
       <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-brand/[0.04]" />
-      <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-card-dark/[0.02]" />
+      <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/20" />
       {children}
     </div>
   );

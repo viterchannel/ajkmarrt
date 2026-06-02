@@ -72,17 +72,17 @@ function StatCard({
       className={`rounded-3xl p-5 shadow-sm ${
         highlight
           ? "bg-brand"
-          : "border border-white/10 bg-card-dark"
+          : "border border-border bg-card"
       }`}
     >
-      <p className={`text-xs font-semibold ${highlight ? "text-black/60" : "text-[#B0B0B0]"}`}>
+      <p className={`text-xs font-semibold ${highlight ? "text-black/60" : "text-muted-foreground"}`}>
         {label}
       </p>
       <p className={`mt-1 text-2xl font-extrabold ${highlight ? "text-black" : "text-white"}`}>
         {value}
       </p>
       {sub && (
-        <p className={`mt-0.5 text-[10px] ${highlight ? "text-black/50" : "text-[#B0B0B0]"}`}>
+        <p className={`mt-0.5 text-[10px] ${highlight ? "text-black/50" : "text-muted-foreground"}`}>
           {sub}
         </p>
       )}
@@ -170,28 +170,28 @@ export default function EarningsSummary() {
   return (
     <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg">
       <div
-        className="relative overflow-hidden rounded-b-[2rem] bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-5 pb-8"
+        className="relative overflow-hidden rounded-b-[2rem] page-header-gradient bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
         <button
           onClick={() => navigate("/earnings")}
-          className="mb-4 flex items-center gap-2 text-sm font-semibold text-[#B0B0B0] active:text-white"
+          className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground active:text-foreground"
           aria-label="Back to earnings"
         >
           <ArrowLeft size={16} /> Earnings
         </button>
         <div className="flex items-center gap-2">
           <TrendingUp size={20} className="text-brand" />
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">Summary</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">Summary</h1>
         </div>
-        <p className="mt-1 text-xs text-white/40">Today & this week at a glance</p>
+        <p className="mt-1 text-xs text-muted-foreground">Today & this week at a glance</p>
       </div>
 
       <div className="space-y-4 px-4 pt-4 pb-8">
         {earningsLoading ? (
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="space-y-2 rounded-3xl border border-white/10 bg-card-dark p-5">
+              <div key={i} className="space-y-2 rounded-3xl border border-border bg-card p-5">
                 <ShimmerBlock className="h-3 w-16 rounded-full" />
                 <ShimmerBlock className="h-7 w-24 rounded-full" />
               </div>
@@ -223,12 +223,12 @@ export default function EarningsSummary() {
         )}
 
         {walletChartLoading ? (
-          <div className="rounded-3xl border border-white/10 bg-card-dark p-5">
+          <div className="rounded-3xl border border-border bg-card p-5">
             <ShimmerBlock className="mb-4 h-4 w-28 rounded-full" />
             <div className="flex h-20 items-end gap-2">
               {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-                  <div className="w-full max-w-[24px] animate-pulse rounded-md bg-border-dark" style={{ height: Math.random() * 40 + 10 }} />
+                  <div className="w-full max-w-[24px] animate-pulse rounded-md bg-muted" style={{ height: Math.random() * 40 + 10 }} />
                   <ShimmerBlock className="h-2 w-5 rounded-full" />
                 </div>
               ))}
@@ -238,11 +238,11 @@ export default function EarningsSummary() {
           <EarningsBarChart transactions={chartTxs} currency={currency} />
         )}
 
-        <div className="rounded-3xl border border-white/10 bg-card-dark overflow-hidden shadow-sm">
-          <div className="flex items-center justify-between px-5 py-4 bg-card-dark/50">
-            <p className="text-sm font-bold text-white">Payout History</p>
+        <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+          <div className="flex items-center justify-between px-5 py-4 bg-card/50">
+            <p className="text-sm font-bold text-foreground">Payout History</p>
             {payouts.length > 0 && (
-              <span className="rounded-full bg-border-dark px-2 py-0.5 text-[10px] font-bold text-[#B0B0B0]">
+              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
                 {payouts.length}
               </span>
             )}
@@ -262,8 +262,8 @@ export default function EarningsSummary() {
             </div>
           ) : payouts.length === 0 ? (
             <div className="px-5 py-10 text-center">
-              <p className="text-sm font-bold text-[#B0B0B0]">No payouts yet</p>
-              <p className="mt-0.5 text-xs text-[#B0B0B0]">
+              <p className="text-sm font-bold text-muted-foreground">No payouts yet</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 Withdrawal requests will appear here
               </p>
             </div>
@@ -281,13 +281,13 @@ export default function EarningsSummary() {
                 return (
                   <div key={tx.id} className="flex items-center justify-between px-5 py-4">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-white">{bank}</p>
-                      <p className="mt-0.5 text-[10px] text-[#B0B0B0]">{date}</p>
+                      <p className="truncate text-sm font-bold text-foreground">{bank}</p>
+                      <p className="mt-0.5 text-[10px] text-muted-foreground">{date}</p>
                       <div className="mt-1">
                         <PayoutStatusBadge reference={tx.reference} />
                       </div>
                     </div>
-                    <p className="ml-3 flex-shrink-0 text-right text-base font-extrabold text-white">
+                    <p className="ml-3 flex-shrink-0 text-right text-base font-extrabold text-foreground">
                       −{fc(Number(tx.amount), currency)}
                     </p>
                   </div>
