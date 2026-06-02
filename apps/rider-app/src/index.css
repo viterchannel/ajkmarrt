@@ -92,7 +92,50 @@
   --login-btn-radius: 0.75rem;
 }
 
-/* No separate .dark block — app is always dark */
+/* ── LIGHT MODE ────────────────────────────────────────────────────────── */
+.light {
+  /* Light mode palette — inverted colors for better readability */
+  --background: 0 0% 98%;         /* #F8F8F8 light gray */
+  --foreground: 0 0% 8%;          /* #141414 dark text */
+  --card: 0 0% 100%;              /* #FFFFFF card background */
+  --card-foreground: 0 0% 8%;     /* dark text on cards */
+  --border: 0 0% 88%;             /* #E0E0E0 light dividers */
+  --input: 0 0% 94%;              /* #F0F0F0 input background */
+  --ring: 51 100% 50%;            /* #FFD700 gold ring (unchanged) */
+  --primary: 51 100% 50%;         /* #FFD700 gold button */
+  --primary-foreground: 0 0% 4%;  /* dark text on buttons */
+  --secondary: 0 0% 94%;          /* #F0F0F0 light secondary */
+  --secondary-foreground: 0 0% 40%; /* #666666 muted text */
+  --muted: 0 0% 88%;              /* #E0E0E0 light muted */
+  --muted-foreground: 0 0% 40%;   /* #666666 muted text */
+  --accent: 45 100% 51%;          /* #FFC107 amber (unchanged) */
+  --accent-foreground: 0 0% 4%;   /* dark text on accent */
+  --destructive: 4 90% 58%;       /* #F44336 error red (unchanged) */
+  --destructive-foreground: 0 0% 100%; /* white text on error */
+
+  /* Light mode brand tokens */
+  --color-surface: #F8F8F8;
+  --color-page-bg: #F8F8F8;
+  --color-card-dark: #FFFFFF;
+  --color-border-dark: #E0E0E0;
+
+  /* Light mode login page tokens */
+  --login-brand: #FFC107;         /* Adjusted for contrast */
+  --login-brand-hover: #FFB300;
+  --login-brand-shadow: rgba(255, 193, 7, 0.2);
+  --login-brand-glow-sm: rgba(255, 193, 7, 0.2);
+  --login-brand-glow-md: rgba(255, 193, 7, 0.25);
+  --login-brand-glow-blob: rgba(255, 193, 7, 0.05);
+  --login-brand-border: rgba(255, 193, 7, 0.3);
+  --login-hero-from: #F8F8F8;
+  --login-hero-via: #FFFFFF;
+  --login-hero-to: #F0F0F0;
+  --login-otp-filled-bg: rgba(255, 193, 7, 0.1);
+  --login-otp-filled-border: #FFC107;
+  --login-otp-filled-text: #FF9800;
+}
+
+/* No separate .dark block — app is always dark by default */
 
 @layer components {
   .login-btn-primary {
@@ -156,8 +199,9 @@
     min-height: -webkit-fill-available;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
-    background-color: #0A0A0A;
-    color: #FFFFFF;
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   #root {
@@ -190,7 +234,7 @@
     -ms-overflow-style: none;
   }
 
-  /* Autofill override — dark mode */
+  /* Autofill override — dark mode (default) */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
@@ -200,10 +244,26 @@
     transition: background-color 5000s ease-in-out 0s;
   }
 
-  /* Placeholder colour */
+  /* Autofill override — light mode */
+  .light input:-webkit-autofill,
+  .light input:-webkit-autofill:hover,
+  .light input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #F0F0F0 inset;
+    -webkit-text-fill-color: #141414;
+    caret-color: #141414;
+  }
+
+  /* Placeholder colour — dark mode (default) */
   input::placeholder,
   textarea::placeholder {
     color: #6B7280;
+    opacity: 1;
+  }
+
+  /* Placeholder colour — light mode */
+  .light input::placeholder,
+  .light textarea::placeholder {
+    color: #9CA3AF;
     opacity: 1;
   }
 

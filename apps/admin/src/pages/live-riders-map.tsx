@@ -878,10 +878,23 @@ export default function LiveRidersMap() {
       query: { rooms: "admin-fleet" },
       auth: { token },
       transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
     });
     socketRef.current = socket;
 
+    // Add connection timeout
+    const connectionTimeout = setTimeout(() => {
+      if (!socket.connected) {
+        console.warn("Socket connection timeout - forcefully disconnecting");
+        socket.disconnect();
+      }
+    }, 15000);
+
     socket.on("connect", () => {
+      clearTimeout(connectionTimeout);
       setWsConnected(true);
       socket.emit("join", "admin-fleet");
     });
@@ -1051,6 +1064,20 @@ export default function LiveRidersMap() {
     });
 
     return () => {
+      clearTimeout(connectionTimeout);
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.off("disconnect");
+      socket.off("rider:location");
+      socket.off("customer:location");
+      socket.off("rider:sos");
+      socket.off("rider:chat");
+      socket.off("rider:status");
+      socket.off("rider:offline");
+      socket.off("rider:heartbeat");
+      socket.off("rider:spoof-alert");
+      socket.off("order:new");
+      socket.off("order:update");
       socket.disconnect();
       socketRef.current = null;
     };

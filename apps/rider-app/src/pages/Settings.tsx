@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Shield, Clock, Bell, Globe, ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
+import { Shield, Clock, Bell, Globe, ChevronLeft, ChevronRight } from "lucide-react";
 import { tDual, type Language, type TranslationKey } from "@workspace/i18n";
 import { useLanguage } from "../lib/useLanguage";
-import { useTheme } from "../lib/useTheme";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 function getNotifPref(key: string): boolean {
   try { return localStorage.getItem(`notif_${key}`) !== "false"; } catch { return true; }
@@ -102,7 +102,6 @@ export default function Settings() {
   const { language, setLanguage } = useLanguage();
   const T = (key: TranslationKey) => tDual(key, language);
   const [, navigate] = useLocation();
-  const { isDark, toggleDark } = useTheme();
   const [orderNotif, setOrderNotif] = useSettingToggle("orders");
   const [chatNotif, setChatNotif] = useSettingToggle("chat");
   const [promoNotif, setPromoNotif] = useSettingToggle("promos");
@@ -178,13 +177,9 @@ export default function Settings() {
       {/* Appearance */}
       <SectionHeader title={T("appearanceLabel")} />
       <SectionCard>
-        <ToggleRow
-          icon={isDark ? <Moon size={17} className="text-brand" /> : <Sun size={17} className="text-warning" />}
-          iconBg={isDark ? "bg-brand/10" : "bg-warning/10"}
-          label={T("darkMode")}
-          checked={isDark}
-          onChange={toggleDark}
-        />
+        <div className="px-4 py-4 bg-card-dark">
+          <ThemeToggle />
+        </div>
       </SectionCard>
 
       <div className="h-px bg-border-dark mx-4" />

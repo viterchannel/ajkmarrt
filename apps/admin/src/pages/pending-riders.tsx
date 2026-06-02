@@ -298,13 +298,14 @@ export default function PendingRiders() {
             toast({ title: "Rider approved", description: `${rider.name || rider.phone} can now accept rides.` });
             setDocModal(null);
             setApproveConfirm(null);
+            void qc.invalidateQueries({ queryKey: ["admin-pending-riders"] });
           },
           onError: (e: any) =>
             toast({ title: "Approval failed", description: e.message, variant: "destructive" }),
         }
       );
     },
-    [approvalMutation, toast]
+    [approvalMutation, toast, qc]
   );
 
   const handleReject = useCallback(
@@ -316,13 +317,14 @@ export default function PendingRiders() {
             toast({ title: "Rider rejected", description: `${rider.name || rider.phone} has been notified.` });
             setRejectModal(null);
             setDocModal(null);
+            void qc.invalidateQueries({ queryKey: ["admin-pending-riders"] });
           },
           onError: (e: any) =>
             toast({ title: "Rejection failed", description: e.message, variant: "destructive" }),
         }
       );
     },
-    [approvalMutation, toast]
+    [approvalMutation, toast, qc]
   );
 
   const allSelected = riders.length > 0 && riders.every((r) => selectedIds.has(r.id));
@@ -356,13 +358,14 @@ export default function PendingRiders() {
         });
         setSelectedIds(new Set());
         setBulkConfirm(false);
+        void qc.invalidateQueries({ queryKey: ["admin-pending-riders"] });
       },
       onError: (e: any) => {
         setBulkConfirm(false);
         toast({ title: "Bulk approval failed", description: e.message, variant: "destructive" });
       },
     });
-  }, [selectedIds, bulkMutation, toast]);
+  }, [selectedIds, bulkMutation, toast, qc]);
 
   const handlePullRefresh = useCallback(async () => {
     await qc.invalidateQueries({ queryKey: ["admin-pending-riders"] });

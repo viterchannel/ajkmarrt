@@ -2523,6 +2523,51 @@ const en = {
     regStep1of3: "Step 1 of 3",
     regStep2of3: "Step 2 of 3",
     regStep3of3: "Step 3 of 3",
+    
+    /* ── ERROR MESSAGES ────────────────────────────────────────────────────── */
+    notificationsRegisterFailed: "Could not enable notifications. Please try again.",
+    notificationsNetworkError: "Network issue with notifications — they may be delayed.",
+    
+    failedFetchRoute: "Could not fetch route information. Please check your connection.",
+    failedSubmitFeedback: "Could not submit feedback. Please try again.",
+    failedSubmitCounterOffer: "Failed to submit counter offer. Please try again.",
+    failedRejectOrder: "Failed to reject order. Please try again.",
+    failedDismissOrder: "Failed to dismiss order. Please try again.",
+    failedLoadPaymentMethods: "Could not load payment methods. Please retry.",
+    failedLoadWithdrawalTotals: "Could not load withdrawal information. Please retry.",
+    failedSaveGoal: "Failed to save goal. Please try again.",
+    failedPlayAudio: "Could not play audio during the call.",
+    failedBiometricSave: "Could not save biometric login. Enable it later from Profile › Security Settings.",
+    failedLoadImage: "Failed to load image. Please try again.",
+    failedSubmitDocuments: "Failed to submit documents. Please try again.",
+    failedDeleteAccount: "Failed to delete account. Please try again.",
+    failedSubmitKyc: "Failed to submit KYC request. Please try again.",
+    failedLoadPenaltyHistory: "Could not load penalty history.",
+    failedSendPhoneOtp: "Failed to send OTP to phone. Please try again.",
+    failedSendEmailOtp: "Failed to send OTP to email. Please try again.",
+    failedLoadSessions: "Failed to load active sessions.",
+    failedLoadLoginHistory: "Failed to load login history.",
+    failedRevokeSession: "Failed to revoke device session.",
+    failedSignOutDevices: "Failed to sign out other devices.",
+    failedMarkAllRead: "Failed to mark all as read.",
+    failedMarkAsRead: "Failed to mark as read.",
+    failedSendLocation: "Could not send location. Please check your connection.",
+    failedAcceptOrder: "Failed to accept order. Please try again.",
+    failedAcceptRide: "Failed to accept ride. Please try again.",
+    failedRejectRide: "Failed to reject ride. Please try again.",
+    failedSubmitReview: "Could not submit review. Please try again.",
+    failedBlockUser: "Failed to block user.",
+    failedReportUser: "Failed to report user.",
+    
+    /* ── THEME / APPEARANCE ────────────────────────────────────────────────── */
+    lightMode: "Light Mode",
+    themeSystemDefault: "System Default",
+    themeSettings: "Theme Settings",
+    appearanceSettings: "Appearance & Display",
+    useSystemTheme: "Use device theme preference",
+    
+    /* ── OFFLINE & NETWORK ─────────────────────────────────────────────────── */
+    syncBannerOffline: "{n} update{n|queued|pending|s}...",
 };
 
 export default en;

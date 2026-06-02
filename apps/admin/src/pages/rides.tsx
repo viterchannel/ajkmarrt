@@ -216,14 +216,17 @@ function RideDetailModal({ rideId, onClose }: { rideId: string; onClose: () => v
 
   const [showCancel, setShowCancel] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
+  const [cancelError, setCancelError] = useState<string | null>(null);
   const [showRefund, setShowRefund] = useState(false);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
+  const [refundError, setRefundError] = useState<string | null>(null);
   const [showReassign, setShowReassign] = useState(false);
   const [assignName, setAssignName] = useState("");
   const [assignPhone, setAssignPhone] = useState("");
   const [selectedRiderId, setSelectedRiderId] = useState<string | null>(null);
   const [riderSearch, setRiderSearch] = useState("");
+  const [reassignError, setReassignError] = useState<string | null>(null);
   const [debouncedRiderSearch, setDebouncedRiderSearch] = useState("");
 
   useEffect(() => {
@@ -280,18 +283,37 @@ function RideDetailModal({ rideId, onClose }: { rideId: string; onClose: () => v
   const trail: any[] = auditData?.trail ?? [];
 
   const handleCancel = () => {
+    // Validate input
+    const reason = cancelReason.trim();
+    if (!reason) {
+      setCancelError("Cancel reason is required");
+      return;
+    }
+    if (reason.length < 3) {
+      setCancelError("Reason must be at least 3 characters");
+      return;
+    }
+    if (reason.length > 200) {
+      setCancelError("Reason must not exceed 200 characters");
+      return;
+    }
+
+    setCancelError(null);
     cancelMut.mutate(
-      { id: rideId, reason: cancelReason || undefined },
+      { id: rideId, reason },
       {
         onSuccess: () => {
           toast({ title: "Ride cancelled" });
+          setShowCancel(false);
+          setCancelReason("");
           onClose();
         },
         onError: (e: unknown) => {
+          const message = e instanceof Error ? e.message : "Unknown error";
+          setCancelError(message);
           toast({
             title: "Failed to cancel ride",
-            description:
-              e instanceof Error ? (e instanceof Error ? e.message : String(e)) : "Unknown error",
+            description: message,
             variant: "destructive",
           });
         },
@@ -300,24 +322,44 @@ function RideDetailModal({ rideId, onClose }: { rideId: string; onClose: () => v
   };
 
   const handleRefund = () => {
-    const amt = refundAmount ? parseFloat(refundAmount) : undefined;
-    if (amt !== undefined && (isNaN(amt) || amt <= 0)) {
-      toast({ title: "Enter a valid positive amount", variant: "destructive" });
+    // Validate input
+    const trimmedAmount = refundAmount.trim();
+    if (!trimmedAmount) {
+      setRefundError("Amount is required");
       return;
     }
+    
+    const amt = parseFloat(trimmedAmount);
+    if (isNaN(amt)) {
+      setRefundError("Amount must be a valid number");
+      return;
+    }
+    if (amt <= 0) {
+      setRefundError("Amount must be greater than 0");
+      return;
+    }
+    if (amt > ride.fare) {
+      setRefundError(`Amount cannot exceed fare (${formatCurrency(ride.fare)})`);
+      return;
+    }
+
+    setRefundError(null);
     refundMut.mutate(
-      { id: rideId, amount: amt, reason: refundReason || undefined },
+      { id: rideId, amount: amt, reason: refundReason.trim() || undefined },
       {
         onSuccess: (d: any) => {
           toast({ title: `Refunded ${formatCurrency(Number(d.refundedAmount))}` });
           setShowRefund(false);
+          setRefundAmount("");
+          setRefundReason("");
           void refetch();
         },
         onError: (e: unknown) => {
+          const message = e instanceof Error ? e.message : "Unknown error";
+          setRefundError(message);
           toast({
             title: "Refund failed",
-            description:
-              e instanceof Error ? (e instanceof Error ? e.message : String(e)) : "Unknown error",
+            description: message,
             variant: "destructive",
           });
         },
@@ -334,32 +376,59 @@ function RideDetailModal({ rideId, onClose }: { rideId: string; onClose: () => v
   };
 
   const handleReassign = () => {
+    // Validate input
     if (!selectedRiderId) {
-      toast({ title: "Select a rider from the list", variant: "destructive" });
+      setReassignError("Please select a rider from the list");
       return;
     }
     if (selectedRiderId === ride?.riderId) {
-      toast({ title: "Same rider already assigned", variant: "destructive" });
+      setReassignError("This rider is already assigned to this ride");
       return;
     }
+    
+    const name = assignName.trim();
+    if (!name) {
+      setReassignError("Rider name is required");
+      return;
+    }
+    
+    const phone = assignPhone.trim();
+    if (!phone) {
+      setReassignError("Rider phone is required");
+      return;
+    }
+    
+    // Basic phone validation (should be 10-15 digits with optional + or -)
+    const phoneRegex = /^[\d\-\+()]{10,15}$/;
+    if (!phoneRegex.test(phone.replace(/\s/g, ""))) {
+      setReassignError("Please enter a valid phone number");
+      return;
+    }
+
+    setReassignError(null);
     reassignMut.mutate(
       {
         id: rideId,
         riderId: selectedRiderId,
-        riderName: assignName.trim(),
-        riderPhone: assignPhone.trim(),
+        riderName: name,
+        riderPhone: phone,
       },
       {
         onSuccess: () => {
           toast({ title: "Rider reassigned" });
           setShowReassign(false);
+          setSelectedRiderId(null);
+          setRiderSearch("");
+          setAssignName("");
+          setAssignPhone("");
           void refetch();
         },
         onError: (e: unknown) => {
+          const message = e instanceof Error ? e.message : "Unknown error";
+          setReassignError(message);
           toast({
             title: "Reassignment failed",
-            description:
-              e instanceof Error ? (e instanceof Error ? e.message : String(e)) : "Unknown error",
+            description: message,
             variant: "destructive",
           });
         },

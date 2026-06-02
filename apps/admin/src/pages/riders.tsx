@@ -71,8 +71,50 @@ import { useLocation } from "wouter";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { WalletAdjustModal } from "@/components/WalletAdjustModal";
 
+/* ── Rider Type Definition ── */
+interface AdminRider {
+  id: string;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  isActive: boolean;
+  isBanned: boolean;
+  banReason: string | null;
+  isOnline: boolean;
+  isRestricted: boolean;
+  approvalStatus: string | null;
+  walletBalance: number;
+  cancelCount?: number;
+  ignoreCount?: number;
+  penaltyTotal?: number;
+  avgRating?: number;
+  ratingCount?: number;
+  phoneVerified?: boolean;
+  emailVerified?: boolean;
+  kycStatus?: string;
+  createdAt: string;
+  updatedAt: string;
+  autoSuspendedAt?: string | null;
+  adminOverrideSuspension?: boolean;
+}
+
+interface Penalty {
+  id: string;
+  type: string;
+  amount: number;
+  reason?: string;
+  createdAt: string;
+}
+
+interface Rating {
+  id: string;
+  stars: number;
+  comment?: string;
+  createdAt: string;
+}
+
 /* ── Suspend Modal ── */
-function RiderSuspendModal({ rider, onClose }: { rider: any; onClose: () => void }) {
+function RiderSuspendModal({ rider, onClose }: { rider: AdminRider; onClose: () => void }) {
   const { toast } = useToast();
   const statusMutation = useUpdateRiderStatus();
   const [action, setAction] = useState<"active" | "blocked" | "banned">(
@@ -186,7 +228,7 @@ function RiderSuspendModal({ rider, onClose }: { rider: any; onClose: () => void
   );
 }
 
-function RiderDetailDrawer({ rider, onClose }: { rider: any; onClose: () => void }) {
+function RiderDetailDrawer({ rider, onClose }: { rider: AdminRider; onClose: () => void }) {
   const { toast } = useToast();
   const { data: penData, refetch: refetchPenalties } = useRiderPenalties(rider.id);
   const { data: ratData } = useRiderRatings(rider.id);
@@ -230,8 +272,8 @@ function RiderDetailDrawer({ rider, onClose }: { rider: any; onClose: () => void
   const [revokeReason, setRevokeReason] = useState("");
   const [revokeStatus, setRevokeStatus] = useState<"pending" | "rejected">("pending");
 
-  const penalties: any[] = penData?.penalties || [];
-  const ratings: any[] = ratData?.ratings || [];
+  const penalties: Penalty[] = penData?.penalties || [];
+  const ratings: Rating[] = ratData?.ratings || [];
 
   const handleRestrict = () => {
     restrictMut.mutate(rider.id, {
@@ -507,7 +549,7 @@ function RiderDetailDrawer({ rider, onClose }: { rider: any; onClose: () => void
 
           {penalties.length > 0 ? (
             <div className="space-y-1.5">
-              {penalties.map((p: any) => (
+              {penalties.map((p: Penalty) => (
                 <div
                   key={p.id}
                   className="bg-muted/30 flex items-center justify-between rounded-lg px-3 py-2 text-xs"
@@ -546,7 +588,7 @@ function RiderDetailDrawer({ rider, onClose }: { rider: any; onClose: () => void
           <div>
             <p className="text-foreground mb-2 text-sm font-bold">Recent Ratings</p>
             <div className="space-y-1.5">
-              {ratings.map((rt: any) => (
+              {ratings.map((rt: Rating) => (
                 <div
                   key={rt.id}
                   className="bg-muted/30 flex items-center justify-between rounded-lg px-3 py-2 text-xs"
@@ -655,9 +697,9 @@ function RiderDetailDrawer({ rider, onClose }: { rider: any; onClose: () => void
   );
 }
 
-function exportRidersCSV(riders: any[]) {
+function exportRidersCSV(riders: AdminRider[]) {
   const header = "ID,Name,Phone,Status,Wallet,Joined";
-  const rows = riders.map((r: any) =>
+  const rows = riders.map((r: AdminRider) =>
     [
       r.id,
       r.name || "",
@@ -690,15 +732,15 @@ export default function Riders() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const [walletModal, setWalletModal] = useState<any>(null);
-  const [rejectTarget, setRejectTarget] = useState<any>(null);
-  const [suspendModal, setSuspendModal] = useState<any>(null);
-  const [detailModal, setDetailModal] = useState<any>(null);
+  const [walletModal, setWalletModal] = useState<AdminRider | null>(null);
+  const [rejectTarget, setRejectTarget] = useState<AdminRider | null>(null);
+  const [suspendModal, setSuspendModal] = useState<AdminRider | null>(null);
+  const [detailModal, setDetailModal] = useState<AdminRider | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkBanConfirm, setBulkBanConfirm] = useState(false);
   const bulkBanMutation = useBulkBanUsers();
 
-  const riders: any[] = data?.users || data?.riders || [];
+  const riders: AdminRider[] = data?.users || data?.riders || [];
 
   const handleBulkBan = useCallback(() => {
     const ids = Array.from(selectedIds);
@@ -716,7 +758,7 @@ export default function Riders() {
     );
   }, [selectedIds, bulkBanMutation, toast]);
 
-  const handleToggleOnline = (r: any) => {
+  const handleToggleOnline = (r: AdminRider) => {
     toggleOnlineMutation.mutate(
       { id: r.id, isOnline: !r.isOnline },
       {
@@ -747,7 +789,7 @@ export default function Riders() {
     );
   }
 
-  const filtered = riders.filter((r: any) => {
+  const filtered = riders.filter((r: AdminRider) => {
     const q = search.toLowerCase();
     const matchSearch = (r.name || "").toLowerCase().includes(q) || (r.phone || "").includes(q);
     const matchStatus =
@@ -766,7 +808,7 @@ export default function Riders() {
     return matchSearch && matchStatus && matchDate;
   });
 
-  const statusRank = (r: any) => {
+  const statusRank = (r: AdminRider) => {
     if (r.isBanned) return 4;
     if (!r.isActive) return 3;
     if (r.approvalStatus === "pending") return 2;
@@ -775,7 +817,7 @@ export default function Riders() {
   };
 
   const sortedFiltered = useMemo(() => {
-    return [...filtered].sort((a: any, b: any) => {
+    return [...filtered].sort((a: AdminRider, b: AdminRider) => {
       const dir = sortDir === "asc" ? 1 : -1;
       if (sortKey === "name") return dir * (a.name || "").localeCompare(b.name || "");
       if (sortKey === "status") return dir * (statusRank(a) - statusRank(b));
@@ -787,12 +829,12 @@ export default function Riders() {
     });
   }, [filtered, sortKey, sortDir]);
 
-  const onlineRiders = riders.filter((r: any) => r.isOnline && r.isActive).length;
-  const _activeRiders = riders.filter((r: any) => r.isActive && !r.isBanned).length;
-  const pendingRiders = riders.filter((r: any) => r.approvalStatus === "pending").length;
-  const totalWallet = riders.reduce((s: number, r: any) => s + r.walletBalance, 0);
+  const onlineRiders = riders.filter((r: AdminRider) => r.isOnline && r.isActive).length;
+  const _activeRiders = riders.filter((r: AdminRider) => r.isActive && !r.isBanned).length;
+  const pendingRiders = riders.filter((r: AdminRider) => r.approvalStatus === "pending").length;
+  const totalWallet = riders.reduce((s: number, r: AdminRider) => s + r.walletBalance, 0);
 
-  const getRiderStatus = (r: any): { status: string; label: string } => {
+  const getRiderStatus = (r: AdminRider): { status: string; label: string } => {
     if (r.approvalStatus === "pending")
       return { status: "pending_approval", label: "Pending Approval" };
     if (r.isBanned) return { status: "banned", label: "Banned" };
@@ -805,7 +847,7 @@ export default function Riders() {
   const approveM = useApproveUser();
   const rejectM = useRejectUser();
 
-  const handleApprove = (r: any) => {
+  const handleApprove = (r: AdminRider) => {
     approveM.mutate(
       { id: r.id },
       {
@@ -822,7 +864,7 @@ export default function Riders() {
     );
   };
 
-  const handleReject = (r: any) => {
+  const handleReject = (r: AdminRider) => {
     setRejectTarget(r);
   };
   const submitReject = (note: string) => {
@@ -1047,7 +1089,7 @@ export default function Riders() {
           </Card>
         ) : (
           <div className="space-y-3">
-            {sortedFiltered.map((r: any) => (
+            {sortedFiltered.map((r: AdminRider) => (
               <Card
                 key={r.id}
                 className="border-border/50 rounded-2xl shadow-sm transition-shadow hover:shadow-md"
@@ -1090,7 +1132,7 @@ export default function Riders() {
                             <Phone className="h-3 w-3" /> {r.phone}
                           </a>
                           <a
-                            href={`https://wa.me/92${r.phone.replace(/^(\+92|92|0)/, "")}`}
+                            href={`https://wa.me/92${r.phone?.replace(/^(\+92|92|0)/, "") || ""}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 text-xs font-medium text-green-600 hover:underline"
@@ -1111,15 +1153,15 @@ export default function Riders() {
                           {formatCurrency(r.walletBalance)}
                         </p>
                       </div>
-                      {(r.cancelCount > 0 || r.ignoreCount > 0) && (
+                      {((r.cancelCount ?? 0) > 0 || (r.ignoreCount ?? 0) > 0) && (
                         <div className="flex gap-2">
-                          {r.cancelCount > 0 && (
+                          {(r.cancelCount ?? 0) > 0 && (
                             <div title="Total cancels">
                               <p className="text-[10px] font-bold text-red-500">Cancels</p>
                               <p className="text-sm font-bold text-red-600">{r.cancelCount}</p>
                             </div>
                           )}
-                          {r.ignoreCount > 0 && (
+                          {(r.ignoreCount ?? 0) > 0 && (
                             <div title="Total ignores">
                               <p className="text-[10px] font-bold text-amber-500">Ignores</p>
                               <p className="text-sm font-bold text-amber-600">{r.ignoreCount}</p>
@@ -1127,7 +1169,7 @@ export default function Riders() {
                           )}
                         </div>
                       )}
-                      {r.avgRating > 0 && (
+                      {(r.avgRating ?? 0) > 0 && (
                         <div title="Average rating">
                           <p className="text-[10px] font-bold text-blue-500">Rating</p>
                           <p className="text-sm font-bold text-blue-600">
@@ -1228,7 +1270,7 @@ export default function Riders() {
                       >
                         <Wallet className="h-3.5 w-3.5" /> View Wallet
                       </Button>
-                      {r.autoSuspendedAt && !r.adminOverrideSuspension && (
+                      {(r.autoSuspendedAt) && !r.adminOverrideSuspension && (
                         <Button
                           size="sm"
                           variant="outline"

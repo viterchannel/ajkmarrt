@@ -301,7 +301,7 @@ export default function LoginHistory() {
       apiFetch<{ sessions: ActiveSession[] }>("/auth/sessions")
         .then((data) => ({ ok: true as const, sessions: data?.sessions ?? [], error: null }))
         .catch((err: unknown) => ({ ok: false as const, sessions: [], error: err instanceof Error ? err.message : "Failed to load sessions" })),
-      apiFetch<{ history: LoginEntry[] }>("/login-history")
+      apiFetch<{ history: LoginEntry[] }>("/user/login-history")
         .then((data) => ({ ok: true as const, entries: data?.history ?? [], error: null }))
         .catch((err: unknown) => ({ ok: false as const, entries: [], error: err instanceof Error ? err.message : "Failed to load login history" })),
     ]).then(([sessResult, histResult]) => {

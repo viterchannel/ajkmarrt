@@ -102,22 +102,41 @@ function ResolveDialog({
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const abortCtrlRef = useRef<AbortController | null>(null);
 
   const handleResolve = async () => {
     setLoading(true);
     setError(null);
+    
+    // Cancel any previous request
+    abortCtrlRef.current?.abort();
+    abortCtrlRef.current = new AbortController();
+
     try {
       await adminFetch(`/sos/alerts/${alert.id}/resolve`, {
         method: "PATCH",
         body: JSON.stringify({ notes: notes.trim() || null }),
+        signal: abortCtrlRef.current.signal,
       });
-      onResolved(alert.id);
-      onClose();
+      
+      if (!abortCtrlRef.current.signal.aborted) {
+        onResolved(alert.id);
+        onClose();
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to resolve alert");
+      if (err instanceof Error && err.name !== "AbortError") {
+        setError(err.message || "Failed to resolve alert");
+      }
     }
     setLoading(false);
   };
+
+  // Cleanup AbortController on unmount
+  useEffect(() => {
+    return () => {
+      abortCtrlRef.current?.abort();
+    };
+  }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
@@ -375,22 +394,36 @@ export default function SosAlerts() {
   };
 
   /* ── Load alerts ── */
+  const abortCtrlRef = useRef<AbortController | null>(null);
+  
   const loadAlerts = useCallback(
     async (p = 1, append = false, overrideTab?: Tab) => {
+      // Cancel any previous request
+      abortCtrlRef.current?.abort();
+      abortCtrlRef.current = new AbortController();
+
       setLoading(true);
       const currentTab = overrideTab ?? tab;
       const status = statusForTab(currentTab);
       try {
         const qs = `?page=${p}&limit=20${status ? `&status=${status}` : ""}`;
-        const data = await adminFetch(`/sos/alerts${qs}`);
-        const newAlerts: SosAlert[] = data.alerts || [];
-        setAlerts((prev) => (append ? [...prev, ...newAlerts] : newAlerts));
-        setTotal(data.total || 0);
-        setHasMore(data.hasMore || false);
-        setActiveCount(typeof data.activeCount === "number" ? data.activeCount : 0);
-        setPage(p);
+        const data = await adminFetch(`/sos/alerts${qs}`, {
+          signal: abortCtrlRef.current.signal,
+        });
+        
+        // Only update state if this request wasn't aborted
+        if (!abortCtrlRef.current.signal.aborted) {
+          const newAlerts: SosAlert[] = data.alerts || [];
+          setAlerts((prev) => (append ? [...prev, ...newAlerts] : newAlerts));
+          setTotal(data.total || 0);
+          setHasMore(data.hasMore || false);
+          setActiveCount(typeof data.activeCount === "number" ? data.activeCount : 0);
+          setPage(p);
+        }
       } catch (err) {
-        console.warn("[sos-alerts] Failed to load alerts:", err);
+        if (err instanceof Error && err.name !== "AbortError") {
+          console.warn("[sos-alerts] Failed to load alerts:", err);
+        }
       }
       setLastUpdatedAt(Date.now());
       setLoading(false);
@@ -403,6 +436,13 @@ export default function SosAlerts() {
     void loadAlerts(1, false, tab);
   }, [tab, loadAlerts]);
 
+  /* ── Cleanup AbortController on unmount ── */
+  useEffect(() => {
+    return () => {
+      abortCtrlRef.current?.abort();
+    };
+  }, []);
+
   /* ── Socket.io real-time connection ── */
   useEffect(() => {
     const token = getAdminAccessToken() ?? "";
@@ -411,10 +451,23 @@ export default function SosAlerts() {
       query: { rooms: "admin-fleet" },
       auth: { token },
       transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
     });
     socketRef.current = socket;
 
+    // Add connection timeout
+    const connectionTimeout = setTimeout(() => {
+      if (!socket.connected) {
+        console.warn("Socket connection timeout - forcefully disconnecting");
+        socket.disconnect();
+      }
+    }, 15000);
+
     socket.on("connect", () => {
+      clearTimeout(connectionTimeout);
       setWsConnected(true);
       socket.emit("join", "admin-fleet");
     });
@@ -473,6 +526,13 @@ export default function SosAlerts() {
     });
 
     return () => {
+      clearTimeout(connectionTimeout);
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("connect_error");
+      socket.off("sos:new");
+      socket.off("sos:acknowledged");
+      socket.off("sos:resolved");
       socket.disconnect();
       socketRef.current = null;
     };
