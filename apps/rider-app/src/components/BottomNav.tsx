@@ -135,7 +135,7 @@ export function BottomNav() {
       {/* Offline / sync banner */}
       {pendingCount > 0 && !bannerDismissed && (
         <div
-          className={`flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold text-foreground ${
+          className={`flex items-center gap-2 px-4 py-1.5 text-xs font-bold text-white ${
             syncing ? "bg-warning" : isOnline ? "bg-error" : "bg-warning"
           }`}
         >
@@ -150,9 +150,9 @@ export function BottomNav() {
           <button
             onClick={() => setBannerDismissed(true)}
             aria-label={T("dismissSyncBanner")}
-            className="ml-1 flex-shrink-0 rounded p-0.5 opacity-80 hover:opacity-100"
+            className="flex-shrink-0 rounded-md p-1 opacity-80 active:opacity-100"
           >
-            <X size={10} />
+            <X size={11} />
           </button>
         </div>
       )}
@@ -168,7 +168,7 @@ export function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="android-press group relative flex min-h-0 flex-1 flex-col items-center gap-0.5 pt-2 pb-1 focus-visible:outline-none"
+                className="android-press group relative flex min-h-[52px] flex-1 flex-col items-center justify-center gap-0.5 pt-2 pb-1 focus-visible:outline-none"
               >
                 <div className="relative">
                   <span
@@ -186,11 +186,11 @@ export function BottomNav() {
                   </span>
                   {/* Active indicator dot */}
                   {active && (
-                    <div className="absolute -bottom-0.5 left-1/2 h-[3px] w-6 -translate-x-1/2 rounded-full bg-brand opacity-100" />
+                    <div className="absolute -bottom-0.5 left-1/2 h-[4px] w-8 -translate-x-1/2 rounded-full bg-brand" />
                   )}
                   {/* Unread notifications badge — shown on profile since notifications moved there */}
                   {item.href === "/profile" && unread > 0 && (
-                    <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-extrabold text-foreground shadow-sm">
+                    <span className="absolute -top-1 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[10px] font-extrabold text-white shadow-sm">
                       {unread > 9 ? "9+" : unread}
                     </span>
                   )}
@@ -200,13 +200,13 @@ export function BottomNav() {
                       <span className="relative flex items-center gap-0.5 rounded-full bg-success px-1.5 py-0.5">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60"></span>
                         <span className="relative h-1.5 w-1.5 rounded-full bg-white"></span>
-                        <span className="relative text-[10px] font-extrabold leading-none text-foreground tracking-wide">LIVE</span>
+                        <span className="relative text-[10px] font-extrabold leading-none text-white tracking-wide">LIVE</span>
                       </span>
                     </span>
                   )}
                   {/* Unread chat badge on Active tab (when no active job pulse is shown) */}
                   {item.href === "/active" && chatBadge > 0 && !(hasActive && location !== "/active") && (
-                    <span className="absolute -top-1 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-error px-0.5 text-[10px] font-extrabold text-foreground shadow-sm">
+                    <span className="absolute -top-1 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-error px-0.5 text-[10px] font-extrabold text-white shadow-sm">
                       {chatBadge > 99 ? "99+" : chatBadge}
                     </span>
                   )}

@@ -99,7 +99,7 @@ export function HomeAlertCenter({
   availableFeatures,
   T,
 }: HomeAlertCenterProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [showAllAlerts, setShowAllAlerts] = useState(false);
 
   /* ── Critical top banners (always visible) ── */
@@ -190,19 +190,19 @@ export function HomeAlertCenter({
       {/* ── Fixed top banners (critical, non-dismissible) ── */}
       {showConnection && (
         <div
-          className="flex animate-pulse items-center justify-center gap-2 rounded-xl bg-error px-3 py-2 text-xs font-bold text-white shadow-lg"
+          className="flex animate-pulse items-center gap-2 rounded-xl bg-error px-3 py-2.5 text-xs font-bold text-white shadow-lg"
           role="alert"
           aria-live="assertive"
         >
-          <WifiOff size={13} />
-          <span>{T("connectionLost")}</span>
+          <WifiOff size={14} className="flex-shrink-0" />
+          <span className="flex-1">{T("connectionLost")}</span>
           {onRetryConnect && (
             <button
               onClick={onRetryConnect}
-              className="ml-1 rounded bg-card/20 px-2 py-0.5 text-[10px] font-extrabold text-foreground hover:bg-card/30"
+              className="flex-shrink-0 rounded-lg border border-white/30 bg-white/20 px-3 py-1 text-[11px] font-extrabold text-white transition-opacity active:opacity-70"
               aria-label="Retry connection"
             >
-              Retry sync
+              Retry
             </button>
           )}
         </div>
@@ -299,8 +299,17 @@ export function HomeAlertCenter({
                       </p>
                     )}
                     {alert.action && (
-                      <Link href={alert.action.href} className="mt-1 inline-flex items-center gap-0.5 text-[10px] font-bold text-warning underline underline-offset-2">
-                        {alert.action.label} →
+                      <Link
+                        href={alert.action.href}
+                        className={`mt-1.5 inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[10px] font-bold transition-opacity active:opacity-70 ${
+                          alert.severity === "critical"
+                            ? "border-error/40 bg-error/10 text-error"
+                            : alert.severity === "warning"
+                              ? "border-warning/40 bg-warning/10 text-warning"
+                              : "border-blue-400/40 bg-blue-500/10 text-blue-400"
+                        }`}
+                      >
+                        {alert.action.label}
                       </Link>
                     )}
                   </div>
@@ -321,9 +330,9 @@ export function HomeAlertCenter({
               {hasMoreAlerts && (
                 <button
                   onClick={() => setShowAllAlerts(!showAllAlerts)}
-                  className="w-full text-center text-[10px] font-bold text-muted-foreground underline underline-offset-2"
+                  className="w-full rounded-xl border border-border bg-muted/10 py-1.5 text-center text-[11px] font-bold text-muted-foreground transition-colors active:bg-muted/20"
                 >
-                  {showAllAlerts ? "Show fewer alerts" : `+ ${alerts.length - 2} more alerts`}
+                  {showAllAlerts ? "Show fewer" : `View ${alerts.length - 2} more alert${alerts.length - 2 > 1 ? "s" : ""}`}
                 </button>
               )}
             </div>

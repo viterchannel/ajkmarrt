@@ -104,7 +104,7 @@ export function HomeHeader({
           >
             <Bell size={15} className={hasUnread ? "text-foreground" : "text-muted-foreground"} />
             {hasUnread && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-extrabold text-white leading-none shadow-sm">
+              <span className="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-error px-0.5 text-[10px] font-extrabold text-white leading-none shadow-sm">
                 {unreadNotifications > 9 ? "9+" : unreadNotifications}
               </span>
             )}
@@ -160,7 +160,7 @@ export function HomeHeader({
               {tier.label}
             </span>
           )}
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Last online · {lastSeenLabel}
           </p>
         </div>
