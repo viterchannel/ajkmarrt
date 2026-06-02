@@ -243,8 +243,6 @@
     min-height: -webkit-fill-available;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
-    background-color: var(--background);
-    color: var(--foreground);
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
@@ -384,6 +382,29 @@
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
   border-radius: 8px;
+}
+
+/* ── App Shell Wrapper — applies background to entire app ────────────────
+   All pages wrap inside app-shell which ensures consistent background color
+   even when theme changes. Background transitions smoothly between modes. */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── Page Wrapper — full-screen page background ──────────────────────────
+   All pages should use this class to ensure proper min-height and background.
+   Background is theme-aware and respects light/dark mode settings. */
+.page-wrapper {
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s ease;
 }
 
 :root {
