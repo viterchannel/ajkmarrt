@@ -14,18 +14,12 @@ export const AcceptCountdown = memo(function AcceptCountdown({
 }) {
   const timeout = timeoutSec ?? ACCEPT_TIMEOUT_SEC;
 
-  /* Clock offset: serverTime - Date.now() at the moment of last fetch.
-     Positive means the server clock is ahead of the device clock.
-     Same sign convention as the isExpired guard in OrderRequestCard /
-     RideRequestCard so the visual timer and the disabled-button state
-     stay in sync even when the device clock drifts by ±30 s or more. */
   const clockOffset = useRef<number>(
     serverTime && !Number.isNaN(new Date(serverTime).getTime())
       ? new Date(serverTime).getTime() - Date.now()
       : 0,
   );
 
-  /* Recompute offset if serverTime changes (e.g. on refetch) */
   useEffect(() => {
     if (serverTime && !Number.isNaN(new Date(serverTime).getTime())) {
       clockOffset.current = new Date(serverTime).getTime() - Date.now();
@@ -34,24 +28,17 @@ export const AcceptCountdown = memo(function AcceptCountdown({
 
   const calcRemaining = () => {
     const createdMs = new Date(createdAt).getTime();
-    /* If createdAt is malformed (e.g. null, empty string), treat the request
-       as expired immediately so the rider isn't shown a stuck "NaN" timer
-       that never reaches zero and hides the true expiry state.             */
     if (!Number.isFinite(createdMs)) return 0;
-    /* Date.now() + clockOffset ≈ current server time — matches the formula
-       used by the card's isExpired guard so both agree on when time is up. */
     const adjustedNow = Date.now() + clockOffset.current;
     const elapsed = Math.floor((adjustedNow - createdMs) / 1000);
     return Math.max(0, timeout - elapsed);
   };
 
-  /* Initialize with offset already applied — no transient mismatch on first render */
   const [secs, setSecs] = useState(() => calcRemaining());
   const expiredRef = useRef(false);
 
   useEffect(() => {
     expiredRef.current = false;
-    /* Recalculate immediately so the display corrects before the first tick */
     setSecs(calcRemaining());
     const id = setInterval(() => {
       const remaining = calcRemaining();
@@ -66,8 +53,10 @@ export const AcceptCountdown = memo(function AcceptCountdown({
   }, [createdAt, onExpired, timeout]);
 
   const pct = secs / timeout;
-  const r = 14,
-    stroke = 3;
+  /* Bigger ring: 44×44 so riders can read it at a glance */
+  const size = 44;
+  const r = 18;
+  const stroke = 3.5;
   const circ = 2 * Math.PI * r;
   const dashOffset = circ * (1 - pct);
   const col = secs > 30 ? "#22c55e" : secs > 10 ? "#f59e0b" : "#ef4444";
@@ -75,15 +64,25 @@ export const AcceptCountdown = memo(function AcceptCountdown({
   return (
     <div
       className="relative flex flex-shrink-0 items-center justify-center"
-      style={{ width: 36, height: 36 }}
+      style={{ width: size, height: size }}
       role="timer"
       aria-label={`${secs} seconds remaining`}
     >
-      <svg width={36} height={36} className={secs <= 10 ? "animate-pulse" : ""}>
-        <circle cx={18} cy={18} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
+      <svg width={size} height={size} className={secs <= 10 ? "animate-pulse" : ""}>
+        {/* Track ring */}
         <circle
-          cx={18}
-          cy={18}
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          className="text-border/60"
+        />
+        {/* Progress ring */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
           r={r}
           fill="none"
           stroke={col}
@@ -91,11 +90,14 @@ export const AcceptCountdown = memo(function AcceptCountdown({
           strokeDasharray={circ}
           strokeDashoffset={dashOffset}
           strokeLinecap="round"
-          transform="rotate(-90 18 18)"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
           style={{ transition: "stroke-dashoffset 1s linear, stroke 0.3s" }}
         />
       </svg>
-      <span className="absolute text-[9px] font-extrabold tabular-nums" style={{ color: col }}>
+      <span
+        className="absolute text-[11px] font-extrabold tabular-nums leading-none"
+        style={{ color: col }}
+      >
         {secs}
       </span>
     </div>

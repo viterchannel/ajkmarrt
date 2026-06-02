@@ -21,9 +21,7 @@ interface OrderRequestCardProps {
   acceptPending: boolean;
   rejectPending: boolean;
   anyAcceptPending: boolean;
-  /** ISO timestamp from the server response envelope for clock-offset correction */
   serverTime?: string | null;
-  /** When true the rider's account is restricted — disable the Accept button */
   isRestricted?: boolean;
   T: (key: TranslationKey) => string;
 }
@@ -45,9 +43,6 @@ export const OrderRequestCard = memo(function OrderRequestCard({
 }: OrderRequestCardProps) {
   const [showRejectConfirm, setShowRejectConfirm] = useState(false);
 
-  /* Feature gate: if the platform config has disabled this order type, silently
-     dismiss the card so the rider never sees requests for inactive service lines.
-     The dismiss is idempotent — calling it again when features change is safe. */
   useEffect(() => {
     if (!config?.features) return;
     const type = (o.type ?? "mart") as keyof typeof config.features;
@@ -89,7 +84,6 @@ export const OrderRequestCard = memo(function OrderRequestCard({
   const deliveryFee =
     typeof earnings === "number" && Number.isFinite(earnings) ? earnings : configDeliveryFee;
 
-  /* Coordinates — parse safely */
   const vendorLat = o.vendorLat != null ? parseFloat(String(o.vendorLat)) : null;
   const vendorLng = o.vendorLng != null ? parseFloat(String(o.vendorLng)) : null;
   const deliveryLat = o.deliveryLat != null ? parseFloat(String(o.deliveryLat)) : null;
@@ -101,7 +95,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
     Number.isFinite(vendorLng);
 
   return (
-    <div className="animate-[slideUp_0.3s_ease-out] border-b border-border/30 p-4 last:border-0">
+    <div className="animate-[slideUp_0.3s_ease-out] p-4">
       <div className="flex items-start gap-3">
         <AcceptCountdown
           createdAt={o.createdAt}
@@ -109,7 +103,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
           onExpired={() => onDismiss(o.id)}
           timeoutSec={acceptTimeoutSec}
         />
-        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-sm">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-sm">
           <OrderTypeIcon type={orderType} />
         </div>
         <div className="min-w-0 flex-1">
@@ -128,43 +122,44 @@ export const OrderRequestCard = memo(function OrderRequestCard({
             <Navigation size={10} className="text-muted-foreground" /> {deliveryAddress || "Destination"}
           </p>
         </div>
+        {/* Earnings badge — label uses text-white/70 for WCAG contrast on green bg */}
         {deliveryFee > 0 ? (
-          <div className="flex-shrink-0 rounded-2xl bg-success px-3 py-1.5 text-right text-white shadow-sm shadow-green-200">
-            <p className="text-base leading-tight font-extrabold">
+          <div className="flex-shrink-0 rounded-2xl bg-success px-3 py-2 text-right shadow-sm shadow-green-300/30">
+            <p className="text-base font-extrabold leading-tight text-white">
               +{formatCurrency(deliveryFee, currency)}
             </p>
-            <p className="text-[9px] font-semibold text-success/60">{T("yourEarnings")}</p>
+            <p className="text-[10px] font-semibold text-white/70">{T("yourEarnings")}</p>
           </div>
         ) : (
-          <div className="flex-shrink-0 rounded-2xl bg-muted px-3 py-1.5 text-right text-muted-foreground">
-            <p className="text-sm leading-tight font-bold">—</p>
-            <p className="text-[9px] font-semibold">{T("yourEarnings")}</p>
+          <div className="flex-shrink-0 rounded-2xl bg-muted px-3 py-2 text-right">
+            <p className="text-sm font-bold leading-tight text-muted-foreground">—</p>
+            <p className="text-[10px] font-semibold text-muted-foreground">{T("yourEarnings")}</p>
           </div>
         )}
       </div>
 
       {(orderTotal != null || itemCount != null || distanceKm != null) && (
-        <div className="mt-2 flex flex-wrap items-center gap-3">
+        <div className="mt-2.5 flex flex-wrap items-center gap-2">
           {orderTotal != null && Number.isFinite(orderTotal) && (
-            <div className="rounded-xl border border-border bg-card px-2.5 py-1">
-              <p className="text-xs font-bold text-muted-foreground">
+            <div className="rounded-xl border border-border bg-muted/30 px-2.5 py-1.5">
+              <p className="text-xs font-bold text-foreground">
                 {formatCurrency(orderTotal, currency)}
               </p>
-              <p className="text-[9px] text-muted-foreground">{T("orderTotal")}</p>
+              <p className="text-[10px] text-muted-foreground">{T("orderTotal")}</p>
             </div>
           )}
           {itemCount != null && Number(itemCount) > 0 && (
-            <div className="rounded-xl border border-border bg-card px-2.5 py-1">
-              <p className="text-xs font-bold text-muted-foreground">{Number(itemCount)} items</p>
-              <p className="text-[9px] text-muted-foreground">{T("toCollect")}</p>
+            <div className="rounded-xl border border-border bg-muted/30 px-2.5 py-1.5">
+              <p className="text-xs font-bold text-foreground">{Number(itemCount)} items</p>
+              <p className="text-[10px] text-muted-foreground">{T("toCollect")}</p>
             </div>
           )}
           {distanceKm != null && parseFloat(String(distanceKm)) > 0 && (
-            <div className="rounded-xl border border-blue-100 bg-blue-500/10 px-2.5 py-1">
-              <p className="text-xs font-bold text-blue-400">
+            <div className="rounded-xl border border-blue-200/60 bg-blue-500/10 px-2.5 py-1.5">
+              <p className="text-xs font-bold text-blue-500">
                 {parseFloat(String(distanceKm)).toFixed(1)} km
               </p>
-              <p className="text-[9px] text-blue-400">{T("distance")}</p>
+              <p className="text-[10px] text-blue-400">{T("distance")}</p>
             </div>
           )}
         </div>
@@ -180,17 +175,17 @@ export const OrderRequestCard = memo(function OrderRequestCard({
       )}
 
       {showRejectConfirm ? (
-        <div className="mt-3 animate-[slideUp_0.15s_ease-out] rounded-xl border border-error/20 bg-error/10 p-3">
-          <p className="mb-2.5 text-xs font-semibold text-error">
-            Are you sure you want to reject this order?
+        <div className="mt-3 animate-[slideUp_0.15s_ease-out] rounded-2xl border border-error/20 bg-error/8 p-3.5">
+          <p className="mb-3 text-sm font-semibold text-error">
+            Reject this order request?
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => setShowRejectConfirm(false)}
-              className="flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-border bg-card px-3 py-2 text-sm font-bold text-muted-foreground transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              className="flex min-h-[44px] flex-1 items-center justify-center rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               aria-label="Cancel rejection"
             >
-              Keep
+              Keep It
             </button>
             <button
               onClick={async () => {
@@ -202,7 +197,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
                 }
               }}
               disabled={rejectPending}
-              className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-error px-3 py-2 text-sm font-extrabold text-white transition-colors hover:bg-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-60"
+              className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-error px-3 py-2.5 text-sm font-extrabold text-white transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-60"
               aria-label="Confirm reject order"
             >
               <XCircle size={14} /> Yes, Reject
@@ -217,7 +212,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Open delivery address in maps"
-              className="flex min-h-[44px] items-center gap-1 rounded-xl border border-blue-500/30 bg-blue-500/10 px-3 py-2.5 text-xs font-bold text-blue-400 transition-colors hover:bg-blue-500/15"
+              className="flex min-h-[44px] items-center gap-1 rounded-xl border border-blue-500/30 bg-blue-500/10 px-3 text-xs font-bold text-blue-500 transition-colors hover:bg-blue-500/20"
             >
               <MapPin size={14} />
             </a>
@@ -225,10 +220,10 @@ export const OrderRequestCard = memo(function OrderRequestCard({
           <button
             onClick={() => setShowRejectConfirm(true)}
             disabled={rejectPending}
-            className="flex min-h-[44px] items-center gap-1 rounded-xl border border-error/30 px-3 py-2.5 text-sm font-bold text-error transition-colors hover:bg-error/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/30 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-60"
+            className="flex min-h-[44px] items-center gap-1 rounded-xl border border-error/30 bg-error/5 px-3 text-sm font-bold text-error transition-colors hover:bg-error/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/30 focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-60"
             aria-label="Reject order"
           >
-            <XCircle size={14} /> Reject
+            <XCircle size={14} />
           </button>
           <button
             onClick={async () => {
@@ -238,7 +233,7 @@ export const OrderRequestCard = memo(function OrderRequestCard({
                 toast.error(err instanceof Error ? err.message : "Failed to dismiss order");
               }
             }}
-            className="flex min-h-[44px] items-center rounded-xl border border-border px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="flex min-h-[44px] items-center rounded-xl border border-border px-3 text-sm font-bold text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             aria-label="Dismiss order request"
           >
             <X size={16} />
@@ -246,10 +241,10 @@ export const OrderRequestCard = memo(function OrderRequestCard({
           <button
             onClick={() => onAccept(o.id)}
             disabled={isExpired || acceptPending || anyAcceptPending || isRestricted}
-            className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand py-2.5 text-sm font-extrabold text-white shadow-sm shadow-brand/20 transition-all hover:bg-brand-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-60"
+            className="flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand py-3 text-sm font-extrabold text-white shadow-md shadow-brand/25 transition-all hover:bg-brand-hover hover:shadow-lg active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface disabled:opacity-60"
             aria-label="Accept order"
           >
-            <CheckCircle size={15} />
+            <CheckCircle size={16} />
             {acceptPending ? T("accepting") : T("acceptOrder")}
           </button>
         </div>

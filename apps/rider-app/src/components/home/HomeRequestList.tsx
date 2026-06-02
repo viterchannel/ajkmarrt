@@ -1,4 +1,4 @@
-import { AlertTriangle, Bike, Eye } from "lucide-react";
+import { AlertTriangle, Bike, Eye, RefreshCw } from "lucide-react";
 import type { Order, Ride } from "../../lib/api";
 import { OrderRequestCard, RideRequestCard } from "../dashboard";
 import { ShimmerBlock } from "../ui/shimmer";
@@ -87,58 +87,68 @@ export function HomeRequestList({
       <div className="space-y-px bg-card p-4">
         {[0, 1, 2].map((i) => (
           <div key={i} className="flex items-start gap-3 rounded-2xl p-3">
-            <ShimmerBlock className="h-11 w-11 flex-shrink-0 rounded-2xl" />
+            {/* Countdown ring shimmer */}
+            <ShimmerBlock className="h-11 w-11 flex-shrink-0 rounded-full" />
+            {/* Icon well shimmer */}
+            <ShimmerBlock className="h-12 w-12 flex-shrink-0 rounded-2xl" />
             <div className="flex-1 space-y-2">
               <ShimmerBlock className="h-4 w-2/5 rounded-lg" />
               <ShimmerBlock className="h-3 w-3/5 rounded-lg" />
               <ShimmerBlock className="h-3 w-1/2 rounded-lg" />
             </div>
-            <ShimmerBlock className="h-10 w-16 flex-shrink-0 rounded-2xl" />
+            <ShimmerBlock className="h-12 w-20 flex-shrink-0 rounded-2xl" />
           </div>
         ))}
       </div>
     );
   }
+
   if (requestsError) {
     return (
       <div className="bg-card p-8 text-center">
-        <AlertTriangle size={28} className="mx-auto mb-3 text-error" />
-        <p className="text-sm font-bold text-muted-foreground">{T("couldNotLoadRequests")}</p>
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-error/10">
+          <AlertTriangle size={26} className="text-error" />
+        </div>
+        <p className="text-sm font-bold text-foreground">{T("couldNotLoadRequests")}</p>
         <p className="mt-1 text-xs text-muted-foreground">{T("checkConnectionTryAgain")}</p>
         <button
           onClick={onRetry}
-          className="mt-3 text-xs font-bold text-indigo-400 underline focus-visible:ring-2 focus-visible:ring-indigo-600 focus:outline-none rounded"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2.5 text-sm font-bold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
         >
+          <RefreshCw size={14} />
           {T("retry")}
         </button>
       </div>
     );
   }
+
   if (totalRequests === 0) {
     return (
       <div className="bg-card p-8 text-center sm:p-10">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-card sm:h-16 sm:w-16">
-          <Bike size={28} className="text-muted-foreground" />
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50 sm:h-[72px] sm:w-[72px]">
+          <Bike size={30} className="text-muted-foreground" />
         </div>
-        <p className="text-sm font-bold text-muted-foreground sm:text-base">{T("noRequestsNow")}</p>
+        <p className="text-sm font-bold text-foreground sm:text-base">{T("noRequestsNow")}</p>
         <p className="mt-1.5 text-xs text-muted-foreground">{T("autoRefreshes")}</p>
         {dismissed.size > 0 && (
           <button
             onClick={onClearDismissed}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-4 py-2 text-xs font-bold text-foreground transition-colors hover:bg-muted"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-4 py-2.5 text-xs font-bold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
             aria-label={`${T("show")} ${dismissed.size} ${dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}`}
           >
-            <Eye size={12} /> {T("show")} {dismissed.size} {dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}
+            <Eye size={13} /> {T("show")} {dismissed.size} {dismissed.size > 1 ? T("hiddenRequests") : T("hiddenRequest")}
           </button>
         )}
       </div>
     );
   }
+
   return (
-    <div className="divide-y divide-gray-100 bg-card">
+    /* divide-border uses the CSS variable — not the hardcoded gray-100 that breaks dark mode */
+    <div className="divide-y divide-border bg-card">
       {isOffline && (
-        <div className="flex items-center gap-2 bg-error/15 px-4 py-2.5 text-xs font-semibold text-error">
-          <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-error" />
+        <div className="flex items-center gap-2 bg-error/15 px-4 py-3 text-xs font-semibold text-error">
+          <span className="h-2 w-2 flex-shrink-0 rounded-full bg-error" />
           {T("noInternetAcceptDisabled")}
         </div>
       )}
