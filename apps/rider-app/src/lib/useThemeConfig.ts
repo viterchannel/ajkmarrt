@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "./api";
+import { apiFetch } from "./api";
 import { useTheme } from "./useTheme";
 
 /**
@@ -132,8 +132,8 @@ export function useThemeConfig() {
     queryKey: ["theme-config"],
     queryFn: async () => {
       try {
-        const response = await api.get("/api/rider/theme-config");
-        return response.data as Partial<ThemeConfig>;
+        const response = await apiFetch("/api/rider/theme-config");
+        return response as Partial<ThemeConfig>;
       } catch {
         /* If API call fails, use stored config or defaults */
         return getStoredThemeConfig() || DEFAULT_THEME_CONFIG;
@@ -170,7 +170,10 @@ export function useThemeConfig() {
 
       /* Sync with backend (fire-and-forget) */
       try {
-        await api.put("/api/rider/theme-config", newConfig);
+        await apiFetch("/api/rider/theme-config", {
+          method: "PUT",
+          body: JSON.stringify(newConfig),
+        });
         /* Invalidate cache to fetch fresh config */
         queryClient.invalidateQueries({ queryKey: ["theme-config"] });
       } catch (error) {

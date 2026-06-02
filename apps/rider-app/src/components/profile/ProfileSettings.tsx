@@ -47,8 +47,8 @@ export function ProfileSettings({
   const [deleteInput, setDeleteInput] = useState("");
   const [deleting, setDeleting] = useState(false);
 
-  /* Check if user is admin (has admin role or specific flag) */
-  const isAdmin = user?.role === "admin" || user?.role === "super_admin" || (user as any)?.isAdmin === true;
+  /* Check if user is admin (has admin role) */
+  const isAdmin = user?.roles?.includes("admin") || user?.roles?.includes("super_admin");
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -215,12 +215,6 @@ export function ProfileSettings({
               <ThemeAdminPanel />
             </div>
           )}
-
-          <button
-              </div>
-            </div>
-            <ChevronRight size={16} className="text-muted-foreground" />
-          </Link>
 
           <button
             onClick={() => setDeleteOpen(true)}

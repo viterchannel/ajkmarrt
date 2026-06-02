@@ -92,6 +92,8 @@ export function useTheme() {
       (mediaQuery as any).addListener(handleChange);
       return () => (mediaQuery as any).removeListener(handleChange);
     }
+    /* No cleanup needed if neither method is available */
+    return undefined;
   }, [theme]);
 
   const setTheme = useCallback((newTheme: Theme) => {
