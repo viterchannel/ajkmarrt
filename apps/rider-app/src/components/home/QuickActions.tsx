@@ -11,7 +11,7 @@ export function QuickActions() {
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.06]">
           <DollarSign size={14} className="text-success" />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-[11px] font-extrabold text-white leading-tight">My Earnings</p>
           <p className="text-[9px] text-white/30 mt-0.5">View history</p>
         </div>
@@ -24,7 +24,7 @@ export function QuickActions() {
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.06]">
           <Phone size={14} className="text-brand" />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-[11px] font-extrabold text-white leading-tight">Help</p>
           <p className="text-[9px] text-white/30 mt-0.5">Support &amp; FAQ</p>
         </div>

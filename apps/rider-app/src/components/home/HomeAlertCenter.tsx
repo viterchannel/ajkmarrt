@@ -280,7 +280,7 @@ export function HomeAlertCenter({
                   }`}
                   role="alert"
                 >
-                  <span className={`mt-0.5 flex-shrink-0 ${
+                  <span className={`mt-0.5 flex-shrink-0 flex items-center justify-center ${
                     alert.severity === "critical" ? "text-error" : alert.severity === "warning" ? "text-warning" : "text-blue-400"
                   }`}>
                     {alert.icon}

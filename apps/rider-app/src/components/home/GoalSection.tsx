@@ -98,10 +98,10 @@ export function GoalSection({
         type="button"
         aria-label="Set a daily earnings goal"
         onClick={() => openEdit(null)}
-        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-left transition-colors active:bg-white/[0.07]"
+        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-left transition-colors active:bg-white/[0.07]"
       >
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08]">
-          <Target size={16} className="text-white/40" />
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-white/[0.08]">
+          <Target size={14} className="text-white/40" />
         </div>
         <div className="flex-1">
           <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">

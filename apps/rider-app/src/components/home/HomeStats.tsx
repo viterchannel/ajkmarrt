@@ -153,12 +153,12 @@ export function HomeStats({
 
       {/* Active orders visible only when rider is online */}
       {isOnline && maxDeliveries != null && (
-        <div className={`flex items-center gap-2.5 rounded-2xl border px-3 py-2.5 backdrop-blur-sm ${
+        <div className={`flex items-center gap-2.5 rounded-2xl border p-3 backdrop-blur-sm ${
           activeOrderCount >= maxDeliveries
             ? "border-warning/20 bg-warning/[0.05]"
             : "border-white/[0.06] bg-white/[0.02]"
         }`}>
-          <Zap size={12} className={`flex-shrink-0 ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-white/30"}`} />
+          <Zap size={14} className={`flex-shrink-0 ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-white/30"}`} />
           <p className="flex-1 text-xs font-medium text-white/40">Active orders</p>
           <p className={`text-xs font-extrabold ${activeOrderCount >= maxDeliveries ? "text-warning" : "text-white/60"}`}>
             {activeOrderCount} / {maxDeliveries}

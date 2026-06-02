@@ -143,22 +143,22 @@ export function ProfileCompletionCard({
               key={item.key}
               className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-2.5"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
+              <div className="flex items-start gap-2.5 min-w-0">
                 <span
-                  className={`h-2 w-2 flex-shrink-0 rounded-full ${
+                  className={`h-2 w-2 flex-shrink-0 rounded-full mt-1 ${
                     item.done ? "bg-success" : "bg-white/20"
                   }`}
                 />
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p
-                    className={`text-[11px] font-semibold ${
+                    className={`text-[11px] font-semibold leading-tight ${
                       item.done ? "text-success" : "text-white/70"
                     }`}
                   >
                     {item.label}
                   </p>
                   {!item.done && (
-                    <p className="text-[10px] text-white/30 truncate">{item.hint}</p>
+                    <p className="text-[10px] text-white/30 truncate mt-0.5">{item.hint}</p>
                   )}
                 </div>
               </div>
