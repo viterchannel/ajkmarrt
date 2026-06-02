@@ -147,7 +147,7 @@ export default function Profile() {
     const needsSync =
       (verifStatus.phoneVerified && !user.phoneVerified) ||
       (verifStatus.emailVerified && !user.emailVerified) ||
-      (verifStatus.documentsApproved && !(user as any).documentsApproved);
+      (verifStatus.documentsApproved && !user.documentsApproved);
     if (needsSync) void refreshUser?.();
   }, [verifStatus?.phoneVerified, verifStatus?.emailVerified, verifStatus?.documentsApproved, user?.phoneVerified, user?.emailVerified]);
 
@@ -546,7 +546,7 @@ export default function Profile() {
   const startEdit = (section: unknown) => {
     /* Validate that section is one of the allowed values */
     const validSections: EditSection[] = ["personal", "vehicle", "bank"];
-    if (typeof section !== "string" || !validSections.includes(section as any)) {
+    if (typeof section !== "string" || !validSections.includes(section as EditSection)) {
       console.warn("[Profile] Invalid edit section attempted:", section);
       return;
     }
@@ -1067,7 +1067,7 @@ export default function Profile() {
             <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-[10px] text-muted-foreground">
               {user?.isOnline
                 ? "Online now"
-                : `Last online · ${timeAgo((user as any)?.lastSeen ?? (user as any)?.updatedAt)}`}
+                : `Last online · ${timeAgo(user?.lastSeen ?? (user?.updatedAt ? new Date(user.updatedAt).getTime() : undefined))}`}
             </span>
             {user?.createdAt && (
               <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-[10px] text-muted-foreground">

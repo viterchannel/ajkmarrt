@@ -32,7 +32,7 @@ let _inMemoryRefreshToken = "";
    Wait for Capacitor plugin to be ready before using Preferences. On native apps,
    the plugin may not be available immediately on startup. */
 async function waitForCapacitor(): Promise<void> {
-  if (typeof (window as any).Capacitor === "undefined") {
+  if (typeof window.Capacitor === "undefined") {
     return; /* Not using Capacitor (web/PWA) */
   }
   
@@ -43,7 +43,7 @@ async function waitForCapacitor(): Promise<void> {
     
     const checkReady = () => {
       attempts++;
-      if ((window as any).Capacitor?.ready === true) {
+      if (window.Capacitor?.ready === true) {
         resolve();
         return;
       }

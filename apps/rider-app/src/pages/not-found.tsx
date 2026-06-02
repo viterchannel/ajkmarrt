@@ -8,7 +8,7 @@ export default function NotFound() {
   const T = (key: TranslationKey) => tDual(key, language);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden page-header-gradient bg-card p-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden page-header-gradient bg-page-bg p-4">
       <div className="absolute top-[-20%] right-[-10%] h-72 w-72 rounded-full bg-muted/5" />
       <div className="absolute bottom-[-15%] left-[-10%] h-64 w-64 rounded-full bg-success/[0.04]" />
 

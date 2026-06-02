@@ -1163,7 +1163,7 @@ export default function Chat() {
   ];
 
   return (
-    <div className="flex h-full flex-col bg-surface">
+    <div className="flex h-full flex-col bg-page-bg">
       {incomingCall && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
           <div className="mx-4 w-full max-w-sm rounded-3xl bg-card p-8 text-center">

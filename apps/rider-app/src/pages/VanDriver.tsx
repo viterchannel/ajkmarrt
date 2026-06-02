@@ -467,7 +467,7 @@ export default function VanDriver() {
   /* Gate: van service must be explicitly enabled by admin. */
   if (!vanEnabled)
     return (
-      <div className="flex min-h-screen items-center justify-center bg-card p-6">
+      <div className="flex min-h-screen items-center justify-center bg-page-bg p-6">
         <div className="max-w-xs space-y-3 text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
             <Bus size={32} className="text-muted-foreground" />

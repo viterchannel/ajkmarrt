@@ -87,10 +87,10 @@ export function useTheme() {
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener("change", handleChange);
       return () => mediaQuery.removeEventListener("change", handleChange);
-    } else if ((mediaQuery as any).addListener) {
+    } else if ((mediaQuery as MediaQueryListPolyfill).addListener) {
       /* Fallback for older browsers */
-      (mediaQuery as any).addListener(handleChange);
-      return () => (mediaQuery as any).removeListener(handleChange);
+      (mediaQuery as MediaQueryListPolyfill).addListener(handleChange);
+      return () => (mediaQuery as MediaQueryListPolyfill).removeListener?.(handleChange);
     }
     /* No cleanup needed if neither method is available */
     return undefined;

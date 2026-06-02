@@ -49,7 +49,7 @@ export function HomeHeader({
   newFlash,
   unreadNotifications = 0,
 }: HomeHeaderProps) {
-  const tier = getRiderTier((user?.stats as any)?.rating ?? null);
+  const tier = getRiderTier(user?.stats?.rating ?? null);
   const firstName = user?.name?.split(" ")[0] || "Rider";
   const initials = getInitials(user?.name);
   const hasUnread = unreadNotifications > 0;

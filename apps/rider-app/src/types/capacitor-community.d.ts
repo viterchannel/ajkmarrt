@@ -7,6 +7,55 @@
  * unchanged.
  */
 
+/* ── Capacitor global type ── */
+interface CapacitorGlobal {
+  ready?: boolean;
+  Preferences?: {
+    set(options: { key: string; value: string }): Promise<void>;
+    get(options: { key: string }): Promise<{ value: string | null }>;
+    remove(options: { key: string }): Promise<void>;
+    keys(): Promise<{ keys: string[] }>;
+    clear(): Promise<void>;
+  };
+  getPlatform(): "ios" | "android" | "web";
+}
+
+declare global {
+  interface Window {
+    Capacitor?: CapacitorGlobal;
+  }
+}
+
+/* ── Battery Status API ── */
+interface BatteryManager {
+  level: number;
+  charging: boolean;
+  chargingTime: number;
+  dischargingTime: number;
+  addEventListener(type: string, listener: EventListener): void;
+  removeEventListener(type: string, listener: EventListener): void;
+}
+
+interface NavigatorWithBattery extends Navigator {
+  getBattery(): Promise<BatteryManager>;
+}
+
+interface NavigatorWithWakeLock extends Navigator {
+  wakeLock?: {
+    request(type: "screen" | "system"): Promise<{ release(): Promise<void> }>;
+  };
+}
+
+declare global {
+  interface Navigator extends NavigatorWithBattery, NavigatorWithWakeLock {}
+}
+
+/* ── MediaQueryList compatibility (for older browsers) ── */
+interface MediaQueryListPolyfill {
+  addListener?(callback: (mql: MediaQueryListEvent) => void): void;
+  removeListener?(callback: (mql: MediaQueryListEvent) => void): void;
+}
+
 declare module "@capacitor-community/play-integrity" {
   export interface PlayIntegrity {
     requestIntegrityToken(options: { nonce: string }): Promise<{ token: string }>;

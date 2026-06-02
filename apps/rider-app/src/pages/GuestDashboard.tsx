@@ -53,7 +53,7 @@ export function GuestDashboard() {
   const zoneCount = zones.length || null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#141414] text-foreground">
+    <div className="flex min-h-screen flex-col bg-page-bg text-foreground">
       {/* Sign-up banner */}
       <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-3 text-center">
         <p className="text-sm font-bold text-foreground">

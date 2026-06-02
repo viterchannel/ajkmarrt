@@ -86,6 +86,12 @@ export interface AuthUser {
   roles: string[];
   createdAt?: string;
   lastLoginAt?: string;
+  updatedAt?: string; // Timestamp when user was last updated
+  lastSeen?: number; // Last seen timestamp (milliseconds)
+  onlineSince?: number; // When user came online (milliseconds)
+  activeOrderCount?: number; // Number of active orders
+  unreadNotifications?: number; // Number of unread notifications
+  maxDeliveries?: number; // Max deliveries allowed
   stats: {
     deliveriesToday: number;
     earningsToday: number;

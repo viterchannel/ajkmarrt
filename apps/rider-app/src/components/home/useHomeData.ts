@@ -1,3 +1,5 @@
+/// <reference types="../../types/capacitor-community" />
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { tDual, type TranslationKey } from "@workspace/i18n";
@@ -312,14 +314,14 @@ export function useHomeData(): UseHomeDataReturn {
     try {
       const stored = sessionStorage.getItem("_ajkm_onlineSince");
       if (!stored) {
-        const apiTs = (user as any)?.onlineSince;
+        const apiTs = user?.onlineSince;
         if (apiTs && typeof apiTs === "number" && apiTs > 0) {
           setOnlineSince(apiTs);
           sessionStorage.setItem("_ajkm_onlineSince", String(apiTs));
         }
       }
     } catch { /* sessionStorage unavailable */ }
-  }, [user?.isOnline, (user as any)?.onlineSince]);
+  }, [user?.isOnline, user?.onlineSince]);
 
   useEffect(() => {
     if (!user) { setBlockingReason(null); return; }
@@ -454,7 +456,7 @@ export function useHomeData(): UseHomeDataReturn {
     const acquire = async () => {
       try {
         if (cancelled || document.hidden) return;
-        sentinel = await (navigator as any).wakeLock.request("screen");
+        sentinel = await navigator.wakeLock?.request("screen");
         setWakeLockWarning(false);
       } catch (err) {
         log.error({ err: err instanceof Error ? err.message : String(err) }, "[Home] wakeLock error");
@@ -486,7 +488,7 @@ export function useHomeData(): UseHomeDataReturn {
     let mounted = true;
     let batt: any;
     const onLevelChange = () => { if (batt) batteryRef.current = Math.round(batt.level * 100); };
-    (navigator as any).getBattery().then((b: any) => {
+    (navigator as NavigatorWithBattery).getBattery?.().then((b: BatteryManager) => {
       if (!mounted) return;
       batt = b;
       batteryRef.current = Math.round(b.level * 100);
@@ -763,7 +765,7 @@ export function useHomeData(): UseHomeDataReturn {
       const result = await api.setOnline(newStatus);
       if (lastToggleRef.current !== now) { cancelled = true; return; }
       if (!isMountedRef.current) return;
-      const confirmedOnline = (result as any)?.isOnline ?? newStatus;
+      const confirmedOnline = result.isOnline ?? newStatus;
       setOptimisticOnline(confirmedOnline);
       if (confirmedOnline) {
         const ts = Date.now();
