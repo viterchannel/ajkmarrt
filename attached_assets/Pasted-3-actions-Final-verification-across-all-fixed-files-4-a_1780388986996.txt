@@ -1,0 +1,187 @@
+3 actions
+Final verification across all fixed files:
+
+
+4 actions
+Chat.tsx 2 remaining + Wallet.tsx bulk fix karta hoon parallel mein:
+
+
+4 actions
+Wallet.tsx saaf! Chat.tsx final verification karta hoon, phir unaudited files check:
+
+
+4 actions
+Chat.tsx line 1511 fix + baaki saare unaudited pages parallel mein:
+
+
+4 actions
+Chat.tsx + Active.tsx + Home.tsx targeted fixes, plus unaudited pages bulk fix in parallel:
+
+
+5 actions
+Good progress! not-found.tsx + GuestDashboard.tsx + components folder + Wallet.tsx remaining — parallel fix:
+
+
+3 actions
+GuestDashboard.tsx remaining 2 check karta hoon, aur sab components ek saath Python se fix:
+
+
+3 actions
+GuestDashboard.tsx ek targeted fix + saare components Python se ek saath:
+
+
+3 actions
+GuestDashboard.tsx fix + remaining 12 component files ek saath:
+
+
+3 actions
+Let me read the relevant context for each remaining file to understand what's intentional vs needs fixing:
+
+
+5 actions
+Let me check the container context for Active components and ErrorBoundary to know if text-white is intentional:
+
+
+4 actions
+Let me check ActiveTaskBanner background + GoalSection input context:
+
+
+3 actions
+Now I have full context. Let me fix each case precisely:
+
+Keep (intentional - on green/amber gradient bg): ActiveTaskBanner text-white, ActiveRidePanel/ActiveOrderPanel (dark ride panels)
+
+Fix these (neutral bg - wrong): ErrorBoundary, ThemeToggle, RequestListHeader focus state, GoalSection input, ProfileCompletionCard/ErrorState dark: variant, PopupEngine border
+
+
+3 actions
+HomeHeader has text-white for wallet balance on the page header + text-white/70 initials in avatar. Let me check what page-header-gradient provides in light mode first:
+
+
+5 actions
+Page header light mode = white (#FFFFFF → #F5F5F5). text-white on it = invisible in light! Now fix everything precisely:
+
+
+8 actions
+ActiveTaskBanner text-white on green/amber gradient = KEEP (intentional). Now fix remaining:
+
+
+5 actions
+HomeHeader uses bg-gray-950 (hardcoded dark) — needs fixing too. Let me check RequestListHeader context and fix everything:
+
+
+3 actions
+HomeHeader needs bg-gray-950 → page-header-gradient bg-card. Let me check RequestListHeader full container first:
+
+
+3 actions
+RequestListHeader has gradient on active state → text-white intentional when totalRequests > 0, wrong in idle. Fix conditionally:
+
+
+5 actions
+HomeHeader line 83: text-white on bg-error badge = intentional. Now do final comprehensive audit across ALL rider-app files:
+
+
+3 actions
+Several files still showing up. Let me check them all in parallel to understand what's left:
+
+
+7 actions
+App.tsx + LoginScreen.tsx + RideRequestCard remaining focus state + Active components:
+
+
+5 actions
+ActiveOrderPanel text-white/70 is on bg-gradient-to-r ${orderTypeGradient} = colored gradient bg → KEEP! Same for ActiveRidePanel pool badge, ActiveTaskBanner on green/amber gradients.
+
+Now LoginScreen bg-page-bg check + fix remaining issues:
+
+
+3 actions
+bg-page-bg in light mode = #F8F8F8 — text-white on it is invisible! LoginScreen needs full fix:
+
+
+5 actions
+RequestListHeader LIVE badge is on bg-gradient-to-r from-warning → text-white/90 intentional. Keep it.
+
+Now do a final comprehensive audit across ALL rider-app source files:
+
+
+3 actions
+Let me check what's specifically remaining in those flagged page files:
+
+
+4 actions
+ApprovalGateOverlay has page-header-gradient bg-card ... text-white which is wrong in light mode. Also bg-[#B0B0B0]. Let me fix everything in parallel:
+
+
+3 actions
+Saare remaining files ko parallel Python batch fixes se ek saath fix karta hoon:
+
+
+13 actions
+ApprovalGateOverlay remaining text-white are all on colored buttons (bg-success, bg-warning, bg-brand, bg-[#25D366]) — intentional. History.tsx 1 remaining fix:
+
+
+4 actions
+Targeted checks on remaining components:
+
+
+3 actions
+All components clean! Ab final comprehensive audit run karta hoon:
+
+
+3 actions
+All patterns are clean! One remaining instance in ActiveRidePanel.tsx line 124 is the pool ride badge on a colored gradient background — intentional.
+
+Ab build verify karta hoon:
+
+
+2 actions
+SecuritySettings.tsx mein TypeScript syntax error hai. Let me fix it:
+
+
+2 actions
+Line 388 mein missing } — JSX expression incomplete:
+
+
+4 actions
+Ye 3 types of errors hain — Help.tsx imports broken (hamara rewrite ka issue), baaki 2 pre-existing. Fix karta hoon:
+
+
+3 actions
+Help.tsx mein wrong import paths hain — fix karta hoon:
+
+
+4 actions
+Remaining 4 TypeScript errors are pre-existing (not from our changes):
+
+useTheme.ts:75 — missing return path (was already there)
+lib/i18n/en.ts — duplicate translation keys (was already there)
+These were not introduced by our color token work. Let me do one final scan to confirm the entire rider-app source is clean:
+
+
+3 actions
+1 remaining bg-gradient.*gray-9 — let me find and fix it:
+
+
+2 actions
+ActiveModals.tsx line 233 — from-gray-800 to-gray-900 is a dark-styled "Ride Cancelled" close button. text-white on it is intentional (deliberately dark button, theme-independent). This is the same exemption rule as bg-blue-600, bg-success, etc.
+
+Final audit summary — tally:
+
+Pattern	Count Remaining
+text-[#B0B0B0]	0 ✅
+bg-card-dark (JSX)	0 ✅
+bg-border-dark (JSX)	0 ✅
+from-gray-900 gradients	0 ✅
+active:bg-[#3A3A3A] / bg-[#3A3A3A]	0 ✅
+bg-gradient.*gray-9	1 (intentional dark button) ✅
+All TypeScript errors in our changed files are now resolved. The 4 remaining TS errors (useTheme.ts:75, en.ts:2552/2554/2570) are pre-existing and unrelated to this audit.
+
+Files fully audited and fixed in this session:
+
+Pages: History.tsx, Notifications.tsx, Wallet.tsx, Chat.tsx, LoginHistory.tsx, VanDriver.tsx, Reviews.tsx, GuestDashboard.tsx, PenaltyHistory.tsx, EarningsSummary.tsx, not-found.tsx, Settings.tsx, SecuritySettings.tsx, Profile.tsx, Earnings.tsx, Active.tsx, Home.tsx
+
+Components: HomeHeader.tsx, ThemeToggle.tsx, ErrorBoundary.tsx, PopupEngine.tsx, RequestListHeader.tsx, RideRequestCard.tsx, GoalSection.tsx, ProfileCompletionCard.tsx, ErrorState.tsx, ApprovalGateOverlay.tsx, AnnouncementBar.tsx, MaintenanceScreen.tsx, ActiveHeroCard.tsx, ActiveOrderPanel.tsx, ActiveStepper.tsx, SignaturePad.tsx, HomeAlertCenter.tsx, HomeStats.tsx, HomeGoalModal.tsx, HomeRequestList.tsx, QuickActions.tsx, ProfileFooter.tsx, MiniMap.tsx, MiniMapImpl.tsx, OfflineConfirmDialog.tsx, OrderRequestCard.tsx, SystemWarnings.tsx, OnlineToggleCard.tsx, EarningsBarChart.tsx, RemittanceModal.tsx, WithdrawModal.tsx, DepositModal.tsx, LoginScreen.tsx, App.tsx
+
+Next, I can add a GuestLanding page that replaces the current placeholder with a proper light-mode-aware marketing/onboarding landing screen for unregistered visitors. Would you like me to do that?
