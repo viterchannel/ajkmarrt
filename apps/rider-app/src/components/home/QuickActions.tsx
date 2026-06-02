@@ -1,34 +1,39 @@
-import { DollarSign, Phone } from "lucide-react";
+import { BarChart2, HelpCircle } from "lucide-react";
 import { Link } from "wouter";
 
 export function QuickActions() {
   return (
-    <div className="grid grid-cols-2 gap-2.5">
-      <Link
-        href="/earnings"
-        className="flex items-center gap-2.5 rounded-2xl border border-border bg-card px-4 py-3 text-foreground transition-all active:scale-[0.98] active:bg-muted/40"
-      >
-        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-muted/20">
-          <DollarSign size={14} className="text-success" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-extrabold text-foreground leading-tight">My Earnings</p>
-          <p className="text-[9px] text-muted-foreground mt-0.5">View history</p>
-        </div>
-      </Link>
+    <div className="space-y-2">
+      <p className="px-0.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        Quick Actions
+      </p>
+      <div className="grid grid-cols-2 gap-2.5">
+        <Link
+          href="/earnings"
+          className="group flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-4 transition-all active:scale-[0.97] active:bg-muted/20"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/10 transition-transform group-active:scale-95">
+            <BarChart2 size={18} className="text-success" />
+          </div>
+          <div>
+            <p className="text-sm font-extrabold leading-tight text-foreground">My Earnings</p>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">View history &amp; payouts</p>
+          </div>
+        </Link>
 
-      <Link
-        href="/help"
-        className="flex items-center gap-2.5 rounded-2xl border border-border bg-card px-4 py-3 text-foreground transition-all active:scale-[0.98] active:bg-muted/40"
-      >
-        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-muted/20">
-          <Phone size={14} className="text-brand" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-extrabold text-foreground leading-tight">Help</p>
-          <p className="text-[9px] text-muted-foreground mt-0.5">Support &amp; FAQ</p>
-        </div>
-      </Link>
+        <Link
+          href="/help"
+          className="group flex flex-col gap-3 rounded-2xl border border-border/60 bg-card p-4 transition-all active:scale-[0.97] active:bg-muted/20"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 transition-transform group-active:scale-95">
+            <HelpCircle size={18} className="text-brand" />
+          </div>
+          <div>
+            <p className="text-sm font-extrabold leading-tight text-foreground">Help &amp; Support</p>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">FAQ &amp; contact us</p>
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }

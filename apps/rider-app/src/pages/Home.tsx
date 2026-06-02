@@ -213,19 +213,19 @@ export default function Home() {
 
       {/* Active task floating button */}
       {h.hasActiveTask && !h.config.content.trackerBannerEnabled && (
-        <Link
-          href="/active"
-          className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom,0px)+72px)] left-4 z-30 block animate-[slideUp_0.3s_ease-out] rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-3 shadow-lg shadow-green-300/40 transition-transform active:scale-[0.98]"
-          aria-label="Go to active task"
-        >
-          <div className="mx-auto flex max-w-md items-center gap-2.5">
-            <div className="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-white" />
-            <p className="flex-1 truncate text-sm font-extrabold text-foreground">
+        <div className="pointer-events-none fixed bottom-[calc(env(safe-area-inset-bottom,0px)+72px)] left-1/2 z-30 w-full max-w-sm -translate-x-1/2 px-4 sm:max-w-[480px] md:max-w-[600px]">
+          <Link
+            href="/active"
+            className="pointer-events-auto flex animate-[slideUp_0.3s_ease-out] items-center gap-3 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-3.5 shadow-lg shadow-green-400/30 transition-transform active:scale-[0.98]"
+            aria-label="Go to active task"
+          >
+            <div className="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-white shadow-sm shadow-white/60" />
+            <p className="flex-1 truncate text-sm font-extrabold text-white">
               {h.T("youHaveActiveTask")}
             </p>
-            <ChevronRight size={14} className="flex-shrink-0 text-muted-foreground" />
-          </div>
-        </Link>
+            <ChevronRight size={15} className="flex-shrink-0 text-white/80" />
+          </Link>
+        </div>
       )}
 
       {/* Offline confirmation dialog */}

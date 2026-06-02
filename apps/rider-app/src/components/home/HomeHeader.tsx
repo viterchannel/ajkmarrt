@@ -56,31 +56,55 @@ export function HomeHeader({
 
   return (
     <header
-      className="page-header-gradient relative bg-card border-b border-border/60 px-4 pb-5 text-foreground sm:px-6"
+      className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-4 pb-6 text-foreground sm:px-6"
       style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
     >
-      {/* ── Branding bar ── */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand">
-            <span className="text-[10px] font-black text-black">A</span>
+      {/* Decorative background circles */}
+      <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-brand/[0.04]" />
+      <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-foreground/[0.02]" />
+      <div className="absolute top-1/2 left-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/[0.015]" />
+
+      {/* ── Branding + actions row ── */}
+      <div className="relative mb-5 flex items-center justify-between">
+        {/* Brand mark */}
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand shadow-sm shadow-brand/40">
+            <span className="text-[13px] font-black text-black">A</span>
           </div>
-          <span className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase">
-            AJKMart Rider
-          </span>
+          <div>
+            <p className="text-[11px] font-black tracking-widest text-foreground uppercase leading-none">
+              AJKMart
+            </p>
+            <p className="text-[9px] font-semibold tracking-wider text-muted-foreground leading-none mt-0.5">
+              Rider Dashboard
+            </p>
+          </div>
         </div>
 
-        {/* Right side: notification bell + avatar */}
+        {/* Right: mute + bell + avatar */}
         <div className="flex items-center gap-2">
+          {/* Mute toggle */}
+          <button
+            onClick={onToggleSilence}
+            aria-label={silenceOn ? "Unmute notification sounds" : "Mute notification sounds"}
+            className={`flex h-8 w-8 items-center justify-center rounded-xl border transition-all active:scale-95 ${
+              silenceOn
+                ? "border-error/30 bg-error/10 text-error"
+                : "border-border/60 bg-muted/10 text-muted-foreground"
+            }`}
+          >
+            {silenceOn ? <VolumeX size={14} /> : <Volume2 size={14} />}
+          </button>
+
           {/* Notification bell */}
           <Link
             href="/notifications"
-            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-border/80 bg-muted/10 transition-colors active:bg-muted/30"
+            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-border/60 bg-muted/10 transition-all active:scale-95 active:bg-muted/30"
             aria-label={hasUnread ? `${unreadNotifications} unread notifications` : "Notifications"}
           >
             <Bell size={15} className={hasUnread ? "text-foreground" : "text-muted-foreground"} />
             {hasUnread && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-extrabold text-white leading-none">
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-error text-[9px] font-extrabold text-white leading-none shadow-sm">
                 {unreadNotifications > 9 ? "9+" : unreadNotifications}
               </span>
             )}
@@ -89,41 +113,40 @@ export function HomeHeader({
           {/* Avatar → /profile */}
           <Link
             href="/profile"
-            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border/20 bg-muted/20 transition-colors active:bg-muted/40"
+            className="relative flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border-2 border-border/40 bg-muted/20 transition-all active:scale-95 active:bg-muted/40 overflow-hidden"
             aria-label="Go to profile"
           >
             {user?.avatar ? (
               <img
                 src={user.avatar}
                 alt={user?.name ?? "Rider"}
-                className="h-full w-full rounded-full object-cover"
+                className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-[10px] font-extrabold text-muted-foreground">{initials}</span>
+              <span className="text-[11px] font-extrabold text-muted-foreground">{initials}</span>
             )}
           </Link>
         </div>
       </div>
 
-      {/* ── Greeting row ── */}
-      <div className="mb-4 flex items-start justify-between">
+      {/* ── Greeting + tier ── */}
+      <div className="relative mb-5 flex items-end justify-between">
         <div>
           <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             {greeting}
           </p>
           <h1
-            className={`mt-0.5 text-xl font-extrabold tracking-tight transition-colors sm:text-2xl ${
+            className={`mt-0.5 text-2xl font-black tracking-tight transition-colors sm:text-3xl ${
               newFlash ? "text-success" : "text-foreground"
             }`}
           >
             {firstName}
           </h1>
-          {/* LiveClock moved here as subtle secondary position */}
           <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
             <LiveClock />
           </p>
           {newFlash && (
-            <div className="mt-1 flex items-center gap-1.5 text-xs font-bold text-success">
+            <div className="mt-1.5 flex items-center gap-1.5 text-xs font-bold text-success">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
               New request available
             </div>
@@ -132,7 +155,7 @@ export function HomeHeader({
         <div className="flex flex-col items-end gap-1.5">
           {tier.label !== "Standard" && (
             <span
-              className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}
+              className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}
             >
               {tier.label}
             </span>
@@ -144,90 +167,81 @@ export function HomeHeader({
       </div>
 
       {/* ── Wallet + Online toggle ── */}
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="relative grid grid-cols-2 gap-3">
         {/* Wallet card */}
         <Link
           href="/wallet"
-          className="flex flex-col gap-1.5 rounded-2xl border border-border/80 bg-muted/10 p-3.5 transition-colors active:bg-muted/40"
+          className="group flex flex-col gap-2 rounded-2xl border border-border/60 bg-muted/10 p-4 transition-all active:scale-[0.97] active:bg-muted/20"
           aria-label="View wallet balance"
         >
-          <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <Wallet size={10} />
-            {T("wallet")}
-          </p>
-          <p className="text-lg font-extrabold leading-none text-foreground">
-            {formatCurrency(user?.walletBalance ?? "0", currency)}
-          </p>
-          <p className="flex items-center gap-0.5 text-[10px] font-medium text-muted-foreground">
-            View balance <ChevronRight size={9} />
-          </p>
+          <div className="flex items-center justify-between">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/20">
+              <Wallet size={13} className="text-success" />
+            </div>
+            <ChevronRight size={12} className="text-muted-foreground transition-transform group-active:translate-x-0.5" />
+          </div>
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+              {T("wallet")}
+            </p>
+            <p className="mt-0.5 text-lg font-extrabold leading-none text-foreground">
+              {formatCurrency(user?.walletBalance ?? "0", currency)}
+            </p>
+          </div>
         </Link>
 
         {/* Online toggle card */}
         <button
           onClick={onToggleOnline}
           disabled={toggling}
-          className={`flex flex-col gap-1.5 rounded-2xl border p-3.5 text-left transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`flex flex-col gap-2 rounded-2xl border p-4 text-left transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 ${
             effectiveOnline
-              ? "border-success/20 bg-success/[0.06]"
-              : "border-border/80 bg-muted/10"
+              ? "border-success/30 bg-success/[0.08] shadow-sm shadow-success/10"
+              : "border-border/60 bg-muted/10"
           }`}
           role="switch"
           aria-checked={effectiveOnline}
           aria-label={effectiveOnline ? "Go offline" : "Go online"}
         >
+          {/* Toggle pill + indicator */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <span
                 className={`h-2 w-2 rounded-full ${
                   effectiveOnline
-                    ? "animate-pulse bg-success shadow-lg shadow-green-400/50"
-                    : "bg-muted/40"
+                    ? "animate-pulse bg-success shadow-sm shadow-green-400/60"
+                    : "bg-muted/50"
                 }`}
               />
               <p
-                className={`text-[10px] font-bold uppercase tracking-wider ${
+                className={`text-[9px] font-bold uppercase tracking-widest ${
                   effectiveOnline ? "text-success" : "text-muted-foreground"
                 }`}
               >
                 {effectiveOnline ? T("online") : T("offline")}
               </p>
             </div>
-            {/* Mini toggle pill */}
+            {/* Toggle pill */}
             <div
-              className={`relative h-5 w-9 flex-shrink-0 rounded-full transition-colors ${
+              className={`relative h-5 w-9 flex-shrink-0 rounded-full transition-colors duration-200 ${
                 effectiveOnline ? "bg-success" : "bg-muted/40"
               }`}
             >
               <div
-                className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${
-                  effectiveOnline ? "left-4" : "left-0.5"
+                className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all duration-200 ${
+                  effectiveOnline ? "left-[18px]" : "left-0.5"
                 }`}
               />
             </div>
           </div>
-          <p className="text-sm font-extrabold leading-none text-foreground">
-            {effectiveOnline ? T("acceptingOrders") : T("tapToStart")}
-          </p>
-          <p className="text-[10px] text-muted-foreground">
-            {effectiveOnline ? "Tap to stop" : "Tap to begin"}
-          </p>
-        </button>
-      </div>
-
-      {/* ── Utility row: sound + blocking reason ── */}
-      <div className="mt-2.5 flex items-center justify-between gap-2">
-        <button
-          onClick={onToggleSilence}
-          className={`flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-[10px] font-bold transition-all ${
-            silenceOn
-              ? "border-error/20 bg-error/10 text-error"
-              : "border-border bg-muted/10 text-muted-foreground"
-          }`}
-          aria-label={silenceOn ? "Unmute notification sounds" : "Mute notification sounds"}
-        >
-          {silenceOn ? <VolumeX size={11} /> : <Volume2 size={11} />}
-          {silenceOn ? "Alerts muted" : "Alerts on"}
+          <div>
+            <p className="text-sm font-extrabold leading-tight text-foreground">
+              {effectiveOnline ? T("acceptingOrders") : T("tapToStart")}
+            </p>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">
+              {effectiveOnline ? "Tap to go offline" : "Tap to go online"}
+            </p>
+          </div>
         </button>
       </div>
     </header>
