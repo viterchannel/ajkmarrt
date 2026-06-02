@@ -119,8 +119,8 @@ export default function PenaltyHistory() {
 
   return (
     <PullToRefresh onRefresh={handlePullRefresh}>
-      <div className="min-h-screen bg-page-bg" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom, 8px)))" }}>
-        {/* Header */}
+      <div className="min-h-screen bg-page-bg">
+        {/* Header */
         <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-card px-4 pt-4 pb-3">
           <Link href="/profile">
             <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors hover:bg-muted">

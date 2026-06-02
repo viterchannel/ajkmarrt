@@ -107,8 +107,8 @@ export default function Settings() {
   const [promoNotif, setPromoNotif] = useSettingToggle("promos");
 
   return (
-    <div className="min-h-screen bg-page-bg" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom, 8px)))" }}>
-      {/* Header */}
+    <div className="min-h-screen bg-page-bg">
+      {/* Header */
       <div className="sticky top-0 z-20 bg-page-bg border-b border-border px-4 pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-3">
         <button
           onClick={() => navigate("/profile")}

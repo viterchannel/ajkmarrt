@@ -558,7 +558,7 @@ export default function Earnings() {
   };
 
   return (
-    <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg pb-[calc(4rem+env(safe-area-inset-bottom,0px))]">
+    <PullToRefresh onRefresh={handlePullRefresh} className="min-h-screen bg-page-bg">
       <div
         className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-5 pb-8"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
