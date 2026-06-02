@@ -81,6 +81,23 @@ function methodLabel(method: string | null): string {
   return method ? (map[method] ?? method) : "Password";
 }
 
+/* BUG #20: Validate IP addresses to prevent XSS */
+function isValidIP(ip: string | null): boolean {
+  if (!ip || typeof ip !== 'string') return false;
+  /* IPv4: 0-255.0-255.0-255.0-255 */
+  const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  /* IPv6: simplified check for hex digits and colons */
+  const ipv6Regex = /^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$/;
+  return ipv4Regex.test(ip) || ipv6Regex.test(ip);
+}
+
+/* BUG #20: Validate location strings to prevent XSS */
+function isValidLocation(location: string | null): boolean {
+  if (!location || typeof location !== 'string') return false;
+  /* Allow alphanumeric, spaces, hyphens, commas only */
+  return /^[a-zA-Z0-9\s,\-]*$/.test(location) && location.length < 100;
+}
+
 function deviceLabel(s: ActiveSession | LoginEntry): string {
   return s.deviceName ?? s.browser ?? s.os ?? "Unknown device";
 }
@@ -196,10 +213,10 @@ function SessionRow({ session, isFirst, onRevoke, revoking }: SessionRowProps) {
             </p>
           )}
           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-            {session.ip && (
+            {session.ip && isValidIP(session.ip) && (
               <span className="font-mono text-[11px] text-[#B0B0B0]">{session.ip}</span>
             )}
-            {session.location && (
+            {session.location && isValidLocation(session.location) && (
               <span className="text-[11px] text-[#B0B0B0]">{session.location}</span>
             )}
           </div>
@@ -538,10 +555,10 @@ export default function LoginHistory() {
                         </p>
                       )}
                       <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                        {entry.ip && (
+                        {entry.ip && isValidIP(entry.ip) && (
                           <span className="font-mono text-[11px] text-[#B0B0B0]">{entry.ip}</span>
                         )}
-                        {entry.location && (
+                        {entry.location && isValidLocation(entry.location) && (
                           <span className="text-[11px] text-[#B0B0B0]">{entry.location}</span>
                         )}
                       </div>

@@ -16,6 +16,7 @@ import { setAiTabActive } from "../lib/push";
 import { useAuth } from "../lib/rider-auth";
 import { useLanguage } from "../lib/useLanguage";
 import { useSocket } from "../lib/socket";
+import { toast } from "../hooks/use-toast";
 
 const log = createLogger("[Chat]");
 
@@ -1007,6 +1008,20 @@ export default function Chat() {
               { err: err instanceof Error ? err.message : String(err) },
               "[Chat] remoteAudio.play (call) failed"
             );
+            /* BUG #5: Provide user feedback when audio playback fails */
+            if (err instanceof Error && err.name === 'NotAllowedError') {
+              toast({
+                title: "Audio playback blocked",
+                description: "Enable audio playback in your browser settings to hear voice calls",
+                variant: "destructive"
+              });
+            } else {
+              toast({
+                title: "Voice call audio failed",
+                description: "Could not play audio during the call",
+                variant: "destructive"
+              });
+            }
           });
         }
       };
@@ -1090,6 +1105,20 @@ export default function Chat() {
               { err: err instanceof Error ? err.message : String(err) },
               "[Chat] remoteAudio.play (answer) failed"
             );
+            /* BUG #5: Provide user feedback when audio playback fails */
+            if (err instanceof Error && err.name === 'NotAllowedError') {
+              toast({
+                title: "Audio playback blocked",
+                description: "Enable audio playback in your browser settings to hear voice calls",
+                variant: "destructive"
+              });
+            } else {
+              toast({
+                title: "Voice call audio failed",
+                description: "Could not play audio during the call",
+                variant: "destructive"
+              });
+            }
           });
         }
       };
