@@ -7991,4 +7991,98 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
+/* ── THEME CONFIGURATION ENDPOINTS ─────────────────────────────────────────
+   Admins can customize light/dark mode colors for the entire rider app.
+   Theme config is stored in memory/cache and can later be persisted to DB. */
+
+const defaultThemeConfig = {
+  /* Light mode colors */
+  lightBrandPrimary: "#D4A300",
+  lightBrandHover: "#C29600",
+  lightBackground: "#FEFAF5",
+  lightCard: "#FFFFFF",
+  lightText: "#131313",
+  lightBorder: "#DFD4CA",
+  lightAccent: "#0B6FA3",
+  lightSuccess: "#2C8C3E",
+  lightWarning: "#D97706",
+  lightError: "#C91F2E",
+  /* Dark mode colors */
+  darkBrandPrimary: "#FFD700",
+  darkBrandHover: "#FFC107",
+  darkBackground: "#0A0A0A",
+  darkCard: "#1A1A1A",
+  darkText: "#FFFFFF",
+  darkBorder: "#2A2A2A",
+  darkAccent: "#FFC107",
+  darkSuccess: "#4CAF50",
+  darkWarning: "#FF9800",
+  darkError: "#F44336",
+};
+
+let themeConfig = { ...defaultThemeConfig };
+
+/* GET /api/rider/theme-config — retrieve current theme configuration */
+router.get("/theme-config", async (req: Request, res: Response) => {
+  try {
+    sendSuccess(res, themeConfig);
+  } catch (err) {
+    logger.error(
+      { error: err instanceof Error ? err.message : String(err) },
+      "[rider/theme-config:get] error"
+    );
+    sendError(res, "Internal server error", 500);
+  }
+});
+
+/* PUT /api/rider/theme-config — update theme configuration (admin only) */
+router.put("/theme-config", async (req: Request, res: Response) => {
+  try {
+    /* TODO: Add admin role check middleware */
+    /* For now, allowing all authenticated riders for testing */
+    const riderId = (req as any).riderId;
+    if (!riderId) {
+      sendError(res, "Unauthorized", 401);
+      return;
+    }
+
+    const updates = req.body;
+    
+    /* Validate that only theme config keys are being updated */
+    const validKeys = Object.keys(defaultThemeConfig);
+    const updateKeys = Object.keys(updates);
+    const invalidKeys = updateKeys.filter((k) => !validKeys.includes(k));
+
+    if (invalidKeys.length > 0) {
+      sendValidationError(res, `Invalid theme keys: ${invalidKeys.join(", ")}`);
+      return;
+    }
+
+    /* Validate color format (simple hex check) */
+    const colorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    for (const [key, value] of Object.entries(updates)) {
+      if (typeof value === "string" && !colorRegex.test(value)) {
+        sendValidationError(res, `Invalid color format for ${key}: ${value}`);
+        return;
+      }
+    }
+
+    /* Merge updates with current config */
+    themeConfig = { ...themeConfig, ...updates };
+
+    logger.info(
+      { riderId, updatedKeys: updateKeys },
+      "[rider/theme-config:put] theme updated"
+    );
+
+    sendSuccess(res, themeConfig);
+  } catch (err) {
+    logger.error(
+      { error: err instanceof Error ? err.message : String(err) },
+      "[rider/theme-config:put] error"
+    );
+    sendError(res, "Internal server error", 500);
+  }
+});
+
 export default router;

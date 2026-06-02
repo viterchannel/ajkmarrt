@@ -6,6 +6,8 @@ import { Link } from "wouter";
 import { toast } from "../../hooks/use-toast";
 import { useFontSize, type FontSizeLevel } from "../../lib/FontSizeContext";
 import { useTheme } from "../../lib/useTheme";
+import { useAuth } from "../../lib/rider-auth";
+import { ThemeAdminPanel } from "../admin/ThemeAdminPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,9 +42,13 @@ export function ProfileSettings({
   const { loading: langLoading } = useLanguage();
   const { fontSizeLevel, setFontSizeLevel } = useFontSize();
   const { isDark, toggleDark } = useTheme();
+  const { user } = useAuth();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteInput, setDeleteInput] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  /* Check if user is admin (has admin role or specific flag) */
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin" || (user as any)?.isAdmin === true;
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -198,6 +204,19 @@ export function ProfileSettings({
                   {T("notificationsLink")}
                 </span>
                 <span className="text-[10px] text-muted-foreground">{T("viewNotifications")}</span>
+              </div>
+            </div>
+            <ChevronRight size={16} className="text-muted-foreground" />
+          </Link>
+
+          {/* Admin Theme Control Panel — only visible to admin users */}
+          {isAdmin && (
+            <div className="border-b border-border/30 px-5 py-3.5">
+              <ThemeAdminPanel />
+            </div>
+          )}
+
+          <button
               </div>
             </div>
             <ChevronRight size={16} className="text-muted-foreground" />

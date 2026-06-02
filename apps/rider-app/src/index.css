@@ -90,49 +90,93 @@
   --login-otp-filled-border: #FFD700;
   --login-otp-filled-text: #FFD700;
   --login-btn-radius: 0.75rem;
+
+  /* Dynamic theme color variables — can be overridden by admin settings */
+  --color-brand-primary: #FFD700;
+  --color-brand-hover: #FFC107;
+  --color-theme-background: #0A0A0A;
+  --color-theme-card: #1A1A1A;
+  --color-theme-text: #FFFFFF;
+  --color-theme-border: #2A2A2A;
+  --color-theme-accent: #FFC107;
+  --color-theme-success: #4CAF50;
+  --color-theme-warning: #FF9800;
+  --color-theme-error: #F44336;
 }
 
-/* ── LIGHT MODE ────────────────────────────────────────────────────────── */
+/* ── LIGHT MODE (Professional) ────────────────────────────────────────── */
 .light {
-  /* Light mode palette — inverted colors for better readability */
-  --background: 0 0% 98%;         /* #F8F8F8 light gray */
-  --foreground: 0 0% 8%;          /* #141414 dark text */
-  --card: 0 0% 100%;              /* #FFFFFF card background */
-  --card-foreground: 0 0% 8%;     /* dark text on cards */
-  --border: 0 0% 88%;             /* #E0E0E0 light dividers */
-  --input: 0 0% 94%;              /* #F0F0F0 input background */
-  --ring: 51 100% 50%;            /* #FFD700 gold ring (unchanged) */
-  --primary: 51 100% 50%;         /* #FFD700 gold button */
-  --primary-foreground: 0 0% 4%;  /* dark text on buttons */
-  --secondary: 0 0% 94%;          /* #F0F0F0 light secondary */
-  --secondary-foreground: 0 0% 40%; /* #666666 muted text */
-  --muted: 0 0% 88%;              /* #E0E0E0 light muted */
-  --muted-foreground: 0 0% 40%;   /* #666666 muted text */
-  --accent: 45 100% 51%;          /* #FFC107 amber (unchanged) */
-  --accent-foreground: 0 0% 4%;   /* dark text on accent */
-  --destructive: 4 90% 58%;       /* #F44336 error red (unchanged) */
-  --destructive-foreground: 0 0% 100%; /* white text on error */
+  /* Professional light mode palette with warm undertones & excellent contrast
+     Inspired by modern enterprise applications (Stripe, GitHub, Figma) */
+  
+  /* Core palette — 18:1 contrast ratio for accessibility */
+  --background: 45 20% 97%;       /* #FEFAF5 warm off-white with cream tint */
+  --foreground: 0 0% 7%;          /* #131313 near-black text */
+  --card: 0 0% 100%;              /* #FFFFFF pure white for card elevation */
+  --card-foreground: 0 0% 7%;     /* #131313 dark text on cards */
+  
+  /* Semantic surfaces — visual hierarchy with warm tones */
+  --border: 20 25% 88%;           /* #DFD4CA warm taupe for borders & dividers */
+  --input: 45 30% 97%;            /* #FDFBF7 warm light for input backgrounds */
+  --ring: 42 95% 50%;             /* #D4A300 adjusted gold (darker for light) */
+  
+  /* Buttons & primary actions — professional gold for light mode */
+  --primary: 42 95% 50%;          /* #D4A300 muted gold — professional on light */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF white text on gold buttons */
+  
+  /* Secondary & supporting surfaces */
+  --secondary: 0 0% 95%;          /* #F2F2F2 light gray secondary */
+  --secondary-foreground: 0 0% 35%; /* #595959 mid-dark text */
+  
+  /* Muted states — proper hierarchy */
+  --muted: 30 35% 90%;            /* #E8DFD5 warm muted background */
+  --muted-foreground: 0 0% 48%;   /* #7A7A7A medium gray text */
+  
+  /* Accent — professional teal/blue for secondary highlights */
+  --accent: 200 90% 35%;          /* #0B6FA3 professional teal */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF white text on accent */
+  
+  /* Status colors — professional palette */
+  --destructive: 4 85% 48%;       /* #C91F2E professional red */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF white text on error */
 
-  /* Light mode brand tokens */
-  --color-surface: #F8F8F8;
-  --color-page-bg: #F8F8F8;
-  --color-card-dark: #FFFFFF;
-  --color-border-dark: #E0E0E0;
+  /* Light mode brand & semantic tokens — overriding defaults */
+  --color-surface: #FEFAF5;       /* Warm off-white background */
+  --color-page-bg: #FEFAF5;       /* Same everywhere for consistency */
+  --color-card-dark: #FFFFFF;     /* White cards on warm background */
+  --color-border-dark: #DFD4CA;   /* Warm taupe borders */
+  
+  /* Professional status colors for light mode */
+  --color-success: #2C8C3E;       /* Professional green */
+  --color-warning: #D97706;       /* Professional amber */
+  --color-error: #C91F2E;         /* Professional red */
 
-  /* Light mode login page tokens */
-  --login-brand: #FFC107;         /* Adjusted for contrast */
-  --login-brand-hover: #FFB300;
-  --login-brand-shadow: rgba(255, 193, 7, 0.2);
-  --login-brand-glow-sm: rgba(255, 193, 7, 0.2);
-  --login-brand-glow-md: rgba(255, 193, 7, 0.25);
-  --login-brand-glow-blob: rgba(255, 193, 7, 0.05);
-  --login-brand-border: rgba(255, 193, 7, 0.3);
-  --login-hero-from: #F8F8F8;
-  --login-hero-via: #FFFFFF;
-  --login-hero-to: #F0F0F0;
-  --login-otp-filled-bg: rgba(255, 193, 7, 0.1);
-  --login-otp-filled-border: #FFC107;
-  --login-otp-filled-text: #FF9800;
+  /* Login page — professional light theme */
+  --login-brand: #D4A300;         /* Muted gold for light buttons */
+  --login-brand-hover: #C29600;   /* Darker gold on hover */
+  --login-brand-shadow: rgba(212, 163, 0, 0.15);
+  --login-brand-glow-sm: rgba(212, 163, 0, 0.12);
+  --login-brand-glow-md: rgba(212, 163, 0, 0.18);
+  --login-brand-glow-blob: rgba(212, 163, 0, 0.04);
+  --login-brand-border: rgba(212, 163, 0, 0.25);
+  --login-hero-from: #FEFAF5;     /* Warm off-white gradient start */
+  --login-hero-via: #FDFBF7;      /* Gradient middle */
+  --login-hero-to: #F9F4EE;       /* Gradient end */
+  --login-otp-filled-bg: rgba(212, 163, 0, 0.08);
+  --login-otp-filled-border: #D4A300;
+  --login-otp-filled-text: #B8A300;
+
+  /* Dynamic theme color variables for light mode — overrideable by admin */
+  --color-brand-primary: #D4A300;
+  --color-brand-hover: #C29600;
+  --color-theme-background: #FEFAF5;
+  --color-theme-card: #FFFFFF;
+  --color-theme-text: #131313;
+  --color-theme-border: #DFD4CA;
+  --color-theme-accent: #0B6FA3;
+  --color-theme-success: #2C8C3E;
+  --color-theme-warning: #D97706;
+  --color-theme-error: #C91F2E;
 }
 
 /* No separate .dark block — app is always dark by default */

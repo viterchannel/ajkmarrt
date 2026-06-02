@@ -23,6 +23,7 @@ import { PushPermissionBanner } from "./components/PushPermissionBanner";
 import { Toaster } from "./components/ui/toaster";
 import { NetworkStatusBanner } from "./components/NetworkStatusBanner";
 import { PageShimmer } from "./components/ui/shimmer";
+import { ThemeConfigProvider } from "./components/ThemeConfigProvider";
 import { RiderAuthConfigProvider } from "./lib/AuthConfigContext";
 import { initAnalytics, trackEvent, identifyUser, resetUser, trackPageView } from "./lib/analytics";
 import { api, apiFetch, getApiBase, setApiTimeoutMs } from "./lib/api";
@@ -2259,16 +2260,18 @@ function App() {
             <RiderAuthConfigProvider>
               <RiderAuthProvider>
                 <ThemeProvider theme={riderTheme}>
-                  <AppLockProvider>
-                    <SocketProvider>
-                      <WouterRouter base={getRouterBase()}>
-                        <AppShell />
-                      </WouterRouter>
-                      <Toaster />
-                      <PwaInstallBanner />
-                      <PushPermissionBanner />
-                    </SocketProvider>
-                  </AppLockProvider>
+                  <ThemeConfigProvider>
+                    <AppLockProvider>
+                      <SocketProvider>
+                        <WouterRouter base={getRouterBase()}>
+                          <AppShell />
+                        </WouterRouter>
+                        <Toaster />
+                        <PwaInstallBanner />
+                        <PushPermissionBanner />
+                      </SocketProvider>
+                    </AppLockProvider>
+                  </ThemeConfigProvider>
                 </ThemeProvider>
               </RiderAuthProvider>
             </RiderAuthConfigProvider>
