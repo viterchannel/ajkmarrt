@@ -101,9 +101,20 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     setAdminChatUnread(0);
   }, []);
 
-  /* Persist admin chat messages to localStorage whenever they change */
+  /* Persist admin chat messages to localStorage with TTL cleanup for messages older than 7 days */
   useEffect(() => {
-    persistAdminChatMessages(adminChatMessages);
+    /* Filter out messages older than 7 days before persisting */
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const filtered = adminChatMessages.filter((msg) => {
+      try {
+        const msgTime = new Date(msg.sentAt).getTime();
+        return msgTime > sevenDaysAgo;
+      } catch {
+        /* If sentAt parsing fails, keep the message */
+        return true;
+      }
+    });
+    persistAdminChatMessages(filtered);
   }, [adminChatMessages]);
 
   /* Persist admin chat unread count to localStorage whenever it changes */
@@ -174,9 +185,18 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       socketRef.current = s;
       setSocket(s);
 
+      /* Queue to buffer socket messages arriving during reconnect sync.
+         This prevents ride/order events from being processed before the
+         REST API sync completes, which would cause ordering issues. */
+      let isSyncing = true;
+      type QueuedSocketMessage = { event: string; payload: unknown };
+      const messageQueue: QueuedSocketMessage[] = [];
+
       s.on("connect", () => {
-        log.info({ socketId: s.id }, "Socket connected — draining offline action queue");
-        setConnected(true);
+        log.info({ socketId: s.id }, "Socket connected — draining offline action queue and syncing pending requests");
+        isSyncing = true;
+        messageQueue.length = 0;
+        
         syncQueue().catch((err) => log.warn({ err }, "syncQueue failed after socket connect"));
         if (gpsTrackingRef.current) {
           /* GPS tracking enabled — flush queued pings to the server */
@@ -206,8 +226,23 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             { rides: data.rides.length, orders: data.orders.length },
             "Reconnect sync — pending requests fetched and cache populated"
           );
+          /* Mark sync complete and signal readiness to consumers.
+             Process any queued socket messages BEFORE marking connected. */
+          isSyncing = false;
+          messageQueue.forEach(({ event, payload }) => {
+            s.emit(event, payload);
+          });
+          messageQueue.length = 0;
+          setConnected(true);
         }).catch((err) => {
           log.warn({ err }, "Reconnect sync — failed to fetch pending requests after socket connect");
+          isSyncing = false;
+          /* Still mark as synced so queued messages are processed even on failure */
+          messageQueue.forEach(({ event, payload }) => {
+            s.emit(event, payload);
+          });
+          messageQueue.length = 0;
+          setConnected(true);
         });
       });
       s.on("disconnect", (reason) => {
@@ -240,8 +275,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       });
 
       /* Single authoritative admin:chat listener — persists across page navigation
-         because SocketProvider lives for the entire session. */
+         because SocketProvider lives for the entire session. Queue messages arriving
+         during reconnect sync so they are processed in correct order. */
       s.on("admin:chat", (raw: unknown) => {
+        /* Queue message if sync is still in progress, otherwise process immediately */
+        if (isSyncing) {
+          messageQueue.push({ event: "admin:chat", payload: raw });
+          return;
+        }
         const msg = parseAdminChatPayload(raw);
         if (!msg) return;
         const newMsg: AdminChatMessage = {
@@ -269,33 +310,31 @@ export function SocketProvider({ children }: { children: ReactNode }) {
          where real-time messages are missed between token refresh and the next
          polling tick. Registered on every socket lifecycle so the callback always
          references the current socket instance. */
+      let tokenRefreshPending = false;
       const handleTokenRefresh = () => {
+        /* Deduplicate concurrent refresh attempts (callback + any race conditions).
+           Only one reconnect per refresh cycle. */
+        if (tokenRefreshPending) return;
+        
         const freshToken = api.getToken();
         if (!freshToken) return;
+        
+        tokenRefreshPending = true;
         writeSocketAuth({ ...readSocketAuth(), token: freshToken });
         s.disconnect();
-        s.connect();
+        
+        /* Wait for disconnect to complete before reconnecting, then clear the flag */
+        s.once('disconnect', () => {
+          s.connect();
+          tokenRefreshPending = false;
+        });
       };
       const unregisterRefreshCallback = registerTokenRefreshCallback(handleTokenRefresh);
-
-      /* Polling fallback: detect token changes that don't come through the
-         callback (e.g. token set by other code paths). Interval reduced to 5 s
-         so the reconnect happens within 5 seconds at most. */
-      const tokenRefreshInterval = setInterval(() => {
-        const freshToken = api.getToken();
-        const current = readSocketAuth().token;
-        if (freshToken && freshToken !== current) {
-          writeSocketAuth({ ...readSocketAuth(), token: freshToken });
-          s.disconnect();
-          s.connect();
-        }
-      }, 5_000);
 
       /* Store teardown so the synchronous effect cleanup can call it even if
          the async setup finished after React triggered the cleanup. */
       teardown = () => {
         unregisterRefreshCallback();
-        clearInterval(tokenRefreshInterval);
         /* Emit rider:offline before disconnecting so the server is immediately
            notified on intentional teardown (logout / component unmount).
            Guard with s.connected so we never queue an emit that would fire

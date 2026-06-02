@@ -104,9 +104,18 @@ const Settings = lazy(() => import("./pages/Settings"));
  */
 function RedirectTo({ to }: { to: string }) {
   const [, navigate] = useLocation();
+  const { user, loading } = useAuth();
+  
   useEffect(() => {
-    navigate(to, { replace: true });
-  }, [to, navigate]);
+    /* Wait until auth context has settled (loading complete) before redirecting */
+    if (!loading) {
+      navigate(to, { replace: true });
+    }
+  }, [to, navigate, loading]);
+  
+  /* Show nothing while auth is loading to prevent flickering */
+  if (loading) return null;
+  
   return null;
 }
 

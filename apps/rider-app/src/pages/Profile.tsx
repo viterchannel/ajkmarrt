@@ -91,6 +91,20 @@ function formatCnic(raw: string): string {
   return `${digits.slice(0, 5)}-${digits.slice(5, 12)}-${digits.slice(12)}`;
 }
 
+function validateCnic(formatted: string): boolean {
+  /* Remove formatting characters and validate length is 13 digits */
+  const digits = formatted.replace(/\D/g, "");
+  if (digits.length !== 13) return false;
+  /* Use the shared validation from @workspace/phone-utils for checksum */
+  try {
+    const { isValidCnic } = require("@workspace/phone-utils");
+    return isValidCnic(formatted);
+  } catch {
+    /* Fallback: at least accept 13-digit format if phone-utils unavailable */
+    return /^\d{5}-\d{7}-\d{1}$/.test(formatted);
+  }
+}
+
 const INPUT =
   "w-full bg-[#2A2A2A] border border-white/[0.10] rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all";
 const SELECT =
@@ -529,26 +543,34 @@ export default function Profile() {
     }
   };
 
-  const startEdit = (section: EditSection) => {
-    if (section === "personal") {
+  const startEdit = (section: unknown) => {
+    /* Validate that section is one of the allowed values */
+    const validSections: EditSection[] = ["personal", "vehicle", "bank"];
+    if (typeof section !== "string" || !validSections.includes(section as any)) {
+      console.warn("[Profile] Invalid edit section attempted:", section);
+      return;
+    }
+    const validSection = section as EditSection;
+    
+    if (validSection === "personal") {
       setName(user?.name || "");
       setEmail(user?.email || "");
       setCnic(user?.cnic || "");
       setCity(user?.city || "");
       setAddress(user?.address || "");
       setEmergency(user?.emergencyContact || "");
-    } else if (section === "vehicle") {
+    } else if (validSection === "vehicle") {
       setVehicleType(user?.vehicleType || "");
       setVehiclePlate(user?.vehiclePlate || "");
       setVehicleRegNo(user?.vehicleRegNo || "");
       setDrivingLicense(user?.drivingLicense || "");
-    } else if (section === "bank") {
+    } else if (validSection === "bank") {
       setBankName(user?.bankName || "");
       setBankAccount(user?.bankAccount || "");
       setBankAccountTitle(user?.bankAccountTitle || "");
     }
-    if (section) setActiveTab(section);
-    setEditing(section);
+    if (validSection) setActiveTab(validSection);
+    setEditing(validSection);
   };
 
   /* Explicitly reset fields to current saved values when the user cancels editing.
@@ -617,8 +639,7 @@ export default function Profile() {
           }
         }
         if (cnic && cnic.trim()) {
-          const cnicPattern = /^\d{5}-\d{7}-\d{1}$/;
-          if (!cnicPattern.test(cnic.trim())) {
+          if (!validateCnic(cnic.trim())) {
             toast({ title: T("cnicFormatError"), variant: "destructive" });
             setSaving(false);
             return;

@@ -28,6 +28,40 @@ const REFRESH_KEY = "ajkmart_rider_refresh_token";
 let _inMemoryAccessToken = "";
 let _inMemoryRefreshToken = "";
 
+/* ── Capacitor Initialization ──────────────────────────────────────────────────
+   Wait for Capacitor plugin to be ready before using Preferences. On native apps,
+   the plugin may not be available immediately on startup. */
+async function waitForCapacitor(): Promise<void> {
+  if (typeof (window as any).Capacitor === "undefined") {
+    return; /* Not using Capacitor (web/PWA) */
+  }
+  
+  /* Poll for Capacitor readiness with timeout */
+  return new Promise<void>((resolve) => {
+    const maxAttempts = 50; /* 5 seconds with 100ms interval */
+    let attempts = 0;
+    
+    const checkReady = () => {
+      attempts++;
+      if ((window as any).Capacitor?.ready === true) {
+        resolve();
+        return;
+      }
+      if (attempts >= maxAttempts) {
+        log.warn("[api] Capacitor ready timeout — proceeding anyway");
+        resolve();
+        return;
+      }
+      setTimeout(checkReady, 100);
+    };
+    
+    checkReady();
+  });
+}
+
+/* Call waitForCapacitor at app startup */
+void waitForCapacitor();
+
 /* One-time purge of legacy refresh-token persistence. */
 try {
   if (typeof localStorage !== "undefined") {
@@ -41,15 +75,17 @@ try {
 }
 
 /* ── Preferences-backed async token storage ── */
-async function preferencesSet(key: string, value: string): Promise<void> {
+async function preferencesSet(key: string, value: string): Promise<boolean> {
   try {
     const { Preferences } = await import("@capacitor/preferences");
     await Preferences.set({ key, value });
+    return true;
   } catch (err) {
-    log.warn(
+    log.error(
       { key, err: err instanceof Error ? err.message : String(err) },
-      "[api] preferencesSet failed — token persistence unavailable"
+      "[api] preferencesSet failed — token will not persist on app restart"
     );
+    return false;
   }
 }
 
@@ -138,11 +174,13 @@ function sessionGet(): string {
 }
 function sessionSet(value: string): void {
   _inMemoryAccessToken = value;
-  preferencesSet(TOKEN_KEY, value).catch((err) => {
-    log.warn(
-      { err: err instanceof Error ? err.message : String(err) },
-      "[api] sessionSet persistence failed"
-    );
+  preferencesSet(TOKEN_KEY, value).then((success) => {
+    if (!success) {
+      log.warn(
+        { key: TOKEN_KEY },
+        "[api] sessionSet persistence failed — token stored in memory only"
+      );
+    }
   });
   /* Notify other open tabs that the token has been refreshed */
   try {
@@ -172,11 +210,13 @@ function localGet(): string {
 }
 function localSet(value: string): void {
   _inMemoryRefreshToken = value;
-  preferencesSet(REFRESH_KEY, value).catch((err) => {
-    log.warn(
-      { err: err instanceof Error ? err.message : String(err) },
-      "[api] localSet persistence failed"
-    );
+  preferencesSet(REFRESH_KEY, value).then((success) => {
+    if (!success) {
+      log.warn(
+        { key: REFRESH_KEY },
+        "[api] localSet persistence failed — token stored in memory only"
+      );
+    }
   });
 }
 function localRemove(): void {

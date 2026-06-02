@@ -56,6 +56,19 @@ export default function DepositModal({
   const [loadingMethods, setLoadingMethods] = useState(true);
   const [methodsError, setMethodsError] = useState(false);
 
+  /* Reset modal state when component unmounts (parent closes modal) */
+  useEffect(() => {
+    return () => {
+      setStep("amount");
+      setAmount("");
+      setMethod(null);
+      setTxId("");
+      setSenderAcNo("");
+      setNote("");
+      setErr("");
+    };
+  }, []);
+
   useEffect(() => {
     const abortCtrl = new AbortController();
     type ApiMethod = {
@@ -150,8 +163,8 @@ export default function DepositModal({
       }
     }
     if (selectedMethod?.id === "bank") {
-      const cleaned = senderAcNo.replace(/[\s-]/g, "");
-      const isIban = /^PK\d{2}[A-Z]{4}\d{16}$/i.test(cleaned);
+      const cleaned = senderAcNo.replace(/[\s-]/g, "").toUpperCase();
+      const isIban = /^PK\d{2}[A-Z]{4}\d{16}$/.test(cleaned);
       const isAccountNo = /^\d{8,20}$/.test(cleaned);
       if (!isIban && !isAccountNo) {
         setErr(T("validIbanHint"));

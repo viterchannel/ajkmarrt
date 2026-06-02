@@ -387,16 +387,17 @@ export function useHomeData(): UseHomeDataReturn {
     });
   }, [requestsData, allOrders, allRides]);
 
-  const currentIdsSig = useMemo(() =>
-    [...allOrders.map((o) => o.id), ...allRides.map((r) => r.id)].sort().join(","),
-    [allOrders, allRides]
-  );
+  /* Track current IDs using Set to detect new items (not reorders) */
+  const currentIdsSig = useMemo(() => {
+    const ids = [...allOrders.map((o) => o.id), ...allRides.map((r) => r.id)];
+    return new Set(ids);
+  }, [allOrders, allRides]);
 
   useEffect(() => {
     if (flashTimerRef.current) { clearTimeout(flashTimerRef.current); flashTimerRef.current = null; }
     if (announceTimerRef.current) { clearTimeout(announceTimerRef.current); announceTimerRef.current = null; }
 
-    const currentIds = new Set<string>(currentIdsSig.split(",").filter(Boolean));
+    const currentIds = currentIdsSig;
     const prevIds = prevIdsRef.current;
     let hasNew = false;
     let newCount = 0;
@@ -424,7 +425,7 @@ export function useHomeData(): UseHomeDataReturn {
           playRequestSound();
       }, 8000);
     }
-    prevIdsRef.current = currentIds;
+    prevIdsRef.current = new Set(currentIds);
   }, [currentIdsSig]);
 
   useEffect(() => {
@@ -1015,8 +1016,14 @@ export function useHomeData(): UseHomeDataReturn {
       return;
     }
     void runWithBiometricGate(() => {
+      /* Optimistic update: immediately set accepting state BEFORE mutation to prevent double-click */
       setAcceptingOrderId(id);
-      acceptOrderMut.mutate(id, { onSettled: () => setAcceptingOrderId(null), onSuccess: () => { if (user?.id) recordUsage(user.id, "accept_order"); } });
+      acceptOrderMut.mutate(id, { 
+        onSuccess: () => { 
+          if (user?.id) recordUsage(user.id, "accept_order"); 
+        },
+        onSettled: () => setAcceptingOrderId(null)
+      });
     });
   };
 
@@ -1030,8 +1037,14 @@ export function useHomeData(): UseHomeDataReturn {
       return;
     }
     void runWithBiometricGate(() => {
+      /* Optimistic update: immediately set accepting state BEFORE mutation to prevent double-click */
       setAcceptingId(id);
-      acceptRideMut.mutate(id, { onSettled: () => setAcceptingId(null), onSuccess: () => { if (user?.id) recordUsage(user.id, "accept_ride"); } });
+      acceptRideMut.mutate(id, { 
+        onSuccess: () => { 
+          if (user?.id) recordUsage(user.id, "accept_ride"); 
+        },
+        onSettled: () => setAcceptingId(null)
+      });
     });
   };
 

@@ -103,19 +103,48 @@ export async function enqueueAction(
     notifyListeners();
   } catch (err) {
     /* IndexedDB unavailable (private browsing, quota exceeded, etc.) — fall back
-       to the in-memory queue so the action is not silently dropped. The queue is
-       ephemeral but still retried by the background flush loop via getAll(). */
+       to localStorage, then in-memory queue as last resort. */
     console.warn(
-      "[queueManager] IndexedDB write failed — using in-memory fallback. Action will not survive a reload.",
+      "[queueManager] IndexedDB write failed — attempting localStorage fallback",
       err
     ); // eslint-disable-line no-console
-    _memQueue.push(action);
+    
+    let persisted = false;
+    try {
+      /* Try to persist to localStorage as a more reliable fallback than ephemeral memory */
+      if (typeof localStorage !== "undefined") {
+        const existingStr = localStorage.getItem("ajkm:action-queue-fallback");
+        const existing = existingStr ? JSON.parse(existingStr) as QueuedAction[] : [];
+        existing.push(action);
+        localStorage.setItem("ajkm:action-queue-fallback", JSON.stringify(existing));
+        persisted = true;
+        console.info(
+          "[queueManager] Action persisted to localStorage fallback",
+          { actionId: action.id }
+        ); // eslint-disable-line no-console
+      }
+    } catch (storageErr) {
+      console.warn(
+        "[queueManager] localStorage fallback also failed — using in-memory only",
+        storageErr
+      ); // eslint-disable-line no-console
+    }
+    
+    if (!persisted) {
+      /* Last resort: in-memory queue (ephemeral, won't survive reload) */
+      _memQueue.push(action);
+    }
+    
     /* Dispatch a browser event so UI components can surface a warning toast
        without coupling this non-React module to any component tree. */
     try {
       window.dispatchEvent(
         new CustomEvent("ajkm:queue-persistence-failed", {
-          detail: { actionType: action.type, actionId: action.id },
+          detail: { 
+            actionType: action.type, 
+            actionId: action.id,
+            persisted
+          },
         })
       );
     } catch {
@@ -141,8 +170,31 @@ async function getAll(): Promise<QueuedAction[]> {
     const merged = [...all, ..._memQueue.filter((m) => !all.some((a) => a.id === m.id))];
     return merged.sort((a, b) => a.createdAt - b.createdAt);
   } catch (err) {
-    console.warn("[queueManager] IndexedDB read failed — returning in-memory queue only", err); // eslint-disable-line no-console
-    return [..._memQueue].sort((a, b) => a.createdAt - b.createdAt);
+    console.warn("[queueManager] IndexedDB read failed — checking localStorage fallback", err); // eslint-disable-line no-console
+    
+    /* Try to load from localStorage fallback */
+    let storageFallback: QueuedAction[] = [];
+    try {
+      if (typeof localStorage !== "undefined") {
+        const stored = localStorage.getItem("ajkm:action-queue-fallback");
+        if (stored) {
+          storageFallback = JSON.parse(stored) as QueuedAction[];
+          console.info(
+            "[queueManager] Loaded actions from localStorage fallback",
+            { count: storageFallback.length }
+          ); // eslint-disable-line no-console
+        }
+      }
+    } catch (storageErr) {
+      console.warn("[queueManager] localStorage fallback read also failed", storageErr); // eslint-disable-line no-console
+    }
+    
+    /* Merge storage fallback with in-memory queue, removing duplicates */
+    const merged = [
+      ...storageFallback,
+      ..._memQueue.filter((m) => !storageFallback.some((a) => a.id === m.id))
+    ];
+    return merged.sort((a, b) => a.createdAt - b.createdAt);
   }
 }
 
@@ -152,6 +204,23 @@ async function removeAction(id: string): Promise<void> {
      and would otherwise be replayed indefinitely. */
   const memIdx = _memQueue.findIndex((a) => a.id === id);
   if (memIdx !== -1) _memQueue.splice(memIdx, 1);
+
+  /* Also remove from localStorage fallback if present */
+  try {
+    if (typeof localStorage !== "undefined") {
+      const stored = localStorage.getItem("ajkm:action-queue-fallback");
+      if (stored) {
+        const queue = (JSON.parse(stored) as QueuedAction[]).filter((a) => a.id !== id);
+        if (queue.length > 0) {
+          localStorage.setItem("ajkm:action-queue-fallback", JSON.stringify(queue));
+        } else {
+          localStorage.removeItem("ajkm:action-queue-fallback");
+        }
+      }
+    }
+  } catch (storageErr) {
+    console.warn("[queueManager] Failed to remove action from localStorage fallback:", storageErr); // eslint-disable-line no-console
+  }
 
   try {
     const db = await openDB();

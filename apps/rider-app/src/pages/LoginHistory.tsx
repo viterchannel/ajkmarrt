@@ -279,23 +279,30 @@ export default function LoginHistory() {
   useEffect(() => {
     let cancelled = false;
 
+    /* Fetch both endpoints in parallel and handle errors separately */
     Promise.all([
-      apiFetch<{ sessions: ActiveSession[] }>("/auth/sessions"),
-      apiFetch<{ history: LoginEntry[] }>("/login-history"),
-    ]).then(([sessData, histData]) => {
+      apiFetch<{ sessions: ActiveSession[] }>("/auth/sessions")
+        .then((data) => ({ ok: true as const, sessions: data?.sessions ?? [], error: null }))
+        .catch((err: unknown) => ({ ok: false as const, sessions: [], error: err instanceof Error ? err.message : "Failed to load sessions" })),
+      apiFetch<{ history: LoginEntry[] }>("/login-history")
+        .then((data) => ({ ok: true as const, entries: data?.history ?? [], error: null }))
+        .catch((err: unknown) => ({ ok: false as const, entries: [], error: err instanceof Error ? err.message : "Failed to load login history" })),
+    ]).then(([sessResult, histResult]) => {
       if (cancelled) return;
-      setSessions(sessData?.sessions ?? []);
-      setEntries(histData?.history ?? []);
-    }).catch((e: unknown) => {
+      setSessions(sessResult.sessions);
+      setEntries(histResult.entries);
+      if (sessResult.error) setSessionsError(sessResult.error);
+      if (histResult.error) setHistoryError(histResult.error);
+      setSessionsLoading(false);
+      setHistoryLoading(false);
+    }).catch((err: unknown) => {
+      /* Catch-all for unexpected errors (e.g., Promise.all internal failure) */
       if (cancelled) return;
-      const msg = e instanceof Error ? e.message : "Failed to load data";
+      const msg = err instanceof Error ? err.message : "Unexpected error";
       setSessionsError(msg);
       setHistoryError(msg);
-    }).finally(() => {
-      if (!cancelled) {
-        setSessionsLoading(false);
-        setHistoryLoading(false);
-      }
+      setSessionsLoading(false);
+      setHistoryLoading(false);
     });
 
     return () => { cancelled = true; };
