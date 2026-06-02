@@ -132,7 +132,7 @@ function PasswordChangeSection({
                 ))}
               </div>
               <p
-                className={`text-[10px] font-bold ${strength.level <= 1 ? "text-error" : strength.level <= 2 ? "text-warning" : strength.level <= 3 ? "text-yellow-600" : "text-success"}`}
+                className={`text-xs font-bold ${strength.level <= 1 ? "text-error" : strength.level <= 2 ? "text-warning" : strength.level <= 3 ? "text-yellow-600" : "text-success"}`}
               >
                 {T(strength.label) || strength.labelEn}
               </p>

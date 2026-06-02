@@ -175,10 +175,11 @@ function txMeta(type: string) {
     return { labelKey: "earnings" as TranslationKey, badge: "bg-success/15 text-success" };
   if (type === "bonus")
     return { labelKey: "bonus" as TranslationKey, badge: "bg-blue-500/15 text-blue-400" };
+  /* Fixed dark-mode: bg-purple-100 text-purple-700 and text-pink-700 are light-mode only */
   if (type === "loyalty")
-    return { labelKey: "loyalty" as TranslationKey, badge: "bg-purple-100 text-purple-700" };
+    return { labelKey: "loyalty" as TranslationKey, badge: "bg-purple-500/15 text-purple-400" };
   if (type === "cashback")
-    return { labelKey: "cashback" as TranslationKey, badge: "bg-pink-500/15 text-pink-700" };
+    return { labelKey: "cashback" as TranslationKey, badge: "bg-pink-500/15 text-pink-400" };
   if (type === "platform_fee")
     return { labelKey: "platformFare" as TranslationKey, badge: "bg-warning/15 text-warning" };
   if (type === "deposit")
@@ -252,7 +253,7 @@ function EarningsChart({ transactions }: { transactions: WalletTx[] }) {
               />
             </div>
             <p
-              className={`text-[10px] font-semibold ${i === bestIdx ? "text-brand" : "text-muted-foreground"}`}
+              className={`text-xs font-semibold ${i === bestIdx ? "text-brand" : "text-muted-foreground"}`}
             >
               {d.label}
             </p>
@@ -351,7 +352,7 @@ function PendingRequestCard({ tx }: { tx: WalletTx }) {
         <div className="flex-shrink-0 text-right">
           <p className="text-lg font-black text-foreground">{fc(Number(tx.amount), cardCurrency, cardCurrencyCode)}</p>
           <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${statusConfig.badge} inline-flex items-center gap-1`}
+            className={`rounded-full px-2 py-0.5 text-xs font-bold ${statusConfig.badge} inline-flex items-center gap-1`}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${statusConfig.dot} ${status === "pending" ? "animate-pulse" : ""}`}
@@ -361,11 +362,11 @@ function PendingRequestCard({ tx }: { tx: WalletTx }) {
         </div>
       </div>
       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-        <p className="text-[10px] text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {fd(tx.createdAt)} · {fdr(tx.createdAt)}
         </p>
         {refNo && status !== "rejected" && (
-          <p className="text-[10px] font-bold text-muted-foreground">
+          <p className="text-xs font-bold text-muted-foreground">
             {isBankTransfer ? "UTR" : "Ref"}: {refNo}
           </p>
         )}
@@ -375,11 +376,11 @@ function PendingRequestCard({ tx }: { tx: WalletTx }) {
           <p className="text-xs font-medium text-error">
             {T("reason")}: {refNo}
           </p>
-          <p className="mt-0.5 text-[10px] text-error">{T("amountRefunded")}</p>
+          <p className="mt-0.5 text-xs text-error">{T("amountRefunded")}</p>
         </div>
       )}
       {status === "pending" && (
-        <p className="mt-2 text-[10px] font-medium text-warning">{T("adminProcess24h")}</p>
+        <p className="mt-2 text-xs font-medium text-warning">{T("adminProcess24h")}</p>
       )}
     </div>
   );
@@ -801,7 +802,7 @@ export default function Wallet() {
             {isBalanceStale && !balanceHidden && (
               <div className="mb-2 flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5">
                 <AlertTriangle size={9} className="text-warning" />
-                <span className="text-[10px] font-bold text-warning">{T("cached")}</span>
+                <span className="text-xs font-bold text-warning">{T("cached")}</span>
               </div>
             )}
           </div>
@@ -810,7 +811,7 @@ export default function Wallet() {
             {user?.isOnline && (
               <div className="flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5">
                 <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
-                <span className="text-[10px] font-bold text-success">
+                <span className="text-xs font-bold text-success">
                   {T("online" as TranslationKey)}
                 </span>
               </div>
@@ -818,7 +819,7 @@ export default function Wallet() {
             {pendingAmt > 0 && (
               <div className="flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5">
                 <Clock size={9} className="text-warning" />
-                <span className="text-[10px] font-bold text-warning">
+                <span className="text-xs font-bold text-warning">
                   {fc(pendingAmt, currency, currencyCode)} {T("pending")}
                 </span>
               </div>
@@ -827,7 +828,7 @@ export default function Wallet() {
 
           <div className="mb-3 grid grid-cols-3 gap-2.5">
             <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
-              <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+              <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 {T("earnedToday")}
               </p>
               <p className="mt-0.5 text-sm font-black text-success">
@@ -835,13 +836,13 @@ export default function Wallet() {
               </p>
             </div>
             <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
-              <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+              <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 {T("yourShare" as TranslationKey)}
               </p>
               <p className="mt-0.5 text-sm font-black text-foreground">{riderKeepPct}%</p>
             </div>
             <div className="rounded-2xl border border-border/60 bg-muted/20 px-3 py-2.5 backdrop-blur-sm">
-              <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+              <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 {T("totalWithdrawn")}
               </p>
               <p className="mt-0.5 text-sm font-black text-muted-foreground">
@@ -853,13 +854,13 @@ export default function Wallet() {
           {promoBalance > 0 && (
             <div className="mb-5 flex items-center justify-between rounded-2xl border border-purple-400/20 bg-gradient-to-br from-purple-600/25 to-indigo-600/20 px-4 py-3.5 backdrop-blur-sm">
               <div>
-                <p className="flex items-center gap-1 text-[10px] font-bold tracking-wider text-purple-300 uppercase">
+                <p className="flex items-center gap-1 text-xs font-bold tracking-wider text-purple-300 uppercase">
                   <Sparkles size={9} /> {T("promoBalance")}
                 </p>
                 <p className="mt-0.5 text-xl font-black text-foreground">
                   {balanceHidden ? "••••" : fc(promoBalance, currency, currencyCode)}
                 </p>
-                <p className="mt-0.5 text-[10px] text-muted-foreground">{T("bonusesCashbackLoyalty")}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{T("bonusesCashbackLoyalty")}</p>
               </div>
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl border border-purple-400/20 bg-purple-500/20">
                 <Sparkles size={16} className="text-purple-300" />
@@ -874,7 +875,7 @@ export default function Wallet() {
                 <p className="text-xs font-bold text-warning">
                   {T("cashMinBalance")}: {fc(minBalance, currency, currencyCode)}
                 </p>
-                <p className="text-[10px] text-warning/60">
+                <p className="text-xs text-warning/60">
                   {currency} {Math.round(minBalance - balanceNum)} {T("moreNeeded")}
                 </p>
               </div>
@@ -882,7 +883,7 @@ export default function Wallet() {
           )}
 
           {procDays > 0 && (
-            <p className="mb-3 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <p className="mb-3 flex items-center gap-1.5 text-xs text-muted-foreground">
               <Clock size={9} className="text-muted-foreground" />
               {T("walletProcessingTime")}: {procDays * 24}–{procDays * 24 + 24}h
             </p>
@@ -909,7 +910,7 @@ export default function Wallet() {
                     <AlertTriangle size={14} className="mt-0.5 flex-shrink-0 text-warning" />
                     <div>
                       <p className="text-xs font-bold text-warning">{T("bankAccountRequiredHeader")}</p>
-                      <p className="mt-0.5 text-[10px] text-warning/70">
+                      <p className="mt-0.5 text-xs text-warning/70">
                         {T("addBankDetailsHint")}
                       </p>
                     </div>
@@ -922,7 +923,7 @@ export default function Wallet() {
                     <ShieldCheck size={14} className="mt-0.5 flex-shrink-0 text-blue-400" />
                     <div>
                       <p className="text-xs font-bold text-blue-300">KYC verification required</p>
-                      <p className="mt-0.5 text-[10px] text-blue-400/70">
+                      <p className="mt-0.5 text-xs text-blue-400/70">
                         Your documents must be verified before withdrawing. Status:{" "}
                         <span className="font-semibold capitalize">
                           {(user as { kycStatus?: string } | null)?.kycStatus ?? "none"}
@@ -941,7 +942,7 @@ export default function Wallet() {
                       <p className="text-xs font-bold text-warning">Verification required</p>
                       <div className="mt-1 space-y-0.5">
                         {withdrawMissing.map((v) => (
-                          <p key={v} className="flex items-center gap-1 text-[10px] text-warning/70">
+                          <p key={v} className="flex items-center gap-1 text-xs text-warning/70">
                             <span className="h-1 w-1 flex-shrink-0 rounded-full bg-warning" />
                             {v === "phone_verified" && "Phone number not verified"}
                             {v === "email_verified" && "Email address not verified"}
@@ -1105,7 +1106,7 @@ export default function Wallet() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-foreground">{T("codCashBalance")}</p>
-                  <p className="text-[10px] text-muted-foreground">{T("cashOnDelivery")}</p>
+                  <p className="text-xs text-muted-foreground">{T("cashOnDelivery")}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -1114,7 +1115,7 @@ export default function Wallet() {
                 >
                   {fc(codNetOwed, currency, currencyCode)}
                 </p>
-                <p className="flex items-center justify-end gap-1 text-[10px] text-muted-foreground">
+                <p className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
                   {codNetOwed > 0 ? (
                     T("remitCodCashBtn")
                   ) : (
@@ -1129,11 +1130,11 @@ export default function Wallet() {
             <div className="grid grid-cols-3 gap-2 border-t border-border/30 px-5 pt-3 pb-3 text-center">
               <div className="rounded-xl bg-card py-2">
                 <p className="text-xs font-black text-foreground">{fc(codCollected, currency, currencyCode)}</p>
-                <p className="text-[9px] font-medium text-muted-foreground">{T("collected")}</p>
+                <p className="text-[11px] font-medium text-muted-foreground">{T("collected")}</p>
               </div>
               <div className="rounded-xl bg-card py-2">
                 <p className="text-xs font-black text-success">{fc(codVerified, currency, currencyCode)}</p>
-                <p className="text-[9px] font-medium text-muted-foreground">{T("verified")}</p>
+                <p className="text-[11px] font-medium text-muted-foreground">{T("verified")}</p>
               </div>
               <div className="rounded-xl bg-card py-2">
                 <p
@@ -1141,7 +1142,7 @@ export default function Wallet() {
                 >
                   {fc(codNetOwed, currency, currencyCode)}
                 </p>
-                <p className="text-[9px] font-medium text-muted-foreground">{T("owed")}</p>
+                <p className="text-[11px] font-medium text-muted-foreground">{T("owed")}</p>
               </div>
             </div>
 
@@ -1228,7 +1229,7 @@ export default function Wallet() {
                           {parts[0] || "Remittance"}
                         </p>
                         <div className="mt-0.5 flex items-center gap-1.5">
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-xs text-muted-foreground">
                             {new Date(r.createdAt).toLocaleDateString("en-PK", {
                               day: "numeric",
                               month: "short",
@@ -1320,7 +1321,7 @@ export default function Wallet() {
                                 {dep.method || "Deposit"}
                               </p>
                               <div className="mt-0.5 flex items-center gap-1.5">
-                                <p className="text-[10px] text-muted-foreground">
+                                <p className="text-xs text-muted-foreground">
                                   {new Date(dep.createdAt).toLocaleDateString("en-PK", {
                                     day: "numeric",
                                     month: "short",
@@ -1334,7 +1335,7 @@ export default function Wallet() {
                                 </span>
                               </div>
                               {dep.note && (
-                                <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
+                                <p className="mt-0.5 truncate text-xs text-muted-foreground">
                                   {dep.note}
                                 </p>
                               )}
@@ -1362,7 +1363,7 @@ export default function Wallet() {
               <div className="flex items-center gap-2.5">
                 <span className="text-sm font-bold text-foreground">{T("withdrawalRequests")}</span>
                 {pendingRequests.length > 0 && (
-                  <span className="flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-bold text-warning">
+                  <span className="flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-xs font-bold text-warning">
                     <Clock size={9} /> {pendingRequests.length} {T("pending")}
                   </span>
                 )}
@@ -1442,7 +1443,7 @@ export default function Wallet() {
           <div className="px-5 pt-5 pb-3">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-bold text-foreground">{T("transactionHistoryTitle")}</p>
-              <span className="text-[10px] font-medium text-muted-foreground">
+              <span className="text-xs font-medium text-muted-foreground">
                 {filtered.length} {T("records")}
               </span>
             </div>
@@ -1487,7 +1488,7 @@ export default function Wallet() {
                     <p className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                       {resolveGroupLabel(group.label)}
                     </p>
-                    <span className="text-[10px] text-muted-foreground">{group.items.length}</span>
+                    <span className="text-xs text-muted-foreground">{group.items.length}</span>
                   </div>
                   <div className="divide-y divide-gray-50">
                     {group.items.map((t: WalletTx) => {
@@ -1514,7 +1515,7 @@ export default function Wallet() {
                               {t.description}
                             </p>
                             <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                              <p className="text-[10px] text-muted-foreground">{fdr(t.createdAt)}</p>
+                              <p className="text-xs text-muted-foreground">{fdr(t.createdAt)}</p>
                               <span
                                 className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold ${meta.badge}`}
                               >
@@ -1572,7 +1573,7 @@ export default function Wallet() {
                 </div>
               )}
               {!hasNextPage && transactions.length > 0 && (
-                <p className="py-3 text-center text-[10px] text-muted-foreground">
+                <p className="py-3 text-center text-xs text-muted-foreground">
                   {T("allTransactionsSecure")}
                 </p>
               )}
@@ -1596,7 +1597,7 @@ export default function Wallet() {
                 key={p.label}
                 className="rounded-xl border border-success/20 bg-card px-3 py-2.5"
               >
-                <p className="text-[10px] font-bold tracking-wider text-success/60 uppercase">
+                <p className="text-xs font-bold tracking-wider text-success/60 uppercase">
                   {p.label}
                 </p>
                 <p className="mt-0.5 text-sm font-black text-success">{p.value}</p>
@@ -1605,7 +1606,7 @@ export default function Wallet() {
           </div>
         </div>
 
-        <p className="flex items-center justify-center gap-1.5 pb-2 text-center text-[10px] text-muted-foreground">
+        <p className="flex items-center justify-center gap-1.5 pb-2 text-center text-xs text-muted-foreground">
           <ShieldCheck size={10} /> {T("allTransactionsSecure")} {config.platform.appName}
         </p>
       </div>

@@ -295,7 +295,7 @@ function CompletedRidesList({
             disabled={isFetching}
             className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border py-3 text-sm font-bold text-muted-foreground active:bg-muted disabled:opacity-50"
           >
-            {isFetching ? "Loading…" : "Load more"}
+            {isFetching ? T("loading") : T("loadMoreLabel")}
           </button>
         </div>
       )}
@@ -338,13 +338,13 @@ function CompletedRidesList({
 
               <div className="space-y-3 rounded-2xl border border-success/20 bg-success/5 p-4">
                 {[
-                  { label: "Amount Earned", value: `+${formatCurrency(getAmount(selectedRide))}`, bold: true, color: "text-success" },
-                  { label: "Date", value: formatDate(selectedRide.createdAt), bold: false, color: "text-foreground" },
-                  ...(selectedRide.origin ? [{ label: "From", value: selectedRide.origin, bold: false, color: "text-foreground" }] : []),
-                  ...(selectedRide.destination ? [{ label: "To", value: selectedRide.destination, bold: false, color: "text-foreground" }] : []),
-                  ...(selectedRide.deliveryAddress ? [{ label: "Delivery", value: selectedRide.deliveryAddress, bold: false, color: "text-foreground" }] : []),
-                  ...(selectedRide.distance ? [{ label: "Distance", value: `${Number(selectedRide.distance).toFixed(1)} km`, bold: false, color: "text-foreground" }] : []),
-                  ...(selectedRide.vendorStoreName ? [{ label: "Restaurant", value: selectedRide.vendorStoreName, bold: false, color: "text-foreground" }] : []),
+                  { label: T("yourEarnings"), value: `+${formatCurrency(getAmount(selectedRide))}`, bold: true, color: "text-success" },
+                  { label: T("receiptDate"), value: formatDate(selectedRide.createdAt), bold: false, color: "text-foreground" },
+                  ...(selectedRide.origin ? [{ label: T("receiptFrom"), value: selectedRide.origin, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.destination ? [{ label: T("receiptTo"), value: selectedRide.destination, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.deliveryAddress ? [{ label: T("deliveryLabel"), value: selectedRide.deliveryAddress, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.distance ? [{ label: T("receiptDistance"), value: `${Number(selectedRide.distance).toFixed(1)} km`, bold: false, color: "text-foreground" }] : []),
+                  ...(selectedRide.vendorStoreName ? [{ label: T("vendorRestaurantLabel"), value: selectedRide.vendorStoreName, bold: false, color: "text-foreground" }] : []),
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">{row.label}</span>
@@ -355,11 +355,12 @@ function CompletedRidesList({
                 ))}
               </div>
 
+              {/* Fixed: text-foreground on green bg → text-white (WCAG contrast) */}
               <button
                 onClick={() => handleShare(selectedRide)}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-success py-3.5 text-sm font-extrabold text-foreground active:opacity-80"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-success py-3.5 text-sm font-extrabold text-white active:opacity-80"
               >
-                <Share2 size={15} /> Share Receipt
+                <Share2 size={15} /> {T("shareReceipt")}
               </button>
             </div>
           </div>
@@ -951,7 +952,7 @@ export default function Earnings() {
                         )}
                         <div>
                           <p className="text-sm font-bold text-foreground">{m.label}</p>
-                          <p className="text-[10px] text-muted-foreground">{m.deliveries} deliveries</p>
+                          <p className="text-xs text-muted-foreground">{m.deliveries} deliveries</p>
                         </div>
                       </div>
                       <p className="text-sm font-extrabold text-success">

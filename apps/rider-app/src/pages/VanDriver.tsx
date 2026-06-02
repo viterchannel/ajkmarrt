@@ -819,7 +819,7 @@ export default function VanDriver() {
                               ? `${passenger.passengerName || passenger.userName || T("passenger")} · ${status}`
                               : T("free")
                           }
-                          className={`flex h-7 items-center justify-center rounded text-[10px] font-bold ${cls} cursor-default select-none`}
+                          className={`flex h-7 items-center justify-center rounded text-[11px] font-bold ${cls} cursor-default select-none`}
                         >
                           {seatNum}
                         </div>
@@ -830,15 +830,15 @@ export default function VanDriver() {
                 <div className="mt-2.5 flex flex-wrap gap-3">
                   <div className="flex items-center gap-1">
                     <div className="h-3 w-3 rounded border border-border bg-muted" />
-                    <span className="text-[10px] text-muted-foreground">{T("free")}</span>
+                    <span className="text-xs text-muted-foreground">{T("free")}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="h-3 w-3 rounded bg-blue-500" />
-                    <span className="text-[10px] text-muted-foreground">{T("confirmed")}</span>
+                    <span className="text-xs text-muted-foreground">{T("confirmed")}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="h-3 w-3 rounded bg-success" />
-                    <span className="text-[10px] text-muted-foreground">{T("boardedStatus")}</span>
+                    <span className="text-xs text-muted-foreground">{T("boardedStatus")}</span>
                   </div>
                 </div>
               </div>
@@ -888,7 +888,7 @@ export default function VanDriver() {
                                   className={`${tb.bg} ${tb.text} inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-bold`}
                                 >
                                   {T("seatLabel").replace("{n}", String(s))}
-                                  <span className="text-[10px] font-medium opacity-75">
+                                  <span className="text-[11px] font-medium opacity-75">
                                     {T(TIER_LABEL_KEYS[tier])}
                                   </span>
                                 </span>

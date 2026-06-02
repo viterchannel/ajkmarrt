@@ -165,16 +165,18 @@ export function ActiveOrderPanel({
             <OrderTypeIcon type={type} />
           </div>
           <div className="relative min-w-0 flex-1">
-            <p className="text-lg font-black text-foreground capitalize">{type} Order</p>
-            <p className="mt-0.5 font-mono text-xs text-foreground/70">#{id.slice(-6).toUpperCase()}</p>
+            {/* Header text → text-white for WCAG contrast on colored gradient bg */}
+            <p className="text-lg font-black text-white capitalize">{type} Order</p>
+            <p className="mt-0.5 font-mono text-xs text-white/60">#{id.slice(-6).toUpperCase()}</p>
           </div>
           <div className="relative text-right">
-            <p className="text-xl font-black tracking-tight text-foreground">
+            <p className="text-xl font-black tracking-tight text-white">
               {formatCurrency(order.total as string | number, currency)}
             </p>
-            <div className="mt-1 rounded-lg border border-border bg-card/15 px-2.5 py-1 backdrop-blur-sm">
-              <p className="text-[10px] font-bold text-foreground">
-                You earn {formatCurrency(riderEarning, currency)}
+            {/* Fixed hardcoded "You earn" English → T() for i18n */}
+            <div className="mt-1 rounded-lg border border-white/20 bg-white/15 px-2.5 py-1 backdrop-blur-sm">
+              <p className="text-[11px] font-bold text-white">
+                {T("youEarnLabel")} {formatCurrency(riderEarning, currency)}
               </p>
             </div>
           </div>
@@ -220,7 +222,7 @@ export function ActiveOrderPanel({
 
             {Array.isArray(order.items) && (order.items as unknown[]).length > 0 && (
               <div className="rounded-2xl border border-border bg-card p-4">
-                <p className="mb-3 flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                <p className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                   <Package size={11} /> Items to Collect ({(order.items as unknown[]).length})
                 </p>
                 <div className="space-y-2">
@@ -400,7 +402,7 @@ export function ActiveOrderPanel({
 
             {/* Customer contact — full-width row for easy thumb reach */}
             <div className="overflow-hidden rounded-2xl border border-border bg-card">
-              <p className="px-4 pt-3 pb-1 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+              <p className="px-4 pt-3 pb-1 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 Contact Customer
               </p>
               <div className="grid grid-cols-3 gap-2 p-3">
@@ -459,18 +461,18 @@ export function ActiveOrderPanel({
                 {T("proofOfDelivery")} ({T("recommended")})
               </p>
 
-              {/* Mode toggle — only shown when no proof captured yet */}
+              {/* Mode toggle — py-2 → py-2.5 for minimum 44px touch target */}
               {!proofPhoto && (
                 <div className="mb-3 flex overflow-hidden rounded-xl border border-blue-500/30 bg-muted">
                   <button
                     onClick={() => setProofMode("photo")}
-                    className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
+                    className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
                   >
                     <Camera size={13} /> Take Photo
                   </button>
                   <button
                     onClick={() => setProofMode("signature")}
-                    className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-bold transition-colors ${proofMode === "signature" ? "bg-blue-600 text-white" : "text-blue-500"}`}
+                    className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${proofMode === "signature" ? "bg-blue-600 text-white" : "text-blue-500"}`}
                   >
                     <PenLine size={13} /> Signature
                   </button>
@@ -587,10 +589,10 @@ export function ActiveOrderPanel({
             </button>
 
             <div>
-              <div className="flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-xl border-2 border-border bg-card py-3 text-sm font-bold text-muted-foreground">
+              <div className="flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-xl border-2 border-border bg-card py-3 text-sm font-bold text-muted-foreground opacity-50">
                 <ChevronRight size={14} className="rotate-180" /> {T("backToStoreStep")}
               </div>
-              <p className="mt-1 text-center text-[10px] text-muted-foreground">
+              <p className="mt-1 text-center text-xs text-muted-foreground">
                 Cannot go back — server already recorded pickup. Contact support if needed.
               </p>
             </div>

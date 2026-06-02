@@ -207,7 +207,7 @@ export default function Reviews() {
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ${
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${
                       review.rideId ? "bg-success/10 text-success" : "bg-blue-500/10 text-blue-400"
                     }`}
                   >
@@ -222,11 +222,11 @@ export default function Reviews() {
                     )}
                   </span>
                   {(review.orderId || review.rideId) && (
-                    <p className="mt-1 max-w-[120px] truncate font-mono text-[10px] text-muted-foreground">
+                    <p className="mt-1 max-w-[120px] truncate font-mono text-xs text-muted-foreground">
                       #{(review.orderId ?? review.rideId ?? "").slice(-8).toUpperCase()}
                     </p>
                   )}
-                  <p className="mt-0.5 text-[10px] text-muted-foreground">{formatDate(review.createdAt)}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{formatDate(review.createdAt)}</p>
                 </div>
               </div>
 

@@ -195,7 +195,7 @@ function RideReceiptSheet({
             </h3>
             <div className="mt-0.5 flex items-center gap-2 flex-wrap">
               <span className="text-xs text-muted-foreground">{formatDate(item.createdAt, tz)}</span>
-              <span className="text-[10px] font-bold text-brand/60">#{item.id.slice(-6).toUpperCase()}</span>
+              <span className="text-xs font-bold text-brand/60">#{item.id.slice(-6).toUpperCase()}</span>
             </div>
           </div>
           <div className="ml-3 flex items-center gap-2 flex-shrink-0">
@@ -249,7 +249,7 @@ function RideReceiptSheet({
                     <MapPin size={12} className="text-success" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                       {T("pickup")}
                     </p>
                     <p className="text-sm font-medium text-muted-foreground">{item.origin}</p>
@@ -265,7 +265,7 @@ function RideReceiptSheet({
                     <MapPin size={12} className="text-error" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                    <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                       {T("dropLabel")}
                     </p>
                     <p className="text-sm font-medium text-muted-foreground">{item.destination}</p>
@@ -529,7 +529,7 @@ export default function History() {
               {showingCachedData && (
                 <div className="mt-1.5 flex items-center gap-1.5 rounded-full bg-warning/20 border border-amber-400/30 px-2.5 py-1 w-fit">
                   <WifiOff size={10} className="text-warning" />
-                  <span className="text-[10px] font-semibold text-warning">{T("showingLastSavedData")}</span>
+                  <span className="text-xs font-semibold text-warning">{T("showingLastSavedData")}</span>
                 </div>
               )}
             </div>
@@ -597,7 +597,7 @@ export default function History() {
             </button>
           ))}
         </div>
-        <p className="px-1 text-[10px] text-muted-foreground">
+        <p className="px-1 text-xs text-muted-foreground">
           {T("tapToViewReceipt")}
         </p>
         </div>
@@ -685,7 +685,7 @@ export default function History() {
                           </p>
                         )}
                         <span
-                          className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                          className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
                             completed
                               ? "bg-success/15 text-success"
                               : cancelled

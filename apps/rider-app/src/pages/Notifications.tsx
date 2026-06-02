@@ -128,9 +128,10 @@ type TypeInfo = {
 };
 
 function typeInfo(type: string): TypeInfo {
+  /* All icons inside gradient wells must be text-white — text-foreground fails WCAG on colored bg */
   if (type === "order")
     return {
-      icon: <Package size={20} className="text-foreground" />,
+      icon: <Package size={20} className="text-white" />,
       label: "Order",
       gradient: "from-blue-500 to-indigo-600",
       badge: "bg-blue-500/15 text-blue-400",
@@ -139,7 +140,7 @@ function typeInfo(type: string): TypeInfo {
     };
   if (type === "wallet")
     return {
-      icon: <Wallet size={20} className="text-foreground" />,
+      icon: <Wallet size={20} className="text-white" />,
       label: "Wallet",
       gradient: "from-green-500 to-emerald-600",
       badge: "bg-success/15 text-success",
@@ -148,25 +149,27 @@ function typeInfo(type: string): TypeInfo {
     };
   if (type === "ride")
     return {
-      icon: <Bike size={20} className="text-foreground" />,
+      icon: <Bike size={20} className="text-white" />,
       label: "Ride",
       gradient: "from-purple-500 to-violet-600",
-      badge: "bg-purple-100 text-purple-700",
+      /* Fixed dark-mode: bg-purple-100 text-purple-700 is light-only — use opacity approach */
+      badge: "bg-purple-500/15 text-purple-400",
       iconBg: "bg-gradient-to-br from-purple-500 to-violet-600",
       dotColor: "bg-purple-500",
     };
   if (type === "system")
     return {
-      icon: <Settings size={20} className="text-foreground" />,
+      icon: <Settings size={20} className="text-white" />,
       label: "System",
       gradient: "from-gray-500 to-slate-600",
       badge: "bg-muted text-muted-foreground",
       iconBg: "bg-gradient-to-br from-gray-500 to-slate-600",
-      dotColor: "bg-[#B0B0B0]",
+      /* Fixed: bg-[#B0B0B0] hardcoded hex → CSS-var compatible */
+      dotColor: "bg-border",
     };
   if (type === "alert")
     return {
-      icon: <AlertTriangle size={20} className="text-foreground" />,
+      icon: <AlertTriangle size={20} className="text-white" />,
       label: "Alert",
       gradient: "from-amber-500 to-orange-600",
       badge: "bg-warning/15 text-warning",
@@ -174,12 +177,12 @@ function typeInfo(type: string): TypeInfo {
       dotColor: "bg-warning",
     };
   return {
-    icon: <Bell size={20} className="text-foreground" />,
+    icon: <Bell size={20} className="text-white" />,
     label: "Other",
     gradient: "from-gray-500 to-slate-600",
     badge: "bg-muted text-muted-foreground",
     iconBg: "bg-gradient-to-br from-gray-500 to-slate-600",
-    dotColor: "bg-[#B0B0B0]",
+    dotColor: "bg-border",
   };
 }
 
@@ -412,7 +415,7 @@ export default function Notifications() {
               >
                 <div className="mb-1.5 flex justify-center">{s.icon}</div>
                 <p className="text-xl font-black text-foreground">{statValues[s.key]}</p>
-                <p className="mt-0.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                <p className="mt-0.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                   {s.label}
                 </p>
               </div>
@@ -436,10 +439,10 @@ export default function Notifications() {
               {tab.icon} {T(tab.labelKey)}
               {filterCounts[tab.key] > 0 && (
                 <span
-                  className={`flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[9px] font-black ${
+                  className={`flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-black ${
                     filter === tab.key
-                      ? "bg-muted/20 text-foreground"
-                      : "bg-error text-foreground shadow-sm"
+                      ? "bg-black/20 text-white"
+                      : "bg-error text-white shadow-sm"
                   }`}
                 >
                   {filterCounts[tab.key]}

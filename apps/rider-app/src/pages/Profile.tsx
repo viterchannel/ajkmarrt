@@ -1057,20 +1057,20 @@ export default function Profile() {
           {(() => {
             const tier = getRiderTier(rating);
             return tier.label !== "Standard" ? (
-              <span className={`mt-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}>
+              <span className={`mt-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider ${tier.cls}`}>
                 {tier.label}
               </span>
             ) : null;
           })()}
 
           <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">
-            <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-[10px] text-muted-foreground">
+            <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-xs text-muted-foreground">
               {user?.isOnline
                 ? "Online now"
                 : `Last online · ${timeAgo(user?.lastSeen ?? (user?.updatedAt ? new Date(user.updatedAt).getTime() : undefined))}`}
             </span>
             {user?.createdAt && (
-              <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-[10px] text-muted-foreground">
+              <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-xs text-muted-foreground">
                 Member since{" "}
                 {new Date(user.createdAt).toLocaleDateString("en-PK", {
                   month: "short",
@@ -1143,7 +1143,7 @@ export default function Profile() {
           const ratingColor = rating >= 4.5 ? "text-success" : rating >= 3.5 ? "text-warning" : "text-error";
           return (
             <div className="animate-[slideUp_0.5s_ease-out] rounded-2xl border border-border bg-card p-4">
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 Quality Score
               </p>
               <div className="flex items-center gap-4">
@@ -1230,7 +1230,7 @@ export default function Profile() {
 
         {/* ── Quick Actions 3×2 grid ── */}
         <div className="animate-[slideUp_0.6s_ease-out]">
-          <p className="mb-2.5 px-0.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          <p className="mb-2.5 px-0.5 text-xs font-bold uppercase tracking-widest text-muted-foreground">
             {T("quickActionsLabel")}
           </p>
           <div className="grid grid-cols-3 gap-2.5">
@@ -1291,7 +1291,7 @@ export default function Profile() {
                       <p className="text-[14px] font-bold text-foreground">
                         {T("personalInformation")}
                       </p>
-                      <p className="text-[10px] text-muted-foreground">{T("identityContact")}</p>
+                      <p className="text-xs text-muted-foreground">{T("identityContact")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1327,7 +1327,7 @@ export default function Profile() {
                       >
                         {user?.phone || "—"}
                       </div>
-                      <p className="mt-1 text-[10px] text-muted-foreground">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         Phone number cannot be changed here. Contact support to update it.
                       </p>
                     </div>
@@ -1362,7 +1362,7 @@ export default function Profile() {
                         className={INPUT}
                       />
                       {cnic && !/^\d{5}-\d{7}-\d{1}$/.test(cnic) && (
-                        <p className="mt-1 text-[10px] text-error">Format: XXXXX-XXXXXXX-X</p>
+                        <p className="mt-1 text-xs text-error">Format: XXXXX-XXXXXXX-X</p>
                       )}
                     </div>
                     <div>
@@ -1472,11 +1472,11 @@ export default function Profile() {
                             <p className="text-xs font-bold text-muted-foreground">Phone Verification</p>
                           </div>
                           {(verifStatus?.phoneVerified ?? user.phoneVerified) ? (
-                            <span className="flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-[10px] font-bold text-success">
+                            <span className="flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-xs font-bold text-success">
                               <CheckCircle size={10} /> Verified
                             </span>
                           ) : (
-                            <span className="rounded-full bg-warning/15 px-2.5 py-0.5 text-[10px] font-bold text-warning">
+                            <span className="rounded-full bg-warning/15 px-2.5 py-0.5 text-xs font-bold text-warning">
                               Not verified
                             </span>
                           )}
@@ -1499,7 +1499,7 @@ export default function Profile() {
                               </button>
                             ) : (
                               <div className="space-y-2">
-                                <p className="text-[10px] text-muted-foreground">Enter the 6-digit OTP sent to {user.phone}</p>
+                                <p className="text-xs text-muted-foreground">Enter the 6-digit OTP sent to {user.phone}</p>
                                 <div className="flex gap-2">
                                   <input
                                     type="text"

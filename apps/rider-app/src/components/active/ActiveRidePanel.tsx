@@ -117,11 +117,12 @@ export function ActiveRidePanel({
         </div>
         <div className="relative min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-lg font-black text-foreground capitalize">
+            {/* Header text: text-foreground → text-white for proper contrast on violet/purple bg */}
+            <p className="text-lg font-black text-white capitalize">
               {type === "bike" ? T("bikeRide") : T("carRide")}
             </p>
             {(ride as { isPoolRide?: boolean }).isPoolRide && (
-              <span className="flex items-center gap-1 rounded-full border border-foreground/30 bg-card/20 px-2 py-0.5 text-[9px] font-bold tracking-wide text-foreground">
+              <span className="flex items-center gap-1 rounded-full border border-white/30 bg-white/15 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                 </svg>
@@ -129,16 +130,17 @@ export function ActiveRidePanel({
               </span>
             )}
           </div>
-          <p className="mt-0.5 font-mono text-xs text-purple-200">
+          <p className="mt-0.5 font-mono text-xs text-white/60">
             #{id.slice(-6).toUpperCase()} · {String(ride.distance ?? "")}km
           </p>
         </div>
         <div className="relative text-right">
-          <p className="text-xl font-black tracking-tight text-foreground">
+          <p className="text-xl font-black tracking-tight text-white">
             {formatCurrency(ride.fare as number, currency)}
           </p>
-          <div className="mt-1 rounded-lg border border-border bg-card/15 px-2.5 py-1 backdrop-blur-sm">
-            <p className="text-[10px] font-bold text-foreground">
+          {/* Earnings chip: text-foreground on semi-transparent bg on purple → text-white */}
+          <div className="mt-1 rounded-lg border border-white/20 bg-white/15 px-2.5 py-1 backdrop-blur-sm">
+            <p className="text-[11px] font-bold text-white">
               {T("youEarnLabel")} {formatCurrency(riderEarning, currency)}
             </p>
           </div>
@@ -341,18 +343,18 @@ export function ActiveRidePanel({
               {T("dropOffProofCard")} <span className="font-normal text-blue-400">({T("optional")})</span>
             </p>
 
-            {/* Mode toggle */}
+            {/* Mode toggle — py-2 → py-2.5 for 44px minimum touch height */}
             {!rideProofPhoto && (
               <div className="mb-3 flex overflow-hidden rounded-xl border border-blue-500/30 bg-muted">
                 <button
                   onClick={() => setProofMode("photo")}
-                  className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
+                  className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
                 >
                   <Camera size={13} /> {T("takePhoto")}
                 </button>
                 <button
                   onClick={() => setProofMode("signature")}
-                  className={`flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-bold transition-colors ${proofMode === "signature" ? "bg-blue-600 text-white" : "text-blue-500"}`}
+                  className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${proofMode === "signature" ? "bg-blue-600 text-white" : "text-blue-500"}`}
                 >
                   <PenLine size={13} /> {T("signatureLabel")}
                 </button>
@@ -512,15 +514,18 @@ export function ActiveRidePanel({
             </button>
           )}
           {(status === "accepted" || status === "arrived" || status === "in_transit") && (
+            /* Cancel button: icon-only was high mis-tap risk next to Accept CTA */
+            /* Added text label + wider padding to make it visually distinct */
             <button
               onClick={() => {
                 setCancelTarget("ride");
                 setShowCancelConfirm(true);
               }}
               disabled={updateRideMut.isPending}
-              className="rounded-2xl border-2 border-error/30 bg-error/10 px-5 py-4 text-sm font-bold text-error transition-colors active:bg-error/15"
+              className="flex min-h-[48px] items-center gap-1.5 rounded-2xl border-2 border-error/30 bg-error/10 px-4 py-3 text-sm font-bold text-error transition-colors active:bg-error/15 disabled:opacity-60"
+              aria-label="Cancel ride"
             >
-              <X size={16} />
+              <X size={15} />
             </button>
           )}
         </div>

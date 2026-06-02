@@ -1,6 +1,6 @@
-import { MapPin, Phone, ShoppingCart, User } from "lucide-react";
-import { haversineDistance, ElapsedBadge, formatCurrency } from "./ActiveHelpers";
-import { CallButton } from "./ActiveHelpers";
+import { MapPin, Navigation } from "lucide-react";
+import { haversineDistance, ElapsedBadge, formatCurrency, CallButton } from "./ActiveHelpers";
+import { ShoppingCart, User } from "lucide-react";
 
 function DistanceStrip({
   riderPos,
@@ -17,10 +17,10 @@ function DistanceStrip({
   const minutes = Math.round((km / 25) * 60);
   const distLabel = km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`;
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-success/20 bg-success/10 px-3 py-2">
-      <MapPin size={12} className="flex-shrink-0 text-success" />
+    <div className="flex items-center gap-2 rounded-xl border border-success/20 bg-success/10 px-3 py-2.5">
+      <Navigation size={13} className="flex-shrink-0 text-success" />
       <p className="text-xs font-bold text-success">
-        📍 {distLabel} · ~{minutes} min
+        {distLabel} away · ~{minutes} min
       </p>
     </div>
   );
@@ -65,26 +65,29 @@ export function ActiveHeroCard({
             <ElapsedBadge startIso={startedAt} />
           </div>
           {deliveryFee != null && (
-            <span className="rounded-full border border-brand/30 bg-brand/15 px-2.5 py-1 text-xs font-bold text-brand">
-              {formatCurrency(deliveryFee, currency)}
+            <span className="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-sm font-extrabold text-success">
+              +{formatCurrency(deliveryFee, currency)}
             </span>
           )}
         </div>
 
         <div className="space-y-3">
+          {/* Store row */}
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-warning/30 bg-warning/10">
               <ShoppingCart size={18} className="text-warning" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold tracking-wider text-warning/80 uppercase">
+              {/* Section label: text-[10px] → text-xs */}
+              <p className="text-xs font-bold tracking-wider text-warning/80 uppercase">
                 Store
               </p>
               <p className="truncate text-sm font-black text-foreground">
                 {(order.vendorStoreName as string) || "Store"}
               </p>
               {!!order.vendorAddress && (
-                <p className="truncate text-[11px] text-muted-foreground">
+                /* Address text: text-[11px] → text-xs */
+                <p className="truncate text-xs text-muted-foreground">
                   {order.vendorAddress as string}
                 </p>
               )}
@@ -100,19 +103,20 @@ export function ActiveHeroCard({
 
           <div className="h-px bg-border/30" />
 
+          {/* Customer row */}
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-blue-500/30 bg-blue-500/10">
               <User size={18} className="text-blue-400" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold tracking-wider text-blue-400/80 uppercase">
+              <p className="text-xs font-bold tracking-wider text-blue-400/80 uppercase">
                 Customer
               </p>
               <p className="truncate text-sm font-black text-foreground">
                 {(order.customerName as string) || "Customer"}
               </p>
               {!!order.deliveryAddress && (
-                <p className="truncate text-[11px] text-muted-foreground">
+                <p className="truncate text-xs text-muted-foreground">
                   {order.deliveryAddress as string}
                 </p>
               )}
@@ -152,8 +156,8 @@ export function ActiveHeroCard({
             <ElapsedBadge startIso={startedAt} />
           </div>
           {fare != null && (
-            <span className="rounded-full border border-brand/30 bg-brand/15 px-2.5 py-1 text-xs font-bold text-brand">
-              {formatCurrency(fare, currency)}
+            <span className="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-sm font-extrabold text-success">
+              +{formatCurrency(fare, currency)}
             </span>
           )}
         </div>
@@ -165,20 +169,20 @@ export function ActiveHeroCard({
         )}
 
         <div className="space-y-2">
-          <div className="flex items-center gap-2 rounded-xl border border-success/20 bg-success/10 px-3 py-2.5">
+          <div className="flex items-center gap-2.5 rounded-xl border border-success/20 bg-success/10 px-3 py-2.5">
             <MapPin size={14} className="flex-shrink-0 text-success" />
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold text-success/70 uppercase">Pickup</p>
+              <p className="text-xs font-bold text-success/80 uppercase">Pickup</p>
               <p className="truncate text-xs font-bold text-foreground">
                 {(ride.pickupAddress as string) || "Pickup location"}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-error/20 bg-error/10 px-3 py-2.5">
+          <div className="flex items-center gap-2.5 rounded-xl border border-error/20 bg-error/10 px-3 py-2.5">
             <MapPin size={14} className="flex-shrink-0 text-error" />
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold text-error/70 uppercase">Drop-off</p>
+              <p className="text-xs font-bold text-error/80 uppercase">Drop-off</p>
               <p className="truncate text-xs font-bold text-foreground">
                 {(ride.dropAddress as string) || "Drop-off location"}
               </p>

@@ -2549,9 +2549,9 @@ const en = {
     failedLoadLoginHistory: "Failed to load login history.",
     failedRevokeSession: "Failed to revoke device session.",
     failedSignOutDevices: "Failed to sign out other devices.",
-    failedMarkAllRead: "Failed to mark all as read.",
     failedMarkAsRead: "Failed to mark as read.",
-    failedSendLocation: "Could not send location. Please check your connection.",
+    loadMoreLabel: "Load more",
+    vendorRestaurantLabel: "Restaurant",
     failedAcceptOrder: "Failed to accept order. Please try again.",
     failedAcceptRide: "Failed to accept ride. Please try again.",
     failedRejectRide: "Failed to reject ride. Please try again.",
@@ -2566,8 +2566,7 @@ const en = {
     appearanceSettings: "Appearance & Display",
     useSystemTheme: "Use device theme preference",
     
-    /* ── OFFLINE & NETWORK ─────────────────────────────────────────────────── */
-    syncBannerOffline: "{n} update{n|queued|pending|s}...",
 };
+
 
 export default en;
