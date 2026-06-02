@@ -769,7 +769,7 @@ export default function Wallet() {
         <div className="absolute bottom-0 left-0 h-48 w-48 -translate-x-1/4 translate-y-1/2 rounded-full bg-muted/20" />
         <div className="absolute top-1/2 right-8 h-24 w-24 rounded-full bg-success/[0.03]" />
 
-        <div className="relative">
+        <div className="relative mx-auto max-w-2xl">
           <div className="mb-1 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
@@ -1050,7 +1050,7 @@ export default function Wallet() {
         </div>
       </div>
 
-      <div className="-mt-3 space-y-4 px-5 py-5">
+      <div className="mx-auto w-full max-w-2xl -mt-3 space-y-4 px-4 py-5">
         <div className="rounded-3xl border border-border bg-card p-4 shadow-sm">
           <div className="grid grid-cols-3 divide-x divide-gray-100">
             {[

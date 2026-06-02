@@ -351,7 +351,7 @@ export default function Notifications() {
         <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/20" />
         <div className="absolute top-1/2 left-1/3 h-24 w-24 rounded-full bg-muted/20" />
 
-        <div className="relative mb-5 flex items-start justify-between">
+        <div className="relative mx-auto max-w-2xl mb-5 flex items-start justify-between">
           <div>
             <div className="mb-1.5 flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border/60 bg-muted/20 backdrop-blur-sm">
@@ -421,7 +421,7 @@ export default function Notifications() {
         )}
       </div>
 
-      <div className="space-y-4 px-4 py-4">
+      <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-4">
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-0.5">
           {FILTER_TABS.map((tab) => (
             <button

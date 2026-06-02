@@ -95,7 +95,7 @@ export default function Home() {
         unreadNotifications={unreadNotifications}
       />
 
-      <main className="relative z-10 mx-auto w-full max-w-2xl space-y-3 px-3 pt-4 pb-4 sm:px-4">
+      <main className="relative z-10 mx-auto w-full max-w-2xl space-y-3 px-4 pt-4 pb-4">
 
         {/* Profile completion standalone card — above alert center */}
         <ProfileCompletionCard

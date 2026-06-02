@@ -519,7 +519,7 @@ export default function History() {
       >
         <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-success/[0.04]" />
         <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-muted/20" />
-        <div className="relative">
+        <div className="relative mx-auto max-w-2xl">
           <div className="flex items-center justify-between">
             <div>
               <p className="mb-1 text-xs font-semibold tracking-widest text-muted-foreground uppercase">
@@ -573,7 +573,8 @@ export default function History() {
         </div>
       </div>
 
-      <div className="sticky top-0 z-10 space-y-3 bg-page-bg px-4 pt-4 pb-2">
+      <div className="sticky top-0 z-10 bg-page-bg pt-4 pb-2">
+        <div className="mx-auto max-w-2xl space-y-3 px-4">
         <div className="flex gap-1 rounded-full border border-border bg-card p-1 shadow-sm">
           {PERIOD_TABS.map((tab) => (
             <button
@@ -599,9 +600,10 @@ export default function History() {
         <p className="px-1 text-[10px] text-muted-foreground">
           {T("tapToViewReceipt")}
         </p>
+        </div>
       </div>
 
-      <div className="space-y-3 px-4 py-3">
+      <div className="mx-auto w-full max-w-2xl space-y-3 px-4 py-3">
         {isLoading ? (
           <SkeletonHistory />
         ) : isError ? (

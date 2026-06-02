@@ -1796,7 +1796,7 @@ function AppRoutes() {
 
   return (
     <VerificationGateProvider>
-    <div className="relative mx-auto flex min-h-screen max-w-md flex-col bg-page-bg">
+    <div className="relative mx-auto flex min-h-screen w-full flex-col bg-page-bg sm:max-w-[540px] sm:shadow-2xl sm:ring-1 sm:ring-border/20 md:max-w-[680px] lg:max-w-[780px]">
       {isOfflineCachedMode && (
         <div className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-warning px-4 py-2 text-center text-xs font-bold text-foreground shadow">
           No internet — showing last known data

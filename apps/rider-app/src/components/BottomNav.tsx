@@ -126,7 +126,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed right-0 bottom-0 left-0 z-40 border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.25)]"
+      className="fixed bottom-0 left-1/2 z-40 w-full -translate-x-1/2 border-t border-border shadow-[0_-4px_24px_rgba(0,0,0,0.25)] sm:max-w-[540px] md:max-w-[680px] lg:max-w-[780px]"
       style={{
         backgroundColor: "var(--color-surface)",
         paddingBottom: "max(6px, env(safe-area-inset-bottom, 6px))",
