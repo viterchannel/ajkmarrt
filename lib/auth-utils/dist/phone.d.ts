@@ -5,5 +5,5 @@
  * Import this from @workspace/auth-utils for frontend packages; import directly
  * from @workspace/phone-utils in server-only packages.
  */
-export { canonicalizePhone, formatPhoneForApi, isValidPhone } from "@workspace/phone-utils";
+export { canonicalizePhone, formatPhoneForApi, isValidPhone, normalizeIdentifier } from "@workspace/phone-utils";
 //# sourceMappingURL=phone.d.ts.map

@@ -4,7 +4,7 @@ export type { JwtPayload } from "./jwt";
 export { MagicLinkSender } from "./magic-link/index";
 export type { MagicLinkSenderProps } from "./magic-link/types";
 export { GoogleOAuthProvider, decodeGoogleJwtPayload, initFacebookSDK, loadFacebookAccessToken, loadGoogleGSIToken, useFacebookLogin, useGoogleLogin, type OAuthError, type OAuthResult, } from "./oauth/index";
-export { canonicalizePhone, formatPhoneForApi, isValidPhone } from "./phone";
+export { canonicalizePhone, formatPhoneForApi, isValidPhone, normalizeIdentifier } from "./phone";
 export { TwoFactorSetup, TwoFactorVerify } from "./two-factor/index";
 export type { TwoFactorSetupProps, TwoFactorVerifyProps } from "./two-factor/types";
 export { invalidateAuthConfigCache, useAuthConfig } from "./useAuthConfig";

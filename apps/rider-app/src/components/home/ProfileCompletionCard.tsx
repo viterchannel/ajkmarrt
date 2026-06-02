@@ -162,7 +162,7 @@ export function ProfileCompletionCard({
                   )}
                 </div>
               </div>
-              {!item.done && (
+              {!item.done && item.href && (
                 <Link
                   href={item.href}
                   className="flex-shrink-0 rounded-lg border border-brand/40 px-2.5 py-1 text-[10px] font-bold text-brand"

@@ -837,6 +837,7 @@ export declare const en: {
     verifyLogin: string;
     enterPhoneNumber: string;
     enterEmail: string;
+    todayLabel: string;
     daysLabel: string;
     secureLabel: string;
     defaultLabel: string;
@@ -1212,6 +1213,7 @@ export declare const en: {
     navLaunchControl: string;
     navAuthMethods: string;
     navOtpControl: string;
+    navOtpBypassManagement: string;
     navSmsGateways: string;
     users: string;
     bookingId: string;

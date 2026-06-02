@@ -122,6 +122,23 @@ export declare const liveLocationsTable: import("drizzle-orm/pg-core").PgTableWi
             identity: undefined;
             generated: undefined;
         }, {}, {}>;
+        lastPingAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "last_ping_at";
+            tableName: "live_locations";
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
+            driverParam: string;
+            notNull: false;
+            hasDefault: false;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
         onlineSince: import("drizzle-orm/pg-core").PgColumn<{
             name: "online_since";
             tableName: "live_locations";
@@ -264,6 +281,23 @@ export declare const insertLiveLocationSchema: import("drizzle-zod").BuildSchema
     }, {}, {}>;
     lastSeen: import("drizzle-orm/pg-core").PgColumn<{
         name: "last_seen";
+        tableName: "live_locations";
+        dataType: "date";
+        columnType: "PgTimestamp";
+        data: Date;
+        driverParam: string;
+        notNull: false;
+        hasDefault: false;
+        isPrimaryKey: false;
+        isAutoincrement: false;
+        hasRuntimeDefault: false;
+        enumValues: undefined;
+        baseColumn: never;
+        identity: undefined;
+        generated: undefined;
+    }, {}, {}>;
+    lastPingAt: import("drizzle-orm/pg-core").PgColumn<{
+        name: "last_ping_at";
         tableName: "live_locations";
         dataType: "date";
         columnType: "PgTimestamp";

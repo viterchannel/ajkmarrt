@@ -8,9 +8,9 @@ interface HomeStatsProps {
   acceptanceRate: number | null;
   rating: number | null;
   onlineSince: number | null;
-  isOnline: boolean;
   currency: string;
   language: string;
+  isOnline: boolean;
   maxDeliveries?: number;
   activeOrderCount?: number;
 }
@@ -22,6 +22,7 @@ export function HomeStats({
   rating,
   currency,
   language,
+  isOnline,
   maxDeliveries,
   activeOrderCount = 0,
 }: HomeStatsProps) {

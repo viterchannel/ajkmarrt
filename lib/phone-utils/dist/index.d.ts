@@ -33,6 +33,11 @@ export declare function isValidPhone(phone: string): boolean;
  * Detection is by presence of `@`. Always use this function instead of the
  * inline `identifier.includes("@") ? … : …` pattern so the branching logic
  * lives in exactly one place.
+ *
+ * @example
+ * normalizeIdentifier("+923001234567")   // "3001234567"
+ * normalizeIdentifier("03001234567")     // "3001234567"
+ * normalizeIdentifier("User@Example.COM") // "user@example.com"
  */
 export declare function normalizeIdentifier(identifier: string): string;
 /**

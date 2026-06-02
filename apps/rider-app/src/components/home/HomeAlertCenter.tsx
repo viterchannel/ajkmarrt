@@ -14,6 +14,8 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+
+import { Link } from "wouter";
 import type { TranslationKey } from "@workspace/i18n";
 
 export interface AlertItem {
