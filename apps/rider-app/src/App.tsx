@@ -1851,7 +1851,7 @@ function AppRoutes() {
         className="flex-1"
         style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom, 8px)))" }}
       >
-        <Suspense fallback={<PageShimmer />}>
+        <Suspense fallback={null}>
           <Switch>
             <Route path="/">
               {() => (
