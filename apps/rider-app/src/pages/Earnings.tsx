@@ -85,6 +85,7 @@ function CompletedRidesList({
 }) {
   const { language } = useLanguage();
   const T = (key: Parameters<typeof tDual>[0]) => tDual(key, language);
+  const queryClient = useQueryClient();
   const [kindFilter, setKindFilter] = useState<RideKindFilter>("all");
   const [offset, setOffset] = useState(0);
   const [allItems, setAllItems] = useState<HistoryItem[]>([]);
@@ -127,12 +128,14 @@ function CompletedRidesList({
     }
   }, [data, offset]);
 
-  /* When filter changes, reset to first page */
+  /* When filter changes, reset to first page and invalidate cache */
   const handleKindChange = (k: RideKindFilter) => {
     if (k === kindFilter) return;
     setAllItems([]);
     setOffset(0);
     setKindFilter(k);
+    /* Invalidate query cache to ensure fresh data on filter change */
+    void queryClient.invalidateQueries({ queryKey: ["rider-completed-rides", k] });
   };
 
   /* Always render from the accumulated list; fall back to current page only on

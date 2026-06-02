@@ -63,9 +63,10 @@ export default function Home() {
   const showBankBanner = !hasBankInfo;
   const showKycBanner = !!(h.config.wallet?.kycRequired && !kycVerified);
 
-  const activeOrderCount = (h.user as any)?.activeOrderCount ?? 0;
-  const unreadNotifications = (h.user as any)?.unreadNotifications ?? 0;
-  const maxDeliveries = (h.user as any)?.maxDeliveries ?? h.config.rider?.maxDeliveries ?? 3;
+  // Validate numeric values - ensure they're safe numbers
+  const activeOrderCount = Math.max(0, Number((h.user as any)?.activeOrderCount ?? 0));
+  const unreadNotifications = Math.max(0, Number((h.user as any)?.unreadNotifications ?? 0));
+  const maxDeliveries = Math.max(1, Number((h.user as any)?.maxDeliveries ?? h.config.rider?.maxDeliveries ?? 3));
 
   return (
     <PullToRefresh

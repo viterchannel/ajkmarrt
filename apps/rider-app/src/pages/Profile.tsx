@@ -135,7 +135,7 @@ export default function Profile() {
       (verifStatus.emailVerified && !user.emailVerified) ||
       (verifStatus.documentsApproved && !(user as any).documentsApproved);
     if (needsSync) void refreshUser?.();
-  }, [verifStatus?.phoneVerified, verifStatus?.emailVerified, verifStatus?.documentsApproved]);
+  }, [verifStatus?.phoneVerified, verifStatus?.emailVerified, verifStatus?.documentsApproved, user?.phoneVerified, user?.emailVerified]);
 
   const queryClient = useQueryClient();
   const kycMut = useMutation({
@@ -168,13 +168,17 @@ export default function Profile() {
       ? vehicleTypesData.types
       : VEHICLES_FALLBACK;
 
-  const { data: banksData, isLoading: banksLoading } = useQuery({
+  const { data: banksData, isLoading: banksLoading, isError: banksError } = useQuery({
     queryKey: ["rider-banks"],
     queryFn: () =>
       fetch("/api/rider/banks")
-        .then((r) => r.json() as Promise<{ success: boolean; data?: { banks: Array<{ value: string; label: string }> } }>)
+        .then((r) => {
+          if (!r.ok) throw new Error(`API error: ${r.status}`);
+          return r.json() as Promise<{ success: boolean; data?: { banks: Array<{ value: string; label: string }> } }>;
+        })
         .then((json) => json.data ?? { banks: [] }),
     staleTime: 10 * 60 * 1000,
+    retry: 1,
   });
   const BANKS_LIST: Array<{ value: string; label: string }> =
     banksData?.banks && banksData.banks.length > 0
