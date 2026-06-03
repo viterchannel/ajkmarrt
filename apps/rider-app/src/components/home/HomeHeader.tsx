@@ -1,23 +1,11 @@
-import { Bell, ChevronRight, Volume2, VolumeX, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { LiveClock, formatCurrency } from "../dashboard";
+import { Bell, Volume2, VolumeX } from "lucide-react";
+import { formatCurrency } from "../dashboard";
 import type { TranslationKey } from "@workspace/i18n";
 import type { UseHomeDataReturn } from "./useHomeData";
 
-interface HomeHeaderProps {
-  user: UseHomeDataReturn["user"];
-  greeting: string;
-  lastSeenLabel: string;
-  currency: string;
-  T: (key: TranslationKey) => string;
-  effectiveOnline: boolean;
-  toggling: boolean;
-  silenceOn: boolean;
-  onToggleOnline: () => void;
-  onToggleSilence: () => void;
-  newFlash: boolean;
-  unreadNotifications?: number;
-}
+/* ─── Shared helpers (used elsewhere in the app) ────────────────────────── */
 
 export function getRiderTier(rating: number | null | undefined): { label: string; cls: string } {
   if (!rating || rating === 0) return { label: "Standard", cls: "text-muted-foreground bg-muted/20 border-border" };
@@ -35,12 +23,120 @@ export function getInitials(name?: string | null): string {
   return ((parts[0]![0] ?? "") + (parts[parts.length - 1]![0] ?? "")).toUpperCase();
 }
 
-export function HomeHeader({
+/* ─── Props ─────────────────────────────────────────────────────────────── */
+
+interface HomeHeaderProps {
+  user: UseHomeDataReturn["user"];
+  greeting: string;
+  lastSeenLabel: string;
+  currency: string;
+  T: (key: TranslationKey) => string;
+  effectiveOnline: boolean;
+  toggling: boolean;
+  silenceOn: boolean;
+  onToggleOnline: () => void;
+  onToggleSilence: () => void;
+  newFlash: boolean;
+  unreadNotifications?: number;
+}
+
+/* ─── Theme detector ─────────────────────────────────────────────────────── */
+
+function useIsLight(): boolean {
+  const [isLight, setIsLight] = useState(
+    () => typeof document !== "undefined" && document.documentElement.classList.contains("light"),
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => {
+      setIsLight(root.classList.contains("light"));
+    });
+    observer.observe(root, { attributes: true, attributeFilter: ["class", "data-theme"] });
+    return () => observer.disconnect();
+  }, []);
+
+  return isLight;
+}
+
+/* ─── Shared sub-components ──────────────────────────────────────────────── */
+
+const GOLD = "#C9A84C";
+const GOLD_LIGHT_HEX = "#E8C878";
+const GREEN = "#4ADE80";
+
+function Toggle({ on, disabled }: { on: boolean; disabled: boolean }) {
+  return (
+    <div
+      style={{
+        width: 48,
+        height: 28,
+        borderRadius: 14,
+        background: on ? GREEN : "rgba(255,255,255,0.12)",
+        position: "relative",
+        transition: "background 0.25s",
+        flexShrink: 0,
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      <div
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 11,
+          background: "#fff",
+          position: "absolute",
+          top: 3,
+          left: on ? 23 : 3,
+          transition: "left 0.25s",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.35)",
+        }}
+      />
+    </div>
+  );
+}
+
+function LightToggle({ on, disabled }: { on: boolean; disabled: boolean }) {
+  return (
+    <div
+      style={{
+        width: 48,
+        height: 28,
+        borderRadius: 14,
+        background: on ? "#16A34A" : "#D1D5DB",
+        position: "relative",
+        transition: "background 0.25s",
+        flexShrink: 0,
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      <div
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 11,
+          background: "#fff",
+          position: "absolute",
+          top: 3,
+          left: on ? 23 : 3,
+          transition: "left 0.25s",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE — V4 Premium Obsidian
+   Layout: gold accent line · logo row · name+status · balance card · stats
+           grid · toggle bar · flash alert
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+function DarkHeader({
   user,
   greeting,
-  lastSeenLabel,
   currency,
-  T,
   effectiveOnline,
   toggling,
   silenceOn,
@@ -49,201 +145,395 @@ export function HomeHeader({
   newFlash,
   unreadNotifications = 0,
 }: HomeHeaderProps) {
-  const tier = getRiderTier(user?.stats?.rating ?? null);
   const firstName = user?.name?.split(" ")[0] || "Rider";
   const initials = getInitials(user?.name);
+  const rating = user?.stats?.rating ?? null;
+  const tier = getRiderTier(rating);
+  const balance = formatCurrency(user?.walletBalance ?? "0", currency);
+  const todayEarned = formatCurrency(user?.stats?.earningsToday ?? 0, currency);
+  const todayTrips = user?.stats?.deliveriesToday ?? 0;
   const hasUnread = unreadNotifications > 0;
 
   return (
     <header
-      className="page-header-gradient relative overflow-hidden rounded-b-[2rem] bg-card px-4 pb-6 text-foreground sm:px-6"
-      style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
+      style={{
+        background: "linear-gradient(180deg, #111111 0%, #0D0D0D 100%)",
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)",
+        borderBottom: "1px solid rgba(201,168,76,0.12)",
+        fontFamily: "'Helvetica Neue', -apple-system, sans-serif",
+      }}
     >
-      {/* Decorative background circles */}
-      <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-brand/[0.04]" />
-      <div className="absolute bottom-10 -left-16 h-56 w-56 rounded-full bg-foreground/[0.02]" />
-      <div className="absolute top-1/2 left-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/[0.015]" />
+      <div style={{ padding: "0 20px 20px" }}>
 
-      {/* ── Branding + actions row ── */}
-      <div className="relative mb-5 flex items-center justify-between">
-        {/* Brand mark */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand shadow-sm shadow-brand/40">
-            <span className="text-[13px] font-black text-black">A</span>
+        {/* Gold accent rule */}
+        <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, marginBottom: 18, opacity: 0.55 }} />
+
+        {/* ── Top bar: logo | controls ── */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 34, height: 34, borderRadius: 9, background: "linear-gradient(145deg, #1A1A1A, #111111)", border: `1px solid ${GOLD}30`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 16px rgba(201,168,76,0.12)` }}>
+              <span style={{ fontSize: 14, fontWeight: 800, background: `linear-gradient(135deg, ${GOLD_LIGHT_HEX}, ${GOLD})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>A</span>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#F5F5F5", letterSpacing: 0.4 }}>AJKMart</div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: GOLD, letterSpacing: 1.5, textTransform: "uppercase" }}>Rider</div>
+            </div>
           </div>
-          <div>
-            <p className="text-[11px] font-black tracking-widest text-foreground uppercase leading-none">
-              AJKMart
-            </p>
-            <p className="text-[9px] font-semibold tracking-wider text-muted-foreground leading-none mt-0.5">
-              Rider Dashboard
-            </p>
+
+          <div style={{ display: "flex", gap: 7 }}>
+            {/* Silence toggle */}
+            <button
+              onClick={onToggleSilence}
+              aria-label={silenceOn ? "Unmute" : "Mute"}
+              style={{ width: 34, height: 34, borderRadius: 8, background: silenceOn ? "rgba(239,68,68,0.12)" : "#1A1A1A", border: `1px solid ${silenceOn ? "rgba(239,68,68,0.25)" : "rgba(255,255,255,0.06)"}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+            >
+              {silenceOn
+                ? <VolumeX size={14} style={{ color: "#EF4444" }} />
+                : <Volume2 size={14} style={{ color: "rgba(255,255,255,0.35)" }} />}
+            </button>
+
+            {/* Bell */}
+            <Link
+              href="/notifications"
+              style={{ width: 34, height: 34, borderRadius: 8, background: "#1A1A1A", border: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", textDecoration: "none" }}
+              aria-label="Notifications"
+            >
+              <Bell size={14} style={{ color: hasUnread ? GOLD_LIGHT_HEX : "rgba(255,255,255,0.35)" }} />
+              {hasUnread && (
+                <span style={{ position: "absolute", top: -4, right: -4, width: 16, height: 16, borderRadius: 8, background: "#EF4444", border: "1.5px solid #111", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>
+                  {unreadNotifications > 9 ? "9+" : unreadNotifications}
+                </span>
+              )}
+            </Link>
+
+            {/* Avatar */}
+            <Link
+              href="/profile"
+              style={{ width: 34, height: 34, borderRadius: 8, background: `linear-gradient(135deg, ${GOLD}, #A0802A)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 14px rgba(201,168,76,0.18)`, overflow: "hidden", textDecoration: "none" }}
+              aria-label="Profile"
+            >
+              {user?.avatar
+                ? <img src={user.avatar} alt={user?.name ?? "Rider"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                : <span style={{ fontSize: 11, fontWeight: 800, color: "#080808" }}>{initials}</span>}
+            </Link>
           </div>
         </div>
 
-        {/* Right: mute + bell + avatar */}
-        <div className="flex items-center gap-2">
-          {/* Mute toggle */}
-          <button
-            onClick={onToggleSilence}
-            aria-label={silenceOn ? "Unmute notification sounds" : "Mute notification sounds"}
-            className={`flex h-8 w-8 items-center justify-center rounded-xl border transition-all active:scale-95 ${
-              silenceOn
-                ? "border-error/30 bg-error/10 text-error"
-                : "border-border/60 bg-muted/10 text-muted-foreground"
-            }`}
-          >
-            {silenceOn ? <VolumeX size={14} /> : <Volume2 size={14} />}
-          </button>
-
-          {/* Notification bell */}
-          <Link
-            href="/notifications"
-            className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-border/60 bg-muted/10 transition-all active:scale-95 active:bg-muted/30"
-            aria-label={hasUnread ? `${unreadNotifications} unread notifications` : "Notifications"}
-          >
-            <Bell size={15} className={hasUnread ? "text-foreground" : "text-muted-foreground"} />
-            {hasUnread && (
-              <span className="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-error px-0.5 text-[10px] font-extrabold text-white leading-none shadow-sm">
-                {unreadNotifications > 9 ? "9+" : unreadNotifications}
+        {/* ── Greeting + name + status ── */}
+        <div style={{ marginBottom: 18 }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.28)", letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>
+            {greeting}
+          </div>
+          <div style={{ fontSize: 30, fontWeight: 700, color: newFlash ? GREEN : "#FFFFFF", letterSpacing: -0.7, lineHeight: 1.05, transition: "color 0.3s" }}>
+            {firstName}
+          </div>
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 7, height: 7, borderRadius: 4, background: effectiveOnline ? GREEN : "#3A3A3A", boxShadow: effectiveOnline ? `0 0 0 4px rgba(74,222,128,0.1)` : "none", transition: "all 0.3s" }} />
+            <span style={{ fontSize: 11, fontWeight: 500, color: effectiveOnline ? GREEN : "rgba(255,255,255,0.28)" }}>
+              {effectiveOnline ? "Online · Available for rides" : "Offline"}
+            </span>
+            {tier.label !== "Standard" && (
+              <span style={{ fontSize: 9, fontWeight: 700, color: GOLD, background: "rgba(201,168,76,0.1)", border: `1px solid rgba(201,168,76,0.2)`, borderRadius: 20, padding: "2px 8px", letterSpacing: 0.8, textTransform: "uppercase" }}>
+                {tier.label}
               </span>
             )}
-          </Link>
-
-          {/* Avatar → /profile */}
-          <Link
-            href="/profile"
-            className="relative flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border-2 border-border/40 bg-muted/20 transition-all active:scale-95 active:bg-muted/40 overflow-hidden"
-            aria-label="Go to profile"
-          >
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user?.name ?? "Rider"}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span className="text-[11px] font-extrabold text-muted-foreground">{initials}</span>
-            )}
-          </Link>
-        </div>
-      </div>
-
-      {/* ── Greeting + tier ── */}
-      <div className="relative mb-5 flex items-end justify-between">
-        <div>
-          <p className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            {greeting}
-          </p>
-          <h1
-            className={`mt-0.5 text-2xl font-black tracking-tight transition-colors sm:text-3xl ${
-              newFlash ? "text-success" : "text-foreground"
-            }`}
-          >
-            {firstName}
-          </h1>
-          <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-            <LiveClock />
-          </p>
+          </div>
           {newFlash && (
-            <div className="mt-1.5 flex items-center gap-1.5 text-xs font-bold text-success">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
+            <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, color: GREEN }}>
+              <span style={{ width: 6, height: 6, borderRadius: 3, background: GREEN, display: "block" }} />
               New request available
             </div>
           )}
         </div>
-        <div className="flex flex-col items-end gap-1.5">
-          {tier.label !== "Standard" && (
-            <span
-              className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${tier.cls}`}
-            >
-              {tier.label}
-            </span>
-          )}
-          <p className="text-xs text-muted-foreground">
-            Last online · {lastSeenLabel}
-          </p>
-        </div>
-      </div>
 
-      {/* ── Wallet + Online toggle ── */}
-      <div className="relative grid grid-cols-2 gap-3">
-        {/* Wallet card */}
+        {/* ── Balance card ── */}
         <Link
           href="/wallet"
-          className="group flex flex-col gap-2 rounded-2xl border border-border/60 bg-muted/10 p-4 transition-all active:scale-[0.97] active:bg-muted/20"
-          aria-label="View wallet balance"
+          style={{
+            display: "block",
+            background: "linear-gradient(135deg, #1A1A1A 0%, #141414 60%, rgba(201,168,76,0.04) 100%)",
+            borderRadius: 18,
+            padding: "16px 18px",
+            border: `1px solid rgba(201,168,76,0.16)`,
+            marginBottom: 10,
+            position: "relative",
+            overflow: "hidden",
+            textDecoration: "none",
+            transition: "border-color 0.2s",
+          }}
+          aria-label="View wallet"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/20">
-              <Wallet size={13} className="text-success" />
-            </div>
-            <ChevronRight size={12} className="text-muted-foreground transition-transform group-active:translate-x-0.5" />
-          </div>
-          <div>
-            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
-              {T("wallet")}
-            </p>
-            <p className="mt-0.5 text-lg font-extrabold leading-none text-foreground">
-              {formatCurrency(user?.walletBalance ?? "0", currency)}
-            </p>
+          <div style={{ position: "absolute", top: 0, right: 0, width: 80, height: 80, background: `radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%)`, pointerEvents: "none" }} />
+          <div style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.28)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>Balance</div>
+          <div style={{ fontSize: 32, fontWeight: 700, color: "#FFFFFF", letterSpacing: -0.8, marginBottom: 4 }}>{balance}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: GREEN }}>+ {todayEarned} today</span>
+            <span style={{ width: 1, height: 11, background: "rgba(255,255,255,0.1)" }} />
+            <span style={{ fontSize: 11, fontWeight: 500, color: GOLD }}>
+              {tier.label !== "Standard" ? tier.label : "Wallet"}
+            </span>
           </div>
         </Link>
 
-        {/* Online toggle card */}
+        {/* ── Stats grid ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
+          {[
+            { label: "Today", value: todayEarned },
+            { label: "Trips", value: String(todayTrips) },
+            { label: "Rating", value: rating != null && rating > 0 ? `${rating.toFixed(1)} ★` : "—" },
+          ].map(({ label, value }) => (
+            <div key={label} style={{ background: "#141414", borderRadius: 12, padding: "11px 13px", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.22)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 5 }}>{label}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: label === "Rating" && rating != null && rating >= 4.5 ? GOLD : "#FFFFFF", letterSpacing: -0.2 }}>{value}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Online toggle bar ── */}
         <button
           onClick={onToggleOnline}
           disabled={toggling}
-          className={`flex flex-col gap-2 rounded-2xl border p-4 text-left transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 ${
-            effectiveOnline
-              ? "border-success/30 bg-success/[0.08] shadow-sm shadow-success/10"
-              : "border-border/60 bg-muted/10"
-          }`}
+          style={{
+            width: "100%",
+            background: effectiveOnline ? "linear-gradient(135deg, rgba(74,222,128,0.08), rgba(74,222,128,0.04))" : "#141414",
+            borderRadius: 14,
+            padding: "13px 16px",
+            border: `1px solid ${effectiveOnline ? "rgba(74,222,128,0.2)" : "rgba(255,255,255,0.04)"}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: toggling ? "not-allowed" : "pointer",
+            opacity: toggling ? 0.7 : 1,
+            transition: "all 0.25s",
+            textAlign: "left",
+          }}
           role="switch"
           aria-checked={effectiveOnline}
           aria-label={effectiveOnline ? "Go offline" : "Go online"}
         >
-          {/* Toggle pill + indicator */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span
-                className={`h-2 w-2 rounded-full ${
-                  effectiveOnline
-                    ? "animate-pulse bg-success shadow-sm shadow-green-400/60"
-                    : "bg-muted/50"
-                }`}
-              />
-              <p
-                className={`text-[9px] font-bold uppercase tracking-widest ${
-                  effectiveOnline ? "text-success" : "text-muted-foreground"
-                }`}
-              >
-                {effectiveOnline ? T("online") : T("offline")}
-              </p>
-            </div>
-            {/* Toggle pill */}
-            <div
-              className={`relative h-5 w-9 flex-shrink-0 rounded-full transition-colors duration-200 ${
-                effectiveOnline ? "bg-success" : "bg-muted/40"
-              }`}
-            >
-              <div
-                className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-all duration-200 ${
-                  effectiveOnline ? "left-[18px]" : "left-0.5"
-                }`}
-              />
-            </div>
-          </div>
           <div>
-            <p className="text-sm font-extrabold leading-tight text-foreground">
-              {effectiveOnline ? T("acceptingOrders") : T("tapToStart")}
-            </p>
-            <p className="mt-0.5 text-[10px] text-muted-foreground">
-              {effectiveOnline ? "Tap to go offline" : "Tap to go online"}
-            </p>
+            <div style={{ fontSize: 14, fontWeight: 600, color: effectiveOnline ? GREEN : "rgba(255,255,255,0.38)", letterSpacing: -0.1 }}>
+              {effectiveOnline ? "Accepting Rides" : "Go Online"}
+            </div>
+            <div style={{ fontSize: 10, fontWeight: 500, color: "rgba(255,255,255,0.2)", marginTop: 2 }}>
+              {effectiveOnline ? "Tap to go offline" : "Tap to start earning"}
+            </div>
           </div>
+          <Toggle on={effectiveOnline} disabled={toggling} />
         </button>
+
+        {/* Gold bottom rule */}
+        <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${GOLD}35, transparent)`, marginTop: 16 }} />
       </div>
     </header>
   );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT MODE — V4-C Floating Stage (cream/gold)
+   Layout: slim utility bar · single dominant card (balance + toggle) ·
+           horizontal metric pills · flash alert
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const L_BG = "#FAFAF8";
+const L_CARD = "#FFFFFF";
+const L_CARD2 = "#F5F4F0";
+const L_GOLD = "#B8892A";
+const L_GOLD_BG = "rgba(184,137,42,0.08)";
+const L_GOLD_BORDER = "rgba(184,137,42,0.2)";
+const L_GREEN = "#16A34A";
+const L_TEXT = "#1A1A1A";
+const L_MUTED = "#6B7280";
+const L_BORDER = "#E8E5DF";
+
+function LightHeader({
+  user,
+  greeting,
+  currency,
+  effectiveOnline,
+  toggling,
+  silenceOn,
+  onToggleOnline,
+  onToggleSilence,
+  newFlash,
+  unreadNotifications = 0,
+}: HomeHeaderProps) {
+  const firstName = user?.name?.split(" ")[0] || "Rider";
+  const initials = getInitials(user?.name);
+  const rating = user?.stats?.rating ?? null;
+  const tier = getRiderTier(rating);
+  const balance = formatCurrency(user?.walletBalance ?? "0", currency);
+  const todayEarned = formatCurrency(user?.stats?.earningsToday ?? 0, currency);
+  const todayTrips = user?.stats?.deliveriesToday ?? 0;
+  const hasUnread = unreadNotifications > 0;
+
+  return (
+    <header
+      style={{
+        background: L_BG,
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)",
+        borderBottom: `1px solid ${L_BORDER}`,
+        boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+        fontFamily: "'Helvetica Neue', -apple-system, sans-serif",
+      }}
+    >
+      <div style={{ padding: "0 20px 18px" }}>
+
+        {/* Gold top accent */}
+        <div style={{ height: 2, background: `linear-gradient(90deg, ${L_GOLD}, #E8C878, ${L_GOLD})`, marginBottom: 16, borderRadius: "0 0 2px 2px", opacity: 0.7 }} />
+
+        {/* ── Utility bar ── */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: L_GOLD, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 12px rgba(184,137,42,0.25)` }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: "#FFFFFF" }}>A</span>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: L_TEXT, letterSpacing: -0.1 }}>{firstName}</div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: L_GOLD, letterSpacing: 1.5, textTransform: "uppercase" }}>
+                {tier.label !== "Standard" ? tier.label : "Rider"}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 7 }}>
+            <button
+              onClick={onToggleSilence}
+              aria-label={silenceOn ? "Unmute" : "Mute"}
+              style={{ width: 32, height: 32, borderRadius: 8, background: silenceOn ? "#FEF2F2" : L_CARD2, border: `1px solid ${silenceOn ? "#FECACA" : L_BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+            >
+              {silenceOn
+                ? <VolumeX size={13} style={{ color: "#EF4444" }} />
+                : <Volume2 size={13} style={{ color: L_MUTED }} />}
+            </button>
+
+            <Link
+              href="/notifications"
+              style={{ width: 32, height: 32, borderRadius: 8, background: L_CARD2, border: `1px solid ${L_BORDER}`, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", textDecoration: "none" }}
+              aria-label="Notifications"
+            >
+              <Bell size={13} style={{ color: hasUnread ? L_GOLD : L_MUTED }} />
+              {hasUnread && (
+                <span style={{ position: "absolute", top: -4, right: -4, width: 16, height: 16, borderRadius: 8, background: "#EF4444", border: "1.5px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>
+                  {unreadNotifications > 9 ? "9+" : unreadNotifications}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/profile"
+              style={{ width: 32, height: 32, borderRadius: 8, background: L_GOLD, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", textDecoration: "none" }}
+              aria-label="Profile"
+            >
+              {user?.avatar
+                ? <img src={user.avatar} alt={user?.name ?? "Rider"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                : <span style={{ fontSize: 10, fontWeight: 800, color: "#FFFFFF" }}>{initials}</span>}
+            </Link>
+          </div>
+        </div>
+
+        {/* ── CENTER STAGE — single dominant interactive card ── */}
+        <button
+          onClick={onToggleOnline}
+          disabled={toggling}
+          style={{
+            width: "100%",
+            background: effectiveOnline
+              ? `linear-gradient(145deg, ${L_CARD} 0%, rgba(22,163,74,0.03) 100%)`
+              : L_CARD,
+            borderRadius: 22,
+            padding: "20px 20px 18px",
+            border: `1px solid ${effectiveOnline ? "rgba(22,163,74,0.2)" : L_BORDER}`,
+            cursor: toggling ? "not-allowed" : "pointer",
+            opacity: toggling ? 0.8 : 1,
+            transition: "all 0.3s",
+            position: "relative",
+            overflow: "hidden",
+            textAlign: "left",
+            marginBottom: 10,
+            boxShadow: effectiveOnline
+              ? "0 4px 24px rgba(22,163,74,0.08)"
+              : "0 2px 12px rgba(0,0,0,0.06)",
+          }}
+          role="switch"
+          aria-checked={effectiveOnline}
+          aria-label={effectiveOnline ? "Go offline" : "Go online"}
+        >
+          {/* Ambient gold orb */}
+          <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: `radial-gradient(circle, ${L_GOLD_BG} 0%, transparent 70%)`, pointerEvents: "none" }} />
+
+          {/* Status + toggle top-right */}
+          <div style={{ position: "absolute", top: 16, right: 16, display: "flex", alignItems: "center", gap: 7 }}>
+            <div style={{ width: 7, height: 7, borderRadius: 4, background: effectiveOnline ? L_GREEN : "#D1D5DB", boxShadow: effectiveOnline ? `0 0 0 3px rgba(22,163,74,0.12)` : "none", transition: "all 0.3s" }} />
+            <LightToggle on={effectiveOnline} disabled={toggling} />
+          </div>
+
+          {/* Balance — headline figure */}
+          <div style={{ marginBottom: 14, paddingRight: 68 }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: L_MUTED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 8 }}>
+              {greeting}
+            </div>
+            <div style={{ fontSize: 38, fontWeight: 700, color: L_TEXT, letterSpacing: -1.2, lineHeight: 1 }}>
+              {balance}
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div style={{ height: 1, background: L_BORDER, margin: "0 0 12px" }} />
+
+          {/* Status label + today earned */}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: effectiveOnline ? L_GREEN : L_MUTED, letterSpacing: -0.2 }}>
+                {effectiveOnline ? "Accepting Rides" : "Go Online"}
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 500, color: L_MUTED, marginTop: 2 }}>
+                {effectiveOnline ? "Tap anywhere to stop" : "Tap to start earning"}
+              </div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: L_GREEN }}>+ {todayEarned}</div>
+              <div style={{ fontSize: 9, fontWeight: 600, color: L_MUTED, marginTop: 1 }}>today</div>
+            </div>
+          </div>
+
+          {newFlash && (
+            <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, background: "rgba(22,163,74,0.06)", borderRadius: 10, padding: "8px 10px", border: "1px solid rgba(22,163,74,0.15)" }}>
+              <span style={{ width: 6, height: 6, borderRadius: 3, background: L_GREEN, display: "block" }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: L_GREEN }}>New request available</span>
+            </div>
+          )}
+        </button>
+
+        {/* ── Metric pills row ── */}
+        <div style={{ display: "flex", gap: 7 }}>
+          {[
+            { label: "Today", value: todayEarned },
+            { label: "Trips", value: String(todayTrips) },
+            { label: "Rating", value: rating != null && rating > 0 ? `${rating.toFixed(1)} ★` : "—", gold: rating != null && rating >= 4.5 },
+            { label: "Wallet", value: balance, link: "/wallet" },
+          ].map(({ label, value, gold, link }) => {
+            const inner = (
+              <div style={{ flex: 1, background: L_CARD, borderRadius: 12, padding: "9px 7px", border: `1px solid ${L_BORDER}`, textAlign: "center" }}>
+                <div style={{ fontSize: 8, fontWeight: 600, color: L_MUTED, textTransform: "uppercase", letterSpacing: 0.8 }}>{label}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: gold ? L_GOLD : L_TEXT, marginTop: 3, letterSpacing: -0.2 }}>{value}</div>
+              </div>
+            );
+            return link
+              ? <Link key={label} href={link} style={{ flex: 1, textDecoration: "none" }}>{inner}</Link>
+              : <div key={label} style={{ flex: 1 }}>{inner}</div>;
+          })}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EXPORTED: HomeHeader — switches between Dark and Light automatically
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+export function HomeHeader(props: HomeHeaderProps) {
+  const isLight = useIsLight();
+  return isLight ? <LightHeader {...props} /> : <DarkHeader {...props} />;
 }
