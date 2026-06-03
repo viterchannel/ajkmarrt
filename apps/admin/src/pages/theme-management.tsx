@@ -187,8 +187,7 @@ export default function ThemeManagement() {
   const fetchConfigs = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await adminFetch("/theme-config");
-      const data = await response.json();
+      const data = await adminFetch("/theme-config");
       if (data.configs) {
         const next: Record<string, ThemeConfig> = {};
         for (const cfg of data.configs) {
@@ -255,11 +254,10 @@ export default function ThemeManagement() {
     setSaving(true);
     try {
       const cfg = configs[role];
-      const response = await adminFetch("/theme-config", {
+      await adminFetch("/theme-config", {
         method: "POST",
         body: JSON.stringify({ theme: cfg.selectedTheme, colors: cfg.colors, appRole: role }),
       });
-      if (!response.ok) throw new Error("Save failed");
       setDirty((prev) => ({ ...prev, [role]: false }));
       toast({ title: `${ROLES.find((r) => r.id === role)?.label} theme saved` });
     } catch {
