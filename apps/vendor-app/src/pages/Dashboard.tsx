@@ -47,7 +47,7 @@ function typeIcon(type: string) {
 function QuickActions() {
   return (
     <div className={`${CARD} p-4`}>
-      <p className="mb-3 text-xs font-extrabold tracking-widest text-gray-400 uppercase">
+      <p className="mb-3 text-xs font-extrabold tracking-widest text-muted-foreground uppercase">
         Quick Actions
       </p>
       <div className="grid grid-cols-3 gap-3">
@@ -107,12 +107,12 @@ function NotificationsSection() {
 
   return (
     <div className={CARD}>
-      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="text-base">🔔</span>
-          <p className="text-sm font-bold text-gray-800">Recent Notifications</p>
+          <p className="text-sm font-bold text-foreground">Recent Notifications</p>
           {unread > 0 && (
-            <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600">
+            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold text-destructive">
               {unread} unread
             </span>
           )}
@@ -122,14 +122,14 @@ function NotificationsSection() {
             <button
               onClick={() => markAllMut.mutate()}
               disabled={markAllMut.isPending}
-              className="rounded-lg bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-600"
+              className="rounded-lg bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary"
             >
               ✓ Mark all read
             </button>
           )}
           <Link
             href="/notifications"
-            className="text-[11px] font-bold text-gray-400 hover:text-blue-500"
+            className="text-[11px] font-bold text-muted-foreground hover:text-primary"
           >
             View all →
           </Link>
@@ -142,34 +142,34 @@ function NotificationsSection() {
       ) : notifs.length === 0 ? (
         <div className="px-4 py-8 text-center">
           <p className="mb-2 text-3xl">🔔</p>
-          <p className="text-sm font-bold text-gray-500">All caught up!</p>
-          <p className="mt-1 text-xs text-gray-400">No new notifications</p>
+          <p className="text-sm font-bold text-muted-foreground">All caught up!</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">No new notifications</p>
         </div>
       ) : (
-        <div className="divide-y divide-gray-50">
+        <div className="divide-y divide-border">
           {notifs.map((n) => (
             <div
               key={n.id}
-              className={`flex items-start gap-3 px-4 py-3 ${!n.isRead ? "bg-blue-50/30" : ""}`}
+              className={`flex items-start gap-3 px-4 py-3 ${!n.isRead ? "bg-primary/5" : ""}`}
             >
               <div
-                className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-base ${!n.isRead ? "bg-blue-100" : "bg-gray-100"}`}
+                className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-base ${!n.isRead ? "bg-primary/10" : "bg-muted"}`}
               >
                 {typeIcon(n.type)}
               </div>
               <div className="min-w-0 flex-1">
                 <p
-                  className={`text-xs leading-snug font-bold ${!n.isRead ? "text-gray-900" : "text-gray-700"}`}
+                  className={`text-xs leading-snug font-bold ${!n.isRead ? "text-foreground" : "text-muted-foreground"}`}
                 >
                   {n.title}
                 </p>
-                <p className="mt-0.5 line-clamp-1 text-[11px] leading-relaxed text-gray-500">
+                <p className="mt-0.5 line-clamp-1 text-[11px] leading-relaxed text-muted-foreground">
                   {n.body}
                 </p>
-                <p className="mt-1 text-[10px] text-gray-400">{fd(n.createdAt)}</p>
+                <p className="mt-1 text-[10px] text-muted-foreground/60">{fd(n.createdAt)}</p>
               </div>
               {!n.isRead && (
-                <div className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600" />
+                <div className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
               )}
             </div>
           ))}
@@ -227,12 +227,12 @@ function ScheduleEditor({
       <div className={`${CARD} p-4`}>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-bold text-gray-800">Weekly Schedule</p>
-            <p className="mt-0.5 text-xs text-gray-500">Set your open/close hours per day</p>
+            <p className="text-sm font-bold text-foreground">Weekly Schedule</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Set your open/close hours per day</p>
           </div>
           <button
             onClick={() => setExpanded(true)}
-            className="h-9 rounded-xl bg-blue-50 px-4 text-sm font-bold text-blue-600"
+            className="h-9 rounded-xl bg-primary/10 px-4 text-sm font-bold text-primary"
           >
             Edit Schedule
           </button>
@@ -244,8 +244,8 @@ function ScheduleEditor({
   return (
     <div className={`${CARD} p-4`}>
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm font-bold text-gray-800">Weekly Schedule</p>
-        <button onClick={() => setExpanded(false)} className="text-lg leading-none text-gray-400">
+        <p className="text-sm font-bold text-foreground">Weekly Schedule</p>
+        <button onClick={() => setExpanded(false)} className="text-lg leading-none text-muted-foreground">
           <X size={16} />
         </button>
       </div>
@@ -256,22 +256,22 @@ function ScheduleEditor({
           return (
             <div
               key={key}
-              className="flex items-center gap-2 border-b border-gray-50 py-1.5 last:border-0"
+              className="flex items-center gap-2 border-b border-border py-1.5 last:border-0"
             >
               <div className="w-20 flex-shrink-0">
-                <p className="text-xs font-semibold text-gray-700">{label.slice(0, 3)}</p>
+                <p className="text-xs font-semibold text-muted-foreground">{label.slice(0, 3)}</p>
               </div>
               <label className="flex flex-shrink-0 cursor-pointer items-center gap-1.5">
                 <div
                   onClick={() => update(key, "closed", !isClosed)}
-                  className={`relative h-5 w-10 cursor-pointer rounded-full transition-colors ${isClosed ? "bg-gray-300" : "bg-green-400"}`}
+                  className={`relative h-5 w-10 cursor-pointer rounded-full transition-colors ${isClosed ? "bg-muted-foreground/40" : "bg-green-400"}`}
                 >
                   <div
                     className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${isClosed ? "left-0.5" : "left-5"}`}
                   />
                 </div>
                 <span
-                  className={`text-[10px] font-bold ${isClosed ? "text-gray-400" : "text-green-600"}`}
+                  className={`text-[10px] font-bold ${isClosed ? "text-muted-foreground" : "text-green-600"}`}
                 >
                   {isClosed ? "Closed" : "Open"}
                 </span>
@@ -282,14 +282,14 @@ function ScheduleEditor({
                     type="time"
                     value={day.open || "08:00"}
                     onChange={(e) => update(key, "open", e.target.value)}
-                    className="h-8 flex-1 rounded-lg border border-gray-200 bg-gray-50 px-2 text-xs focus:border-blue-500 focus:outline-none"
+                    className="h-8 flex-1 rounded-lg border border-border bg-muted px-2 text-xs focus:border-primary focus:outline-none"
                   />
-                  <span className="text-xs text-gray-400">–</span>
+                  <span className="text-xs text-muted-foreground">–</span>
                   <input
                     type="time"
                     value={day.close || "22:00"}
                     onChange={(e) => update(key, "close", e.target.value)}
-                    className="h-8 flex-1 rounded-lg border border-gray-200 bg-gray-50 px-2 text-xs focus:border-blue-500 focus:outline-none"
+                    className="h-8 flex-1 rounded-lg border border-border bg-muted px-2 text-xs focus:border-primary focus:outline-none"
                   />
                 </div>
               )}
@@ -304,7 +304,7 @@ function ScheduleEditor({
             setDirty(false);
             setExpanded(false);
           }}
-          className="h-9 flex-1 rounded-xl border border-gray-200 text-sm font-bold text-gray-600"
+          className="h-9 flex-1 rounded-xl border border-border text-sm font-bold text-muted-foreground"
         >
           Cancel
         </button>
@@ -315,7 +315,7 @@ function ScheduleEditor({
             setExpanded(false);
           }}
           disabled={!dirty || saving}
-          className="h-9 flex-1 rounded-xl bg-blue-600 text-sm font-bold text-white disabled:opacity-50"
+          className="h-9 flex-1 rounded-xl bg-primary text-sm font-bold text-primary-foreground disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Schedule"}
         </button>
@@ -333,12 +333,12 @@ function VendorNoticeBanner({ message }: { message: string }) {
     setDismissed(true);
   };
   return (
-    <div className="mb-2 flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3">
-      <span className="mt-0.5 flex-shrink-0 text-base text-blue-500"><Pin size={16} className="text-blue-500" /></span>
-      <p className="flex-1 text-sm leading-snug font-medium text-blue-700">{message}</p>
+    <div className="mb-2 flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/10 px-4 py-3">
+      <span className="mt-0.5 flex-shrink-0 text-base text-primary"><Pin size={16} className="text-primary" /></span>
+      <p className="flex-1 text-sm leading-snug font-medium text-primary/80">{message}</p>
       <button
         onClick={dismiss}
-        className="flex-shrink-0 text-lg leading-none text-blue-400 hover:text-blue-600"
+        className="flex-shrink-0 text-lg leading-none text-primary/60 hover:text-primary"
       >
         <X size={16} />
       </button>
@@ -485,29 +485,29 @@ export default function Dashboard() {
     {
       label: T("todaysOrders"),
       value: statsError ? "⚠" : String(stats?.today?.orders ?? 0),
-      color: statsError ? "text-red-400" : "text-blue-500",
-      bg: statsError ? "bg-red-50" : "bg-blue-50",
+      color: statsError ? "text-destructive" : "text-primary",
+      bg: statsError ? "bg-destructive/10" : "bg-primary/10",
       icon: "📦",
     },
     {
       label: T("todaysRevenue"),
       value: statsError ? "⚠" : fc(stats?.today?.revenue ?? 0),
-      color: statsError ? "text-red-400" : "text-amber-600",
-      bg: statsError ? "bg-red-50" : "bg-amber-50",
+      color: statsError ? "text-destructive" : "text-accent",
+      bg: statsError ? "bg-destructive/10" : "bg-accent/10",
       icon: "💰",
     },
     {
       label: T("weeklyRevenue"),
       value: statsError ? "⚠" : fc(stats?.week?.revenue ?? 0),
-      color: statsError ? "text-red-400" : "text-blue-600",
-      bg: statsError ? "bg-red-50" : "bg-blue-50",
+      color: statsError ? "text-destructive" : "text-primary",
+      bg: statsError ? "bg-destructive/10" : "bg-primary/10",
       icon: "📅",
     },
     {
       label: T("monthlyRevenue"),
       value: statsError ? "⚠" : fc(stats?.month?.revenue ?? 0),
-      color: statsError ? "text-red-400" : "text-purple-600",
-      bg: statsError ? "bg-red-50" : "bg-purple-50",
+      color: statsError ? "text-destructive" : "text-primary",
+      bg: statsError ? "bg-destructive/10" : "bg-primary/10",
       icon: "📈",
     },
   ];
@@ -522,7 +522,7 @@ export default function Dashboard() {
   return (
     <PullToRefresh
       onRefresh={handleRefresh}
-      className="min-h-screen bg-gray-50 dark:bg-[#0A0F1A] md:bg-transparent"
+      className="min-h-screen bg-background md:bg-transparent"
     >
       <OfflineBanner show={!isOnline} />
       {/* ── Header ── */}
@@ -545,7 +545,7 @@ export default function Dashboard() {
                 : `${config.platform.appName} Vendor Portal`}
             </span>
             {statsUpdatedAt > 0 && (
-              <span className={`text-[10px] font-semibold ${statsFetching ? "text-blue-400" : "text-gray-400"}`}>
+              <span className={`text-[10px] font-semibold ${statsFetching ? "text-primary/60" : "text-muted-foreground"}`}>
                 {statsFetching
                   ? "Syncing…"
                   : (() => {
@@ -561,7 +561,7 @@ export default function Dashboard() {
         }
         actions={
           <div className="flex items-center gap-2">
-            <span className="hidden text-sm font-medium text-gray-500 md:block">{T("store")}:</span>
+            <span className="hidden text-sm font-medium text-muted-foreground md:block">{T("store")}:</span>
             <button
               onClick={toggle}
               disabled={togglePending}
@@ -690,31 +690,31 @@ export default function Dashboard() {
 
         {/* Low Stock Alert */}
         {(stats?.lowStock ?? 0) > 0 && (
-          <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 md:mb-6">
+          <div className="flex items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 md:mb-6">
             <span className="text-2xl">⚠️</span>
             <div>
-              <p className="text-sm font-bold text-red-700">
+              <p className="text-sm font-bold text-destructive">
                 {stats.lowStock} Products Low on Stock
               </p>
-              <p className="mt-0.5 text-xs text-red-500">Go to Products → update stock</p>
+              <p className="mt-0.5 text-xs text-destructive/70">Go to Products → update stock</p>
             </div>
           </div>
         )}
 
         {/* Pending Product Sync Badge */}
         {pendingProductCount > 0 && (
-          <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 md:mb-6">
+          <div className="flex items-center gap-3 rounded-2xl border border-accent/20 bg-accent/10 p-4 md:mb-6">
             <span className="text-2xl">⏳</span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-amber-800">
+              <p className="text-sm font-bold text-accent-foreground">
                 {pendingProductCount} product change{pendingProductCount > 1 ? "s" : ""} pending
                 sync
               </p>
-              <p className="mt-0.5 text-xs text-amber-600">
+              <p className="mt-0.5 text-xs text-accent/70">
                 Go online to sync your product updates
               </p>
             </div>
-            <span className="flex-shrink-0 rounded-full bg-amber-200 px-2.5 py-1 text-xs font-bold text-amber-800">
+            <span className="flex-shrink-0 rounded-full bg-accent/20 px-2.5 py-1 text-xs font-bold text-accent-foreground">
               {pendingProductCount}
             </span>
           </div>
@@ -756,36 +756,36 @@ export default function Dashboard() {
           return (
             <div
               className={`overflow-hidden rounded-2xl md:mb-6 ${
-                anyActive ? "border border-blue-200" : "border border-amber-200"
+                anyActive ? "border border-primary/20" : "border border-accent/20"
               }`}
             >
               <div
                 className={`flex items-center gap-3 px-4 py-3 ${
-                  anyActive ? "bg-blue-50" : "bg-amber-50"
+                  anyActive ? "bg-primary/10" : "bg-accent/10"
                 }`}
               >
-                <Truck className={`h-5 w-5 ${anyActive ? "text-blue-600" : "text-amber-600"}`} />
+                <Truck className={`h-5 w-5 ${anyActive ? "text-primary" : "text-accent"}`} />
                 <p
-                  className={`flex-1 text-sm font-bold ${anyActive ? "text-blue-700" : "text-amber-700"}`}
+                  className={`flex-1 text-sm font-bold ${anyActive ? "text-primary" : "text-accent-foreground"}`}
                 >
                   Delivery Access
                 </p>
               </div>
-              <div className="divide-y divide-gray-100 bg-white">
+              <div className="divide-y divide-border bg-card">
                 {Object.entries(statuses).map(([svc, info]) => {
                   const hasPendingForService =
                     pendingServiceTypes.has(svc) || pendingServiceTypes.has("all");
                   return (
                     <div key={svc} className="flex items-center gap-3 px-4 py-2.5">
-                      <span className="flex-1 text-sm font-medium text-gray-700 capitalize">
+                      <span className="flex-1 text-sm font-medium text-muted-foreground capitalize">
                         {svc}
                       </span>
                       {info.active ? (
-                        <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold text-green-700">
+                        <span className="rounded-full bg-success/10 px-2.5 py-0.5 text-[10px] font-bold text-success">
                           Active{info.deliveryLabel ? ` · ${info.deliveryLabel}` : ""}
                         </span>
                       ) : hasPendingForService ? (
-                        <span className="rounded-full bg-yellow-100 px-2.5 py-0.5 text-[10px] font-bold text-yellow-700">
+                        <span className="rounded-full bg-warning/10 px-2.5 py-0.5 text-[10px] font-bold text-warning">
                           ⏳ Pending review
                         </span>
                       ) : (
@@ -797,7 +797,7 @@ export default function Dashboard() {
                             })
                           }
                           disabled={requestDeliveryMut.isPending}
-                          className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold text-amber-700 hover:bg-amber-200 disabled:opacity-60"
+                          className="rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold text-accent-foreground hover:bg-accent/20 disabled:opacity-60"
                         >
                           Request
                         </button>
@@ -822,26 +822,26 @@ export default function Dashboard() {
           <div>
             {pendingOrders.length > 0 ? (
               <div className={CARD}>
-                <div className="flex items-center gap-2 border-b border-blue-100 bg-blue-50 px-4 py-3.5">
+                <div className="flex items-center gap-2 border-b border-primary/10 bg-primary/10 px-4 py-3.5">
                   <span className="text-lg">🔔</span>
                   <div>
-                    <p className="text-sm font-bold text-orange-800">
+                    <p className="text-sm font-bold text-accent-foreground">
                       {pendingOrders.length} {T("newOrders")}!
                     </p>
-                    <p className="text-xs text-blue-500">{T("acceptWithinTime")}</p>
+                    <p className="text-xs text-primary/70">{T("acceptWithinTime")}</p>
                   </div>
                 </div>
-                <div className="divide-y divide-gray-50">
+                <div className="divide-y divide-border">
                   {pendingOrders.map((o: any) => {
                     const isOrderPending = pendingOrderIds.has(o.id);
                     return (
                       <div key={o.id} className="flex items-center gap-3 px-4 py-3">
-                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl">
                           {o.type === "food" ? "🍔" : "🛒"}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-gray-800 capitalize">{o.type}</p>
-                          <p className="font-mono text-xs text-gray-400">
+                          <p className="text-sm font-semibold text-foreground capitalize">{o.type}</p>
+                          <p className="font-mono text-xs text-muted-foreground">
                             #{o.id.slice(-6).toUpperCase()} · {fc(o.total)}
                           </p>
                         </div>
@@ -849,7 +849,7 @@ export default function Dashboard() {
                           <button
                             onClick={() => setAcceptDialog({ orderId: o.id, total: o.total })}
                             disabled={isOrderPending}
-                            className="android-press h-9 min-h-0 rounded-xl bg-green-500 px-4 text-xs font-bold text-white disabled:opacity-60"
+                            className="android-press h-9 min-h-0 rounded-xl bg-success px-4 text-xs font-bold text-success-foreground disabled:opacity-60"
                           >
                             <CheckSquare size={14} className="inline" /> Accept
                           </button>
@@ -859,7 +859,7 @@ export default function Dashboard() {
                               setCancelDialog({ orderId: o.id });
                             }}
                             disabled={isOrderPending}
-                            className="android-press h-9 min-h-0 rounded-xl bg-red-50 px-3 text-xs font-bold text-red-600 disabled:opacity-60"
+                            className="android-press h-9 min-h-0 rounded-xl bg-destructive/10 px-3 text-xs font-bold text-destructive disabled:opacity-60"
                           >
                             <X size={14} />
                           </button>
@@ -872,8 +872,8 @@ export default function Dashboard() {
             ) : (
               <div className={`${CARD} px-4 py-10 text-center`}>
                 <p className="mb-2 text-4xl">📋</p>
-                <p className="text-sm font-bold text-gray-500">{T("noNewOrders")}</p>
-                <p className="mt-1 text-xs text-gray-400">{T("newOrdersAppearHere")}</p>
+                <p className="text-sm font-bold text-muted-foreground">{T("noNewOrders")}</p>
+                <p className="mt-1 text-xs text-muted-foreground/60">{T("newOrdersAppearHere")}</p>
               </div>
             )}
           </div>
@@ -882,27 +882,27 @@ export default function Dashboard() {
           <div>
             {activeOrders.length > 0 ? (
               <div className={CARD}>
-                <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3.5">
-                  <p className="text-sm font-bold text-gray-800">
+                <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
+                  <p className="text-sm font-bold text-foreground">
                     {activeOrders.length} {T("activeOrders")}
                   </p>
                   <span className={BADGE_BLUE}>
                     {T("inProgress")}
                   </span>
                 </div>
-                <div className="divide-y divide-gray-50">
+                <div className="divide-y divide-border">
                   {activeOrders.map((o: any) => (
                     <div key={o.id} className="flex items-center justify-between px-4 py-3">
                       <div>
-                        <p className="text-sm font-semibold text-gray-800 capitalize">{o.type}</p>
-                        <p className="font-mono text-xs text-gray-400">
+                        <p className="text-sm font-semibold text-foreground capitalize">{o.type}</p>
+                        <p className="font-mono text-xs text-muted-foreground">
                           #{(o.id ?? "").slice(-6).toUpperCase()}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-gray-800">{fc(o.total)}</p>
+                        <p className="text-sm font-bold text-foreground">{fc(o.total)}</p>
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${ORDER_STATUS_BADGE[o.status] ?? "bg-blue-100 text-blue-700"}`}
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${ORDER_STATUS_BADGE[o.status] ?? "bg-primary/10 text-primary"}`}
                         >
                           {(o.status ?? "").toUpperCase()}
                         </span>
@@ -914,8 +914,8 @@ export default function Dashboard() {
             ) : (
               <div className={`${CARD} px-4 py-10 text-center`}>
                 <p className="mb-2 text-4xl">🍳</p>
-                <p className="text-sm font-bold text-gray-500">{T("noActiveOrdersLabel")}</p>
-                <p className="mt-1 text-xs text-gray-400">{T("activeOrdersShowHere")}</p>
+                <p className="text-sm font-bold text-muted-foreground">{T("noActiveOrdersLabel")}</p>
+                <p className="mt-1 text-xs text-muted-foreground/60">{T("activeOrdersShowHere")}</p>
               </div>
             )}
           </div>
@@ -979,17 +979,17 @@ export default function Dashboard() {
           onClick={() => setAcceptDialog(null)}
         >
           <div
-            className="w-full max-w-md rounded-t-3xl bg-white p-6 shadow-2xl md:rounded-3xl"
+            className="w-full max-w-md rounded-t-3xl bg-card p-6 shadow-2xl md:rounded-3xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="mb-1 text-lg font-extrabold text-gray-800">{T("acceptOrder")}?</h3>
-            <p className="mb-4 text-sm text-gray-500">
+            <h3 className="mb-1 text-lg font-extrabold text-foreground">{T("acceptOrder")}?</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
               {T("reviewConfirm")} ({fc(acceptDialog.total)})
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setAcceptDialog(null)}
-                className="h-11 flex-1 rounded-xl border-2 border-gray-200 text-sm font-bold text-gray-600"
+                className="h-11 flex-1 rounded-xl border-2 border-border text-sm font-bold text-muted-foreground"
               >
                 ← {T("back")}
               </button>
@@ -998,7 +998,7 @@ export default function Dashboard() {
                   orderActionMut.mutate({ orderId: acceptDialog.orderId, status: "confirmed" });
                   setAcceptDialog(null);
                 }}
-                className="h-11 flex-1 rounded-xl bg-green-500 text-sm font-bold text-white"
+                className="h-11 flex-1 rounded-xl bg-success text-sm font-bold text-success-foreground"
               >
                 ✓ {T("confirmLabel")}
               </button>
@@ -1014,12 +1014,12 @@ export default function Dashboard() {
           onClick={() => setCancelDialog(null)}
         >
           <div
-            className="w-full max-w-md rounded-t-3xl bg-white p-6 shadow-2xl md:rounded-3xl"
+            className="w-full max-w-md rounded-t-3xl bg-card p-6 shadow-2xl md:rounded-3xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="mb-1 text-lg font-extrabold text-gray-800">{T("cancelOrder")}</h3>
-            <p className="mb-4 text-sm text-gray-500">{T("cancelConfirmMsg")}</p>
-            <label className="mb-1.5 block text-xs font-bold tracking-wider text-gray-400 uppercase">
+            <h3 className="mb-1 text-lg font-extrabold text-foreground">{T("cancelOrder")}</h3>
+            <p className="mb-4 text-sm text-muted-foreground">{T("cancelConfirmMsg")}</p>
+            <label className="mb-1.5 block text-xs font-bold tracking-wider text-muted-foreground uppercase">
               {T("reason")} ({T("noteOptional")})
             </label>
             <textarea
@@ -1029,12 +1029,12 @@ export default function Dashboard() {
                 cancelReasonRef.current = e.target.value;
               }}
               placeholder="e.g. Item not available, store closing..."
-              className="mb-4 w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none"
+              className="mb-4 w-full resize-none rounded-xl border border-border bg-muted px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
             />
             <div className="flex gap-3">
               <button
                 onClick={() => setCancelDialog(null)}
-                className="h-11 flex-1 rounded-xl border-2 border-gray-200 text-sm font-bold text-gray-600"
+                className="h-11 flex-1 rounded-xl border-2 border-border text-sm font-bold text-muted-foreground"
               >
                 ← {T("back")}
               </button>
@@ -1047,7 +1047,7 @@ export default function Dashboard() {
                   });
                   setCancelDialog(null);
                 }}
-                className="h-11 flex-1 rounded-xl bg-red-500 text-sm font-bold text-white"
+                className="h-11 flex-1 rounded-xl bg-destructive text-sm font-bold text-destructive-foreground"
               >
                 <X size={14} className="inline" /> {T("cancelConfirm")}
               </button>

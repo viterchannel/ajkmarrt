@@ -65,12 +65,12 @@ function ThemeInfo() {
   const name = themeNames[ajkTheme.currentTheme] ?? ajkTheme.currentTheme;
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50">
-        <Palette size={16} className="text-amber-500" />
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+        <Palette size={16} className="text-primary" />
       </div>
       <div>
-        <p className="text-sm font-semibold text-gray-800">Brand Theme</p>
-        <p className="text-xs text-gray-400">{name} — set by admin</p>
+        <p className="text-sm font-semibold text-foreground">Brand Theme</p>
+        <p className="text-xs text-muted-foreground">{name} — set by admin</p>
       </div>
     </div>
   );

@@ -10,13 +10,13 @@
 import { useEffect, useState } from "react";
 import { vendorTheme } from "./theme";
 
-const BG      = vendorTheme.background as string;   // #060A14
-const SURFACE = vendorTheme.surface    as string;   // #0F1827
+const BG      = vendorTheme.background as string;   // var(--background)
+const SURFACE = vendorTheme.surface    as string;   // var(--card)
 const ACCENT  = vendorTheme.primary    as string;   // #1A56DB
-const TEXT    = vendorTheme.text       as string;   // #E2E8F4
-const MUTED   = vendorTheme.textMuted  as string;   // #8B95A9
-const BORDER  = vendorTheme.border     as string;   // #1E2A3F
-const GREEN   = vendorTheme.success    as string;   // #22C55E
+const TEXT    = vendorTheme.text       as string;   // var(--foreground)
+const MUTED   = vendorTheme.textMuted  as string;   // var(--muted-foreground)
+const BORDER  = vendorTheme.border     as string;   // var(--border)
+const GREEN   = vendorTheme.success    as string;   // var(--success)
 
 /* ── Pulse animation ring ───────────────────────────────────────────── */
 function PulseRing() {
