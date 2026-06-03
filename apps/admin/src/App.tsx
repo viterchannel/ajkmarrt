@@ -10,6 +10,7 @@ import { setupAdminFetcherHandlers } from "@/lib/adminFetcher";
 import { adminTheme } from "@/lib/auth/theme";
 import { ThemeProvider } from "@/lib/auth/ThemeContext";
 import { ThemeProvider as AjkThemeProvider } from "@workspace/theme";
+import { GlobalThemeProvider } from "@workspace/theme";
 import { auditAdminEnv } from "@/lib/envValidation";
 import { initAnalytics } from "@/lib/analytics";
 import { initErrorReporter } from "@/lib/error-reporter";
@@ -574,7 +575,8 @@ function IntegrationsInit() {
 
 export default function App() {
   return (
-    <AjkThemeProvider defaultTheme="light-mode" storageKey="admin_theme">
+    <GlobalThemeProvider appRole="admin">
+    <AjkThemeProvider appRole="admin" defaultTheme="light-mode" storageKey="admin_theme">
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
@@ -597,5 +599,6 @@ export default function App() {
         </QueryClientProvider>
       </ErrorBoundary>
     </AjkThemeProvider>
+    </GlobalThemeProvider>
   );
 }

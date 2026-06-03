@@ -27,6 +27,13 @@ export type { ThemeProviderProps } from "./components/ThemeProvider.js";
 export { ThemeContext } from "./components/ThemeContext.js";
 export { useTheme, useRawColors, useIsDark } from "./hooks/useTheme.js";
 
+// ── Global Theme Provider (simple, role-based) ──────────────────────────────
+export {
+  ThemeProvider as GlobalThemeProvider,
+  useTheme as useGlobalTheme,
+} from "./components/GlobalThemeProvider.js";
+export type { ThemeContextType } from "./components/GlobalThemeProvider.js";
+
 // ── Theme definitions ─────────────────────────────────────────────────────────
 export { darkGoldTheme } from "./config/themes/dark-gold.js";
 export { lightModeTheme, lightModeDarkVariant } from "./config/themes/light-mode.js";
@@ -86,4 +93,5 @@ export type {
   ThemeDefinition,
   ThemeContextValue,
   ColorScheme,
+  AppRole,
 } from "./config/themes/types.js";

@@ -2,16 +2,21 @@
  * ThemeProvider — Global theme wrapper for all AJKMart apps.
  *
  * Usage:
- *   <ThemeProvider defaultTheme="dark-gold" storageKey="rider_theme">
+ *   <ThemeProvider
+ *     appRole="admin"
+ *     defaultTheme="light-mode"
+ *     storageKey="admin_theme"
+ *   >
  *     <App />
  *   </ThemeProvider>
  *
  * What it does:
- *   1. Resolves the active theme from the registry.
+ *   1. Resolves the active theme from the registry (or admin API config).
  *   2. Applies all CSS custom properties to <html> as data attributes + inline vars.
  *   3. Sets the `color-scheme` meta and `data-theme` attribute.
  *   4. Persists the user's theme choice to localStorage.
- *   5. Exposes ThemeContext consumed by useTheme().
+ *   5. Fetches admin-config theme override on mount (if available).
+ *   6. Exposes ThemeContext consumed by useTheme().
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -19,7 +24,8 @@ import { ThemeContext } from "./ThemeContext.js";
 import { darkGoldTheme } from "../config/themes/dark-gold.js";
 import { lightModeTheme, lightModeDarkVariant } from "../config/themes/light-mode.js";
 import { darkBlueTheme, darkNavyTheme, highContrastTheme } from "../config/themes/custom-themes.js";
-import type { ThemeDefinition, ThemeContextValue } from "../config/themes/types.js";
+import { BrandColors } from "../config/brand.js";
+import type { ThemeDefinition, ThemeContextValue, AppRole } from "../config/themes/types.js";
 
 // ─── Theme Registry ───────────────────────────────────────────────────────────
 
@@ -73,21 +79,30 @@ function resolveSystemScheme(): "light" | "dark" {
 
 export interface ThemeProviderProps {
   children: React.ReactNode;
+  /** Which app this ThemeProvider is serving */
+  appRole: AppRole;
   /** Initial theme ID. Defaults to "dark-gold". */
   defaultTheme?: string;
   /** localStorage key for persisting user preference. */
   storageKey?: string;
   /** When true, ignores localStorage and always uses defaultTheme. */
   disablePersistence?: boolean;
+  /** When true, skips the admin API theme fetch on mount. */
+  disableAdminFetch?: boolean;
+  /** Admin API endpoint for theme config. */
+  adminConfigEndpoint?: string;
 }
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ThemeProvider({
   children,
+  appRole,
   defaultTheme = "dark-gold",
   storageKey = "ajkmart_theme",
   disablePersistence = false,
+  disableAdminFetch = false,
+  adminConfigEndpoint = "/api/admin/theme-config",
 }: ThemeProviderProps) {
   const [themeId, setThemeId] = useState<string>(() => {
     if (disablePersistence) return defaultTheme;
@@ -98,28 +113,52 @@ export function ThemeProvider({
     }
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [adminOverride, setAdminOverride] = useState<Record<string, string> | undefined>(undefined);
+
   const theme = useMemo(
     () => THEME_REGISTRY[themeId] ?? THEME_REGISTRY[defaultTheme] ?? darkGoldTheme,
     [themeId, defaultTheme]
   );
 
-  // Apply CSS vars whenever theme changes
+  // ── Fetch admin config on mount ─────────────────────────────────────────────
   useEffect(() => {
-    // For light-mode we need to handle the dark-class companion separately —
-    // the base cssVars already embed the light palette; .dark override is
-    // applied via the class toggle in applyTheme().
-    applyTheme(theme);
-  }, [theme]);
+    if (disableAdminFetch) return;
+    const loadThemeFromAdmin = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(adminConfigEndpoint);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const themeConfig = await response.json();
+        if (themeConfig?.selectedTheme && THEME_REGISTRY[themeConfig.selectedTheme]) {
+          setThemeId(themeConfig.selectedTheme);
+        }
+        if (themeConfig?.cssVars) {
+          setAdminOverride(themeConfig.cssVars);
+        }
+      } catch {
+        // Admin config endpoint not available — silently fall back to localStorage/default
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadThemeFromAdmin();
+  }, [disableAdminFetch, adminConfigEndpoint]);
 
-  // Listen for system color scheme changes when theme is "system"-aware
+  // ── Apply CSS vars whenever theme changes ─────────────────────────────────
+  useEffect(() => {
+    applyTheme(theme, adminOverride);
+  }, [theme, adminOverride]);
+
+  // ── Listen for system color scheme changes ────────────────────────────────
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = () => {
-      if (theme.colorScheme === "system") applyTheme(theme);
+      if (theme.colorScheme === "system") applyTheme(theme, adminOverride);
     };
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
-  }, [theme]);
+  }, [theme, adminOverride]);
 
   const setTheme = useCallback(
     (id: string) => {
@@ -154,13 +193,17 @@ export function ThemeProvider({
   const value = useMemo(
     (): ThemeContextValue => ({
       theme,
+      currentTheme: themeId,
       availableThemes: Object.keys(THEME_REGISTRY),
       setTheme,
       resolvedColorScheme,
       isDark: resolvedColorScheme === "dark",
       toggleDark,
+      appRole,
+      colors: theme.rawColors,
+      isLoading,
     }),
-    [theme, setTheme, resolvedColorScheme, toggleDark]
+    [theme, themeId, setTheme, resolvedColorScheme, toggleDark, appRole, isLoading]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

@@ -29,6 +29,7 @@ import { initAnalytics, trackEvent, identifyUser, resetUser, trackPageView } fro
 import { api, apiFetch, getApiBase, setApiTimeoutMs } from "./lib/api";
 import { ThemeProvider } from "./lib/auth/ThemeContext";
 import { ThemeProvider as AjkThemeProvider } from "@workspace/theme";
+import { GlobalThemeProvider } from "@workspace/theme";
 import { riderTheme } from "./lib/auth/theme";
 import { riderEnv } from "./lib/envValidation";
 import { initErrorReporter } from "./lib/error-reporter";
@@ -2253,7 +2254,8 @@ function AppShell() {
 
 function App() {
   return (
-    <AjkThemeProvider defaultTheme="dark-gold" storageKey="rider_theme">
+    <GlobalThemeProvider appRole="rider">
+    <AjkThemeProvider appRole="rider" defaultTheme="dark-gold" storageKey="rider_theme">
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <VersionCheckInit />
@@ -2282,6 +2284,7 @@ function App() {
         </QueryClientProvider>
       </ErrorBoundary>
     </AjkThemeProvider>
+    </GlobalThemeProvider>
   );
 }
 

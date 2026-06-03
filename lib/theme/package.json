@@ -12,6 +12,7 @@
     "./config/themes/light-mode": "./src/config/themes/light-mode.ts",
     "./config/themes/custom-themes": "./src/config/themes/custom-themes.ts",
     "./components/ThemeProvider": "./src/components/ThemeProvider.tsx",
+    "./components/GlobalThemeProvider": "./src/components/GlobalThemeProvider.tsx",
     "./hooks/useTheme": "./src/hooks/useTheme.ts"
   },
   "peerDependencies": {

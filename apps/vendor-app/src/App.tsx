@@ -19,6 +19,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Toaster } from "./components/ui/toaster";
 import { ThemeProvider } from "./lib/auth/ThemeContext";
 import { ThemeProvider as AjkThemeProvider } from "@workspace/theme";
+import { GlobalThemeProvider } from "@workspace/theme";
 import { vendorTheme } from "./lib/auth/theme";
 import { markOrderSeen, playOrderSound, wasOrderSeenRecently } from "./lib/notificationSound";
 import { consumePendingNotificationTap, registerPush, type PushErrorHandler } from "./lib/push";
@@ -1521,7 +1522,8 @@ function AppShell() {
 
 export default function App() {
   return (
-    <AjkThemeProvider defaultTheme="dark-blue" storageKey="vendor_theme">
+    <GlobalThemeProvider appRole="vendor">
+    <AjkThemeProvider appRole="vendor" defaultTheme="dark-blue" storageKey="vendor_theme">
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <VersionCheckInit />
@@ -1553,6 +1555,7 @@ export default function App() {
         </QueryClientProvider>
       </ErrorBoundary>
     </AjkThemeProvider>
+    </GlobalThemeProvider>
   );
 }
 

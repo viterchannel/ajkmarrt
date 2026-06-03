@@ -35,6 +35,8 @@ export interface ThemeDefinition {
   };
 }
 
+export type AppRole = "admin" | "vendor" | "rider" | "customer" | "shared";
+
 export interface ThemeContextValue {
   /** Active theme definition */
   theme: ThemeDefinition;
@@ -48,4 +50,12 @@ export interface ThemeContextValue {
   isDark: boolean;
   /** Toggle between light and dark variant of the current theme */
   toggleDark: () => void;
+  /** Which app this ThemeProvider is serving */
+  appRole: AppRole;
+  /** Current theme ID string */
+  currentTheme: string;
+  /** Raw colors from the active theme (JS-friendly for charts, inline styles) */
+  colors: ThemeDefinition["rawColors"];
+  /** Whether admin config is being fetched */
+  isLoading: boolean;
 }
