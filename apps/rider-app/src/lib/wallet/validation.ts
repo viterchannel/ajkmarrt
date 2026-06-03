@@ -19,10 +19,10 @@ export interface WalletValidationResult {
 
 export function checkSufficientBalance(balance: number, amount: number): WalletValidationResult {
   if (amount <= 0) {
-    return { valid: false, reason: "validationAmountPositive" };
+    return { valid: false, reason: "Amount must be positive" };
   }
   if (balance - amount < 0) {
-    return { valid: false, reason: "validationInsufficientBalance" };
+    return { valid: false, reason: "Insufficient balance for this withdrawal" };
   }
   return { valid: true, reason: "ok" };
 }
@@ -32,7 +32,7 @@ export function checkPromoStackable(activePromos: PromoCode[]): WalletValidation
      preventing silent double-stacking. Callers pass the full set of promos
      including the one being added — length > 1 means stacking is occurring. */
   if (activePromos.length > 1) {
-    return { valid: false, reason: "validationOnePromoOnly" };
+    return { valid: false, reason: "Only one promo code can be applied at a time" };
   }
   return { valid: true, reason: "ok" };
 }

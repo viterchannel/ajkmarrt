@@ -154,7 +154,7 @@ export function validateGpsPing(prev: GpsPing | null, next: GpsPing): GpsValidat
     return { valid: false, reason, suspicious: false };
   }
 
-  if (typeof next.accuracy === "number" && next.accuracy < MIN_ACCURACY_M) {
+  if (typeof next.accuracy === "number" && next.accuracy <= MIN_ACCURACY_M) {
     const reason = `accuracy too high (${next.accuracy}m — possible spoof)`;
     recordRejection(reason, next.latitude, next.longitude);
     return { valid: false, reason, suspicious: false };
@@ -182,7 +182,7 @@ export function validateGpsPing(prev: GpsPing | null, next: GpsPing): GpsValidat
              hard-rejecting; consecutive violations still trigger the gate. */
           const suspicionReason = `possible GPS jump (${Math.round(speedKmh)} km/h, outlier #${_consecutiveSpeedViolations})`;
           recordRejection(suspicionReason, next.latitude, next.longitude, true);
-          return { valid: true, reason: "ok", suspicious: true, suspicionReason };
+          return { valid: true, reason: suspicionReason, suspicious: true, suspicionReason };
         }
         const reason = `impossible speed (${Math.round(speedKmh)} km/h — ${_consecutiveSpeedViolations} consecutive violations)`;
         recordRejection(reason, next.latitude, next.longitude);

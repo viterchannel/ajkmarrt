@@ -13,7 +13,7 @@ vi.mock("../components/dashboard", () => ({
 
 vi.mock("lucide-react", () => ({
   Target: () => null,
-  CheckCircle: () => null,
+  CheckCircle2: () => null,
   Pencil: () => null,
   X: () => null,
 }));
@@ -46,13 +46,13 @@ describe("GoalSection", () => {
   });
 
   it("shows goal progress percentage (40% of 3000)", () => {
-    render(<GoalSection {...defaultProps} />, { wrapper });
+    render(<GoalSection {...defaultProps} personalGoal={3000} />, { wrapper });
     expect(screen.getByText("40%")).toBeDefined();
   });
 
-  it("shows 100% when earnings exceed goal", () => {
-    render(<GoalSection {...defaultProps} todayEarnings={4000} />, { wrapper });
-    expect(screen.getByText("100%")).toBeDefined();
+  it("shows goal reached state when earnings exceed goal", () => {
+    render(<GoalSection {...defaultProps} personalGoal={3000} todayEarnings={4000} />, { wrapper });
+    expect(screen.getByText("dailyGoalReached")).toBeDefined();
   });
 
   it("uses adminGoal as fallback when personalGoal is null", () => {

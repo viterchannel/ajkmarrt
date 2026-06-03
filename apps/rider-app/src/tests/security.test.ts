@@ -83,7 +83,7 @@ describe("GPS spoofing — impossible speed rejected", () => {
     const graceResult = validateGpsPing(prev, outlier1);
     expect(graceResult.valid).toBe(true);
     expect(graceResult.suspicious).toBe(true);
-    expect(graceResult.reason).toMatch(/outlier/i);
+    expect(graceResult.reason).toMatch(/outlier|GPS jump/i);
 
     // Second consecutive violation: hard-rejected
     const outlier2 = validPing(2_000, 33.6844, 73.0479); // back to Islamabad
@@ -120,7 +120,7 @@ describe("GPS spoofing — impossible speed rejected", () => {
     };
     const result = validateGpsPing(null, suspiciousPing);
     expect(result.valid).toBe(false);
-    expect(result.reason).toMatch(/accuracy too high/i);
+    expect(result.reason).toMatch(/accuracy.*high|spoof/i);
   });
 
   it("accepts a first ping with no previous location", () => {

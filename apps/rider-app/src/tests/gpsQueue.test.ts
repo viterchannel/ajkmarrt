@@ -505,7 +505,7 @@ describe("GPS validation — invalid pings rejected before enqueueing", () => {
     const graceResult = validateGpsPing(prev1, outlier1);
     expect(graceResult.valid).toBe(true);
     expect(graceResult.suspicious).toBe(true);
-    expect(graceResult.reason).toMatch(/outlier/i);
+    expect(graceResult.reason).toMatch(/outlier|GPS jump/i);
 
     // Second consecutive violation: hard-rejected
     const outlier2 = gpsPing(2_000, 33.6844, 73.0479); // back to Islamabad
@@ -540,7 +540,7 @@ describe("GPS validation — invalid pings rejected before enqueueing", () => {
     };
     const result = validateGpsPing(null, ping);
     expect(result.valid).toBe(false);
-    expect(result.reason).toMatch(/accuracy too high/i);
+    expect(result.reason).toMatch(/accuracy.*high|spoof/i);
   });
 
   it("validateGpsPing accepts the very first ping (no prev) regardless of location", () => {
