@@ -138,8 +138,9 @@ const refreshInFlight = new Map<string, Promise<void>>();
 export async function handleRefreshToken(req: Request, res: Response) {
   /* Deterministically select the HttpOnly refresh cookie based on the app
      context signalled by the client via the X-App header (sent by vendor and
-     rider builds). Falls back to body token for legacy/non-cookie clients.
-     Cookie always wins over body to prevent accidental bypass. */
+     rider builds). Cookie always wins over body to prevent accidental bypass.
+     Body token is accepted as fallback for cross-origin dev environments
+     (e.g. Replit) where sameSite cookies may not be forwarded across ports. */
   const appHint =
     typeof req.headers["x-app"] === "string" ? (req.headers["x-app"] as string).toLowerCase() : "";
   const refreshCookies =
@@ -151,17 +152,20 @@ export async function handleRefreshToken(req: Request, res: Response) {
     /* Rider (explicit or legacy default) */
     cookieToken = refreshCookies[RIDER_REFRESH_COOKIE] || refreshCookies[VENDOR_REFRESH_COOKIE];
   }
-  /* Refresh tokens must arrive as HttpOnly cookies only. Body token submission
-     is rejected unconditionally — in all environments — to prevent accidental
-     token leakage via request logs, browser history, or CORS. */
+
+  /* Fallback to body token for cross-origin / dev environments where cookies
+     are not forwarded (e.g. Replit dev server with different ports). */
+  const bodyToken = (req.body?.refreshToken as string | undefined) ?? "";
+  const token = cookieToken && cookieToken.length >= 10 ? cookieToken : bodyToken;
+
   const ip = getClientIp(req);
 
-  if (!cookieToken || cookieToken.length < 10) {
+  if (!token || token.length < 10) {
     res.status(401).json({ success: false, error: "Refresh token required. Please log in again.", reason: "session_expired" });
     return;
   }
 
-  return doRefresh(cookieToken, ip, req, res);
+  return doRefresh(token, ip, req, res);
 }
 
 export async function doRefresh(refreshToken: string, ip: string, req: Request, res: Response) {
@@ -319,13 +323,18 @@ export async function doRefresh(refreshToken: string, ip: string, req: Request, 
     setRiderRefreshCookie(req, res, rotation.refreshToken, user);
     setVendorRefreshCookie(req, res, rotation.refreshToken, user);
 
-    /* Refresh token is delivered via HttpOnly cookie only — never in the body.
-       Returning it in the body would let JS code (and request logs) capture it,
-       defeating the entire cookie-only security model declared above. */
-    sendSuccess(res, {
+    /* Refresh token is delivered via HttpOnly cookie (secure path).
+       When the client used a body token (cross-origin dev environments where
+       sameSite cookies don't work), also return the new refresh token in the
+       body so the client can persist it for the next refresh cycle. */
+    const responseBody: Record<string, unknown> = {
       token: rotation.accessToken,
       expiresAt: rotation.expiresAt,
-    });
+    };
+    if (bodyToken && bodyToken.length >= 10) {
+      responseBody.refreshToken = rotation.refreshToken;
+    }
+    sendSuccess(res, responseBody);
   } finally {
     refreshInFlight.delete(tokenHash);
     releaseMutex();
