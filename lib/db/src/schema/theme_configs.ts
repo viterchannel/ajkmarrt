@@ -1,15 +1,19 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const themeConfigsTable = pgTable("theme_configs", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  appRole: text("app_role").notNull(),
-  selectedTheme: text("selected_theme").notNull(),
-  colors: text("colors").notNull(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  updatedBy: text("updated_by"),
-});
+export const themeConfigsTable = pgTable(
+  "theme_configs",
+  {
+    id:            uuid("id").primaryKey().defaultRandom(),
+    appRole:       text("app_role").notNull(),
+    selectedTheme: text("selected_theme").notNull(),
+    colors:        text("colors").notNull(),
+    updatedAt:     timestamp("updated_at").notNull().defaultNow(),
+    updatedBy:     text("updated_by"),
+  },
+  (t) => [uniqueIndex("uq_theme_configs_app_role").on(t.appRole)],
+);
 
 export const insertThemeConfigSchema = createInsertSchema(themeConfigsTable).omit({
   id: true,

@@ -442,6 +442,18 @@ export async function getQueueSize(): Promise<number> {
   }
 }
 
+/** Check if a specific action (type + entityId) is currently queued.
+ *  Used by the request card to show a "Queued" badge when the rider
+ *  tapped Accept while offline and the action is pending replay. */
+export async function isActionQueued(type: ActionType, entityId: string): Promise<boolean> {
+  const actions = await getAll();
+  return actions.some((a) => a.type === type && a.entityId === entityId);
+}
+
+export async function getQueuedActions(): Promise<QueuedAction[]> {
+  return getAll();
+}
+
 type ActionSuccessCallback = (action: QueuedAction) => void;
 const _successCallbacks = new Map<ActionType, Set<ActionSuccessCallback>>();
 

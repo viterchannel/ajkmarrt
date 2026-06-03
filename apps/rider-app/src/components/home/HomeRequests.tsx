@@ -1,10 +1,10 @@
-import { Wifi, Zap } from "lucide-react";
-import { Link } from "wouter";
 import type { TranslationKey } from "@workspace/i18n";
 import type { Order, Ride } from "../../lib/api";
 import { HomeRequestList } from "./HomeRequestList";
 import { RequestListHeader } from "../dashboard/RequestListHeader";
 import { ActiveTaskBanner } from "../dashboard/ActiveTaskBanner";
+import { RequestBoard } from "../request-system/RequestBoard";
+import { useRequestEngine } from "../../lib/request-engine/useRequestEngine";
 
 interface HomeRequestsProps {
   isOnline: boolean;
@@ -87,6 +87,16 @@ export function HomeRequests({
   onGoOnline,
   toggling,
 }: HomeRequestsProps) {
+  const useNewBoard = true; /* Feature toggle — set false to revert to legacy */
+
+  const engine = useRequestEngine(
+    visibleOrders,
+    visibleRides,
+    null,
+    null,
+    config
+  );
+
   if (!isOnline) {
     return null;
   }
@@ -106,39 +116,68 @@ export function HomeRequests({
       <div
         className={`overflow-hidden rounded-3xl shadow-sm transition-all duration-300 ${newFlash ? "ring-4 ring-green-400 ring-offset-2 ring-offset-page-bg" : ""}`}
       >
-        <RequestListHeader totalRequests={totalRequests} T={T} />
-        <HomeRequestList
-          requestsLoading={requestsLoading}
-          requestsError={requestsError}
-          totalRequests={totalRequests}
-          dismissed={dismissed}
-          onClearDismissed={onClearDismissed}
-          orders={visibleOrders}
-          rides={visibleRides}
-          currency={currency}
-          config={config}
-          isOffline={isNetworkOffline}
-          onAcceptOrder={onAcceptOrder}
-          onRejectOrder={onRejectOrder}
-          onAcceptRide={onAcceptRide}
-          onCounterRide={onCounterRide}
-          onRejectOffer={onRejectOffer}
-          onIgnoreRide={onIgnoreRide}
-          onDismiss={onDismiss}
-          acceptOrderPending={acceptOrderPending}
-          rejectOrderPending={rejectOrderPending}
-          acceptRidePending={acceptRidePending}
-          acceptingRideId={acceptingRideId}
-          acceptingOrderId={acceptingOrderId}
-          counterRidePending={counterRidePending}
-          rejectOfferPending={rejectOfferPending}
-          ignoreRidePending={ignoreRidePending}
-          requestsServerTime={requestsServerTime}
-          userId={userId}
-          isRestricted={isRestricted}
-          onRetry={onRetry}
-          T={T}
-        />
+        {useNewBoard ? (
+          <RequestBoard
+            engine={engine}
+            currency={currency}
+            config={config}
+            isNetworkOffline={isNetworkOffline}
+            onAcceptOrder={onAcceptOrder}
+            onRejectOrder={onRejectOrder}
+            onAcceptRide={onAcceptRide}
+            onCounterRide={onCounterRide}
+            onRejectOffer={onRejectOffer}
+            onIgnoreRide={onIgnoreRide}
+            onDismiss={onDismiss}
+            acceptOrderPending={acceptOrderPending}
+            rejectOrderPending={rejectOrderPending}
+            acceptRidePending={acceptRidePending}
+            acceptingRideId={acceptingRideId}
+            acceptingOrderId={acceptingOrderId}
+            counterRidePending={counterRidePending}
+            rejectOfferPending={rejectOfferPending}
+            ignoreRidePending={ignoreRidePending}
+            T={T}
+            userId={userId}
+            isRestricted={isRestricted}
+          />
+        ) : (
+          <>
+            <RequestListHeader totalRequests={totalRequests} T={T} />
+            <HomeRequestList
+              requestsLoading={requestsLoading}
+              requestsError={requestsError}
+              totalRequests={totalRequests}
+              dismissed={dismissed}
+              onClearDismissed={onClearDismissed}
+              orders={visibleOrders}
+              rides={visibleRides}
+              currency={currency}
+              config={config}
+              isOffline={isNetworkOffline}
+              onAcceptOrder={onAcceptOrder}
+              onRejectOrder={onRejectOrder}
+              onAcceptRide={onAcceptRide}
+              onCounterRide={onCounterRide}
+              onRejectOffer={onRejectOffer}
+              onIgnoreRide={onIgnoreRide}
+              onDismiss={onDismiss}
+              acceptOrderPending={acceptOrderPending}
+              rejectOrderPending={rejectOrderPending}
+              acceptRidePending={acceptRidePending}
+              acceptingRideId={acceptingRideId}
+              acceptingOrderId={acceptingOrderId}
+              counterRidePending={counterRidePending}
+              rejectOfferPending={rejectOfferPending}
+              ignoreRidePending={ignoreRidePending}
+              requestsServerTime={requestsServerTime}
+              userId={userId}
+              isRestricted={isRestricted}
+              onRetry={onRetry}
+              T={T}
+            />
+          </>
+        )}
       </div>
 
       {/* Bottom tracker banner */}

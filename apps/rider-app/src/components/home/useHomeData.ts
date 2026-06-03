@@ -218,6 +218,26 @@ export function useHomeData(): UseHomeDataReturn {
   const { addBlockedVerifications } = useVerificationGate();
   const { socket: sharedSocket, connected: socketConnected, setRiderPosition } = useSocket();
 
+  /* Offline queue status — surfaces number of pending offline actions
+     so the UI can show a "Queued" badge on the request board. */
+  const [queuePending, setQueuePending] = useState(0);
+  useEffect(() => {
+    let mounted = true;
+    const refresh = async () => {
+      try {
+        const qm = await import("../../lib/offline/queueManager");
+        const count = await qm.getQueuePendingCount();
+        if (mounted) setQueuePending(count);
+      } catch { /* noop */ }
+    };
+    void refresh();
+    let unsub: (() => void) | null = null;
+    import("../../lib/offline/queueManager").then((qm) => {
+      if (mounted) unsub = qm.subscribeQueueStatus(refresh);
+    }).catch(() => {});
+    return () => { mounted = false; unsub?.(); };
+  }, []);
+
   const isMountedRef = useRef(true);
   useEffect(() => {
     isMountedRef.current = true;
@@ -1011,7 +1031,6 @@ export function useHomeData(): UseHomeDataReturn {
 
   /* Accept callbacks */
   const onAcceptOrder = (id: string) => {
-    if (isNetworkOffline) { toast({ title: "No internet — cannot accept while offline", variant: "destructive" }); return; }
     if (!acceptOrderGate.isLoading && !acceptOrderGate.accessible) {
       if (acceptOrderGate.cacheWasEmpty) { toast({ title: "Checking your account status…" }); void refreshFeatureRules(); return; }
       showFeatureBlocked("Accept Orders", acceptOrderGate.missingVerifications, null, acceptOrderGate.reason);
@@ -1020,9 +1039,19 @@ export function useHomeData(): UseHomeDataReturn {
     void runWithBiometricGate(() => {
       /* Optimistic update: immediately set accepting state BEFORE mutation to prevent double-click */
       setAcceptingOrderId(id);
-      acceptOrderMut.mutate(id, { 
-        onSuccess: () => { 
-          if (user?.id) recordUsage(user.id, "accept_order"); 
+      if (isNetworkOffline) {
+        /* Queue for offline replay — the request will auto-retry when connection returns.
+           The card will show a "Queued" badge via the isActionQueued helper. */
+        enqueueAction("accept_order", id, {}).then(() => {
+          toast({ title: "Order queued — will send when you are back online" });
+        }).catch(() => {
+          setAcceptingOrderId(null);
+        });
+        return;
+      }
+      acceptOrderMut.mutate(id, {
+        onSuccess: () => {
+          if (user?.id) recordUsage(user.id, "accept_order");
         },
         onSettled: () => setAcceptingOrderId(null)
       });
@@ -1032,7 +1061,6 @@ export function useHomeData(): UseHomeDataReturn {
   const onRejectOrder = (id: string) => rejectOrderMut.mutate(id);
 
   const onAcceptRide = (id: string) => {
-    if (isNetworkOffline) { toast({ title: "No internet — cannot accept while offline", variant: "destructive" }); return; }
     if (!acceptRideGate.isLoading && !acceptRideGate.accessible) {
       if (acceptRideGate.cacheWasEmpty) { toast({ title: "Checking your account status…" }); void refreshFeatureRules(); return; }
       showFeatureBlocked("Accept Rides", acceptRideGate.missingVerifications, null, acceptRideGate.reason);
@@ -1041,9 +1069,19 @@ export function useHomeData(): UseHomeDataReturn {
     void runWithBiometricGate(() => {
       /* Optimistic update: immediately set accepting state BEFORE mutation to prevent double-click */
       setAcceptingId(id);
-      acceptRideMut.mutate(id, { 
-        onSuccess: () => { 
-          if (user?.id) recordUsage(user.id, "accept_ride"); 
+      if (isNetworkOffline) {
+        /* Queue for offline replay — the request will auto-retry when connection returns.
+           The card will show a "Queued" badge via the isActionQueued helper. */
+        enqueueAction("accept_ride", id, {}).then(() => {
+          toast({ title: "Ride queued — will send when you are back online" });
+        }).catch(() => {
+          setAcceptingId(null);
+        });
+        return;
+      }
+      acceptRideMut.mutate(id, {
+        onSuccess: () => {
+          if (user?.id) recordUsage(user.id, "accept_ride");
         },
         onSettled: () => setAcceptingId(null)
       });
