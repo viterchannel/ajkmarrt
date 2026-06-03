@@ -15,95 +15,108 @@ import {
   Truck,
   UserCog,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type AppRole = "admin" | "vendor" | "rider" | "customer";
 type ThemeId = "dark-gold" | "light-mode" | "dark-blue" | "dark-navy" | "high-contrast";
 
 interface ThemeColors {
-  primary: { dark: string; gold: string; darkGold: string };
+  primary:   { dark: string; gold: string; darkGold: string };
   secondary: { lightGray: string; darkGray: string; borderGray: string };
-  semantic: { success: string; warning: string; error: string; info: string };
-  text: { primary: string; secondary: string; light: string };
+  semantic:  { success: string; warning: string; error: string; info: string };
+  text:      { primary: string; secondary: string; light: string };
 }
 
 interface ThemeConfig {
   selectedTheme: ThemeId;
-  colors: ThemeColors;
-  appRole?: string;
-  updatedAt?: string;
+  colors:        ThemeColors;
+  appRole?:      string;
+  updatedAt?:    string;
 }
 
 const ROLES: { id: AppRole; label: string; icon: React.ElementType }[] = [
-  { id: "admin", label: "Admin Panel", icon: UserCog },
-  { id: "vendor", label: "Vendor App", icon: Store },
-  { id: "rider", label: "Rider App", icon: Truck },
-  { id: "customer", label: "Customer App", icon: Smartphone },
+  { id: "admin",    label: "Admin Panel",   icon: UserCog   },
+  { id: "vendor",   label: "Vendor App",    icon: Store     },
+  { id: "rider",    label: "Rider App",     icon: Truck     },
+  { id: "customer", label: "Customer App",  icon: Smartphone },
 ];
 
 const THEMES: { id: ThemeId; name: string; description: string; preview: string[] }[] = [
-  { id: "dark-gold", name: "Dark Gold", description: "Premium dark theme with gold accents", preview: ["#1A1A2E", "#D4AF37", "#C4860F"] },
-  { id: "light-mode", name: "Light Mode", description: "Clean light mode with gold accents", preview: ["#FFFFFF", "#D4AF37", "#F5F5F5"] },
-  { id: "dark-blue", name: "Dark Blue", description: "Dark theme with blue primary", preview: ["#0D1B2A", "#1565C0", "#1E3A5F"] },
-  { id: "dark-navy", name: "Dark Navy", description: "Dark navy variant for contrast", preview: ["#0A0E1A", "#2563EB", "#1E3A8A"] },
-  { id: "high-contrast", name: "High Contrast", description: "WCAG AAA accessibility compliant", preview: ["#000000", "#FFFF00", "#FFFFFF"] },
+  { id: "dark-gold",     name: "Dark Gold",      description: "Premium dark theme with gold accents",   preview: ["#1A1A2E", "#D4AF37", "#C4860F"] },
+  { id: "light-mode",    name: "Light Mode",     description: "Clean light mode with gold accents",     preview: ["#FFFFFF", "#D4AF37", "#F5F5F5"] },
+  { id: "dark-blue",     name: "Dark Blue",      description: "Dark theme with blue primary",           preview: ["#0D1B2A", "#1565C0", "#1E3A5F"] },
+  { id: "dark-navy",     name: "Dark Navy",      description: "Dark navy variant for contrast",         preview: ["#0A0E1A", "#2563EB", "#1E3A8A"] },
+  { id: "high-contrast", name: "High Contrast",  description: "WCAG AAA accessibility compliant",       preview: ["#000000", "#FFFF00", "#FFFFFF"] },
 ];
 
 const THEME_DEFAULTS: Record<ThemeId, ThemeColors> = {
   "dark-gold": {
-    primary: { dark: "#1A1A2E", gold: "#D4AF37", darkGold: "#C4860F" },
+    primary:   { dark: "#1A1A2E", gold: "#D4AF37", darkGold: "#C4860F" },
     secondary: { lightGray: "#F5F5F5", darkGray: "#333333", borderGray: "#E0E0E0" },
-    semantic: { success: "#4CAF50", warning: "#FFC107", error: "#F44336", info: "#2196F3" },
-    text: { primary: "#1A1A2E", secondary: "#666666", light: "#FFFFFF" },
+    semantic:  { success: "#4CAF50", warning: "#FFC107", error: "#F44336", info: "#2196F3" },
+    text:      { primary: "#1A1A2E", secondary: "#666666", light: "#FFFFFF" },
   },
   "light-mode": {
-    primary: { dark: "#FFFFFF", gold: "#D4AF37", darkGold: "#C4860F" },
+    primary:   { dark: "#FFFFFF", gold: "#D4AF37", darkGold: "#C4860F" },
     secondary: { lightGray: "#F9FAFB", darkGray: "#374151", borderGray: "#E5E7EB" },
-    semantic: { success: "#16A34A", warning: "#D97706", error: "#DC2626", info: "#2563EB" },
-    text: { primary: "#111827", secondary: "#6B7280", light: "#FFFFFF" },
+    semantic:  { success: "#16A34A", warning: "#D97706", error: "#DC2626", info: "#2563EB" },
+    text:      { primary: "#111827", secondary: "#6B7280", light: "#FFFFFF" },
   },
   "dark-blue": {
-    primary: { dark: "#0D1B2A", gold: "#1565C0", darkGold: "#1E3A5F" },
+    primary:   { dark: "#0D1B2A", gold: "#1565C0", darkGold: "#1E3A5F" },
     secondary: { lightGray: "#F0F4F8", darkGray: "#1E3A5F", borderGray: "#2D4A6F" },
-    semantic: { success: "#4CAF50", warning: "#FFC107", error: "#F44336", info: "#29B6F6" },
-    text: { primary: "#E3F2FD", secondary: "#90CAF9", light: "#FFFFFF" },
+    semantic:  { success: "#4CAF50", warning: "#FFC107", error: "#F44336", info: "#29B6F6" },
+    text:      { primary: "#E3F2FD", secondary: "#90CAF9", light: "#FFFFFF" },
   },
   "dark-navy": {
-    primary: { dark: "#0A0E1A", gold: "#2563EB", darkGold: "#1E3A8A" },
+    primary:   { dark: "#0A0E1A", gold: "#2563EB", darkGold: "#1E3A8A" },
     secondary: { lightGray: "#EFF6FF", darkGray: "#1E3A8A", borderGray: "#1D4ED8" },
-    semantic: { success: "#22C55E", warning: "#F59E0B", error: "#EF4444", info: "#3B82F6" },
-    text: { primary: "#DBEAFE", secondary: "#93C5FD", light: "#FFFFFF" },
+    semantic:  { success: "#22C55E", warning: "#F59E0B", error: "#EF4444", info: "#3B82F6" },
+    text:      { primary: "#DBEAFE", secondary: "#93C5FD", light: "#FFFFFF" },
   },
   "high-contrast": {
-    primary: { dark: "#000000", gold: "#FFFF00", darkGold: "#FFD700" },
+    primary:   { dark: "#000000", gold: "#FFFF00", darkGold: "#FFD700" },
     secondary: { lightGray: "#FFFFFF", darkGray: "#000000", borderGray: "#FFFFFF" },
-    semantic: { success: "#00FF00", warning: "#FFFF00", error: "#FF0000", info: "#00FFFF" },
-    text: { primary: "#000000", secondary: "#333333", light: "#FFFFFF" },
+    semantic:  { success: "#00FF00", warning: "#FFFF00", error: "#FF0000", info: "#00FFFF" },
+    text:      { primary: "#000000", secondary: "#333333", light: "#FFFFFF" },
   },
+};
+
+const INITIAL_CONFIGS: Record<AppRole, ThemeConfig> = {
+  admin:    { selectedTheme: "dark-gold", colors: THEME_DEFAULTS["dark-gold"]  },
+  vendor:   { selectedTheme: "dark-blue", colors: THEME_DEFAULTS["dark-blue"]  },
+  rider:    { selectedTheme: "dark-gold", colors: THEME_DEFAULTS["dark-gold"]  },
+  customer: { selectedTheme: "dark-gold", colors: THEME_DEFAULTS["dark-gold"]  },
+};
+
+const INITIAL_FLAGS: Record<AppRole, boolean> = {
+  admin: false, vendor: false, rider: false, customer: false,
 };
 
 const GROUP_LABELS: Record<keyof ThemeColors, string> = {
-  primary: "Primary",
+  primary:   "Primary",
   secondary: "Secondary",
-  semantic: "Semantic",
-  text: "Text",
+  semantic:  "Semantic",
+  text:      "Text",
 };
 
 const COLOR_LABELS: Record<string, string> = {
-  dark: "Dark Background",
-  gold: "Brand Gold",
-  darkGold: "Dark Gold Hover",
-  lightGray: "Light Gray",
-  darkGray: "Dark Gray",
-  borderGray: "Border Gray",
-  success: "Success",
-  warning: "Warning",
-  error: "Error",
-  info: "Info",
-  primary: "Primary Text",
-  secondary: "Secondary Text",
-  light: "Light / White",
+  dark:        "Dark Background",
+  gold:        "Brand Gold",
+  darkGold:    "Dark Gold Hover",
+  lightGray:   "Light Gray",
+  darkGray:    "Dark Gray",
+  borderGray:  "Border Gray",
+  success:     "Success",
+  warning:     "Warning",
+  error:       "Error",
+  info:        "Info",
+  primary:     "Primary Text",
+  secondary:   "Secondary Text",
+  light:       "Light / White",
 };
+
+/* ── Sub-components ──────────────────────────────────────────────────────────── */
 
 function ColorPicker({
   groupKey,
@@ -113,7 +126,7 @@ function ColorPicker({
 }: {
   groupKey: keyof ThemeColors;
   colorKey: string;
-  value: string;
+  value:    string;
   onChange: (group: keyof ThemeColors, key: string, val: string) => void;
 }) {
   const label = COLOR_LABELS[colorKey] ?? colorKey;
@@ -146,9 +159,9 @@ function ColorGroupEditor({
   colors,
   onChange,
 }: {
-  title: string;
+  title:    string;
   groupKey: keyof ThemeColors;
-  colors: Record<string, string>;
+  colors:   Record<string, string>;
   onChange: (group: keyof ThemeColors, key: string, val: string) => void;
 }) {
   return (
@@ -169,58 +182,74 @@ function ColorGroupEditor({
   );
 }
 
+/* ── Main page ───────────────────────────────────────────────────────────────── */
+
 export default function ThemeManagement() {
   const { toast } = useToast();
+
   const [activeRole, setActiveRole] = useState<AppRole>("admin");
-  const [configs, setConfigs] = useState<Record<AppRole, ThemeConfig>>({
-    admin:    { selectedTheme: "dark-gold",  colors: THEME_DEFAULTS["dark-gold"] },
-    vendor:   { selectedTheme: "dark-blue",  colors: THEME_DEFAULTS["dark-blue"] },
-    rider:    { selectedTheme: "dark-gold",  colors: THEME_DEFAULTS["dark-gold"] },
-    customer: { selectedTheme: "dark-gold",  colors: THEME_DEFAULTS["dark-gold"] },
-  });
-  const [loading, setLoading]   = useState(false);
-  const [saving, setSaving]     = useState(false);
-  const [dirty, setDirty]       = useState<Record<AppRole, boolean>>({
-    admin: false, vendor: false, rider: false, customer: false,
-  });
+  const [configs,    setConfigs]    = useState<Record<AppRole, ThemeConfig>>(INITIAL_CONFIGS);
+  const [loading,    setLoading]    = useState(false);
+  const [dirty,      setDirty]      = useState<Record<AppRole, boolean>>(INITIAL_FLAGS);
+  const [savingRole, setSavingRole] = useState<AppRole | null>(null);
+
+  /**
+   * Stable toast ref — prevents fetchConfigs from being recreated every render
+   * when the toast function reference changes (common with useToast implementations).
+   */
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
+
+  /**
+   * AbortController ref — cancels in-flight fetches when the component unmounts.
+   */
+  const abortRef = useRef<AbortController | null>(null);
 
   const fetchConfigs = useCallback(async () => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     try {
-      const response = await adminFetch("/theme-config");
-      const data = await response.json();
-      if (data.configs) {
-        const next: Record<string, ThemeConfig> = {};
-        for (const cfg of data.configs) {
-          const role = cfg.appRole as AppRole;
-          if (role) {
-            next[role] = {
-              selectedTheme: (cfg.selectedTheme as ThemeId) || "dark-gold",
-              colors: cfg.colors || THEME_DEFAULTS[cfg.selectedTheme as ThemeId] || THEME_DEFAULTS["dark-gold"],
-              appRole: role,
-              updatedAt: cfg.updatedAt,
-            };
-          }
-        }
-        setConfigs((prev) => ({ ...prev, ...next }));
+      const data = await adminFetch("/theme-config", { signal: controller.signal });
+
+      if (!data?.configs || !Array.isArray(data.configs)) {
+        throw new Error(data?.error ?? "Unexpected response from server");
       }
-    } catch {
-      toast({ title: "Failed to load theme configs", variant: "destructive" });
+
+      const next: Partial<Record<AppRole, ThemeConfig>> = {};
+      for (const cfg of data.configs) {
+        const role = cfg.appRole as AppRole;
+        if (!role) continue;
+        const themeId = (cfg.selectedTheme as ThemeId) || "dark-gold";
+        next[role] = {
+          selectedTheme: themeId,
+          colors:        cfg.colors || THEME_DEFAULTS[themeId] || THEME_DEFAULTS["dark-gold"],
+          appRole:       role,
+          updatedAt:     cfg.updatedAt,
+        };
+      }
+      setConfigs((prev) => ({ ...prev, ...next }));
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") return;
+      toastRef.current({ title: "Failed to load theme configs", variant: "destructive" });
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, []);
 
-  useEffect(() => { fetchConfigs(); }, [fetchConfigs]);
+  useEffect(() => {
+    fetchConfigs();
+    return () => { abortRef.current?.abort(); };
+  }, [fetchConfigs]);
+
+  /* ── State mutations ─────────────────────────────────────────────────────── */
 
   const setRoleTheme = (role: AppRole, themeId: ThemeId) => {
     setConfigs((prev) => ({
       ...prev,
-      [role]: {
-        ...prev[role],
-        selectedTheme: themeId,
-        colors: THEME_DEFAULTS[themeId],
-      },
+      [role]: { ...prev[role], selectedTheme: themeId, colors: THEME_DEFAULTS[themeId] },
     }));
     setDirty((prev) => ({ ...prev, [role]: true }));
   };
@@ -251,23 +280,30 @@ export default function ThemeManagement() {
     setDirty((prev) => ({ ...prev, [role]: true }));
   };
 
+  /* ── Save ────────────────────────────────────────────────────────────────── */
+
   const saveRole = async (role: AppRole) => {
-    setSaving(true);
+    if (savingRole) return;
+    setSavingRole(role);
     try {
       const cfg = configs[role];
-      const response = await adminFetch("/theme-config", {
+      await adminFetch("/theme-config", {
         method: "POST",
-        body: JSON.stringify({ theme: cfg.selectedTheme, colors: cfg.colors, appRole: role }),
+        body:   JSON.stringify({ theme: cfg.selectedTheme, colors: cfg.colors, appRole: role }),
       });
-      if (!response.ok) throw new Error("Save failed");
       setDirty((prev) => ({ ...prev, [role]: false }));
-      toast({ title: `${ROLES.find((r) => r.id === role)?.label} theme saved` });
-    } catch {
-      toast({ title: "Failed to save theme", variant: "destructive" });
+      toastRef.current({
+        title: `${ROLES.find((r) => r.id === role)?.label} theme saved`,
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to save theme";
+      toastRef.current({ title: msg, variant: "destructive" });
     } finally {
-      setSaving(false);
+      setSavingRole(null);
     }
   };
+
+  /* ── Render ──────────────────────────────────────────────────────────────── */
 
   const current = configs[activeRole];
 
@@ -278,8 +314,9 @@ export default function ThemeManagement() {
       {/* Role selector tabs */}
       <div className="flex gap-2 overflow-x-auto rounded-xl bg-white p-2 shadow-sm border border-slate-200">
         {ROLES.map((role) => {
-          const Icon = role.icon;
+          const Icon     = role.icon;
           const isActive = activeRole === role.id;
+          const isSaving = savingRole === role.id;
           return (
             <button
               key={role.id}
@@ -290,9 +327,12 @@ export default function ThemeManagement() {
                   : "bg-transparent text-slate-600 hover:bg-slate-50"
               }`}
             >
-              <Icon className="h-4 w-4" />
+              {isSaving
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <Icon className="h-4 w-4" />
+              }
               {role.label}
-              {dirty[role.id] && (
+              {dirty[role.id] && !isSaving && (
                 <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-[10px] ml-1">
                   unsaved
                 </Badge>
@@ -312,15 +352,24 @@ export default function ThemeManagement() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={fetchConfigs} disabled={loading} className="gap-1">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchConfigs}
+              disabled={loading}
+              className="gap-1"
+            >
+              {loading
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <RefreshCw className="h-4 w-4" />
+              }
               Refresh
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => resetRoleColors(activeRole)}
-              disabled={saving}
+              disabled={!!savingRole}
               className="gap-1"
               title="Reset colors to theme defaults"
             >
@@ -330,10 +379,13 @@ export default function ThemeManagement() {
             <Button
               size="sm"
               onClick={() => saveRole(activeRole)}
-              disabled={saving || !dirty[activeRole]}
+              disabled={!!savingRole || !dirty[activeRole]}
               className="gap-1 bg-indigo-600 hover:bg-indigo-700"
             >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {savingRole === activeRole
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <Save className="h-4 w-4" />
+              }
               Save
             </Button>
           </div>
@@ -353,7 +405,6 @@ export default function ThemeManagement() {
                 }`}
               >
                 <div className="mb-2 flex w-full items-center justify-between">
-                  {/* Color preview dots */}
                   <div className="flex gap-1">
                     {theme.preview.map((c, i) => (
                       <span
