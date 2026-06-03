@@ -28,6 +28,7 @@ import { RiderAuthConfigProvider } from "./lib/AuthConfigContext";
 import { initAnalytics, trackEvent, identifyUser, resetUser, trackPageView } from "./lib/analytics";
 import { api, apiFetch, getApiBase, setApiTimeoutMs } from "./lib/api";
 import { ThemeProvider } from "./lib/auth/ThemeContext";
+import { ThemeProvider as AjkThemeProvider } from "@workspace/theme";
 import { riderTheme } from "./lib/auth/theme";
 import { riderEnv } from "./lib/envValidation";
 import { initErrorReporter } from "./lib/error-reporter";
@@ -2252,9 +2253,10 @@ function AppShell() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <VersionCheckInit />
+    <AjkThemeProvider defaultTheme="dark-gold" storageKey="rider_theme">
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <VersionCheckInit />
         <LanguageProvider>
           <FontSizeProvider>
             <RiderAuthConfigProvider>
@@ -2276,9 +2278,10 @@ function App() {
               </RiderAuthProvider>
             </RiderAuthConfigProvider>
           </FontSizeProvider>
-        </LanguageProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+          </LanguageProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </AjkThemeProvider>
   );
 }
 

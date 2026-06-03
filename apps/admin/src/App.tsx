@@ -9,6 +9,7 @@ import { AdminLanguageProvider } from "@/lib/AdminLanguageContext";
 import { setupAdminFetcherHandlers } from "@/lib/adminFetcher";
 import { adminTheme } from "@/lib/auth/theme";
 import { ThemeProvider } from "@/lib/auth/ThemeContext";
+import { ThemeProvider as AjkThemeProvider } from "@workspace/theme";
 import { auditAdminEnv } from "@/lib/envValidation";
 import { initAnalytics } from "@/lib/analytics";
 import { initErrorReporter } from "@/lib/error-reporter";
@@ -573,26 +574,28 @@ function IntegrationsInit() {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <ThemeProvider theme={adminTheme}>
-            <AdminAuthProvider>
-              <AdminLanguageProvider>
-                <WouterRouter base="/admin">
-                  <GlobalAuthRedirect />
-                  <VersionCheckInit />
-                  <LanguageInit />
-                  <IntegrationsInit />
-                  <AppRoutes />
-                  <FirstLoginCredentialsDialog />
-                  <Toaster />
-                </WouterRouter>
-              </AdminLanguageProvider>
-            </AdminAuthProvider>
-          </ThemeProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <AjkThemeProvider defaultTheme="light-mode" storageKey="admin_theme">
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <ThemeProvider theme={adminTheme}>
+              <AdminAuthProvider>
+                <AdminLanguageProvider>
+                  <WouterRouter base="/admin">
+                    <GlobalAuthRedirect />
+                    <VersionCheckInit />
+                    <LanguageInit />
+                    <IntegrationsInit />
+                    <AppRoutes />
+                    <FirstLoginCredentialsDialog />
+                    <Toaster />
+                  </WouterRouter>
+                </AdminLanguageProvider>
+              </AdminAuthProvider>
+            </ThemeProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </AjkThemeProvider>
   );
 }

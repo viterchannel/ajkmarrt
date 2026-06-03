@@ -1,0 +1,26 @@
+{
+  "name": "@workspace/theme",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config/colors": "./src/config/colors.ts",
+    "./config/typography": "./src/config/typography.ts",
+    "./config/spacing": "./src/config/spacing.ts",
+    "./config/themes/dark-gold": "./src/config/themes/dark-gold.ts",
+    "./config/themes/light-mode": "./src/config/themes/light-mode.ts",
+    "./config/themes/custom-themes": "./src/config/themes/custom-themes.ts",
+    "./components/ThemeProvider": "./src/components/ThemeProvider.tsx",
+    "./hooks/useTheme": "./src/hooks/useTheme.ts"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/node": "^25.3.3"
+  }
+}
