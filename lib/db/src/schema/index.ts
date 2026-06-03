@@ -99,6 +99,7 @@ export * from "./stock_subscriptions";
 export * from "./support_messages";
 export * from "./system_snapshots";
 export * from "./terms_versions";
+export * from "./theme_configs";
 export * from "./totp_recovery_codes";
 export * from "./trusted_devices";
 export * from "./user_interactions";

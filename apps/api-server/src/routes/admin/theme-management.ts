@@ -1,5 +1,5 @@
 import { db } from "@workspace/db";
-import { platformSettingsTable } from "@workspace/db/schema";
+import { themeConfigsTable } from "@workspace/db/schema";
 import { Router, type IRouter, type Request, type Response } from "express";
 import { eq } from "drizzle-orm";
 import { logger } from "../../lib/logger.js";
@@ -9,10 +9,6 @@ import { authenticateAdmin } from "../../middleware/admin-auth.js";
 const router: IRouter = Router();
 
 /* ── helpers ─────────────────────────────────────────────────────────────────────────────── */
-
-function themeKey(appRole: string): string {
-  return `theme_config_${appRole}`;
-}
 
 const DEFAULT_THEME_CONFIG = {
   selectedTheme: "dark-gold",
@@ -45,36 +41,54 @@ async function getThemeConfig(appRole: string): Promise<Record<string, unknown>>
   try {
     const row = await db
       .select()
-      .from(platformSettingsTable)
-      .where(eq(platformSettingsTable.key, themeKey(appRole)))
+      .from(themeConfigsTable)
+      .where(eq(themeConfigsTable.appRole, appRole))
       .limit(1);
-    if (row[0]?.value) {
-      return JSON.parse(row[0].value);
+    if (row[0]) {
+      return {
+        selectedTheme: row[0].selectedTheme,
+        colors: JSON.parse(row[0].colors),
+        appRole,
+        updatedAt: row[0].updatedAt,
+        updatedBy: row[0].updatedBy,
+      };
     }
   } catch (err) {
-    logger.warn({ err, appRole }, "[theme-management] getThemeConfig parse error");
+    logger.warn({ err, appRole }, "[theme-management] getThemeConfig error");
   }
   return { ...DEFAULT_THEME_CONFIG, appRole };
 }
 
 async function saveThemeConfig(
   appRole: string,
-  config: Record<string, unknown>
+  selectedTheme: string,
+  colors: Record<string, unknown>,
+  updatedBy?: string
 ): Promise<void> {
-  const key = themeKey(appRole);
-  const value = JSON.stringify(config);
-  await db
-    .insert(platformSettingsTable)
-    .values({
-      key,
-      value,
-      label: `Theme config for ${appRole}`,
-      category: "theme",
-    })
-    .onConflictDoUpdate({
-      target: platformSettingsTable.key,
-      set: { value, updatedAt: new Date() },
+  const existing = await db
+    .select()
+    .from(themeConfigsTable)
+    .where(eq(themeConfigsTable.appRole, appRole))
+    .limit(1);
+
+  if (existing[0]) {
+    await db
+      .update(themeConfigsTable)
+      .set({
+        selectedTheme,
+        colors: JSON.stringify(colors),
+        updatedAt: new Date(),
+        updatedBy,
+      })
+      .where(eq(themeConfigsTable.appRole, appRole));
+  } else {
+    await db.insert(themeConfigsTable).values({
+      appRole,
+      selectedTheme,
+      colors: JSON.stringify(colors),
+      updatedBy,
     });
+  }
 }
 
 /* ── POST /api/admin/theme-config ───────────────────────────────────────────────────────────── */
@@ -91,22 +105,23 @@ router.post(
         return;
       }
 
-      const config = {
-        selectedTheme: theme ?? "darkGold",
-        colors: colors ?? DEFAULT_THEME_CONFIG.colors,
-        appRole,
-        updatedAt: new Date().toISOString(),
-      };
+      const selectedTheme = theme ?? "dark-gold";
+      const themeColors = colors ?? DEFAULT_THEME_CONFIG.colors;
+      const updatedBy = req.admin?.id ?? req.admin?.email ?? "system";
 
-      await saveThemeConfig(appRole, config);
+      await saveThemeConfig(appRole, selectedTheme, themeColors, updatedBy);
 
       // Broadcast to all connected clients via Socket.IO
       const io = getIO();
       if (io) {
-        io.emit("theme-updated", { appRole, theme: config.selectedTheme, colors: config.colors });
+        io.emit("theme-updated", {
+          appRole,
+          theme: selectedTheme,
+          colors: themeColors,
+        });
       }
 
-      logger.info({ appRole, theme: config.selectedTheme }, "[theme-management] config updated");
+      logger.info({ appRole, theme: selectedTheme, updatedBy }, "[theme-management] config updated");
       res.json({ success: true });
     } catch (err) {
       logger.error({ err }, "[theme-management] POST /theme-config failed");
