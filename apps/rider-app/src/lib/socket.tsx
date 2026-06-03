@@ -293,6 +293,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         setAdminChatUnread((prev) => prev + 1);
       });
 
+      s.on("theme-updated", (payload: { appRole: string; theme: string; colors?: Record<string, string> }) => {
+        window.dispatchEvent(new CustomEvent("ajk:theme-updated", { detail: payload }));
+      });
+
       /* S1 / T4: On token refresh, reconnect the socket so the new auth token
          is sent on the next handshake. socket.io's typings model `auth` as
          `string | object`, so we narrow once via a typed local rather than

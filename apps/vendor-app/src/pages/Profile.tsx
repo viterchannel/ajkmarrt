@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { LANGUAGE_OPTIONS, tDual, type Language, type TranslationKey } from "@workspace/i18n";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Palette } from "lucide-react";
 import { toast } from "../hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useSearch } from "wouter";
@@ -18,6 +18,7 @@ import { BTN_PRIMARY, CARD, INPUT, LABEL, errMsg, fc } from "../lib/ui";
 import { useCurrency, useDateFormatter, usePlatformConfig } from "../lib/useConfig";
 import { useLanguage } from "../lib/useLanguage";
 import { useTheme } from "../lib/useTheme";
+import { useTheme as useAjkTheme } from "@workspace/theme";
 import { useAuth } from "../lib/vendor-auth";
 
 const CITIES = [
@@ -46,6 +47,34 @@ const BANKS = [
   "Allied Bank",
   "Other",
 ];
+
+function ThemeInfo() {
+  let ajkTheme;
+  try {
+    ajkTheme = useAjkTheme();
+  } catch {
+    return null;
+  }
+  const themeNames: Record<string, string> = {
+    "dark-gold": "Dark Gold",
+    "light-mode": "Light Mode",
+    "dark-blue": "Dark Blue",
+    "dark-navy": "Dark Navy",
+    "high-contrast": "High Contrast",
+  };
+  const name = themeNames[ajkTheme.currentTheme] ?? ajkTheme.currentTheme;
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50">
+        <Palette size={16} className="text-amber-500" />
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-gray-800">Brand Theme</p>
+        <p className="text-xs text-gray-400">{name} — set by admin</p>
+      </div>
+    </div>
+  );
+}
 const BIZ_TYPES = [
   "Sole Proprietorship",
   "Partnership",
@@ -741,6 +770,10 @@ export default function Profile() {
                     />
                   </button>
                 </div>
+
+                {/* Admin Theme */}
+                <ThemeInfo />
+
                 {/* Language */}
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50">

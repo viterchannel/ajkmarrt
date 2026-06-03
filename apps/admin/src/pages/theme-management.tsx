@@ -17,7 +17,8 @@ import {
 import { useCallback, useEffect, useState } from "react";
 
 type AppRole = "admin" | "vendor" | "rider" | "customer";
-type ThemeId = "darkGold" | "light" | "darkBlue" | "darkNavy" | "highContrast";
+/** Theme IDs must match the ThemeProvider registry keys (kebab-case). */
+type ThemeId = "dark-gold" | "light-mode" | "dark-blue" | "dark-navy" | "high-contrast";
 
 interface ThemeConfig {
   selectedTheme: ThemeId;
@@ -39,11 +40,11 @@ const ROLES: { id: AppRole; label: string; icon: React.ElementType }[] = [
 ];
 
 const THEMES: { id: ThemeId; name: string; description: string }[] = [
-  { id: "darkGold", name: "Dark Gold", description: "Premium dark theme with gold accents" },
-  { id: "light", name: "Light", description: "Clean light mode with gold accents" },
-  { id: "darkBlue", name: "Dark Blue", description: "Dark theme with blue primary" },
-  { id: "darkNavy", name: "Dark Navy", description: "Dark navy variant for contrast" },
-  { id: "highContrast", name: "High Contrast", description: "WCAG AAA accessibility compliant" },
+  { id: "dark-gold", name: "Dark Gold", description: "Premium dark theme with gold accents" },
+  { id: "light-mode", name: "Light Mode", description: "Clean light mode with gold accents" },
+  { id: "dark-blue", name: "Dark Blue", description: "Dark theme with blue primary" },
+  { id: "dark-navy", name: "Dark Navy", description: "Dark navy variant for contrast" },
+  { id: "high-contrast", name: "High Contrast", description: "WCAG AAA accessibility compliant" },
 ];
 
 const DEFAULT_COLORS: ThemeConfig["colors"] = {
@@ -83,10 +84,10 @@ export default function ThemeManagement() {
   const { toast } = useToast();
   const [activeRole, setActiveRole] = useState<AppRole>("admin");
   const [configs, setConfigs] = useState<Record<AppRole, ThemeConfig>>({
-    admin: { selectedTheme: "darkGold", colors: DEFAULT_COLORS },
-    vendor: { selectedTheme: "darkGold", colors: DEFAULT_COLORS },
-    rider: { selectedTheme: "darkGold", colors: DEFAULT_COLORS },
-    customer: { selectedTheme: "darkGold", colors: DEFAULT_COLORS },
+    admin: { selectedTheme: "dark-gold", colors: DEFAULT_COLORS },
+    vendor: { selectedTheme: "dark-gold", colors: DEFAULT_COLORS },
+    rider: { selectedTheme: "dark-gold", colors: DEFAULT_COLORS },
+    customer: { selectedTheme: "dark-gold", colors: DEFAULT_COLORS },
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -108,7 +109,7 @@ export default function ThemeManagement() {
           const role = cfg.appRole as AppRole;
           if (role) {
             next[role] = {
-              selectedTheme: (cfg.selectedTheme as ThemeId) || "darkGold",
+              selectedTheme: (cfg.selectedTheme as ThemeId) || "dark-gold",
               colors: cfg.colors || DEFAULT_COLORS,
               appRole: role,
               updatedAt: cfg.updatedAt,

@@ -122,6 +122,10 @@ export function connectVendorSocket(vendorId: string): void {
     safeCall(_notificationHandlers, notif);
   });
 
+  _socket.on("theme-updated", (payload: { appRole: string; theme: string; colors?: Record<string, string> }) => {
+    window.dispatchEvent(new CustomEvent("ajk:theme-updated", { detail: payload }));
+  });
+
   _socket.on("connect_error", (err) => {
     log.warn("connect_error:", err.message);
   });

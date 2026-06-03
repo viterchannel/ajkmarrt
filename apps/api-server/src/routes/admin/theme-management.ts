@@ -15,7 +15,7 @@ function themeKey(appRole: string): string {
 }
 
 const DEFAULT_THEME_CONFIG = {
-  selectedTheme: "darkGold",
+  selectedTheme: "dark-gold",
   colors: {
     primary: {
       dark:     "#1A1A2E",

@@ -65,6 +65,10 @@ export function getAdminSocket(accessToken: string): Socket {
     }
   });
 
+  _socket.on("theme-updated", (payload: { appRole: string; theme: string; colors?: Record<string, string> }) => {
+    window.dispatchEvent(new CustomEvent("ajk:theme-updated", { detail: payload }));
+  });
+
   return _socket;
 }
 

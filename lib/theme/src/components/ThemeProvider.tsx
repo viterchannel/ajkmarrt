@@ -121,13 +121,20 @@ export function ThemeProvider({
     [themeId, defaultTheme]
   );
 
+  // Resolve the per-role endpoint (e.g. /api/admin/theme-config/rider)
+  const resolvedEndpoint = useMemo(() => {
+    const base = adminConfigEndpoint.replace(/\/$/, "");
+    // If endpoint already ends with role, use as-is; otherwise append role
+    return base.endsWith(appRole) ? base : `${base}/${appRole}`;
+  }, [adminConfigEndpoint, appRole]);
+
   // ── Fetch admin config on mount ─────────────────────────────────────────────
   useEffect(() => {
     if (disableAdminFetch) return;
     const loadThemeFromAdmin = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(adminConfigEndpoint);
+        const response = await fetch(resolvedEndpoint);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const themeConfig = await response.json();
         if (themeConfig?.selectedTheme && THEME_REGISTRY[themeConfig.selectedTheme]) {
@@ -143,7 +150,22 @@ export function ThemeProvider({
       }
     };
     loadThemeFromAdmin();
-  }, [disableAdminFetch, adminConfigEndpoint]);
+  }, [disableAdminFetch, resolvedEndpoint]);
+
+  // ── Listen for real-time theme updates from admin (broadcast via CustomEvent)
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      const payload = e.detail as { appRole?: string; theme?: string; colors?: Record<string, string> };
+      if (payload?.appRole === appRole && payload?.theme && THEME_REGISTRY[payload.theme]) {
+        setThemeId(payload.theme);
+        if (payload.colors) {
+          setAdminOverride(payload.colors);
+        }
+      }
+    };
+    window.addEventListener("ajk:theme-updated", handler as EventListener);
+    return () => window.removeEventListener("ajk:theme-updated", handler as EventListener);
+  }, [appRole]);
 
   // ── Apply CSS vars whenever theme changes ─────────────────────────────────
   useEffect(() => {

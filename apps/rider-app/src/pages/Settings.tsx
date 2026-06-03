@@ -1,15 +1,44 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Shield, Clock, Bell, Globe, ChevronLeft, ChevronRight } from "lucide-react";
+import { Shield, Clock, Bell, Globe, ChevronLeft, ChevronRight, Palette } from "lucide-react";
 import { tDual, type Language, type TranslationKey } from "@workspace/i18n";
 import { useLanguage } from "../lib/useLanguage";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { useTheme as useAjkTheme } from "@workspace/theme";
 
 function getNotifPref(key: string): boolean {
   try { return localStorage.getItem(`notif_${key}`) !== "false"; } catch { return true; }
 }
 function saveNotifPref(key: string, val: boolean) {
   try { localStorage.setItem(`notif_${key}`, val ? "true" : "false"); } catch {}
+}
+
+function ThemeInfo() {
+  let ajkTheme;
+  try {
+    ajkTheme = useAjkTheme();
+  } catch {
+    return null;
+  }
+  const themeNames: Record<string, string> = {
+    "dark-gold": "Dark Gold",
+    "light-mode": "Light Mode",
+    "dark-blue": "Dark Blue",
+    "dark-navy": "Dark Navy",
+    "high-contrast": "High Contrast",
+  };
+  const name = themeNames[ajkTheme.currentTheme] ?? ajkTheme.currentTheme;
+  return (
+    <div className="flex items-center gap-4 px-4 py-4 bg-card">
+      <div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
+        <Palette size={17} className="text-brand" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-semibold text-foreground">Brand Theme</div>
+        <div className="mt-0.5 truncate text-xs text-muted-foreground">{name} — set by admin</div>
+      </div>
+    </div>
+  );
 }
 
 function useSettingToggle(key: string): [boolean, (val: boolean) => void] {
@@ -180,6 +209,8 @@ export default function Settings() {
         <div className="px-4 py-4 bg-card">
           <ThemeToggle />
         </div>
+        <div className="h-px bg-border mx-4" />
+        <ThemeInfo />
       </SectionCard>
 
       <div className="h-px bg-muted mx-4" />

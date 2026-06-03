@@ -552,6 +552,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     socket.on("wallet:update", handleWalletBalance);
     socket.on("wallet:balance", handleWalletBalance);
+    socket.on("theme-updated", (payload: { appRole: string; theme: string; colors?: Record<string, string> }) => {
+      // Dispatch theme update as a global event that ThemeContext can listen for
+      window.dispatchEvent(new CustomEvent("ajk:theme-updated", { detail: payload }));
+    });
 
     return () => {
       socket.disconnect();
