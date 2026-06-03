@@ -546,6 +546,12 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         icon: Sliders,
         requirePermission: "system.settings.edit",
       },
+      {
+        nameKey: "navThemeManagement" as TranslationKey,
+        href: "/theme-management",
+        icon: Palette,
+        requirePermission: "system.settings.edit",
+      },
     ],
   },
 ];
@@ -614,6 +620,7 @@ export const NAV_DESCRIPTIONS: Readonly<Record<string, string>> = {
   "/whatsapp-delivery-log": "WhatsApp message delivery status (sent/delivered/read/failed)",
   "/brand": "Logo variants and service color tokens",
   "/configuration": "Rider App branding, feature toggles, and system limits",
+  "/theme-management": "Global theme picker — set colors and themes per app",
   "/feature-rules": "CRUD rules controlling which verifications gate platform features",
   "/verification-bonuses": "Configure bonus rewards for email, phone, and document verification",
   "/sms-gateways": "SMS provider routing (now under Communications → SMS Gateways)",

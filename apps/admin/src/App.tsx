@@ -104,6 +104,7 @@ const VerificationBonuses = lazy(() => import("@/pages/verification-bonuses"));
 const LocationRequests = lazy(() => import("@/pages/LocationRequests"));
 const CitiesAreas = lazy(() => import("@/pages/CitiesAreas"));
 const AppConfiguration = lazy(() => import("@/pages/app-configuration"));
+const ThemeManagement = lazy(() => import("@/pages/theme-management"));
 const CodRemittances = lazy(() => import("@/pages/CodRemittances"));
 
 const QUERY_RETRY_COUNT = 1;
@@ -508,6 +509,9 @@ function AppRoutes() {
         </Route>
         <Route path="/configuration">
           <ProtectedRoute component={AppConfiguration} requirePermission="system.settings.edit" />
+        </Route>
+        <Route path="/theme-management">
+          <ProtectedRoute component={ThemeManagement} requirePermission="system.settings.edit" />
         </Route>
 
         {/* Error pages */}

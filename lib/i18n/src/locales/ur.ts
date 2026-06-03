@@ -1885,6 +1885,7 @@ const ur: Record<string, string> = {
     navFeatureRules: "فیچر رولز",
     navVerificationBonuses: "تصدیق بونس",
     navAppConfiguration: "ایپ کنفیگریشن",
+    navThemeManagement: "تھیم مینجمنٹ",
 
     riderRegistration: "رائڈر رجسٹریشن",
     enterDetailsToGetStarted: "شروع کرنے کے لیے اپنی تفصیلات درج کریں",

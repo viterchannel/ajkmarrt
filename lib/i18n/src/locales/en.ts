@@ -2060,6 +2060,7 @@ const en = {
     navFeatureRules: "Feature Rules",
     navVerificationBonuses: "Verification Bonuses",
     navAppConfiguration: "App Configuration",
+    navThemeManagement: "Theme Management",
 
     /* ── Deposit modal ── */
     depositShortfallHint: "Please deposit at least {amount} to cover your minimum balance requirement",

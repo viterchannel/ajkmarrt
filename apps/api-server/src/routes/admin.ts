@@ -58,6 +58,7 @@ import kycQueueRoutes from "./admin/kyc-queue.js";
 import revenueAnalyticsRoutes from "./admin/revenue-analytics.js";
 import riderApprovalRoutes from "./admin/rider-approval.js";
 import codRemittancesRoutes from "./admin/cod-remittances.js";
+import themeManagementRoutes from "./admin/theme-management.js";
 import sosRoutes from "./sos.js";
 export {
   adminAuth,
@@ -83,6 +84,7 @@ export {
 } from "./admin-shared.js";
 export { ensureLaunchData };
 const router: IRouter = Router();
+router.use(themeManagementRoutes);
 router.use(adminAuth);
 router.use(csrfProtection);
 router.use(usersRoutes);

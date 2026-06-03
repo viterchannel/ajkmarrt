@@ -25,7 +25,7 @@ export const ThemeProvider: React.FC<{
   useEffect(() => {
     const loadThemeFromAdmin = async () => {
       try {
-        const response = await fetch("/api/admin/theme-config");
+        const response = await fetch(`/api/admin/theme-config/${appRole}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const themeConfig = await response.json();
         setCurrentTheme(themeConfig.selectedTheme || "darkGold");

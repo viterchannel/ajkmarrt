@@ -1896,6 +1896,7 @@ const roman: Record<string, string> = {
     navFeatureRules: "Feature Rules",
     navVerificationBonuses: "Verification Bonuses",
     navAppConfiguration: "App Configuration",
+    navThemeManagement: "Theme Management",
 
     riderRegistration: "Rider Registration",
     enterDetailsToGetStarted: "Shuru karne ke liye apni details darj karein",
