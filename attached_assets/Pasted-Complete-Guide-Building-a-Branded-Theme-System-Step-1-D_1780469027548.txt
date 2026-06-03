@@ -1,0 +1,118 @@
+Complete Guide: Building a Branded Theme System
+Step 1: Design Your Theme Architecture
+Create a centralized theme configuration system:
+
+Code
+krocomplete/
+├── theme-system/
+│   ├── config/
+│   │   ├── colors.ts (main color palette)
+│   │   ├── typography.ts
+│   │   ├── spacing.ts
+│   │   └── themes/
+│   │       ├── dark-gold.ts (primary brand theme)
+│   │       ├── light-mode.ts (alternative)
+│   │       └── custom-themes.ts
+│   ├── components/
+│   │   └── ThemeProvider.tsx (global theme wrapper)
+│   └── hooks/
+│       └── useTheme.ts
+├── admin-panel/
+├── vendor-app/
+├── rider-app/
+├── customer-app/
+└── shared-ui/ (shared components using theme)
+Step 2: Create Core Theme Configuration
+Create a master theme file that all apps use:
+
+"theme.config.ts"
+// Shared theme configuration for all apps
+export const BrandColors = {
+  primary: {
+    dark: '#1A1A2E',      // Deep dark (primary)
+    gold: '#D4AF37',      // Gold accent
+    darkGold: '#C4860F',  // Dark gold for hover
+Step 3: Create a Global Theme Provider
+Build a React Context for theme management:
+
+"ThemeProvider.tsx"
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+interface ThemeContextType {
+  currentTheme: 'darkGold' | 'light' | string;
+  setTheme: (theme: string) => void;
+  colors: any;
+Step 4: Admin Panel Theme Control
+Create admin endpoints to manage themes:
+
+"admin-theme-controller.ts"
+// Backend endpoints for theme management
+app.post('/api/admin/theme-config', authenticateAdmin, async (req, res) => {
+  const { theme, colors, appRole } = req.body;
+  
+  // Save to database
+  await ThemeConfig.updateOne(
+Step 5: Implement in Each App
+Admin Panel (Full Control):
+"admin/ThemeManager.tsx"
+export const ThemeManager = () => {
+  const [selectedTheme, setSelectedTheme] = useState('darkGold');
+  
+  const handleThemeChange = async (theme: string, appRole: string) => {
+    await fetch('/api/admin/theme-config', {
+      method: 'POST',
+Other Apps (Theme Consumer):
+"rider-app/App.tsx"
+import { ThemeProvider } from '../theme-system/ThemeProvider';
+
+function App() {
+  return (
+    <ThemeProvider appRole="rider">
+      <YourAppComponents />
+Step 6: Styled Components Setup
+Use styled-components or Tailwind with your theme:
+
+"styled.ts"
+import styled from 'styled-components';
+import { useTheme } from './useTheme';
+
+export const Container = styled.div`
+  background-color: ${props => props.theme.colors.primary.dark};
+  color: ${props => props.theme.colors.text.light};
+Step 7: Database Schema
+Store theme configs:
+
+JavaScript
+const themeConfigSchema = new Schema({
+  appRole: { type: String, enum: ['admin', 'vendor', 'rider', 'customer'] },
+  selectedTheme: String,
+  colors: {
+    primary: Object,
+    secondary: Object,
+    semantic: Object,
+    text: Object
+  },
+  updatedAt: Date,
+  updatedBy: String
+});
+Step 8: Implementation Checklist
+✅ Phase 1 - Setup (1-2 days):
+
+ Create theme configuration files
+ Set up ThemeProvider & Context
+ Create theme hooks
+✅ Phase 2 - Integration (2-3 days):
+
+ Add theme system to each app
+ Update all components to use theme
+ Test across all 4 apps
+✅ Phase 3 - Admin Control (1-2 days):
+
+ Build admin theme management UI
+ Create backend API endpoints
+ Add real-time updates (WebSocket)
+✅ Phase 4 - Testing (1 day):
+
+ Test theme switching across apps
+ Verify admin controls work
+ Test on different devices/browsers
