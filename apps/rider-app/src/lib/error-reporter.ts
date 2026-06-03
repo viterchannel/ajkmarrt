@@ -69,7 +69,7 @@ async function sendReport(report: Record<string, unknown>): Promise<void> {
       body,
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/error-reporter.ts]", err);
+    /* Error reporter itself failed — silently swallow to avoid infinite loops */
   }
 }
 
@@ -163,7 +163,7 @@ export function initErrorReporter(): void {
         try {
           return JSON.stringify(a);
         } catch (err) {
-          console.warn("[artifacts/rider-app/src/lib/error-reporter.ts]", err);
+          /* Error reporter secondary failure — silently swallow */
           return "";
         }
       })

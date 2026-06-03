@@ -189,7 +189,7 @@ async function registerFcmPush(
            on the promise but we still re-register the new token with the server. */
         resolve(newToken.value);
         await registerTokenWithServer(newToken.value).catch((err) => {
-          console.warn("[artifacts/rider-app/src/lib/push.ts]", err);
+          log.warn("[push] registerTokenWithServer failed:", err);
         }); // eslint-disable-line no-console
       })
         .then((h) => cleanups.push(h))
@@ -200,7 +200,7 @@ async function registerFcmPush(
       })
         .then((h) => cleanups.push(h))
         .catch((err) => {
-          console.warn("[artifacts/rider-app/src/lib/push.ts]", err);
+          log.warn("[push] registerTokenWithServer failed:", err);
         }); // eslint-disable-line no-console
     });
 
@@ -222,12 +222,12 @@ async function registerFcmPush(
         const token = newToken.registration ?? newToken.value;
         if (token)
           await registerTokenWithServer(token).catch((err) => {
-            console.warn("[artifacts/rider-app/src/lib/push.ts]", err);
+            log.warn("[push] registerTokenWithServer failed:", err);
           }); // eslint-disable-line no-console
       })
       .then((h) => cleanups.push(h))
       .catch((err) => {
-        console.warn("[artifacts/rider-app/src/lib/push.ts]", err);
+        log.warn("[push] listener registration failed:", err);
       }); // eslint-disable-line no-console
 
     if (onForegroundMessage) {
@@ -242,7 +242,7 @@ async function registerFcmPush(
       })
         .then((h) => cleanups.push(h))
         .catch((err) => {
-          console.warn("[artifacts/rider-app/src/lib/push.ts]", err);
+          log.warn("[push] registerTokenWithServer failed:", err);
         }); // eslint-disable-line no-console
     }
 
@@ -330,7 +330,7 @@ async function registerFcmPush(
     })
       .then((h) => cleanups.push(h))
       .catch((err) => {
-        console.warn("[artifacts/rider-app/src/lib/push.ts]", err);
+        log.warn("[push] listener registration failed:", err);
       }); // eslint-disable-line no-console
 
     /* Now trigger registration — token/error events may fire after this. */

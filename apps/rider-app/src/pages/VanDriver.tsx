@@ -16,6 +16,8 @@ import {
 import { ErrorState } from "../components/ui/ErrorState";
 import { apiFetch } from "../lib/api";
 import { enqueueAction, subscribeActionSuccess } from "../lib/offline/queueManager";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("[VanDriver]");
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -290,9 +292,9 @@ export default function VanDriver() {
       if (looksLikeNetErr) {
         enqueueAction("board_passenger", bookingId, { boardedAt: new Date().toISOString() }).catch(
           (err) => {
-            console.warn("[artifacts/rider-app/src/pages/VanDriver.tsx]", err);
+            log.warn("[VanDriver] enqueueAction failed:", err);
           }
-        ); // eslint-disable-line no-console
+        );
       }
       setError(e.message);
     },
@@ -326,9 +328,9 @@ export default function VanDriver() {
       if (looksLikeNetErr && selectedSchedule) {
         enqueueAction("complete_trip", selectedSchedule.id, { date: selectedSchedule.date }).catch(
           (err) => {
-            console.warn("[artifacts/rider-app/src/pages/VanDriver.tsx]", err);
+            log.warn("[VanDriver] enqueueAction failed:", err);
           }
-        ); // eslint-disable-line no-console
+        );
         /* Immediately show optimistic "Trip Ending…" state so the UI never appears
            frozen while the action hits the offline queue to sync. */
         setTripEndingOffline(true);

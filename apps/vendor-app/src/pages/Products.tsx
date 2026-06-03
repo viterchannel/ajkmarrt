@@ -1,5 +1,7 @@
+import { createLogger } from "@/lib/logger";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { tDual, type TranslationKey } from "@workspace/i18n";
+const log = createLogger("[Products]");
 import Papa from "papaparse";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
@@ -62,9 +64,9 @@ export default function Products() {
       const stored = localStorage.getItem("vendor_product_thresholds");
       return stored ? JSON.parse(stored) : {};
     } catch (err) {
-      console.warn("[artifacts/vendor-app/src/pages/Products.tsx]", err);
+      log.warn("[Products] localStorage read failed:", err);
       return {};
-    } // eslint-disable-line no-console
+    }
   });
 
   const saveThreshold = (productId: string, value: number | null) => {
@@ -78,8 +80,8 @@ export default function Products() {
       try {
         localStorage.setItem("vendor_product_thresholds", JSON.stringify(next));
       } catch (err) {
-        console.warn("[artifacts/vendor-app/src/pages/Products.tsx]", err);
-      } // eslint-disable-line no-console
+        log.warn("[Products] localStorage save failed:", err);
+      }
       return next;
     });
   };

@@ -447,7 +447,7 @@ function RiderAuthInner({ children }: { children: ReactNode }) {
     executeLogoutSequence(api, () => {
       try {
         sessionStorage.clear();
-      } catch (error) { console.debug('[RiderAuth] sessionStorage.clear failed (non-critical):', error); }
+      } catch (error) { /* sessionStorage.clear failed — non-critical */ }
       if (userId) clearFeatureRulesCache(userId);
       sharedAuth.logout();
       setToken(null);

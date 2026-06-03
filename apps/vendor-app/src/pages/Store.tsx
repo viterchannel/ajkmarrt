@@ -1,5 +1,7 @@
+import { createLogger } from "@/lib/logger";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { tDual, type TranslationKey } from "@workspace/i18n";
+const log = createLogger("[Store]");
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { toast } from "../hooks/use-toast";
@@ -54,8 +56,8 @@ function useVendorTileConfig() {
         }
       })
       .catch((err) => {
-        console.warn("[artifacts/vendor-app/src/pages/Store.tsx]", err);
-      }); // eslint-disable-line no-console
+        log.warn("[Store] tile load failed:", err);
+      });
   }, []);
   return tile;
 }
@@ -136,8 +138,8 @@ export default function Store() {
       try {
         return JSON.parse(user.storeHours);
       } catch (err) {
-        console.warn("[artifacts/vendor-app/src/pages/Store.tsx]", err);
-      } // eslint-disable-line no-console
+        log.warn("[Store] storeHours parse failed:", err);
+      }
     }
     return user.storeHours;
   });
@@ -160,9 +162,9 @@ export default function Store() {
               try {
                 return JSON.parse(user.storeHours as string);
               } catch (err) {
-                console.warn("[artifacts/vendor-app/src/pages/Store.tsx]", err);
+                log.warn("[Store] storeHours parse failed:", err);
               }
-            })() // eslint-disable-line no-console
+            })()
           : user.storeHours;
       if (parsed) setHours(parsed);
     }

@@ -18,7 +18,7 @@ async function sendReport(report: Record<string, unknown>): Promise<void> {
       body: JSON.stringify(report),
     });
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/lib/error-reporter.ts]", err);
+    log.warn("[error-reporter] send failed:", err);
   }
 }
 

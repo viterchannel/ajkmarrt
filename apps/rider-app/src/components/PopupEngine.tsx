@@ -1,8 +1,10 @@
+import { createLogger } from "@/lib/logger";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { getRiderApiBase } from "../lib/envValidation";
 import { useAuth } from "../lib/rider-auth";
 import { SafeImage } from "./ui/SafeImage";
+const log = createLogger("[PopupEngine]");
 
 const BASE = getRiderApiBase();
 
@@ -34,7 +36,7 @@ function getOrCreateSessionId(): string {
     sessionStorage.setItem(SESSION_KEY, id);
     return id;
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/components/PopupEngine.tsx]", err);
+    log.warn("[PopupEngine] localStorage/sessionStorage failed:", err);
     return "";
   } // eslint-disable-line no-console
 }
@@ -57,7 +59,7 @@ function shouldShowPopup(popup: Popup): boolean {
     }
     return true;
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/components/PopupEngine.tsx]", err);
+    log.warn("[PopupEngine] localStorage/sessionStorage failed:", err);
     return false;
   } // eslint-disable-line no-console
 }
@@ -72,7 +74,7 @@ function markPopupSeen(popup: Popup): void {
       sessionSeenIds.add(popup.id);
     }
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/components/PopupEngine.tsx]", err);
+    log.warn("[PopupEngine] localStorage/sessionStorage failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -92,7 +94,7 @@ async function sendImpression(
       body: JSON.stringify({ popupId, action, sessionId }),
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/components/PopupEngine.tsx]", err);
+    log.warn("[PopupEngine] localStorage/sessionStorage failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -196,7 +198,7 @@ export function PopupEngine() {
           showAt(eligible, 0);
         }
       } catch (err) {
-        console.warn("[artifacts/rider-app/src/components/PopupEngine.tsx]", err);
+        log.warn("[PopupEngine] sessionStorage failed:", err);
       } // eslint-disable-line no-console
     })();
     return () => {

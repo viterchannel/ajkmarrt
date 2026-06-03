@@ -185,10 +185,9 @@ function sessionSet(value: string): void {
   /* Notify other open tabs that the token has been refreshed */
   try {
     _tokenChannel?.postMessage({ type: "token_updated", token: value });
-    // eslint-disable-next-line ajk-local/no-silent-catch
   } catch (error) {
     /* BroadcastChannel post can fail if the channel was closed — non-critical */
-    console.warn("[api] BroadcastChannel post failed:", error);
+    log.warn("[api] BroadcastChannel post failed:", error);
   }
 }
 function sessionRemove(): void {
@@ -1124,6 +1123,21 @@ export const api = {
   getCancelStats: () => apiFetch("/riders/cancel-stats"),
   getIgnoreStats: () => apiFetch("/riders/ignore-stats"),
   getPenaltyHistory: () => apiFetch("/riders/penalty-history"),
+  getConversations: (): Promise<Array<{
+    id: string;
+    otherUser: { id: string; name: string | null; ajkId: string | null };
+    lastMessage: { content: string } | null;
+    unreadCount: number;
+    lastMessageAt: string | null;
+  }>> => apiFetch("/communication/conversations"),
+  getCommRequests: (type?: string): Promise<Array<{
+    id: string;
+    name: string;
+    avatar: string;
+    status: string;
+    createdAt: string;
+  }>> => apiFetch(`/communication/requests${type ? `?type=${type}` : ""}`),
+  markConversationRead: (id: string) => apiFetch(`/communication/conversations/${id}/read-all`, { method: "PATCH" }),
   getSupportMessages: (): Promise<{
     messages: Array<{
       id: string;

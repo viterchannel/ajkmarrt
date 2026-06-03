@@ -1,5 +1,7 @@
+import { createLogger } from "@/lib/logger";
 import { useQuery } from "@tanstack/react-query";
 import { LANGUAGE_OPTIONS, tDual, type Language, type TranslationKey } from "@workspace/i18n";
+const log = createLogger("[Profile]");
 import { Moon, Sun, Palette } from "lucide-react";
 import { toast } from "../hooks/use-toast";
 import { useCallback, useEffect, useState } from "react";
@@ -173,8 +175,8 @@ export default function Profile() {
       }
       if (Notification.permission === "granted") {
         await registerPush().catch((err) => {
-          console.warn("[artifacts/vendor-app/src/pages/Profile.tsx]", err);
-        }); // eslint-disable-line no-console
+          log.warn("[Profile] registerPush failed:", err);
+        });
       }
       const result = (await api.testNotification()) as {
         sent?: boolean;

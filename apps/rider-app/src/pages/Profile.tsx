@@ -547,7 +547,7 @@ export default function Profile() {
     /* Validate that section is one of the allowed values */
     const validSections: EditSection[] = ["personal", "vehicle", "bank"];
     if (typeof section !== "string" || !validSections.includes(section as EditSection)) {
-      console.warn("[Profile] Invalid edit section attempted:", section);
+      log.warn("[Profile] Invalid edit section attempted:", section);
       return;
     }
     const validSection = section as EditSection;

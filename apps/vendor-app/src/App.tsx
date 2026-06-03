@@ -1,5 +1,7 @@
+import { createLogger } from "@/lib/logger";
 import { useVersionCheck } from "@/hooks/useVersionCheck";
 import { QueryClientProvider } from "@tanstack/react-query";
+const log = createLogger("[App]");
 import {
   AlertTriangle,
   ArrowLeft,
@@ -697,8 +699,8 @@ function AppRoutes() {
           staleTime: 30_000,
         })
         .catch((err) => {
-          console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-        }); // eslint-disable-line no-console
+          log.warn("[App] push registration failed:", err);
+        });
       navigate(`/orders/${orderId}`);
     } else if (pending) {
       navigate("/orders");
@@ -790,8 +792,8 @@ function AppRoutes() {
           osc.start(ctx.currentTime);
           osc.stop(ctx.currentTime + 0.4);
         } catch (err) {
-          console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-        } // eslint-disable-line no-console
+          log.warn("[App] notification sound failed:", err);
+        }
       }
       /* Banner copy for cancellation and settlement types */
       let displayTitle = title;
@@ -826,8 +828,8 @@ function AppRoutes() {
           if (cleanup) fcmCleanupRef.current = cleanup;
         })
         .catch((err) => {
-          console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-        }); // eslint-disable-line no-console
+          log.warn("[App] push registration failed:", err);
+        });
       return () => {
         fcmCleanupRef.current?.remove();
         if (fcmDismissTimer.current) clearTimeout(fcmDismissTimer.current);
@@ -838,15 +840,15 @@ function AppRoutes() {
         .then((perm) => {
           if (perm === "granted") {
             registerPush(undefined, undefined, onPushError).catch((err) => {
-              console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-            }); // eslint-disable-line no-console
+              log.warn("[App] push registration failed:", err);
+            });
           } else if (perm === "denied") {
             setPushError("permission_denied");
           }
         })
         .catch((err) => {
-          console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-        }); // eslint-disable-line no-console
+          log.warn("[App] push registration failed:", err);
+        });
     }
 
     /* Re-register whenever the vendor tab regains focus so tokens stay fresh
@@ -854,10 +856,10 @@ function AppRoutes() {
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         registerPush(undefined, undefined, onPushError).catch((err) => {
-          console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-        }); // eslint-disable-line no-console
+          log.warn("[App] push registration failed:", err);
+        });
         refreshUser().catch((err) => {
-          console.warn("[artifacts/vendor-app/src/App.tsx] refreshUser:", err); // eslint-disable-line no-console
+          log.warn("[App] refreshUser failed:", err);
         });
       }
     };
@@ -873,8 +875,8 @@ function AppRoutes() {
           const appPath = fullUrl.pathname.replace(new RegExp(`^${base}`), "") || "/";
           navigate(appPath);
         } catch (err) {
-          console.warn("[artifacts/vendor-app/src/App.tsx]", err);
-        } // eslint-disable-line no-console
+          log.warn("[App] notification sound failed:", err);
+        }
       }
     };
     navigator.serviceWorker?.addEventListener("message", onSwMessage);

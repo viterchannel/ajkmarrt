@@ -62,7 +62,7 @@ function safeCall<T extends unknown[]>(handlers: Set<(...args: T) => void>, ...a
     try {
       fn(...args);
     } catch (err) {
-      console.warn("[vendor-socket] handler error:", err); // eslint-disable-line no-console
+      log.warn("[vendor-socket] handler error:", err);
     }
   });
 }

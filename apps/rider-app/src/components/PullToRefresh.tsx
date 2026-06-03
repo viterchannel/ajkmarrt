@@ -68,7 +68,7 @@ export function PullToRefresh({
         try {
           onRefreshError(err);
         } catch (err) {
-          console.warn("[artifacts/rider-app/src/components/PullToRefresh.tsx]", err);
+          log.warn("[PullToRefresh] onRefreshError callback failed:", err);
         } // eslint-disable-line no-console
       } else {
         log.warn("onRefresh failed:", err);

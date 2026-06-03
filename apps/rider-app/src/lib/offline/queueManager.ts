@@ -1,4 +1,6 @@
+import { createLogger } from "@/lib/logger";
 import { useEffect, useState } from "react";
+const log = createLogger("[queueManager]");
 
 export type ActionType =
   | "accept_order"
@@ -57,10 +59,10 @@ function openDB(): Promise<IDBDatabase> {
         try {
           db.close();
         } catch (err) {
-          console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
+          log.warn("[queueManager] db.close failed:", err);
         }
         _dbPromise = null;
-      }; // eslint-disable-line no-console
+      };
       resolve(db);
     };
     req.onerror = () => {
@@ -104,10 +106,7 @@ export async function enqueueAction(
   } catch (err) {
     /* IndexedDB unavailable (private browsing, quota exceeded, etc.) — fall back
        to localStorage, then in-memory queue as last resort. */
-    console.warn(
-      "[queueManager] IndexedDB write failed — attempting localStorage fallback",
-      err
-    ); // eslint-disable-line no-console
+    log.warn("[queueManager] IndexedDB write failed — attempting localStorage fallback:", err);
     
     let persisted = false;
     try {
@@ -118,16 +117,10 @@ export async function enqueueAction(
         existing.push(action);
         localStorage.setItem("ajkm:action-queue-fallback", JSON.stringify(existing));
         persisted = true;
-        console.info(
-          "[queueManager] Action persisted to localStorage fallback",
-          { actionId: action.id }
-        ); // eslint-disable-line no-console
+        log.info("[queueManager] Action persisted to localStorage fallback:", { actionId: action.id });
       }
     } catch (storageErr) {
-      console.warn(
-        "[queueManager] localStorage fallback also failed — using in-memory only",
-        storageErr
-      ); // eslint-disable-line no-console
+      log.warn("[queueManager] localStorage fallback also failed — using in-memory only:", storageErr);
     }
     
     if (!persisted) {
@@ -170,7 +163,7 @@ async function getAll(): Promise<QueuedAction[]> {
     const merged = [...all, ..._memQueue.filter((m) => !all.some((a) => a.id === m.id))];
     return merged.sort((a, b) => a.createdAt - b.createdAt);
   } catch (err) {
-    console.warn("[queueManager] IndexedDB read failed — checking localStorage fallback", err); // eslint-disable-line no-console
+    log.warn("[queueManager] IndexedDB read failed — checking localStorage fallback:", err);
     
     /* Try to load from localStorage fallback */
     let storageFallback: QueuedAction[] = [];
@@ -179,14 +172,11 @@ async function getAll(): Promise<QueuedAction[]> {
         const stored = localStorage.getItem("ajkm:action-queue-fallback");
         if (stored) {
           storageFallback = JSON.parse(stored) as QueuedAction[];
-          console.info(
-            "[queueManager] Loaded actions from localStorage fallback",
-            { count: storageFallback.length }
-          ); // eslint-disable-line no-console
+          log.info("[queueManager] Loaded actions from localStorage fallback:", { count: storageFallback.length });
         }
       }
     } catch (storageErr) {
-      console.warn("[queueManager] localStorage fallback read also failed", storageErr); // eslint-disable-line no-console
+      log.warn("[queueManager] localStorage fallback read also failed:", storageErr);
     }
     
     /* Merge storage fallback with in-memory queue, removing duplicates */
@@ -219,7 +209,7 @@ async function removeAction(id: string): Promise<void> {
       }
     }
   } catch (storageErr) {
-    console.warn("[queueManager] Failed to remove action from localStorage fallback:", storageErr); // eslint-disable-line no-console
+    log.warn("[queueManager] Failed to remove action from localStorage fallback:", storageErr);
   }
 
   try {
@@ -231,7 +221,7 @@ async function removeAction(id: string): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[queueManager] removeAction IndexedDB delete failed:", err); // eslint-disable-line no-console
+    log.warn("[queueManager] removeAction IndexedDB delete failed:", err);
   }
 }
 
@@ -249,7 +239,7 @@ async function bumpRetryCount(action: QueuedAction): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[queueManager] bumpRetryCount IndexedDB write failed — _memQueue left unchanged:", err); // eslint-disable-line no-console
+    log.warn("[queueManager] bumpRetryCount IndexedDB write failed — _memQueue left unchanged:", err);
     return;
   }
 
@@ -348,7 +338,7 @@ async function pushDeadLetter(action: QueuedAction, err: PermanentQueueError): P
   } catch (writeErr) {
     /* IDB write failed — signal failure so the caller keeps the action in
        the live queue (bump retry) rather than silently dropping it. */
-    console.warn("[queueManager] pushDeadLetter IDB write failed — action retained in queue:", writeErr); // eslint-disable-line no-console
+    log.warn("[queueManager] pushDeadLetter IDB write failed — action retained in queue:", writeErr);
     return false;
   }
 }
@@ -365,7 +355,7 @@ export async function clearQueue(): Promise<void> {
     });
     notifyListeners();
   } catch (err) {
-    console.warn("[queueManager] clearQueue failed:", err); // eslint-disable-line no-console
+    log.warn("[queueManager] clearQueue failed:", err);
   }
 }
 
@@ -380,9 +370,9 @@ export async function getDeadLetterQueue(): Promise<DeadLetterEntry[]> {
       req.onerror = () => reject(req.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
+    log.warn("[queueManager] getDeadLetterQueue failed:", err);
     return [];
-  } // eslint-disable-line no-console
+  }
 }
 
 export async function clearDeadLetterEntry(id: string): Promise<void> {
@@ -396,8 +386,8 @@ export async function clearDeadLetterEntry(id: string): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[queueManager] clearDeadLetterEntry failed:", err);
+  }
 }
 
 export interface ExecutorResult {
@@ -477,14 +467,14 @@ function notifyActionSuccess(action: QueuedAction): void {
     try {
       fn(action);
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
+      log.warn("[queueManager] notifyActionSuccess callback failed:", err);
     }
   }); // eslint-disable-line no-console
   _anySuccessCallbacks.forEach((fn) => {
     try {
       fn(action);
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
+      log.warn("[queueManager] notifyActionSuccess callback failed:", err);
     }
   }); // eslint-disable-line no-console
 }
@@ -519,7 +509,7 @@ export async function syncQueue(): Promise<void> {
         );
         if (dlOk) {
           await removeAction(action.id).catch((err) => {
-            console.warn("[queueManager] removeAction failed after TTL expiry dead-letter:", err);
+            log.warn("[queueManager] removeAction failed after TTL expiry dead-letter:", err);
           }); // eslint-disable-line no-console
         }
         continue;
@@ -538,15 +528,15 @@ export async function syncQueue(): Promise<void> {
         );
         if (dlOk) {
           await removeAction(action.id).catch((err) => {
-            console.warn("[queueManager] removeAction failed after dead-letter push:", err);
-          }); // eslint-disable-line no-console
+            log.warn("[queueManager] removeAction failed after dead-letter push:", err);
+          });
           continue;
         }
         /* Dead-letter write failed — keep action in queue and halt the drain
            so it can be retried on the next sync cycle. */
-        console.warn("[queueManager] dead-letter write failed for max-retry action — retaining in queue:", action.id); // eslint-disable-line no-console
+        log.warn("[queueManager] dead-letter write failed for max-retry action — retaining in queue:", action.id);
         await bumpRetryCount(action).catch((bumpErr) => {
-          console.warn("[queueManager] bumpRetryCount failed after dead-letter write failure:", bumpErr); // eslint-disable-line no-console
+          log.warn("[queueManager] bumpRetryCount failed after dead-letter write failure:", bumpErr);
         });
         break;
       }
@@ -576,7 +566,7 @@ export async function syncQueue(): Promise<void> {
           /* Transient non-ok (5xx, 429, network, or missing result): bump retry
              counter and halt the drain so the action is replayed next cycle. */
           await bumpRetryCount(action).catch((bumpErr) => {
-            console.warn("[queueManager] bumpRetryCount failed after non-ok result:", bumpErr); // eslint-disable-line no-console
+            log.warn("[queueManager] bumpRetryCount failed after non-ok result:", bumpErr);
           });
           break;
         }
@@ -599,14 +589,14 @@ export async function syncQueue(): Promise<void> {
             /* Dead-letter write failed — keep the action in queue and halt the
                drain so the rider's work is not silently lost.  It will be retried
                on the next sync cycle (and re-classified as permanent again). */
-            console.warn("[queueManager] dead-letter write failed for permanent error — retaining action in queue:", action.id); // eslint-disable-line no-console
+            log.warn("[queueManager] dead-letter write failed for permanent error — retaining action in queue:", action.id);
             await bumpRetryCount(action).catch((bumpErr) => {
-              console.warn("[queueManager] bumpRetryCount failed after dead-letter write failure:", bumpErr); // eslint-disable-line no-console
+              log.warn("[queueManager] bumpRetryCount failed after dead-letter write failure:", bumpErr);
             });
             break;
           }
           await removeAction(action.id).catch((removeErr) => {
-            console.warn("[queueManager] removeAction failed after permanent error:", removeErr);
+            log.warn("[queueManager] removeAction failed after permanent error:", removeErr);
           }); // eslint-disable-line no-console
           /* Dead-letter orphaned dependents sharing the same entityId. We re-read
              the remaining actions from IDB rather than using `actions` (which is a
@@ -625,14 +615,14 @@ export async function syncQueue(): Promise<void> {
               );
               if (orphanDlOk) {
                 await removeAction(orphan.id).catch((removeErr) => {
-                  console.warn("[queueManager] removeAction failed for orphan:", removeErr);
+                  log.warn("[queueManager] removeAction failed for orphan:", removeErr);
                 }); // eslint-disable-line no-console
               } else {
-                console.warn("[queueManager] dead-letter write failed for orphan — retaining in queue:", orphan.id); // eslint-disable-line no-console
+                log.warn("[queueManager] dead-letter write failed for orphan — retaining in queue:", orphan.id);
               }
             }
           } catch (orphanErr) {
-            console.warn("[queueManager] failed to dead-letter orphaned dependents:", orphanErr); // eslint-disable-line no-console
+            log.warn("[queueManager] failed to dead-letter orphaned dependents:", orphanErr);
           }
           continue;
         }
@@ -640,7 +630,7 @@ export async function syncQueue(): Promise<void> {
            and halt the drain. The ordering invariant requires that later actions
            (e.g. update_ride) only run after the predecessor succeeds. */
         await bumpRetryCount(action).catch((err) => {
-          console.warn("[queueManager] bumpRetryCount failed:", err);
+          log.warn("[queueManager] bumpRetryCount failed:", err);
         }); // eslint-disable-line no-console
         break;
       }
@@ -698,7 +688,7 @@ export function useQueueStatus() {
 if (typeof window !== "undefined") {
   window.addEventListener("online", () => {
     syncQueue().catch((err) => {
-      console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
+      log.warn("[queueManager] notifyActionSuccess callback failed:", err);
     });
   }); // eslint-disable-line no-console
   /* Periodic retry every 30 seconds — covers Android WebViews that skip the
@@ -706,7 +696,7 @@ if (typeof window !== "undefined") {
   setInterval(() => {
     if (navigator.onLine) {
       syncQueue().catch((err) => {
-        console.warn("[artifacts/rider-app/src/lib/offline/queueManager.ts]", err);
+        log.warn("[queueManager] notifyActionSuccess callback failed:", err);
       });
     } // eslint-disable-line no-console
   }, 30_000);

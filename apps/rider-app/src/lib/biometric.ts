@@ -27,7 +27,7 @@ async function prefSet(key: string, value: string): Promise<void> {
     try {
       localStorage.setItem(key, value);
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/biometric.ts]", err);
+      log.warn("[biometric] operation failed:", err);
     } // eslint-disable-line no-console
   }
 }
@@ -42,7 +42,7 @@ async function prefGet(key: string): Promise<string> {
     try {
       return localStorage.getItem(key) ?? "";
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/biometric.ts]", err);
+      log.warn("[biometric] operation failed:", err);
       return "";
     } // eslint-disable-line no-console
   }
@@ -57,7 +57,7 @@ async function prefRemove(key: string): Promise<void> {
     try {
       localStorage.removeItem(key);
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/biometric.ts]", err);
+      log.warn("[biometric] operation failed:", err);
     } // eslint-disable-line no-console
   }
 }
@@ -91,9 +91,9 @@ export async function isBiometricAvailable(): Promise<boolean> {
     const info = await BiometricAuth.checkBiometry();
     return info.isAvailable;
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/biometric.ts]", err);
+    log.warn("[biometric] checkBiometry failed:", err);
     return false;
-  } // eslint-disable-line no-console
+  }
 }
 
 /**
@@ -141,9 +141,9 @@ export async function verifyBiometric(reason = "Sign in to AJKMart Rider"): Prom
     await BiometricAuth.authenticate({ reason, cancelTitle: "Cancel" });
     return true;
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/biometric.ts]", err);
+    log.warn("[biometric] authenticate failed:", err);
     return false;
-  } // eslint-disable-line no-console
+  }
 }
 
 /**

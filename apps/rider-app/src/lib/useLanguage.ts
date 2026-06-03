@@ -10,6 +10,8 @@ import React, {
   type ReactNode,
 } from "react";
 import { api } from "./api";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("[useLanguage]");
 
 const STORAGE_KEY = "ajkmart_rider_language";
 const VALID_LANGS = new Set<string>(LANGUAGE_OPTIONS.map((o) => o.value));
@@ -47,7 +49,7 @@ function getStoredLanguageForStartup(): Language | null {
     // next cold start also defaults to English.
     localStorage.removeItem(STORAGE_KEY);
   } catch (err) {
-    console.warn("[useLanguage]", err); // eslint-disable-line no-console
+    log.warn("[useLanguage] storage read failed:", err);
   }
   return null;
 }
@@ -111,7 +113,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     // do NOT apply the server's language — the cold-start default is always en.
     if (api.getToken()) {
       api.getSettings().catch((err) => {
-        console.warn("[useLanguage]", err); // eslint-disable-line no-console
+        log.warn("[useLanguage] storage read failed:", err);
       });
     }
 
@@ -131,12 +133,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(STORAGE_KEY, lang);
     } catch (err) {
-      console.warn("[useLanguage]", err); // eslint-disable-line no-console
+      log.warn("[useLanguage] storage read failed:", err);
     }
     try {
       await api.updateSettings({ language: lang });
     } catch (err) {
-      console.warn("[useLanguage]", err); // eslint-disable-line no-console
+      log.warn("[useLanguage] storage read failed:", err);
     }
     setLoading(false);
   }, []);

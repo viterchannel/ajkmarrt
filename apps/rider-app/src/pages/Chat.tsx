@@ -235,7 +235,7 @@ export default function Chat() {
   /* ── React Query: conversations ── */
   const { data: conversationsData, isLoading: convsLoading } = useQuery<Conversation[]>({
     queryKey: ["conversations"],
-    queryFn: () => api.apiFetch("/communication/conversations"),
+    queryFn: () => api.getConversations(),
     enabled: !!user?.id,
   });
   const conversations = conversationsData ?? [];
@@ -243,7 +243,7 @@ export default function Chat() {
   /* ── React Query: comm requests ── */
   const { data: requestsData, isLoading: requestsLoading } = useQuery<CommRequest[]>({
     queryKey: ["comm-requests"],
-    queryFn: () => api.apiFetch("/communication/requests?type=received"),
+    queryFn: () => api.getCommRequests("received"),
     enabled: !!user?.id,
   });
   const requests = requestsData ?? [];
@@ -725,7 +725,7 @@ export default function Chat() {
     try {
       /* Messages are loaded via useInfiniteQuery keyed on conv.id — just
          mark the conversation read and reset any previous send error. */
-      await api.apiFetch(`/communication/conversations/${conv.id}/read-all`, { method: "PATCH" });
+      await api.markConversationRead(conv.id);
       setSendError(null);
     } catch (e) {
       setSendError((e as Error)?.message || T("chatFailedOpenConversation"));

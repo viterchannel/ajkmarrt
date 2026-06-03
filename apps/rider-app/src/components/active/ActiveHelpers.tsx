@@ -330,7 +330,7 @@ export function SosButton({
           lat = pos.coords.latitude;
           lng = pos.coords.longitude;
         } catch (err) {
-          console.warn("[ActiveHelpers] geolocation failed", err); // eslint-disable-line no-console
+          log.warn("[ActiveHelpers] geolocation failed", err);
         }
       }
       const hasCoords =
@@ -346,7 +346,7 @@ export function SosButton({
       }
       await fireSos(lat!, lng!);
     } catch (err) {
-      console.warn("[ActiveHelpers] SOS failed", err); // eslint-disable-line no-console
+      log.warn("[ActiveHelpers] SOS failed", err);
     }
     setLoading(false);
   };
@@ -393,7 +393,7 @@ export function SosButton({
                 try {
                   await fireSos();
                 } catch (err) {
-                  console.warn("[ActiveHelpers] SOS without location failed", err); // eslint-disable-line no-console
+                  log.warn("[ActiveHelpers] SOS without location failed", err);
                 }
                 setLoading(false);
               }}

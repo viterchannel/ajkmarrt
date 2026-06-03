@@ -1,3 +1,5 @@
+import { createLogger } from "@/lib/logger";
+const log = createLogger("[notificationSound]");
 let audioCtx: AudioContext | null = null;
 let unlocked = false;
 let silencedUntil: number = 0;
@@ -31,7 +33,7 @@ function getCtx(): AudioContext | null {
       if (!AudioCtx) return null;
       audioCtx = new AudioCtx();
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
+      log.warn("[notificationSound] AudioContext init failed:", err);
     } // eslint-disable-line no-console
   }
   return audioCtx;
@@ -58,12 +60,12 @@ export function unlockAudio() {
         osc.disconnect();
         gain.disconnect();
       } catch (err) {
-        console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
+        log.warn("[notificationSound] AudioContext init failed:", err);
       }
     };
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[notificationSound] unlockAudio osc setup failed:", err);
+  }
   unlocked = true;
 }
 
@@ -141,7 +143,7 @@ export function playRequestSound() {
           osc.disconnect();
           gain.disconnect();
         } catch (err) {
-          console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
+          log.warn("[notificationSound] AudioContext init failed:", err);
         } // eslint-disable-line no-console
       };
     };
@@ -156,16 +158,16 @@ export function playRequestSound() {
 
     playTone(1400, 0.95, 0.2, 0.25, "sine");
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[notificationSound] playAlertSound failed:", err);
+  }
 }
 
 function vibrateFallback() {
   try {
     navigator?.vibrate?.([200, 100, 200]);
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[notificationSound] vibrateFallback failed:", err);
+  }
 }
 
 /**
@@ -192,17 +194,17 @@ export function stopSound() {
     try {
       node.osc.stop();
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
+      log.warn("[notificationSound] AudioContext init failed:", err);
     } // eslint-disable-line no-console
     try {
       node.osc.disconnect();
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
+      log.warn("[notificationSound] AudioContext init failed:", err);
     } // eslint-disable-line no-console
     try {
       node.gain.disconnect();
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/lib/notificationSound.ts]", err);
+      log.warn("[notificationSound] AudioContext init failed:", err);
     } // eslint-disable-line no-console
   }
 }

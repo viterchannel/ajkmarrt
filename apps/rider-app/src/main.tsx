@@ -1,5 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { registerErrorHandler } from "@workspace/logger";
+import { createLogger } from "@/lib/logger";
 import { tDual, type TranslationKey } from "@workspace/i18n";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -8,6 +9,7 @@ import "./index.css";
 import { checkApiHealth } from "./lib/checkApiHealth";
 import { auditRiderEnv } from "./lib/envValidation";
 import { initErrorReporter, reportError } from "./lib/error-reporter";
+const log = createLogger("[main]");
 
 // Theme is applied by useTheme() hook on first render. Don't pre-apply a class here —
 // it would unconditionally override the theme system and break light mode support.
@@ -25,7 +27,7 @@ registerErrorHandler(reportError);
 void (async () => {
   const container = document.getElementById("root");
   if (!container) {
-    console.error("[main] Root element #root not found — cannot mount app.");
+    log.error("[main] Root element #root not found — cannot mount app.");
     return;
   }
   const root = createRoot(container);

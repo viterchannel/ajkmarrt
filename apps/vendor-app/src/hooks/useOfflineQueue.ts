@@ -1,6 +1,8 @@
+import { createLogger } from "@/lib/logger";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../lib/api";
+const log = createLogger("[offline-queue]");
 
 interface QueuedStatusUpdate {
   id: string;
@@ -39,17 +41,17 @@ function loadQueue(): QueuedStatusUpdate[] {
     const raw = localStorage.getItem(QUEUE_KEY);
     return raw ? (JSON.parse(raw) as QueuedStatusUpdate[]) : [];
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/hooks/useOfflineQueue.ts]", err);
+    log.warn("[offline-queue] localStorage read failed:", err);
     return [];
-  } // eslint-disable-line no-console
+  }
 }
 
 function saveQueue(q: QueuedStatusUpdate[]): void {
   try {
     localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/hooks/useOfflineQueue.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[offline-queue] localStorage save failed:", err);
+  }
 }
 
 function loadProductQueue(): QueuedProductAction[] {
@@ -57,9 +59,9 @@ function loadProductQueue(): QueuedProductAction[] {
     const raw = localStorage.getItem(PRODUCT_QUEUE_KEY);
     return raw ? (JSON.parse(raw) as QueuedProductAction[]) : [];
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/hooks/useOfflineQueue.ts]", err);
+    log.warn("[offline-queue] localStorage read failed:", err);
     return [];
-  } // eslint-disable-line no-console
+  }
 }
 
 /**
@@ -86,17 +88,17 @@ function loadProductFailures(): ProductQueueError[] {
     const raw = localStorage.getItem(PRODUCT_FAILURES_KEY);
     return raw ? (JSON.parse(raw) as ProductQueueError[]) : [];
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/hooks/useOfflineQueue.ts]", err);
+    log.warn("[offline-queue] localStorage read failed:", err);
     return [];
-  } // eslint-disable-line no-console
+  }
 }
 
 function saveProductFailures(f: ProductQueueError[]): void {
   try {
     localStorage.setItem(PRODUCT_FAILURES_KEY, JSON.stringify(f));
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/hooks/useOfflineQueue.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[offline-queue] localStorage save failed:", err);
+  }
 }
 
 /**

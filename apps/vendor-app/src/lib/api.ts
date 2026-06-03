@@ -99,13 +99,13 @@ try {
       try {
         localStorage.removeItem(k);
       } catch (err) {
-        console.warn("[artifacts/vendor-app/src/lib/api.ts]", err);
+        log.warn("[api] localStorage cleanup failed:", err);
       }
-    }); // eslint-disable-line no-console
+    });
   }
 } catch (err) {
-  console.warn("[artifacts/vendor-app/src/lib/api.ts]", err);
-} // eslint-disable-line no-console
+  log.warn("[api] localStorage cleanup failed:", err);
+}
 
 export function getTokenStorage() {
   return _tokenStorage;
@@ -184,8 +184,8 @@ function clearTokens() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(REFRESH_KEY);
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/lib/api.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[api] BroadcastChannel post failed:", err);
+  }
 }
 
 /* ── Module-level logout callback ─────────────────────────────────────────────
@@ -206,8 +206,8 @@ function triggerLogout(reason: string) {
   try {
     window.dispatchEvent(new CustomEvent("ajkmart:logout", { detail: { reason } }));
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/lib/api.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[api] logout event dispatch failed:", err);
+  }
 }
 
 /* ── Configurable network settings ────────────────────────────────────────────
@@ -329,8 +329,8 @@ export async function apiFetch(
         const { reportApiError } = await import("./error-reporter");
         reportApiError(path, status, (err as Error).message || "Request failed");
       } catch (reportErr) {
-        console.warn("[artifacts/vendor-app/src/lib/api.ts]", reportErr);
-      } // eslint-disable-line no-console
+        log.warn("[api] Error reporting failed:", reportErr);
+      }
     }
     throw err;
   }

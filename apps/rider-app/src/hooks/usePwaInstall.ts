@@ -1,4 +1,6 @@
+import { createLogger } from "@/lib/logger";
 import { useEffect, useState } from "react";
+const log = createLogger("[usePwaInstall]");
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -15,9 +17,9 @@ export function usePwaInstall() {
     try {
       return localStorage.getItem(DISMISSED_KEY) === "1";
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/hooks/usePwaInstall.ts]", err);
+      log.warn("[usePwaInstall] localStorage read failed:", err);
       return false;
-    } // eslint-disable-line no-console
+    }
   });
 
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -67,8 +69,8 @@ export function usePwaInstall() {
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === "accepted") setIsInstalled(true);
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/hooks/usePwaInstall.ts]", err);
-    } // eslint-disable-line no-console
+      log.warn("[usePwaInstall] prompt failed:", err);
+    }
     setDeferredPrompt(null);
     setIsInstallable(false);
   };
@@ -78,8 +80,8 @@ export function usePwaInstall() {
     try {
       localStorage.setItem(DISMISSED_KEY, "1");
     } catch (err) {
-      console.warn("[artifacts/rider-app/src/hooks/usePwaInstall.ts]", err);
-    } // eslint-disable-line no-console
+      log.warn("[usePwaInstall] localStorage write failed:", err);
+    }
   };
 
   return { isInstallable, isInstalled, isIOS, isStandalone, isDismissed, promptInstall, dismiss };

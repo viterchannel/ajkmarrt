@@ -1,4 +1,5 @@
 import { RegisterScreen, ThemeProvider, useAuthTheme, ApprovalOverlay } from "@workspace/auth-react";
+import { createLogger } from "@/lib/logger";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { api, getApiBase } from "../api";
@@ -13,6 +14,7 @@ import {
 import { trackEvent } from "../analytics";
 import { useLanguage } from "../useLanguage";
 import { tDual, type TranslationKey } from "@workspace/i18n";
+const log = createLogger("[RegisterWizard]");
 
 /* sessionStorage key — home page reads this to show a post-registration doc warning */
 const DOC_WARN_KEY = "reg_doc_upload_warning";
@@ -184,10 +186,7 @@ export function RegisterWizard({ onDone }: RegisterWizardProps) {
                     body: form,
                   });
                   if (!docRes.ok) {
-                    console.warn(
-                      "[RegisterWizard] document upload returned non-2xx (non-fatal):",
-                      docRes.status
-                    );
+                    log.warn("[RegisterWizard] document upload returned non-2xx (non-fatal):", docRes.status);
                     /* Persist a warning so the home page can surface a toast after login */
                     try {
                       sessionStorage.setItem(DOC_WARN_KEY, "1");
@@ -195,7 +194,7 @@ export function RegisterWizard({ onDone }: RegisterWizardProps) {
                   }
                 } catch (docErr) {
                   /* Non-fatal — rider can upload documents later */
-                  console.warn("[RegisterWizard] document upload failed (non-fatal):", docErr);
+                  log.warn("[RegisterWizard] document upload failed (non-fatal):", docErr);
                   try { sessionStorage.setItem(DOC_WARN_KEY, "1"); } catch { }
                 }
               }

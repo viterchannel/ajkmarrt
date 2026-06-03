@@ -55,7 +55,7 @@ type FilterKind = "all" | "order" | "ride" | "parcel";
 
 type HistoryItem = {
   id: string;
-  kind: "order" | "ride";
+  kind: "order" | "ride" | "parcel";
   type: string;
   status: string;
   earnings: number;

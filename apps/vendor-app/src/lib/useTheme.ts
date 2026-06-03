@@ -1,5 +1,6 @@
+import { createLogger } from "@/lib/logger";
 import { useCallback, useEffect, useState } from "react";
-
+const log = createLogger("[useTheme]");
 const THEME_KEY = "ajkmart_dark_mode";
 
 export function useTheme() {
@@ -8,9 +9,9 @@ export function useTheme() {
       const stored = localStorage.getItem(THEME_KEY);
       return stored === null ? true : stored === "true";
     } catch (err) {
-      console.warn("[artifacts/vendor-app/src/lib/useTheme.ts]", err);
+      log.warn("[useTheme] localStorage read failed:", err);
       return true;
-    } // eslint-disable-line no-console
+    }
   });
 
   useEffect(() => {
@@ -28,8 +29,8 @@ export function useTheme() {
       try {
         localStorage.setItem(THEME_KEY, next ? "true" : "false");
       } catch (err) {
-        console.warn("[artifacts/vendor-app/src/lib/useTheme.ts]", err);
-      } // eslint-disable-line no-console
+        log.warn("[useTheme] localStorage save failed:", err);
+      }
       return next;
     });
   }, []);

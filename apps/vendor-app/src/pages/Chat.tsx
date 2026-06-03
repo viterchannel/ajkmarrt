@@ -1,9 +1,11 @@
+import { createLogger } from "@/lib/logger";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import { SafeImage } from "../components/ui/SafeImage";
 import { api, apiFetch } from "../lib/api";
 import { getTurnIceServers } from "../lib/turnIceServers";
 import { useAuth } from "../lib/vendor-auth";
+const log = createLogger("[Chat]");
 
 interface OtherUser {
   id: string;
@@ -68,8 +70,8 @@ function loadLocalShortcuts(): string[] | null {
       }
     }
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/pages/Chat.tsx]", err);
-  } // eslint-disable-line no-console
+    log.warn("[Chat] localStorage read failed:", err);
+  }
   return null;
 }
 
@@ -129,8 +131,8 @@ function saveLocalShortcuts(shortcuts: string[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(shortcuts.slice(0, MAX_SHORTCUTS)));
   } catch (err) {
-    console.warn("[artifacts/vendor-app/src/pages/Chat.tsx]", err);
-  } // eslint-disable-line no-console
+    log.warn("[Chat] localStorage read failed:", err);
+  }
 }
 
 function ShortcutsModal({
@@ -470,8 +472,8 @@ export default function Chat() {
     saveLocalShortcuts(updated);
     setQuickReplies(updated);
     api.updateQuickReplies(updated).catch((err) => {
-      console.warn("[artifacts/vendor-app/src/pages/Chat.tsx]", err);
-    }); // eslint-disable-line no-console
+      log.warn("[Chat] API operation failed:", err);
+    });
   };
 
   useEffect(() => {

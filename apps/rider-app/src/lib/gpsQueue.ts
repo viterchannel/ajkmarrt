@@ -8,10 +8,8 @@
 
 import { validateGpsPing, type GpsPing } from "./gps/validation";
 
-/* Lightweight warn logger that mirrors the project-wide console.warn pattern */
-function _warnGps(msg: string, ...args: unknown[]): void {
-  console.warn("[gpsQueue]", msg, ...args); // eslint-disable-line no-console
-}
+import { createLogger } from "@/lib/logger";
+const log = createLogger("[gpsQueue]");
 
 /* Last valid ping seen — used by the validator to compute speed between pings.
    Persisted to localStorage so velocity checks survive app restarts (M-07). */
@@ -118,7 +116,7 @@ function openDB(): Promise<IDBDatabase> {
         try {
           db.close();
         } catch (err) {
-          console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+          log.warn("[gpsQueue] operation failed:", err);
         }
         _dbPromise = null;
       }; // eslint-disable-line no-console
@@ -148,7 +146,7 @@ export async function enqueue(ping: QueuedPing): Promise<void> {
   if (!result.valid) {
     /* Log the drop so on-device diagnostics (DevTools / Sentry) can surface
        spoofing or sensor anomalies without hitting the server. */
-    _warnGps("ping rejected — not enqueued", {
+    log.warn("ping rejected — not enqueued", {
       reason: result.reason,
       lat: ping.latitude,
       lng: ping.longitude,
@@ -217,7 +215,7 @@ export async function enqueue(ping: QueuedPing): Promise<void> {
       countReq.onerror = () => tx.abort();
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -233,7 +231,7 @@ export async function dequeueAll(): Promise<QueuedPing[]> {
       req.onerror = () => reject(req.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
     return [];
   } // eslint-disable-line no-console
 }
@@ -250,7 +248,7 @@ export async function clearQueue(ids: string[]): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -265,7 +263,7 @@ export async function queueSize(): Promise<number> {
       req.onerror = () => reject(req.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
     return 0;
   } // eslint-disable-line no-console
 }
@@ -285,7 +283,7 @@ export async function addDismissed(id: string): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -299,7 +297,7 @@ export async function removeDismissed(id: string): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -320,7 +318,7 @@ export async function loadDismissed(): Promise<Set<string>> {
     }
     return new Set(valid.map((e) => e.id));
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
     return new Set();
   } // eslint-disable-line no-console
 }
@@ -338,7 +336,7 @@ async function purgeExpiredDismissed(ids: string[]): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -361,7 +359,7 @@ export async function clearAllDismissed(): Promise<void> {
       tx.onerror = () => reject(tx.error);
     });
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/lib/gpsQueue.ts]", err);
+    log.warn("[gpsQueue] operation failed:", err);
   } // eslint-disable-line no-console
 }
 
@@ -408,7 +406,7 @@ async function drainQueue(): Promise<void> {
           responseDataNested?.code === "GPS_SPOOF_DETECTED" ||
           err.spoofDetected === true;
         if (isSpoofRejection) {
-          _warnGps("batch rejected as spoof — discarding chunk", chunk.length, "pings");
+          log.warn("batch rejected as spoof — discarding chunk", chunk.length, "pings");
           await clearQueue(chunk.map((p) => p.id));
           _drainRetryCount = 0; // reset backoff on permanent rejection
           continue;
@@ -424,7 +422,7 @@ async function drainQueue(): Promise<void> {
           DRAIN_BACKOFF_BASE_MS * 2 ** (_drainRetryCount - 1),
           DRAIN_BACKOFF_MAX_MS
         );
-        _warnGps(`batch drain failed (attempt ${_drainRetryCount}) — retry in ${backoffMs}ms`);
+        log.warn(`batch drain failed (attempt ${_drainRetryCount}) — retry in ${backoffMs}ms`);
         if (_drainBackoffTimer != null) clearTimeout(_drainBackoffTimer);
         _drainBackoffTimer = setTimeout(() => {
           _drainBackoffTimer = null;
@@ -437,7 +435,7 @@ async function drainQueue(): Promise<void> {
       }
     }
   } catch (err) {
-    _warnGps("drainQueue outer catch", err);
+    log.warn("drainQueue outer catch", err);
   } finally {
     _draining = false;
     /* NOTE: _drainRetryCount is intentionally NOT reset here.

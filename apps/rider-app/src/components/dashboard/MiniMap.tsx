@@ -1,4 +1,6 @@
+import { createLogger } from "@/lib/logger";
 import { Component, lazy, memo, Suspense, type ReactNode } from "react";
+const log = createLogger("[MiniMap]");
 
 /* Leaflet and react-leaflet are loaded on-demand (not in the main bundle).
    The dynamic import boundary means the leaflet + leaflet/dist/leaflet.css
@@ -36,7 +38,7 @@ class MiniMapErrorBoundary extends Component<{ children: ReactNode }, EBState> {
 
   override componentDidCatch(err: unknown) {
     if (process.env.NODE_ENV !== "production") {
-      console.warn("[MiniMap] Leaflet error caught by boundary:", err);
+      log.warn("[MiniMap] Leaflet error caught by boundary:", err);
     }
   }
 

@@ -28,9 +28,9 @@ async function fetchHealth(): Promise<HealthData | null> {
     if (!res.ok) return null;
     return (await res.json()) as HealthData;
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/hooks/useVersionCheck.ts]", err);
+    log.warn("[version-check] fetchHealth failed:", err);
     return null;
-  } // eslint-disable-line no-console
+  }
 }
 
 /** Parse the major segment of a semver string (e.g. "2.3.1" → 2). */
@@ -45,8 +45,8 @@ function hardReload(): void {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(VERSION_KEY);
   } catch (err) {
-    console.warn("[artifacts/rider-app/src/hooks/useVersionCheck.ts]", err);
-  } // eslint-disable-line no-console
+    log.warn("[version-check] hardReload cleanup failed:", err);
+  }
   window.location.reload();
 }
 
