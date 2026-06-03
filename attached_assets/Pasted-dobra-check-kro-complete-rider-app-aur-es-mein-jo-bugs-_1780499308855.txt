@@ -1,0 +1,138 @@
+dobra check kro complete rider app aur es mein jo bugs issue mistake hein sb ko fullstack fix kr ke complete kro ready to prodection
+
+52 minutes ago
+
+Planning audit and bug-fixing strategy
+Main ab full stack production-ready audit start karta hoon — sab kuch check karunga: TypeScript, runtime errors, browser issues, design consistency, duplicate code, missing features, aur security.
+
+
+Proposed plan
+
+6 actions
+
+Updated plan
+
+39 actions
+Continuing the audit. I've already fixed Profile.tsx, useTheme.ts, Earnings.tsx, and created the missing DB tables. Now I'll focus on the Active page and components audit — fixing hardcoded strings, checking for bugs, and verifying API endpoints.
+
+Let me start by reading the i18n translation file and the active components to understand what's already localized and what needs fixing.
+
+
+46 actions
+Now I'll fix the hardcoded English strings in the Active components. Let me first add missing translation keys to the dictionaries, then update the components.
+
+
+22 actions
+I'll fix the hardcoded English strings across the active components. Let me add missing translation keys and update the components.
+
+
+25 actions
+Let me continue fixing the hardcoded English strings in the Active components. I'll add missing translation keys and update all the components.
+
+
+10 actions
+Now I'll add the missing translation keys to all 3 locale files and fix the hardcoded strings in the components. Let me do these edits in parallel.
+
+
+23 actions
+Now let me update the Active components to use the new i18n keys.
+
+
+9 actions
+Continuing with the remaining hardcoded strings. Let me read more of ActiveOrderPanel to find the rest.
+
+
+37 actions
+Now let me fix the remaining hardcoded strings in ActiveRidePanel.tsx and ActiveHelpers.tsx.
+
+
+47 actions
+Continuing with remaining hardcoded string fixes.
+
+
+24 actions
+Let me check the current build status and see if there are any errors from the changes.
+
+
+7 actions
+I see TS errors — T is undefined in ActiveHelpers.tsx because MapErrorBoundary and CallButton don't receive T as a prop. Let me fix these.
+
+
+19 actions
+Now I need to update the call sites to pass the T prop to CallButton and ChatButton, and MapErrorBoundary to pass T. Let me also check where CallButton is used.
+
+
+4 actions
+Let me update all the CallButton, ChatButton, and MapErrorBoundary usage sites to pass the T prop.
+
+
+22 actions
+All Active component TS errors are resolved. The remaining 5 errors are pre-existing (@workspace/theme and Capacitor type issues). Let me continue the audit by checking Active.tsx for hardcoded strings and browser console issues.
+
+
+27 actions
+Continuing with the audit, I found more hardcoded strings in Active.tsx. Let me add missing translation keys and fix them.
+
+
+10 actions
+Now let me fix the hardcoded strings in Active.tsx and add the translations to ur.ts and roman.ts.
+
+
+11 actions
+Now let me update Active.tsx to use the new i18n keys for all the hardcoded strings I found.
+
+
+10 actions
+Continuing with the remaining hardcoded string fixes in Active.tsx.
+
+
+21 actions
+Now let me add the missing keys deliveringToCustomer, pickUpFromStore, and order to all three locale files, and fix the activeRideInProgress key reference.
+
+
+22 actions
+I see TS errors — duplicate order key and missing translation keys. Let me fix these.
+
+
+67 actions
+All TS errors in the Active components are resolved. The remaining 5 errors are pre-existing (@workspace/theme and Capacitor types). Let me update the session plan and continue with the audit.
+
+
+2 actions
+
+Updated plan
+
+Auditing browser console errors
+Let me continue the audit by checking for browser console errors and taking a runtime screenshot.
+
+
+2 actions
+The Vite logs show stale duplicate key warnings from before my latest edits. Let me restart the Rider App to clear the HMR cache, then verify the console is clean.
+
+
+18 actions
+The Rider App onboarding screen is rendering correctly with no JS errors. Let me continue the audit by checking the 404 details and looking for API endpoint correctness issues.
+
+
+4 actions
+Good, the Rider App onboarding screen is rendering without JS errors. Let me continue the audit by checking the 404s and deeply inspecting Active.tsx for bugs.
+
+
+43 actions
+Found more hardcoded strings. Let me fix them all in parallel.
+
+
+65 actions
+Let me check the API server status and fix the remaining hardcoded strings.
+
+
+5 actions
+API server is running fine. Let me fix the remaining hardcoded strings across all Active files. First, I'll add the new i18n keys and fix all the code.
+
+
+34 actions
+The API server is running fine. Now let me fix all remaining hardcoded strings in the Active components. I'll add the missing i18n keys and fix the code.
+
+
+14 actions
+Now let me add all the missing i18n keys and fix the remaining
