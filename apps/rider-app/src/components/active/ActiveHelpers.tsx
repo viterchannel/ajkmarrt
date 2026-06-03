@@ -55,7 +55,7 @@ export function RideRouteMap(props: ComponentProps<typeof LazyRideRouteMap>) {
 }
 
 export class MapErrorBoundary extends Component<
-  { children: ReactNode; fallbackMsg?: string },
+  { children: ReactNode; fallbackMsg?: string; T?: (key: TranslationKey) => string },
   { hasError: boolean }
 > {
   state = { hasError: false };
@@ -71,13 +71,13 @@ export class MapErrorBoundary extends Component<
         <div className="rounded-xl border border-error/30 bg-error/10 p-4 text-center">
           <AlertTriangle size={20} className="mx-auto mb-2 text-error" />
           <p className="text-sm font-semibold text-error">
-            {this.props.fallbackMsg ?? "Map/route could not load"}
+            {this.props.fallbackMsg ?? this.props.T?.("mapRouteError") ?? "Map/route could not load"}
           </p>
           <button
             onClick={() => this.setState({ hasError: false })}
             className="mt-2 text-xs font-bold text-indigo-500 underline"
           >
-            Retry
+            {this.props.T?.("retry") ?? "Retry"}
           </button>
         </div>
       );
@@ -710,10 +710,12 @@ export function CallButton({
   name,
   phone,
   label,
+  T,
 }: {
   name?: string | null;
   phone?: string | null;
   label?: string;
+  T?: (key: TranslationKey) => string;
 }) {
   if (!phone) return null;
   return (
@@ -733,7 +735,7 @@ export function CallButton({
       >
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.36 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z" />
       </svg>
-      {label || `Call ${name || "Customer"}`}
+      {label || (`${T?.("callFallback") ?? "Call"} ${name || (T?.("customer") ?? "Customer")}`)}
     </a>
   );
 }
@@ -741,9 +743,11 @@ export function CallButton({
 export function ChatButton({
   name,
   customerAjkId,
+  T,
 }: {
   name?: string | null;
   customerAjkId?: string | null;
+  T?: (key: TranslationKey) => string;
 }) {
   const [, navigate] = useLocation();
   return (
@@ -757,7 +761,7 @@ export function ChatButton({
       }
       className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-200 transition-all active:scale-[0.97]"
     >
-      <MessageSquare size={14} /> Chat {(name || "").split(" ")[0] || "Customer"}
+      <MessageSquare size={14} /> {T?.("chatFallback") ?? "Chat"} {(name || "").split(" ")[0] || (T?.("customer") ?? "Customer")}
     </button>
   );
 }

@@ -195,7 +195,7 @@ export function ActiveOrderPanel({
               <ShoppingCart size={14} className="text-foreground" />
             </div>
             <p className="text-sm font-black tracking-wide text-foreground uppercase">
-              Step 1 — Go to Store
+              {T("stepOneGoToStore")}
             </p>
           </div>
           <div className="space-y-3 p-4">
@@ -206,10 +206,10 @@ export function ActiveOrderPanel({
                 </div>
                 <div className="flex-1">
                   <p className="text-[10px] font-bold tracking-wider text-warning uppercase">
-                    Vendor / Store
+                    {T("vendorStoreLabel")}
                   </p>
                   <p className="mt-0.5 text-base font-black text-foreground">
-                    {(order.vendorStoreName as string) || "Store"}
+                    {(order.vendorStoreName as string) || T("store")}
                   </p>
                   {!!order.vendorPhone && (
                     <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
@@ -223,7 +223,7 @@ export function ActiveOrderPanel({
             {Array.isArray(order.items) && (order.items as unknown[]).length > 0 && (
               <div className="rounded-2xl border border-border bg-card p-4">
                 <p className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
-                  <Package size={11} /> Items to Collect ({(order.items as unknown[]).length})
+                  <Package size={11} /> {T("itemsToCollect")} ({(order.items as unknown[]).length})
                 </p>
                 <div className="space-y-2">
                   {(order.items as OrderItem[]).slice(0, 5).map((item, i) => (
@@ -256,7 +256,7 @@ export function ActiveOrderPanel({
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold tracking-wider text-blue-500 uppercase">
-                      Store Location
+                      {T("storeLocation")}
                     </p>
                     <p className="mt-0.5 text-sm font-bold break-words text-foreground">
                       {order.vendorAddress as string}
@@ -277,20 +277,21 @@ export function ActiveOrderPanel({
               {!!order.vendorPhone && (
                 <CallButton
                   phone={order.vendorPhone as string}
-                  label="Call Store"
+                  label={`${T("callFallback")} ${T("store")}`}
                   name={order.vendorStoreName as string}
+                  T={T}
                 />
               )}
             </div>
 
             {riderPos && order.vendorLat != null && order.vendorLng != null && (
-              <MapErrorBoundary>
+              <MapErrorBoundary T={T}>
                 <TurnByTurnPanel
                   fromLat={riderPos.lat}
                   fromLng={riderPos.lng}
                   toLat={order.vendorLat as number}
                   toLng={order.vendorLng as number}
-                  label="Store"
+                  label={T("store")}
                   riderLat={riderPos.lat}
                   riderLng={riderPos.lng}
                 />
@@ -298,14 +299,14 @@ export function ActiveOrderPanel({
             )}
 
             {order.vendorLat != null && order.vendorLng != null && riderPos && (
-              <MapErrorBoundary fallbackMsg="Route map unavailable">
+              <MapErrorBoundary fallbackMsg={T("routeMapUnavailable")}>
                 <RideRouteMap
                   pickupLat={riderPos.lat}
                   pickupLng={riderPos.lng}
-                  pickupLabel="Your Position"
+                  pickupLabel={T("yourPosition")}
                   dropLat={order.vendorLat as number}
                   dropLng={order.vendorLng as number}
-                  dropLabel={(order.vendorAddress || order.vendorStoreName) as string}
+                  dropLabel={(order.vendorAddress || order.vendorStoreName || T("addressNotProvided")) as string}
                   riderLat={riderPos.lat}
                   riderLng={riderPos.lng}
                 />
@@ -351,7 +352,7 @@ export function ActiveOrderPanel({
               <Truck size={14} className="text-foreground" />
             </div>
             <p className="text-sm font-black tracking-wide text-foreground uppercase">
-              Step 2 — Deliver
+              {T("stepTwoDeliver")}
             </p>
           </div>
           <div className="space-y-3 p-4">
@@ -383,10 +384,10 @@ export function ActiveOrderPanel({
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-bold tracking-wider text-error uppercase">
-                    Delivery Address
+                    {T("deliveryAddress")}
                   </p>
                   <p className="mt-0.5 text-sm font-bold break-words text-foreground">
-                    {(order.deliveryAddress as string) || "Address not provided"}
+                    {(order.deliveryAddress as string) || T("addressNotProvided")}
                   </p>
                 </div>
               </div>
@@ -403,16 +404,18 @@ export function ActiveOrderPanel({
             {/* Customer contact — full-width row for easy thumb reach */}
             <div className="overflow-hidden rounded-2xl border border-border bg-card">
               <p className="px-4 pt-3 pb-1 text-xs font-bold tracking-wider text-muted-foreground uppercase">
-                Contact Customer
+                {T("contactCustomerLabel")}
               </p>
               <div className="grid grid-cols-3 gap-2 p-3">
                 <CallButton
                   name={order.customerName as string}
                   phone={order.customerPhone as string}
+                  T={T}
                 />
                 <ChatButton
                   name={order.customerName as string}
                   customerAjkId={order.customerAjkId as string | null}
+                  T={T}
                 />
                 <SosButton
                   rideId={typeof idRaw === "string" ? idRaw : null}
@@ -423,13 +426,13 @@ export function ActiveOrderPanel({
             </div>
 
             {riderPos && order.deliveryLat != null && order.deliveryLng != null && (
-              <MapErrorBoundary>
+              <MapErrorBoundary T={T}>
                 <TurnByTurnPanel
                   fromLat={riderPos.lat}
                   fromLng={riderPos.lng}
                   toLat={order.deliveryLat as number}
                   toLng={order.deliveryLng as number}
-                  label="Customer"
+                  label={T("customer")}
                   riderLat={riderPos.lat}
                   riderLng={riderPos.lng}
                 />
@@ -437,14 +440,14 @@ export function ActiveOrderPanel({
             )}
 
             {order.deliveryLat != null && order.deliveryLng != null && riderPos && (
-              <MapErrorBoundary fallbackMsg="Route map unavailable">
+              <MapErrorBoundary fallbackMsg={T("routeMapUnavailable")}>
                 <RideRouteMap
                   pickupLat={riderPos.lat}
                   pickupLng={riderPos.lng}
-                  pickupLabel="Your Position"
+                  pickupLabel={T("yourPosition")}
                   dropLat={order.deliveryLat as number}
                   dropLng={order.deliveryLng as number}
-                  dropLabel={order.deliveryAddress as string}
+                  dropLabel={(order.deliveryAddress || T("addressNotProvided")) as string}
                   riderLat={riderPos.lat}
                   riderLng={riderPos.lng}
                 />
@@ -468,13 +471,13 @@ export function ActiveOrderPanel({
                     onClick={() => setProofMode("photo")}
                     className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${proofMode === "photo" ? "bg-blue-600 text-white" : "text-blue-500"}`}
                   >
-                    <Camera size={13} /> Take Photo
+                    <Camera size={13} /> {T("takePhoto")}
                   </button>
                   <button
                     onClick={() => setProofMode("signature")}
                     className={`flex flex-1 items-center justify-center gap-1.5 py-2.5 text-xs font-bold transition-colors ${proofMode === "signature" ? "bg-blue-600 text-white" : "text-blue-500"}`}
                   >
-                    <PenLine size={13} /> Signature
+                    <PenLine size={13} /> {T("signatureLabel")}
                   </button>
                 </div>
               )}
@@ -484,7 +487,7 @@ export function ActiveOrderPanel({
                   <div className="relative h-44 overflow-hidden rounded-2xl bg-muted shadow-inner">
                     <SafeImage
                       src={proofPhoto}
-                      alt="Delivery proof"
+                      alt={T("deliveryProofAlt")}
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />

@@ -330,7 +330,7 @@ export default function Active() {
   useEffect(() => {
     const handlePersistFail = () => {
       toast({
-        title: "Action queued offline — reopen the app to ensure it is saved.",
+        title: T("offlineActionQueued"),
         variant: "destructive",
       });
     };
@@ -382,7 +382,7 @@ export default function Active() {
         void qc.invalidateQueries({ queryKey: ["rider-history"] });
         void qc.invalidateQueries({ queryKey: ["rider-earnings"] });
         void qc.invalidateQueries({ queryKey: ["rider-requests"] });
-        toast({ title: TRef.current?.("statusUpdated") ?? "Status updated" });
+        toast({ title: TRef.current?.("statusUpdated") ?? T("statusUpdated") });
       }
     })();
   };
@@ -549,7 +549,7 @@ export default function Active() {
         if (isMockGps) {
           if (isMountedRef.current)
             setGpsWarningWithRef(
-              "Suspicious GPS accuracy detected. Please disable mock location apps."
+              T("suspiciousGps")
             );
           return;
         }
@@ -592,7 +592,7 @@ export default function Active() {
                   navigate("/login");
                   return;
                 }
-                setGpsWarningWithRef("Mock location detected — please disable fake GPS apps.");
+                setGpsWarningWithRef(T("mockLocationDetected"));
               } else {
                 spoofHardBlockCountRef.current = 0;
                 enqueue(queuedPing).catch((err) => {
@@ -603,7 +603,7 @@ export default function Active() {
                 });
                 setGpsWarningWithRef(
                   TRef.current?.("gpsLocationError") ??
-                    "Location not being tracked — check GPS permissions"
+                    T("locationNotTracked")
                 );
               }
             });
@@ -742,7 +742,7 @@ export default function Active() {
       try {
         const uploadRes = await api.uploadProof(proofFile);
         if (typeof uploadRes?.url !== "string" || !uploadRes.url.trim())
-          throw new Error("Photo upload succeeded but server returned no URL — please retake");
+          throw new Error(T("photoUploadNoUrl"));
         photoUrl = uploadRes.url;
       } catch (e: unknown) {
         const status = (e && typeof e === "object" && "status" in e) ? (e as { status?: number }).status : undefined;
@@ -752,9 +752,9 @@ export default function Active() {
           const isNetworkErr = !status;
           if (isNetworkErr) {
             setProofStagedForRetry(true);
-            toast({ title: "Photo upload failed — file is held, tap 'Mark Delivered' again to retry.", variant: "destructive" });
+            toast({ title: T("photoUploadHeld"), variant: "destructive" });
           } else {
-            toast({ title: e instanceof Error ? e.message : "Photo upload failed. Please try again.", variant: "destructive" });
+            toast({ title: e instanceof Error ? e.message : T("photoUploadFailed"), variant: "destructive" });
           }
         }
         /* BUG FIX: clear photo preview so user knows upload failed and
@@ -830,7 +830,7 @@ export default function Active() {
     const lower = (e?.message ?? "").toLowerCase();
     if (lower.includes("offline") || lower.includes("network"))
       return t("networkUnavailable");
-    if (lower.includes("timeout")) return "Request timed out — please try again";
+    if (lower.includes("timeout")) return t("requestTimedOut");
     /* Pass through the server's actual message when available — it is more
        informative than the generic fallback (e.g. "Profile incomplete — please
        add vehicle photo", "Too many ride accept attempts. Please wait a moment.") */
@@ -1087,8 +1087,8 @@ export default function Active() {
             </h1>
             <p className="mt-1 text-sm font-medium text-muted-foreground">
               {order
-                ? `${order.type} order — ${order.status === "picked_up" || order.status === "out_for_delivery" ? "Delivering to customer" : "Pick up from store"}`
-                : `${ride?.type || "Ride"} ride in progress`}
+                ? `${order.type} ${T("order")} — ${order.status === "picked_up" || order.status === "out_for_delivery" ? T("deliveringToCustomer") : T("pickUpFromStore")}`
+                : `${ride?.type || T("ride")} ${T("rideInProgress")}`}
             </p>
           </div>
           <ElapsedBadge startIso={startedAt} />
@@ -1185,7 +1185,7 @@ export default function Active() {
           <div className="min-w-0 flex-1">
             <p className="text-xs font-extrabold text-foreground">{T("messageFromAdmin")}</p>
             <p className="mt-0.5 truncate text-[11px] leading-relaxed text-blue-100">
-              {adminMessages[adminMessages.length - 1]?.text ?? "New message"}
+              {adminMessages[adminMessages.length - 1]?.text ?? T("newMessage")}
             </p>
           </div>
           <button

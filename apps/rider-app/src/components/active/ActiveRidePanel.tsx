@@ -275,7 +275,7 @@ export function ActiveRidePanel({
         </div>
 
         {riderPos && status === "accepted" && ride.pickupLat != null && ride.pickupLng != null && (
-          <MapErrorBoundary>
+          <MapErrorBoundary T={T}>
             <TurnByTurnPanel
               fromLat={riderPos.lat}
               fromLng={riderPos.lng}
@@ -291,7 +291,7 @@ export function ActiveRidePanel({
           (status === "arrived" || status === "in_transit") &&
           ride.dropLat != null &&
           ride.dropLng != null && (
-            <MapErrorBoundary>
+            <MapErrorBoundary T={T}>
               <TurnByTurnPanel
                 fromLat={riderPos.lat}
                 fromLng={riderPos.lng}
