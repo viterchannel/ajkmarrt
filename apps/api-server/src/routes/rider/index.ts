@@ -252,6 +252,13 @@ const safeNum = (v: unknown, def = 0) => {
   return n;
 };
 
+/* BUG7 FIX: Integer-cent helper for currency comparisons.
+   parseFloat ("1.005") can produce floating-point artefacts that cause
+   wallet-balance gates to pass when they should fail (e.g. 49.999999 < 50).
+   Convert both sides to whole cents before comparing so all thresholds are
+   exact (e.g. safeCents(49.999999) === 4999, safeCents(50) === 5000). */
+const safeCents = (v: unknown, def = 0) => Math.round(safeNum(v, def) * 100);
+
 /* ── Server-side idempotency deduplication for mutating rider actions ──────
    Stores responses for X-Idempotency-Key for 5 minutes so retried requests
    (offline queue replays, network retries) return the same response instead of
@@ -2082,8 +2089,11 @@ router.post("/orders/:id/accept", rideAcceptLimiter, async (req, res) => {
 
     const s = await getCachedSettings();
 
-    /* ── Load target order first (needed for cash/COD checks) ── */
-    const [targetOrder] = await db
+    /* ── Pre-flight cash-order gate: read order outside TX for early rejection ──
+     BUG8 FIX: The payment method is re-read INSIDE the transaction (below) to
+     derive isCashOrder / minBalance under a row lock — this eliminates the
+     TOCTOU window between this pre-flight read and the final atomic UPDATE. */
+    const [preflightOrder] = await db
       .select({ paymentMethod: ordersTable.paymentMethod })
       .from(ordersTable)
       .where(eq(ordersTable.id, orderId))
@@ -2092,15 +2102,12 @@ router.post("/orders/:id/accept", rideAcceptLimiter, async (req, res) => {
     /* ── Cash-order gate: admin can restrict riders from taking cash orders ── */
     const cashAllowed = (s["rider_cash_allowed"] ?? "on") === "on";
     if (!cashAllowed) {
-      if (targetOrder?.paymentMethod === "cash" || targetOrder?.paymentMethod === "cod") {
+      if (preflightOrder?.paymentMethod === "cash" || preflightOrder?.paymentMethod === "cod") {
         sendForbidden(res, "Cash-on-delivery orders are currently not available for riders.");
         return;
       }
     }
 
-    const isCashOrder =
-      targetOrder?.paymentMethod === "cash" || targetOrder?.paymentMethod === "cod";
-    const minBalance = isCashOrder ? parseFloat(s["rider_min_balance"] ?? "0") : 0;
     const maxDeliveries = parseInt(s["rider_max_deliveries"] ?? "3");
 
     /* ── All eligibility checks + atomic accept inside a single transaction ──
@@ -2116,6 +2123,18 @@ router.post("/orders/:id/accept", rideAcceptLimiter, async (req, res) => {
        either commit can update the count in the DB. ── */
       await tx.execute(sql`SELECT id FROM users WHERE id = ${riderId} FOR UPDATE`);
 
+      /* BUG8 FIX: Re-read the order inside the transaction under the row lock so
+         that isCashOrder / minBalance reflect the actual committed paymentMethod,
+         not the stale pre-flight snapshot that could have changed between reads. */
+      const [lockedOrder] = await tx
+        .select({ paymentMethod: ordersTable.paymentMethod })
+        .from(ordersTable)
+        .where(eq(ordersTable.id, orderId))
+        .limit(1);
+      const isCashOrder =
+        lockedOrder?.paymentMethod === "cash" || lockedOrder?.paymentMethod === "cod";
+      const minBalance = isCashOrder ? parseFloat(s["rider_min_balance"] ?? "0") : 0;
+
       /* ── Minimum wallet balance gate for cash/COD orders ── */
       if (isCashOrder && minBalance > 0) {
         const [riderRow] = await tx
@@ -2124,7 +2143,9 @@ router.post("/orders/:id/accept", rideAcceptLimiter, async (req, res) => {
           .where(eq(usersTable.id, riderId))
           .limit(1);
         const currentBal = safeNum(riderRow?.walletBalance);
-        if (currentBal < minBalance) {
+        /* BUG7 FIX: Use integer-cent comparison to avoid float precision errors
+           (e.g. 49.999999999 < 50 passing when it should fail). */
+        if (safeCents(currentBal) < safeCents(minBalance)) {
           toctouError = {
             status: 403,
             message: `Minimum wallet balance required for cash orders is Rs. ${minBalance}. Your balance: Rs. ${currentBal.toFixed(0)}. Please top up your wallet to accept cash orders.`,
@@ -6126,18 +6147,23 @@ router.patch("/location", locationRateLimiter, gpsAntiSpoofMiddleware, async (re
       return;
     }
 
+    /* BUG6 FIX: Hoist the single full-row liveLocations SELECT before both the
+       distance-throttle and speed-spoof blocks so we only hit the DB once per
+       PATCH /location request instead of issuing two identical queries. */
+    const [prevLocation] = await db
+      .select()
+      .from(liveLocationsTable)
+      .where(eq(liveLocationsTable.userId, riderId))
+      .limit(1);
+
     /* ── Server-side distance throttling ── */
     const minDistanceMeters = parseInt(settings["gps_min_distance_meters"] ?? "25", 10);
     if (minDistanceMeters > 0) {
-      const [prev] = await db
-        .select({ lat: liveLocationsTable.latitude, lng: liveLocationsTable.longitude })
-        .from(liveLocationsTable)
-        .where(eq(liveLocationsTable.userId, riderId))
-        .limit(1);
+      const prev = prevLocation;
       if (prev) {
         const R = 6371000;
-        const pLat = parseFloat(String(prev.lat));
-        const pLng = parseFloat(String(prev.lng));
+        const pLat = parseFloat(String(prev.latitude));
+        const pLng = parseFloat(String(prev.longitude));
         const dLat = ((latitude - pLat) * Math.PI) / 180;
         const dLng = ((longitude - pLng) * Math.PI) / 180;
         const a =
@@ -6202,11 +6228,8 @@ router.patch("/location", locationRateLimiter, gpsAntiSpoofMiddleware, async (re
         MAX_ALLOWED_KMH = MAX_ALLOWED_KMH * 1.5;
       }
 
-      const [prev] = await db
-        .select()
-        .from(liveLocationsTable)
-        .where(eq(liveLocationsTable.userId, riderId))
-        .limit(1);
+      /* BUG6 FIX: Reuse the hoisted prevLocation query result instead of a second DB round-trip. */
+      const prev = prevLocation;
 
       /* Stale location grace period: if the previous ping is older than the configured threshold,
        skip speed-based comparison entirely — treat this as a fresh session start.

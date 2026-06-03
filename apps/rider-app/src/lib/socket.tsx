@@ -219,6 +219,28 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         /* Reconnect ride-request sync: fetch any pending requests that were
            broadcast while the socket was disconnected and populate the React
            Query cache so Home.tsx never misses a queued ride/order. */
+        /* Replay queued socket messages locally — these are server-originated
+           events (admin:chat, theme-updated) that arrived during the sync window.
+           We must dispatch them through the local handler logic, NOT s.emit()
+           (which would send them to the server in the wrong direction, causing
+           the local s.on() handlers to never fire and the messages to be lost). */
+        const replayQueuedMessages = (queue: typeof messageQueue) => {
+          queue.forEach(({ event, payload }) => {
+            if (event === "admin:chat") {
+              const msg = parseAdminChatPayload(payload);
+              if (!msg) return;
+              const newMsg: AdminChatMessage = {
+                ...msg,
+                id: `admin-${msg.sentAt}-${Math.random().toString(36).slice(2)}`,
+              };
+              setAdminChatMessages((prev) => [...prev, newMsg]);
+              setAdminChatUnread((prev) => prev + 1);
+            } else if (event === "theme-updated") {
+              window.dispatchEvent(new CustomEvent("ajk:theme-updated", { detail: payload }));
+            }
+          });
+        };
+
         void api.getRequests().then((data) => {
           if (!isMountedRef.current) return;
           qc.setQueryData(["rider-requests"], data);
@@ -226,21 +248,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             { rides: data.rides.length, orders: data.orders.length },
             "Reconnect sync — pending requests fetched and cache populated"
           );
-          /* Mark sync complete and signal readiness to consumers.
-             Process any queued socket messages BEFORE marking connected. */
           isSyncing = false;
-          messageQueue.forEach(({ event, payload }) => {
-            s.emit(event, payload);
-          });
+          replayQueuedMessages(messageQueue);
           messageQueue.length = 0;
           setConnected(true);
         }).catch((err) => {
           log.warn({ err }, "Reconnect sync — failed to fetch pending requests after socket connect");
           isSyncing = false;
-          /* Still mark as synced so queued messages are processed even on failure */
-          messageQueue.forEach(({ event, payload }) => {
-            s.emit(event, payload);
-          });
+          replayQueuedMessages(messageQueue);
           messageQueue.length = 0;
           setConnected(true);
         });

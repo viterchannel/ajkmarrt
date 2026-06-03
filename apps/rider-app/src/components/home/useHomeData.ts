@@ -448,6 +448,14 @@ export function useHomeData(): UseHomeDataReturn {
       }, 8000);
     }
     prevIdsRef.current = new Set(currentIds);
+
+    return () => {
+      /* BUG2 FIX: Clear all timers on unmount/dep-change so intervals don't
+         leak onto detached closures when the rider navigates away from Home. */
+      if (soundIntervalRef.current) { clearInterval(soundIntervalRef.current); soundIntervalRef.current = null; }
+      if (flashTimerRef.current) { clearTimeout(flashTimerRef.current); flashTimerRef.current = null; }
+      if (announceTimerRef.current) { clearTimeout(announceTimerRef.current); announceTimerRef.current = null; }
+    };
   }, [currentIdsSig]);
 
   useEffect(() => {
@@ -471,12 +479,19 @@ export function useHomeData(): UseHomeDataReturn {
   useEffect(() => {
     if (!effectiveOnline || !tabVisible) return;
     if (!("wakeLock" in navigator)) { setWakeLockWarning(true); return; }
-    let sentinel: any = null;
-    let cancelled = false;
+    /* BUG5 FIX: Use a shared mutable container for the sentinel so that if
+       cleanup runs before the async acquire() resolves, the finally-acquired
+       lock is immediately released (avoids a leaked wake lock sentinel). */
+    const state = { cancelled: false, sentinel: null as any };
     const acquire = async () => {
       try {
-        if (cancelled || document.hidden) return;
-        sentinel = await navigator.wakeLock?.request("screen");
+        if (state.cancelled || document.hidden) return;
+        const lock = await navigator.wakeLock?.request("screen");
+        if (state.cancelled) {
+          lock?.release?.().catch(() => {});
+          return;
+        }
+        state.sentinel = lock;
         setWakeLockWarning(false);
       } catch (err) {
         log.error({ err: err instanceof Error ? err.message : String(err) }, "[Home] wakeLock error");
@@ -484,8 +499,8 @@ export function useHomeData(): UseHomeDataReturn {
     };
     void acquire();
     return () => {
-      cancelled = true;
-      sentinel?.release?.().catch(() => {});
+      state.cancelled = true;
+      state.sentinel?.release?.().catch(() => {});
     };
   }, [effectiveOnline, tabVisible]);
 

@@ -500,7 +500,31 @@ export async function syncQueue(): Promise<void> {
        fails — a failed predecessor (e.g. accept_order) must not be skipped,
        because later actions (update_order, complete_trip) depend on it
        having succeeded server-side first. */
+    /* BUG3 FIX: Ride/order accepts have a server-side expiry window (~5 min).
+       Any queued accept that is older than this TTL will always receive a 4xx
+       (order expired / already taken), so we dead-letter it immediately rather
+       than letting it block the queue until MAX_RETRIES is exhausted. */
+    const ACCEPT_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
     for (const action of actions) {
+      /* TTL guard for accept actions — skip and dead-letter stale accepts */
+      const isAccept = action.type === "accept_ride" || action.type === "accept_order";
+      if (isAccept && Date.now() - action.createdAt > ACCEPT_TTL_MS) {
+        const dlOk = await pushDeadLetter(
+          action,
+          new PermanentQueueError(
+            `Accept action expired after ${ACCEPT_TTL_MS / 60000} minutes in queue — order/ride no longer available`,
+            410
+          )
+        );
+        if (dlOk) {
+          await removeAction(action.id).catch((err) => {
+            console.warn("[queueManager] removeAction failed after TTL expiry dead-letter:", err);
+          }); // eslint-disable-line no-console
+        }
+        continue;
+      }
+
       /* Last-resort guard: if an unclassified error has been retried too many
          times, move it to the dead-letter store so it doesn't block the queue
          forever. Under normal operation the executor throws PermanentQueueError
