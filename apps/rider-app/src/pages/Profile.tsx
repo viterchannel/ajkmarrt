@@ -1067,7 +1067,7 @@ export default function Profile() {
             <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-xs text-muted-foreground">
               {user?.isOnline
                 ? "Online now"
-                : `Last online · ${timeAgo(user?.lastSeen ?? (user?.updatedAt ? new Date(user.updatedAt).getTime() : undefined))}`}
+                : `Last online · ${timeAgo(user?.lastSeen ? new Date(user.lastSeen).toISOString() : user?.updatedAt)}`}
             </span>
             {user?.createdAt && (
               <span className="rounded-full border border-border bg-glass px-2.5 py-0.5 text-xs text-muted-foreground">

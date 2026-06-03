@@ -741,7 +741,7 @@ export default function Earnings() {
           </div>
           <div className="h-3.5 w-full overflow-hidden rounded-full bg-muted">
             <div
-              className={`h-3.5 rounded-full transition-all duration-700 ${todayPct >= 100 ? "bg-success" : "bg-muted/40"}`}
+              className={`h-3.5 rounded-full transition-all duration-700 ${todayPct >= 100 ? "bg-success" : "bg-brand"}`}
               style={{ width: `${todayPct}%` }}
             />
           </div>
