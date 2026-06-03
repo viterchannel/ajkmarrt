@@ -2,11 +2,11 @@
  * PageWrapper — Unified page layout component for all rider app pages.
  * Ensures consistent min-h-screen, background color, and structure.
  * 
- * Usage:
- *   <PageWrapper>
- *     <PageHeader title="My Page" />
- *     <main>{/* content */}</main>
- *   </PageWrapper>
+ * Usage in JSX:
+ *   - <PageWrapper>
+ *   -   <PageHeader title="My Page" />
+ *   -   <main>content goes here</main>
+ *   - </PageWrapper>
  */
 
 import type React from "react";

@@ -107,7 +107,7 @@ router.post(
 
       const selectedTheme = theme ?? "dark-gold";
       const themeColors = colors ?? DEFAULT_THEME_CONFIG.colors;
-      const updatedBy = req.admin?.id ?? req.admin?.email ?? "system";
+      const updatedBy = req.admin?.sub ?? req.admin?.name ?? "system";
 
       await saveThemeConfig(appRole, selectedTheme, themeColors, updatedBy);
 
@@ -134,7 +134,7 @@ router.post(
 
 router.get("/theme-config/:appRole", async (req: Request, res: Response) => {
   try {
-    const appRole = req.params.appRole;
+    const appRole = req.params.appRole as string;
     const config = await getThemeConfig(appRole);
     res.json(config);
   } catch (err) {
