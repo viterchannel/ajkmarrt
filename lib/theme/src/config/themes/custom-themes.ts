@@ -6,7 +6,10 @@
  * high-contrast → WCAG AAA accessible theme
  */
 
+import { BrandColors } from "../brand.js";
 import type { ThemeDefinition } from "./types.js";
+
+const b = BrandColors;
 
 // ─── Dark Blue — Vendor App Default ──────────────────────────────────────────
 
@@ -57,9 +60,9 @@ export const darkBlueTheme: ThemeDefinition = {
     "--card-bg":                  "#0F1624",
 
     // ── Status colors ─────────────────────────────────────────────────────────
-    "--color-success":            "#4CAF50",
-    "--color-warning":            "#FF9800",
-    "--color-error":              "#F44336",
+    "--color-success":            b.semantic.success,
+    "--color-warning":            b.semantic.warning,
+    "--color-error":              b.semantic.error,
 
     // ── Z-index ───────────────────────────────────────────────────────────────
     "--z-dropdown":               "100",
@@ -97,10 +100,10 @@ export const darkBlueTheme: ThemeDefinition = {
     foreground:       "#DDE4F1",
     muted:            "#6B7280",
     border:           "#374151",
-    success:          "#4CAF50",
-    warning:          "#FF9800",
-    error:            "#F44336",
-    info:             "#2196F3",
+    success:          b.semantic.success,
+    warning:          b.semantic.warning,
+    error:            b.semantic.error,
+    info:             b.semantic.info,
   },
 };
 
@@ -145,9 +148,9 @@ export const darkNavyTheme: ThemeDefinition = {
     "--color-brand-hover":        "#4F46E5",
     "--color-surface":            "#0F172A",
     "--color-page-bg":            "#0F172A",
-    "--color-success":            "#10B981",
-    "--color-warning":            "#F59E0B",
-    "--color-error":              "#EF4444",
+    "--color-success":            b.semantic.success,
+    "--color-warning":            b.semantic.warning,
+    "--color-error":              b.semantic.error,
     "--z-dropdown":               "100",
     "--z-sticky":                 "200",
     "--z-overlay":                "300",
@@ -178,13 +181,13 @@ export const darkNavyTheme: ThemeDefinition = {
     background:       "#0F172A",
     surface:          "#1E293B",
     surfaceElevated:  "#334155",
-    foreground:       "#F8FAFC",
+    foreground:       b.text.light,
     muted:            "#64748B",
     border:           "#334155",
-    success:          "#10B981",
-    warning:          "#F59E0B",
-    error:            "#EF4444",
-    info:             "#3B82F6",
+    success:          b.semantic.success,
+    warning:          b.semantic.warning,
+    error:            b.semantic.error,
+    info:             b.semantic.info,
   },
 };
 
@@ -220,9 +223,9 @@ export const highContrastTheme: ThemeDefinition = {
     "--color-brand-hover":        "#FFEE00",
     "--color-surface":            "#000000",
     "--color-page-bg":            "#000000",
-    "--color-success":            "#00FF00",
-    "--color-warning":            "#FFAA00",
-    "--color-error":              "#FF0000",
+    "--color-success":            b.semantic.success,
+    "--color-warning":            b.semantic.warning,
+    "--color-error":              b.semantic.error,
     "--z-dropdown":               "100",
     "--z-sticky":                 "200",
     "--z-overlay":                "300",
@@ -253,12 +256,12 @@ export const highContrastTheme: ThemeDefinition = {
     background:       "#000000",
     surface:          "#111111",
     surfaceElevated:  "#1A1A1A",
-    foreground:       "#FFFFFF",
+    foreground:       b.text.light,
     muted:            "#B0B0B0",
     border:           "#666666",
-    success:          "#00FF00",
-    warning:          "#FFAA00",
-    error:            "#FF0000",
+    success:          b.semantic.success,
+    warning:          b.semantic.warning,
+    error:            b.semantic.error,
     info:             "#00FFFF",
   },
 };

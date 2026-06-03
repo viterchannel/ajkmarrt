@@ -37,6 +37,15 @@ export {
   customThemes,
 } from "./config/themes/custom-themes.js";
 
+// ── Brand master colors ───────────────────────────────────────────────────────
+export {
+  BrandColors,
+  ThemeVariants,
+  getThemeVariant,
+  getBrandColor,
+} from "./config/brand.js";
+export type { VariantName, BrandColorPath } from "./config/brand.js";
+
 // ── Color tokens ──────────────────────────────────────────────────────────────
 export {
   appColors,

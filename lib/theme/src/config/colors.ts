@@ -1,37 +1,41 @@
 /**
  * AJKMart — Centralized Color Palette
  *
- * Single source of truth for every color value used across the platform.
  * All values are raw hex/hsl strings — no Tailwind classes here.
  * Apps and themes reference these tokens; they never hardcode colors directly.
+ *
+ * Brand colors are first sourced from the master BrandColors token.
  */
+import { BrandColors } from "./brand.js";
+
+const b = BrandColors;
 
 // ─── Brand App Colors ────────────────────────────────────────────────────────
 
 export const appColors = {
   admin: {
-    primary: "#6366F1",        // Indigo — admin brand
+    primary:      "#6366F1",        // Indigo — admin brand
     primaryHover: "#4F46E5",
-    primaryHsl: "239 84% 67%",
-    ring: "#6366F1",
+    primaryHsl:   "239 84% 67%",
+    ring:         "#6366F1",
   },
   vendor: {
-    primary: "#1A56DB",        // AJKMart Blue — vendor brand
+    primary:      "#1A56DB",        // AJKMart Blue — vendor brand
     primaryHover: "#1348B5",
-    primaryHsl: "221 73% 48%",
-    ring: "#1A56DB",
+    primaryHsl:   "221 73% 48%",
+    ring:         "#1A56DB",
   },
   rider: {
-    primary: "#FFD700",        // Gold — rider brand
-    primaryHover: "#FFC107",
-    primaryHsl: "51 100% 50%",
-    ring: "#FFD700",
+    primary:      b.primary.gold,   // Gold — rider brand
+    primaryHover: b.primary.darkGold,
+    primaryHsl:   "51 100% 50%",
+    ring:         b.primary.gold,
   },
   customer: {
-    primary: "#0066FF",        // Blue — customer/mobile brand
+    primary:      "#0066FF",        // Blue — customer/mobile brand
     primaryHover: "#0052CC",
-    primaryHsl: "220 100% 50%",
-    ring: "#0066FF",
+    primaryHsl:   "220 100% 50%",
+    ring:         "#0066FF",
   },
 } as const;
 
@@ -142,16 +146,16 @@ export const neutrals = {
 // ─── Semantic Status Colors ───────────────────────────────────────────────────
 
 export const statusColors = {
-  success:        "#4CAF50",
+  success:        b.semantic.success,
   successLight:   "#E8F5E9",
   successDark:    "#1B5E20",
-  warning:        "#FF9800",
+  warning:        b.semantic.warning,
   warningLight:   "#FFF3E0",
   warningDark:    "#E65100",
-  error:          "#F44336",
+  error:          b.semantic.error,
   errorLight:     "#FFEBEE",
   errorDark:      "#B71C1C",
-  info:           "#2196F3",
+  info:           b.semantic.info,
   infoLight:      "#E3F2FD",
   infoDark:       "#0D47A1",
 } as const;

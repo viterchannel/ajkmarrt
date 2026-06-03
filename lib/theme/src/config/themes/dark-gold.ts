@@ -6,7 +6,10 @@
  * Represents the flagship "premium night mode" of the platform.
  */
 
+import { BrandColors } from "../brand.js";
 import type { ThemeDefinition } from "./types.js";
+
+const b = BrandColors;
 
 export const darkGoldTheme: ThemeDefinition = {
   id: "dark-gold",
@@ -50,17 +53,17 @@ export const darkGoldTheme: ThemeDefinition = {
     "--radius-input":             "0.5rem",
 
     // ── Brand-specific design tokens ──────────────────────────────────────────
-    "--color-brand":              "#FFD700",
-    "--color-brand-hover":        "#FFC107",
-    "--color-surface":            "#0A0A0A",
-    "--color-page-bg":            "#0A0A0A",
+    "--color-brand":              b.primary.gold,
+    "--color-brand-hover":        b.primary.darkGold,
+    "--color-surface":            b.primary.dark,
+    "--color-page-bg":            b.primary.dark,
     "--color-card-dark":          "#1A1A1A",
     "--color-border-dark":        "#2A2A2A",
 
     // ── Status colors ─────────────────────────────────────────────────────────
-    "--color-success":            "#4CAF50",
-    "--color-warning":            "#FF9800",
-    "--color-error":              "#F44336",
+    "--color-success":            b.semantic.success,
+    "--color-warning":            b.semantic.warning,
+    "--color-error":              b.semantic.error,
 
     // ── Z-index scale ─────────────────────────────────────────────────────────
     "--z-dropdown":               "100",
@@ -73,35 +76,35 @@ export const darkGoldTheme: ThemeDefinition = {
     "--z-tooltip":                "800",
 
     // ── Login page brand tokens ───────────────────────────────────────────────
-    "--login-brand":              "#FFD700",
-    "--login-brand-hover":        "#FFC107",
-    "--login-brand-shadow":       "rgba(255,215,0,0.25)",
-    "--login-brand-glow-sm":      "rgba(255,215,0,0.30)",
-    "--login-brand-glow-md":      "rgba(255,215,0,0.35)",
-    "--login-brand-glow-blob":    "rgba(255,215,0,0.07)",
-    "--login-brand-border":       "rgba(255,215,0,0.20)",
-    "--login-hero-from":          "#0A0A0A",
+    "--login-brand":              b.primary.gold,
+    "--login-brand-hover":        b.primary.darkGold,
+    "--login-brand-shadow":       "rgba(212,175,55,0.25)",
+    "--login-brand-glow-sm":      "rgba(212,175,55,0.30)",
+    "--login-brand-glow-md":      "rgba(212,175,55,0.35)",
+    "--login-brand-glow-blob":    "rgba(212,175,55,0.07)",
+    "--login-brand-border":       "rgba(212,175,55,0.20)",
+    "--login-hero-from":          b.primary.dark,
     "--login-hero-via":           "#0f0f0f",
     "--login-hero-to":            "#141414",
-    "--login-otp-filled-bg":      "rgba(255,215,0,0.08)",
-    "--login-otp-filled-border":  "#FFD700",
-    "--login-otp-filled-text":    "#FFD700",
+    "--login-otp-filled-bg":      "rgba(212,175,55,0.08)",
+    "--login-otp-filled-border":  b.primary.gold,
+    "--login-otp-filled-text":    b.primary.gold,
     "--login-btn-radius":         "0.75rem",
   },
 
   // Raw color values for JS consumption (charts, inline styles, RN, etc.)
   rawColors: {
-    primary:          "#FFD700",
-    primaryHover:     "#FFC107",
-    background:       "#0A0A0A",
+    primary:          b.primary.gold,
+    primaryHover:     b.primary.darkGold,
+    background:       b.primary.dark,
     surface:          "#1A1A1A",
     surfaceElevated:  "#2A2A2A",
-    foreground:       "#FFFFFF",
+    foreground:       b.text.light,
     muted:            "#A0A0A0",
     border:           "#2A2A2A",
-    success:          "#4CAF50",
-    warning:          "#FF9800",
-    error:            "#F44336",
-    info:             "#2196F3",
+    success:          b.semantic.success,
+    warning:          b.semantic.warning,
+    error:            b.semantic.error,
+    info:             b.semantic.info,
   },
 };

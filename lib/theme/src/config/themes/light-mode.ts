@@ -6,7 +6,10 @@
  * Also serves as the "light alternative" when other apps toggle to light mode.
  */
 
+import { BrandColors } from "../brand.js";
 import type { ThemeDefinition } from "./types.js";
+
+const b = BrandColors;
 
 export const lightModeTheme: ThemeDefinition = {
   id: "light-mode",
@@ -66,13 +69,13 @@ export const lightModeTheme: ThemeDefinition = {
     // ── Brand-specific design tokens ──────────────────────────────────────────
     "--color-brand":              "#6366F1",
     "--color-brand-hover":        "#4F46E5",
-    "--color-surface":            "#F8FAFC",
-    "--color-page-bg":            "#F8FAFC",
+    "--color-surface":            b.secondary.lightGray,
+    "--color-page-bg":            b.secondary.lightGray,
 
-    // ── Status colors ─────────────────────────────────────────────────────────
-    "--color-success":            "#10B981",
-    "--color-warning":            "#F59E0B",
-    "--color-error":              "#EF4444",
+    // ── Status colors (sourced from BrandColors) ──────────────────
+    "--color-success":            b.semantic.success,
+    "--color-warning":            b.semantic.warning,
+    "--color-error":              b.semantic.error,
 
     // ── Z-index scale ─────────────────────────────────────────────────────────
     "--z-dropdown":               "100",
@@ -104,16 +107,16 @@ export const lightModeTheme: ThemeDefinition = {
   rawColors: {
     primary:          "#6366F1",
     primaryHover:     "#4F46E5",
-    background:       "#F8FAFC",
+    background:       b.secondary.lightGray,
     surface:          "#FFFFFF",
     surfaceElevated:  "#F1F5F9",
-    foreground:       "#0F172A",
+    foreground:       b.text.primary,
     muted:            "#64748B",
-    border:           "#E2E8F0",
-    success:          "#10B981",
-    warning:          "#F59E0B",
-    error:            "#EF4444",
-    info:             "#3B82F6",
+    border:           b.secondary.borderGray,
+    success:          b.semantic.success,
+    warning:          b.semantic.warning,
+    error:            b.semantic.error,
+    info:             b.semantic.info,
   },
 };
 
