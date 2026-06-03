@@ -8,6 +8,7 @@ const log = createLogger("[api]");
 const BASE = getVendorApiBase();
 
 const TOKEN_KEY = "ajkmart_vendor_token";
+const REFRESH_KEY = "ajkmart_vendor_refresh";
 
 /* ── Token storage strategy ────────────────────────────────────────────────────
    Access token stored in sessionStorage (survives page reload within the same
@@ -22,6 +23,7 @@ const TOKEN_KEY = "ajkmart_vendor_token";
    Falls back to pure in-memory when sessionStorage is unavailable (e.g. private
    browsing in certain browsers, or SSR contexts). */
 let _memAccessToken = "";
+let _memRefreshToken = "";
 
 const _tokenStorage = {
   getAccessToken(): string {

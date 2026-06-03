@@ -468,7 +468,7 @@ export default function LoginScreen({ onSuccess }: LoginScreenProps) {
     <ThemeProvider role="rider" theme={riderTheme}>
       <SharedLoginScreen
         role="rider"
-        logoSrc={import.meta.env.BASE_URL + "ajkmart-logo.png"}
+        logoSrc={import.meta.env.BASE_URL.replace(/\/$/, "") + "/ajkmart-logo.png"}
         logoAlt="AJKMart"
         smartLogin
         enableBiometric={authConfig.biometricEnabled}

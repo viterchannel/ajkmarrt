@@ -6,7 +6,7 @@ export function GuestLanding() {
   return (
     <SharedGuestLanding
         role="vendor"
-        logoSrc="/ajkmart-logo.png"
+        logoSrc={import.meta.env.BASE_URL.replace(/\/$/, "") + "/ajkmart-logo.png"}
         logoAlt="AJKMart"
         appName="AJKMart Vendor"
         heroTitle={{ en: "Grow Your Business with AJKMart", ur: "اپنا کاروبار بڑھائیں", roman: "Apna karobar barhayein" }}

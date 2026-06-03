@@ -38,7 +38,7 @@ export default function ForgotPassword() {
     <ThemeProvider role="rider" theme={riderTheme}>
       <ForgotPasswordFlow
         role="rider"
-        logoSrc="/ajkmart-logo.png"
+        logoSrc={import.meta.env.BASE_URL.replace(/\/$/, "") + "/ajkmart-logo.png"}
         logoAlt="AJKMart"
         strings={{
           backBtn:           T("back"),

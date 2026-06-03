@@ -138,7 +138,7 @@ export default function Onboarding({ onDone }: OnboardingProps) {
         }}
       >
         <img
-          src={`${import.meta.env.BASE_URL}ajkmart-logo.png`}
+          src={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/ajkmart-logo.png`}
           alt="AJKMart"
           style={{ height: 36, objectFit: "contain", marginBottom: -8 }}
           onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}

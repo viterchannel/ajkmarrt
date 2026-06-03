@@ -11,12 +11,12 @@ export const BiometricAuth = {
 };
 
 export const PlayIntegrity = {
-  requestIntegrityToken: async () => ({ token: "" }),
+  requestIntegrityToken: async (_opts: { nonce: string }) => ({ token: "" }),
 };
 
 export const AppAttest = {
   generateKey: async () => "",
-  attestKey: async () => ({ attestation: "" }),
+  attestKey: async (_opts: { keyId: string; challenge: string }) => ({ attestation: "" }),
 };
 
 export const FirebaseCrashlytics = {

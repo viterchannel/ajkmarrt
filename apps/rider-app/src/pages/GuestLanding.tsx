@@ -42,7 +42,7 @@ export function GuestLanding() {
         role="rider"
         language={language as "en" | "ur" | "roman"}
         onLanguageChange={(l) => setLanguage(l as Language)}
-        logoSrc="/ajkmart-logo.png"
+        logoSrc={import.meta.env.BASE_URL.replace(/\/$/, "") + "/ajkmart-logo.png"}
         logoAlt="AJKMart"
         appName="AJKMart Rider"
         heroTitle={{ en: "Earn More. Ride Free.", ur: "زیادہ کمائیں۔ آزاد سفر کریں۔", roman: "Zyada Kamayen. Azad Safar karen." }}

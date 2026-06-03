@@ -331,7 +331,8 @@ export function useRequestEngine(
   rides: Ride[],
   riderLat: number | null,
   riderLng: number | null,
-  config?: { commissionPct?: number; rider?: { bonusPerTrip?: number; keepPct?: number } }
+  config?: { commissionPct?: number; rider?: { bonusPerTrip?: number; keepPct?: number } },
+  callbacks?: { onAcceptOrder?: (id: string) => void; onAcceptRide?: (id: string) => void }
 ): UseRequestEngineReturn {
   const [filter, setFilterState] = useState<RequestFilter>({
     distanceMaxKm: null,
@@ -503,12 +504,21 @@ export function useRequestEngine(
   }, [queueEntries]);
 
   /* Batch accept */
+  const callbacksRef = useRef(callbacks);
+  callbacksRef.current = callbacks;
+
   const batchAccept = useCallback((groupId: string) => {
     const group = batchGroups.find((g) => g.id === groupId);
     if (!group) return;
-    /* In real app, this would queue all requests for acceptance */
-    console.log("Batch accept", group.requests.map((r) => r.id));
-  }, [batchGroups]);
+    for (const req of group.requests) {
+      const unified = allRequests.find((r) => r.id === req.id);
+      if (unified?._kind === "order") {
+        callbacksRef.current?.onAcceptOrder?.(req.id);
+      } else if (unified?._kind === "ride") {
+        callbacksRef.current?.onAcceptRide?.(req.id);
+      }
+    }
+  }, [batchGroups, allRequests]);
 
   /* Earnings */
   const getEarningsBreakdown = useCallback((req: UnifiedRequest) => {

@@ -9,7 +9,7 @@ export default function ForgotPassword() {
     <ThemeProvider role="vendor">
       <ForgotPasswordFlow
         role="vendor"
-        logoSrc="/ajkmart-logo.png"
+        logoSrc={import.meta.env.BASE_URL.replace(/\/$/, "") + "/ajkmart-logo.png"}
         logoAlt="AJKMart"
         api={{
           forgotPassword: (data) => api.forgotPassword(data),

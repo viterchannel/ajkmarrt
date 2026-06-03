@@ -94,7 +94,8 @@ export function HomeRequests({
     visibleRides,
     null,
     null,
-    config
+    config,
+    { onAcceptOrder, onAcceptRide }
   );
 
   if (!isOnline) {

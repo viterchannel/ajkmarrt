@@ -12,7 +12,10 @@
     "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./src/*"],
-      "@capacitor-firebase/crashlytics": ["./src/stubs/capacitor-native.ts"]
+      "@workspace/theme": ["../../lib/theme/src/index.ts"],
+      "@capacitor-firebase/crashlytics": ["./src/stubs/capacitor-native.ts"],
+      "@capacitor-community/app-attest": ["./src/stubs/capacitor-native.ts"],
+      "@capacitor-community/play-integrity": ["./src/stubs/capacitor-native.ts"]
     },
     "strict": true,
     "noImplicitAny": true,

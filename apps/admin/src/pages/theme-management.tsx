@@ -212,28 +212,10 @@ export default function ThemeManagement() {
 
     setLoading(true);
     try {
-<<<<<<< HEAD
-      const data = await adminFetch("/theme-config");
-      if (data.configs) {
-        const next: Record<string, ThemeConfig> = {};
-        for (const cfg of data.configs) {
-          const role = cfg.appRole as AppRole;
-          if (role) {
-            next[role] = {
-              selectedTheme: (cfg.selectedTheme as ThemeId) || "dark-gold",
-              colors: cfg.colors || THEME_DEFAULTS[cfg.selectedTheme as ThemeId] || THEME_DEFAULTS["dark-gold"],
-              appRole: role,
-              updatedAt: cfg.updatedAt,
-            };
-          }
-        }
-        setConfigs((prev) => ({ ...prev, ...next }));
-=======
       const data = await adminFetch("/theme-config", { signal: controller.signal });
 
       if (!data?.configs || !Array.isArray(data.configs)) {
         throw new Error(data?.error ?? "Unexpected response from server");
->>>>>>> 63ff36a7c09d60e62bf75e8a1dda5fb26eb6e303
       }
 
       const next: Partial<Record<AppRole, ThemeConfig>> = {};
