@@ -76,6 +76,7 @@ export default defineConfig(async ({ command }) => {
       alias: {
         "@": path.resolve(import.meta.dirname, "src"),
         "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
+        "@workspace/theme": path.resolve(import.meta.dirname, "../../lib/theme/src/index.ts"),
         "@capacitor/push-notifications": path.resolve(import.meta.dirname, "src/stubs/capacitor-native.ts"),
         "@aparajita/capacitor-biometric-auth": path.resolve(import.meta.dirname, "src/stubs/capacitor-native.ts"),
       },

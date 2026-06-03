@@ -69,6 +69,7 @@ export default defineConfig(async ({ command }) => {
       alias: {
         "@": path.resolve(import.meta.dirname, "src"),
         "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
+        "@workspace/theme": path.resolve(import.meta.dirname, "../../lib/theme/src/index.ts"),
         react: path.resolve(import.meta.dirname, "node_modules/react"),
         "react-dom": path.resolve(import.meta.dirname, "node_modules/react-dom"),
       },

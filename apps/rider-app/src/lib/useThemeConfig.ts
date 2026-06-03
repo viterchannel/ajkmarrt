@@ -127,20 +127,52 @@ export function useThemeConfig() {
   const [mounted, setMounted] = useState(false);
   const queryClient = useQueryClient();
 
-  /* Load theme configuration from API */
+  /* Load theme configuration from API (public admin endpoint — no auth required) */
   const { data: apiConfig, isLoading } = useQuery({
-    queryKey: ["theme-config"],
+    queryKey: ["theme-config", "rider"],
     queryFn: async () => {
       try {
-        const response = await apiFetch("/api/rider/theme-config");
-        return response as Partial<ThemeConfig>;
+        const response = await fetch("/api/admin/theme-config/rider");
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        /* Map admin color schema → rider ThemeConfig flat keys */
+        const p  = data?.colors?.primary   ?? {};
+        const s  = data?.colors?.secondary ?? {};
+        const se = data?.colors?.semantic  ?? {};
+        const t  = data?.colors?.text      ?? {};
+        const mapped: Partial<ThemeConfig> = {
+          lightBrandPrimary: p.gold      ?? undefined,
+          lightBrandHover:   p.darkGold  ?? undefined,
+          lightBackground:   s.lightGray ?? undefined,
+          lightCard:         t.light     ?? undefined,
+          lightText:         t.primary   ?? undefined,
+          lightBorder:       s.borderGray ?? undefined,
+          lightAccent:       p.gold      ?? undefined,
+          lightSuccess:      se.success  ?? undefined,
+          lightWarning:      se.warning  ?? undefined,
+          lightError:        se.error    ?? undefined,
+          darkBrandPrimary:  p.gold      ?? undefined,
+          darkBrandHover:    p.darkGold  ?? undefined,
+          darkBackground:    p.dark      ?? undefined,
+          darkCard:          s.darkGray  ?? undefined,
+          darkText:          t.light     ?? undefined,
+          darkBorder:        s.borderGray ?? undefined,
+          darkAccent:        p.gold      ?? undefined,
+          darkSuccess:       se.success  ?? undefined,
+          darkWarning:       se.warning  ?? undefined,
+          darkError:         se.error    ?? undefined,
+        };
+        /* Strip undefined values */
+        return Object.fromEntries(
+          Object.entries(mapped).filter(([, v]) => v !== undefined)
+        ) as Partial<ThemeConfig>;
       } catch {
-        /* If API call fails, use stored config or defaults */
-        return getStoredThemeConfig() || DEFAULT_THEME_CONFIG;
+        /* Fall back to stored config or defaults */
+        return getStoredThemeConfig() ?? {};
       }
     },
-    staleTime: 1000 * 60 * 60, /* 1 hour */
-    gcTime: 1000 * 60 * 60 * 2, /* 2 hours */
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60 * 2,
   });
 
   /* Initialize and apply theme on mount */
@@ -168,19 +200,8 @@ export function useThemeConfig() {
       /* Apply changes immediately */
       applyThemeConfig(newConfig, resolvedTheme as "light" | "dark");
 
-      /* Sync with backend (fire-and-forget) */
-      try {
-        await apiFetch("/api/rider/theme-config", {
-          method: "PUT",
-          body: JSON.stringify(newConfig),
-        });
-        /* Invalidate cache to fetch fresh config */
-        queryClient.invalidateQueries({ queryKey: ["theme-config"] });
-      } catch (error) {
-        console.error("Failed to update theme config:", error);
-        /* Revert on error? Or keep local changes and retry? */
-        /* For now, keep local changes and let user retry */
-      }
+      /* Invalidate cache so next read re-fetches from admin API */
+      queryClient.invalidateQueries({ queryKey: ["theme-config", "rider"] });
     },
     [config, queryClient, resolvedTheme]
   );
