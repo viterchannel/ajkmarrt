@@ -912,9 +912,21 @@ export function useHomeData(): UseHomeDataReturn {
     if (reason !== "daily_limit_exceeded" && missing.length > 0) addBlockedVerifications(missing);
   }, [addBlockedVerifications]);
 
-  /* Socket handlers */
+  /* Socket handlers — state-change events debounced 200ms to batch rapid bursts */
   useEffect(() => {
     if (!sharedSocket) return;
+
+    /* Debounce helper — coalesces rapid calls within `wait` ms into one */
+    function debounce<T extends (...args: any[]) => void>(fn: T, wait: number): T {
+      let timer: ReturnType<typeof setTimeout> | null = null;
+      return ((...args: Parameters<T>) => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => { timer = null; fn(...args); }, wait);
+      }) as T;
+    }
+
+    const SOCKET_DEBOUNCE_MS = 200;
+
     const handleNewRequest = (raw: unknown) => {
       const payload = parseNewOrderPayload(raw);
       if (!payload?.order_id) { void qc.invalidateQueries({ queryKey: ["rider-requests"] }); return; }
@@ -931,15 +943,19 @@ export function useHomeData(): UseHomeDataReturn {
       void qc.invalidateQueries({ queryKey: ["rider-requests"] });
       if (!isAudioLocked()) playRequestSound();
     };
-    const handleStateChange = () => {
+
+    /* Debounced invalidation for high-frequency state-change events */
+    const handleStateChange = debounce(() => {
       void qc.invalidateQueries({ queryKey: ["rider-requests"] });
       void qc.invalidateQueries({ queryKey: ["rider-active"] });
-    };
-    const handleCompletionEvent = () => {
+    }, SOCKET_DEBOUNCE_MS);
+
+    const handleCompletionEvent = debounce(() => {
       void qc.invalidateQueries({ queryKey: ["rider-requests"] });
       void qc.invalidateQueries({ queryKey: ["rider-active"] });
       void qc.invalidateQueries({ queryKey: ["rider-earnings"] });
-    };
+    }, SOCKET_DEBOUNCE_MS);
+
     const handleRideAssigned = (raw: unknown) => {
       const payload = parseRideAssignedPayload(raw);
       if (!payload) return;
@@ -947,7 +963,7 @@ export function useHomeData(): UseHomeDataReturn {
       void qc.invalidateQueries({ queryKey: ["rider-active"] });
       setLocation("/active");
     };
-    const handleOrderCancelled = (raw: unknown) => {
+    const handleOrderCancelled = debounce((raw: unknown) => {
       if (!isMountedRef.current) return;
       const payload = parseOrderCancelledPayload(raw);
       const cancelledId = payload?.order_id;
@@ -960,8 +976,8 @@ export function useHomeData(): UseHomeDataReturn {
       const reason = payload?.reason;
       trackEvent("ride_cancelled", { request_id: cancelledId ?? "unknown", reason: reason ?? "" });
       toast({ title: reason ? `Order cancelled: ${reason}` : T("requestCancelled"), variant: "destructive" });
-    };
-    const handleOrderAccepted = (raw: unknown) => {
+    }, SOCKET_DEBOUNCE_MS);
+    const handleOrderAccepted = debounce((raw: unknown) => {
       if (!isMountedRef.current) return;
       const payload = parseOrderAcceptedPayload(raw);
       const acceptedId = payload?.order_id ?? payload?.ride_id ?? payload?.id;
@@ -972,8 +988,8 @@ export function useHomeData(): UseHomeDataReturn {
         });
       } else void qc.invalidateQueries({ queryKey: ["rider-requests"] });
       toast({ title: "Sorry, this order was taken.", variant: "destructive" });
-    };
-    const handleCounterAccepted = (raw: unknown) => {
+    }, SOCKET_DEBOUNCE_MS);
+    const handleCounterAccepted = debounce((raw: unknown) => {
       if (!isMountedRef.current) return;
       const payload = parseCounterResultPayload(raw);
       const acceptedId = payload?.ride_id ?? payload?.order_id ?? payload?.id;
@@ -986,8 +1002,8 @@ export function useHomeData(): UseHomeDataReturn {
       void qc.invalidateQueries({ queryKey: ["rider-requests"] });
       void qc.invalidateQueries({ queryKey: ["rider-active"] });
       toast({ title: "Counter accepted! Go to active task." });
-    };
-    const handleCounterDeclined = (raw: unknown) => {
+    }, SOCKET_DEBOUNCE_MS);
+    const handleCounterDeclined = debounce((raw: unknown) => {
       if (!isMountedRef.current) return;
       const payload = parseCounterResultPayload(raw);
       const declinedId = payload?.ride_id ?? payload?.order_id ?? payload?.id;
@@ -998,7 +1014,8 @@ export function useHomeData(): UseHomeDataReturn {
         });
       } else void qc.invalidateQueries({ queryKey: ["rider-requests"] });
       toast({ title: "Customer declined your counter offer.", variant: "destructive" });
-    };
+    }, SOCKET_DEBOUNCE_MS);
+
     sharedSocket.on("rider:new_request", handleNewRequest);
     sharedSocket.on("new:request", handleNewRequest);
     sharedSocket.on("new_order", handleNewRequest);

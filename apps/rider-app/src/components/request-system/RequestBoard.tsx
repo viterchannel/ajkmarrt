@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, CSSProperties } from "react";
+import { List, useDynamicRowHeight } from "react-window";
 import { type TranslationKey } from "@workspace/i18n";
 import { Package, Bike, SlidersHorizontal } from "lucide-react";
 import type { UseRequestEngineReturn } from "../../lib/request-engine/useRequestEngine";
@@ -30,7 +31,126 @@ interface RequestBoardProps {
   T: (key: TranslationKey) => string;
   userId: string;
   isRestricted: boolean;
+  /** Called when user scrolls near the end of the virtualized list */
+  onNearEnd?: () => void;
 }
+
+/* ─── Row data props shared via react-window rowProps ────────────────────── */
+
+interface RowData {
+  requests: UseRequestEngineReturn["filteredRequests"];
+  engine: UseRequestEngineReturn;
+  currency: string;
+  config: any;
+  onAcceptOrder: (id: string) => void;
+  onRejectOrder: (id: string) => void;
+  onAcceptRide: (id: string) => void;
+  onCounterRide: (id: string, fare: number) => Promise<void>;
+  onRejectOffer: (id: string) => void;
+  onIgnoreRide: (id: string) => void;
+  onDismiss: (id: string) => void;
+  acceptOrderPending: boolean;
+  rejectOrderPending: boolean;
+  acceptRidePending: boolean;
+  acceptingRideId: string | null;
+  acceptingOrderId: string | null;
+  counterRidePending: boolean;
+  rejectOfferPending: boolean;
+  ignoreRidePending: boolean;
+  T: (key: TranslationKey) => string;
+  userId: string;
+  isRestricted: boolean;
+  isNetworkOffline: boolean;
+  /** Passed from useDynamicRowHeight — each row calls this to register ResizeObserver */
+  observeRow: (el: Element) => () => void;
+}
+
+/* ─── Virtualized row component ──────────────────────────────────────────── */
+
+function RequestRow({
+  index,
+  style,
+  requests,
+  engine,
+  currency,
+  config,
+  onAcceptOrder,
+  onRejectOrder,
+  onAcceptRide,
+  onCounterRide,
+  onRejectOffer,
+  onIgnoreRide,
+  onDismiss,
+  acceptOrderPending,
+  rejectOrderPending,
+  acceptRidePending,
+  acceptingRideId,
+  acceptingOrderId,
+  counterRidePending,
+  rejectOfferPending,
+  ignoreRidePending,
+  T,
+  userId,
+  isRestricted,
+  isNetworkOffline,
+  observeRow,
+}: { index: number; style: CSSProperties } & RowData) {
+  const rowRef = useRef<HTMLDivElement>(null);
+
+  /* Register this row's element with the dynamic height tracker */
+  useEffect(() => {
+    const el = rowRef.current;
+    if (!el || !observeRow) return;
+    return observeRow(el);
+  }, [observeRow, index]);
+
+  const req = requests[index];
+  if (!req) return null;
+
+  return (
+    /* Apply top/left/width from react-window but let height be content-driven */
+    <div
+      ref={rowRef}
+      style={{ position: style.position, top: style.top, left: style.left, width: style.width }}
+    >
+      <div style={{ paddingBottom: 8 }}>
+        <RequestCard
+          request={req}
+          engine={engine}
+          currency={currency}
+          config={config}
+          onAcceptOrder={onAcceptOrder}
+          onRejectOrder={onRejectOrder}
+          onAcceptRide={onAcceptRide}
+          onCounterRide={onCounterRide}
+          onRejectOffer={onRejectOffer}
+          onIgnoreRide={onIgnoreRide}
+          onDismiss={onDismiss}
+          acceptOrderPending={acceptOrderPending}
+          rejectOrderPending={rejectOrderPending}
+          acceptRidePending={acceptRidePending}
+          acceptingRideId={acceptingRideId}
+          acceptingOrderId={acceptingOrderId}
+          counterRidePending={counterRidePending}
+          rejectOfferPending={rejectOfferPending}
+          ignoreRidePending={ignoreRidePending}
+          T={T}
+          userId={userId}
+          isRestricted={isRestricted}
+          isNetworkOffline={isNetworkOffline}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Config constants ───────────────────────────────────────────────────── */
+/** Default row height estimate before ResizeObserver measures the real size */
+const DEFAULT_ROW_HEIGHT = 230;
+/** Show virtualized list when items exceed this count */
+const VIRTUALIZE_THRESHOLD = 4;
+/** Height of the scrollable window for the virtualized list */
+const LIST_WINDOW_HEIGHT = 520;
 
 export function RequestBoard({
   engine,
@@ -55,6 +175,7 @@ export function RequestBoard({
   T,
   userId,
   isRestricted,
+  onNearEnd,
 }: RequestBoardProps) {
   const { activeTab, setActiveTab, filteredRequests, visibleOrders, visibleRides, batchGroups } = engine;
 
@@ -71,10 +192,78 @@ export function RequestBoard({
   ];
 
   const visibleRequests = activeTab === "all" ? filteredRequests : activeTab === "orders" ? visibleOrders : visibleRides;
+  const shouldVirtualize = visibleRequests.length > VIRTUALIZE_THRESHOLD;
+
+  /* ── Dynamic row height — ResizeObserver measures each rendered card ── */
+  const dynamicHeight = useDynamicRowHeight({ defaultRowHeight: DEFAULT_ROW_HEIGHT });
+
+  /**
+   * Stable per-element observer wrapper passed via rowProps.
+   * Each RequestRow calls this on mount; returned function is the cleanup.
+   */
+  const observeRow = useCallback(
+    (el: Element) => dynamicHeight.observeRowElements([el]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dynamicHeight.observeRowElements],
+  );
+
+  /* ── Near-end detection via onRowsRendered — de-duped with a 2s cooldown ── */
+  const nearEndCooldown = useRef(false);
+  const handleRowsRendered = useCallback(
+    ({ stopIndex }: { startIndex: number; stopIndex: number }) => {
+      if (!onNearEnd || nearEndCooldown.current) return;
+      if (stopIndex >= visibleRequests.length - 2) {
+        nearEndCooldown.current = true;
+        onNearEnd();
+        setTimeout(() => { nearEndCooldown.current = false; }, 2000);
+      }
+    },
+    [onNearEnd, visibleRequests.length],
+  );
+
+  /* ── Shared row data (memoized to avoid unnecessary row re-renders) ── */
+  const rowData: RowData = useMemo(
+    () => ({
+      requests: visibleRequests,
+      engine,
+      currency,
+      config,
+      onAcceptOrder,
+      onRejectOrder,
+      onAcceptRide,
+      onCounterRide,
+      onRejectOffer,
+      onIgnoreRide,
+      onDismiss,
+      acceptOrderPending,
+      rejectOrderPending,
+      acceptRidePending,
+      acceptingRideId,
+      acceptingOrderId,
+      counterRidePending,
+      rejectOfferPending,
+      ignoreRidePending,
+      T,
+      userId,
+      isRestricted,
+      isNetworkOffline,
+      observeRow,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      visibleRequests, engine, currency, config,
+      onAcceptOrder, onRejectOrder, onAcceptRide, onCounterRide, onRejectOffer, onIgnoreRide, onDismiss,
+      acceptOrderPending, rejectOrderPending, acceptRidePending, acceptingRideId, acceptingOrderId,
+      counterRidePending, rejectOfferPending, ignoreRidePending, T, userId, isRestricted, isNetworkOffline,
+      observeRow,
+    ],
+  );
+
+  const listHeight = Math.min(LIST_WINDOW_HEIGHT, visibleRequests.length * DEFAULT_ROW_HEIGHT);
 
   return (
     <div className="space-y-3">
-      {/* Dual-panel tabs with counts */}
+      {/* Tab bar */}
       <div className="flex gap-1.5 rounded-2xl bg-card p-1.5 shadow-sm">
         {tabs.map((t) => (
           <button
@@ -100,10 +289,8 @@ export function RequestBoard({
         ))}
       </div>
 
-      {/* Filter bar */}
       <RequestFilterBar filter={engine.filter} onChange={engine.setFilter} T={T} />
 
-      {/* Batch accept panel (when 2+ nearby orders) */}
       {batchGroups.length > 0 && (
         <BatchAcceptPanel
           groups={batchGroups}
@@ -115,7 +302,6 @@ export function RequestBoard({
         />
       )}
 
-      {/* Offline indicator */}
       {isNetworkOffline && (
         <div className="flex items-center gap-2 rounded-xl bg-warning/15 px-3 py-2.5 text-xs font-semibold text-warning">
           <span className="h-2 w-2 flex-shrink-0 rounded-full bg-warning animate-pulse" />
@@ -132,7 +318,23 @@ export function RequestBoard({
           <p className="text-sm font-semibold text-muted">{T("noRequestsMatch")}</p>
           <p className="mt-1 text-xs text-muted/60">{T("adjustFiltersRequest")}</p>
         </div>
+      ) : shouldVirtualize ? (
+        /*
+         * react-window List — virtualizes request cards using dynamic row heights.
+         * useDynamicRowHeight / ResizeObserver measures each card after mount.
+         * onRowsRendered fires near-end to trigger the onNearEnd callback.
+         */
+        <List<RowData>
+          rowComponent={RequestRow}
+          rowCount={visibleRequests.length}
+          rowHeight={dynamicHeight}
+          rowProps={rowData}
+          defaultHeight={listHeight}
+          style={{ height: listHeight, overflowY: "auto" }}
+          onRowsRendered={handleRowsRendered}
+        />
       ) : (
+        /* Direct render for short lists (≤ threshold items) */
         <div className="space-y-2">
           {visibleRequests.map((req) => (
             <RequestCard

@@ -1,12 +1,9 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { PullToRefresh } from "../components/PullToRefresh";
 import { useHomeData } from "../components/home/useHomeData";
 import { HomeHeader } from "../components/home/HomeHeader";
-import { HomeStats } from "../components/home/HomeStats";
-import { HomeAlertCenter } from "../components/home/HomeAlertCenter";
 import { HomeRequests } from "../components/home/HomeRequests";
-import { GoalSection } from "../components/home/GoalSection";
 import { ProfileCompletionCard } from "../components/home/ProfileCompletionCard";
 import { QuickActions } from "../components/home/QuickActions";
 import { SkeletonHome } from "../components/dashboard/SkeletonHome";
@@ -14,18 +11,52 @@ import { OfflineConfirmDialog } from "../components/dashboard/OfflineConfirmDial
 import { ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 
+/* ─── Code-split heavy sub-components ───────────────────────────────────── */
+const HomeAlertCenter = lazy(() =>
+  import("../components/home/HomeAlertCenter").then((m) => ({ default: m.HomeAlertCenter }))
+);
+const HomeStats = lazy(() =>
+  import("../components/home/HomeStats").then((m) => ({ default: m.HomeStats }))
+);
+const GoalSection = lazy(() =>
+  import("../components/home/GoalSection").then((m) => ({ default: m.GoalSection }))
+);
+
+/* ─── Fallback skeletons for lazy-loaded sections ────────────────────────── */
+
+function AlertSkeleton() {
+  return <div className="h-12 animate-pulse rounded-2xl bg-muted/20" />;
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="space-y-2.5">
+      <div className="h-3 w-32 animate-pulse rounded bg-muted/30" />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="h-20 animate-pulse rounded-2xl bg-muted/20" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GoalSkeleton() {
+  return <div className="h-16 animate-pulse rounded-2xl bg-muted/20" />;
+}
+
+/* ─── Page ───────────────────────────────────────────────────────────────── */
+
 export default function Home() {
   const h = useHomeData();
 
-  /* One-time session warnings — run once after mount, not on every render */
   useEffect(() => {
     try {
       if (sessionStorage.getItem("reg_doc_upload_warning") === "1") {
         sessionStorage.removeItem("reg_doc_upload_warning");
         toast({
           title: "Documents not uploaded",
-          description:
-            "Your ID documents couldn't be uploaded during registration. Please upload them from your Profile page to complete KYC verification.",
+          description: "Your ID documents couldn't be uploaded during registration. Please upload them from your Profile page to complete KYC verification.",
           variant: "destructive",
           duration: 8000,
         });
@@ -39,8 +70,7 @@ export default function Home() {
         sessionStorage.removeItem("biometric_save_failed");
         toast({
           title: "Biometric not saved",
-          description:
-            "Could not save biometric login. You can enable it later from Profile › Security Settings.",
+          description: "Could not save biometric login. You can enable it later from Profile › Security Settings.",
           duration: 6000,
         });
       }
@@ -49,7 +79,6 @@ export default function Home() {
 
   if (h.authLoading) return <SkeletonHome />;
 
-  /* Profile banner conditions */
   const hasBankInfo = !!(h.user?.bankName && h.user?.bankAccount);
   const kycStatus = h.user?.kycStatus ?? "none";
   const kycVerified = kycStatus === "verified" || kycStatus === "pending";
@@ -63,7 +92,6 @@ export default function Home() {
   const showBankBanner = !hasBankInfo;
   const showKycBanner = !!(h.config.wallet?.kycRequired && !kycVerified);
 
-  // Validate numeric values - ensure they're safe numbers
   const activeOrderCount = Math.max(0, Number(h.user?.activeOrderCount ?? 0));
   const unreadNotifications = Math.max(0, Number(h.user?.unreadNotifications ?? 0));
   const maxDeliveries = Math.max(1, Number(h.user?.maxDeliveries ?? h.config.rider?.maxDeliveries ?? 3));
@@ -79,7 +107,7 @@ export default function Home() {
         {h.srAnnouncement}
       </div>
 
-      {/* ── Header: branding, greeting, tier badge, wallet, online toggle ── */}
+      {/* ── Sticky header ── */}
       <HomeHeader
         user={h.user}
         greeting={h.greeting}
@@ -97,7 +125,7 @@ export default function Home() {
 
       <main className="relative z-10 mx-auto w-full max-w-2xl space-y-3 px-4 pt-4 pb-4">
 
-        {/* Profile completion standalone card — above alert center */}
+        {/* Profile completion card */}
         <ProfileCompletionCard
           showPhoneBanner={showPhoneBanner}
           showEmailBanner={showEmailBanner}
@@ -105,70 +133,76 @@ export default function Home() {
           showKycBanner={showKycBanner}
         />
 
-        {/* Alert Center: critical + compliance banners only */}
-        <HomeAlertCenter
-          socketConnected={h.socketConnected}
-          effectiveOnline={h.effectiveOnline}
-          zoneWarning={h.zoneWarning}
-          onDismissZone={() => h.setZoneWarning(null)}
-          wakeLockWarning={h.wakeLockWarning}
-          onDismissWakeLock={() => h.setWakeLockWarning(false)}
-          audioLocked={h.audioLocked}
-          onUnlockAudio={h.unlockAudioCtx}
-          onRetryConnect={h.onRetryConnect}
-          gpsWarning={h.gpsWarning}
-          onDismissGps={() => h.setGpsWarning(null)}
-          isRestricted={!!h.user?.isRestricted || h.user?.approvalStatus === "rejected"}
-          riderNotice={h.riderNotice}
-          riderNoticeDismissed={h.riderNoticeDismissed}
-          onDismissRiderNotice={h.onDismissRiderNotice}
-          cancelStatsData={h.cancelStatsData}
-          ignoreStatsData={h.ignoreStatsData}
-          currency={h.currency}
-          minBalance={h.config.rider?.minBalance ?? 0}
-          walletBalance={Number(h.user?.walletBalance) || 0}
-          blockingReason={h.blockingReason}
-          kycStatus={h.user?.kycStatus}
-          vehicleType={h.user?.vehicleType}
-          vehiclePhoto={h.user?.vehiclePhoto}
-          drivingLicense={h.user?.drivingLicense}
-          rejectionReason={h.user?.rejectionReason}
-          availableFeatures={h.availableFeatures}
-          T={h.T}
-        />
+        {/* Alert center — lazy */}
+        <Suspense fallback={<AlertSkeleton />}>
+          <HomeAlertCenter
+            socketConnected={h.socketConnected}
+            effectiveOnline={h.effectiveOnline}
+            zoneWarning={h.zoneWarning}
+            onDismissZone={() => h.setZoneWarning(null)}
+            wakeLockWarning={h.wakeLockWarning}
+            onDismissWakeLock={() => h.setWakeLockWarning(false)}
+            audioLocked={h.audioLocked}
+            onUnlockAudio={h.unlockAudioCtx}
+            onRetryConnect={h.onRetryConnect}
+            gpsWarning={h.gpsWarning}
+            onDismissGps={() => h.setGpsWarning(null)}
+            isRestricted={!!h.user?.isRestricted || h.user?.approvalStatus === "rejected"}
+            riderNotice={h.riderNotice}
+            riderNoticeDismissed={h.riderNoticeDismissed}
+            onDismissRiderNotice={h.onDismissRiderNotice}
+            cancelStatsData={h.cancelStatsData}
+            ignoreStatsData={h.ignoreStatsData}
+            currency={h.currency}
+            minBalance={h.config.rider?.minBalance ?? 0}
+            walletBalance={Number(h.user?.walletBalance) || 0}
+            blockingReason={h.blockingReason}
+            kycStatus={h.user?.kycStatus}
+            vehicleType={h.user?.vehicleType}
+            vehiclePhoto={h.user?.vehiclePhoto}
+            drivingLicense={h.user?.drivingLicense}
+            rejectionReason={h.user?.rejectionReason}
+            availableFeatures={h.availableFeatures}
+            T={h.T}
+          />
+        </Suspense>
 
-        {/* Today's performance stats */}
-        <HomeStats
-          todayEarned={h.earningsData?.today?.earnings ?? h.user?.stats?.earningsToday ?? 0}
-          todayRides={h.earningsData?.today?.deliveries ?? h.user?.stats?.deliveriesToday ?? 0}
-          acceptanceRate={
-            h.cancelStatsData?.cancelRate != null
-              ? Math.max(0, 100 - h.cancelStatsData.cancelRate)
-              : null
-          }
-          rating={h.user?.stats?.rating ?? null}
-          onlineSince={h.onlineSince}
-          isOnline={h.effectiveOnline}
-          currency={h.currency}
-          language={h.language}
-          maxDeliveries={maxDeliveries}
-          activeOrderCount={activeOrderCount}
-        />
+        {/* Stats — lazy */}
+        <Suspense fallback={<StatsSkeleton />}>
+          <HomeStats
+            todayEarned={h.earningsData?.today?.earnings ?? h.user?.stats?.earningsToday ?? 0}
+            todayRides={h.earningsData?.today?.deliveries ?? h.user?.stats?.deliveriesToday ?? 0}
+            acceptanceRate={
+              h.cancelStatsData?.cancelRate != null
+                ? Math.max(0, 100 - h.cancelStatsData.cancelRate)
+                : null
+            }
+            rating={h.user?.stats?.rating ?? null}
+            onlineSince={h.onlineSince}
+            isOnline={h.effectiveOnline}
+            currency={h.currency}
+            language={h.language}
+            maxDeliveries={maxDeliveries}
+            activeOrderCount={activeOrderCount}
+          />
+        </Suspense>
 
-        {/* Daily goal tracker */}
-        <GoalSection
-          adminGoal={h.config.rider?.dailyGoal ?? 5000}
-          personalGoal={h.earningsData?.dailyGoal ?? h.user?.dailyGoal ?? null}
-          todayEarnings={h.earningsData?.today?.earnings ?? h.user?.stats?.earningsToday ?? 0}
-          currency={h.currency}
-          T={h.T}
-          refreshUser={h.refreshUser}
-        />
+        {/* Goal ring — lazy */}
+        <Suspense fallback={<GoalSkeleton />}>
+          <GoalSection
+            adminGoal={h.config.rider?.dailyGoal ?? 5000}
+            personalGoal={h.earningsData?.dailyGoal ?? h.user?.dailyGoal ?? null}
+            todayEarnings={h.earningsData?.today?.earnings ?? h.user?.stats?.earningsToday ?? 0}
+            currency={h.currency}
+            T={h.T}
+            refreshUser={h.refreshUser}
+          />
+        </Suspense>
 
         {/* Quick actions */}
         <QuickActions />
 
-        {/* Live requests feed */}
+        {/* Live requests feed (virtualized) */}
         <HomeRequests
           isOnline={h.effectiveOnline}
           totalRequests={h.totalRequests}
