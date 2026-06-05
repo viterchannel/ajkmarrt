@@ -1,0 +1,32 @@
+Rider App — Phase 2: Home Page Redesign
+What & Why
+Redesign the home/dashboard page for better performance and visual hierarchy: sticky header, animated online toggle, collapsible alert drawer, virtualized request feed, redesigned stats grid, and SVG goal ring.
+
+Done looks like
+Header is sticky and compacts on scroll with a Framer Motion layout animation; shows rider avatar/status chip and notification bell with unread badge.
+Online/offline toggle has 300 ms debounce, optimistic UI update, animated pill (Framer Motion spring), and a status color ring on the avatar.
+Inline alert banners replaced by a bottom-sheet collapsible drawer; only critical alerts shown by default; non-critical collapsed under "Show more"; each alert individually dismissible.
+Ride request feed rendered with react-window (VariableSizeList); infinite scroll via IntersectionObserver; skeleton loaders on first paint.
+Stats section is a 3-column CSS grid; each card has gradient background, animated counter (spring), and mini sparkline icon.
+Goal card uses an SVG <circle> progress ring; color-coded red/amber/green by threshold; displays a motivational message based on % complete.
+Heavy sub-components are code-split with React.lazy + Suspense; socket updates debounced 200 ms; expensive computations wrapped with useMemo/useCallback.
+Out of scope
+Earnings, Profile, Active Delivery, or other pages.
+Backend changes.
+Steps
+Sticky compact header — Refactor the Header component with position: sticky, Framer Motion scroll-driven compact mode, avatar/status chip, and notification bell badge.
+Debounced online toggle — Add 300 ms debounce, optimistic state update, animated pill toggle with spring physics, and avatar status ring.
+Collapsible alert drawer — Replace inline banners with a bottom-sheet alert drawer; critical-only default view; "Show more" expander; per-alert dismiss.
+Virtualized request feed — Integrate react-window for the ride-request list; wire IntersectionObserver for infinite scroll; add skeleton loader rows.
+Stats cards grid — Rebuild stats as a 3-column grid with gradient tokens, spring-animated counters, and sparkline icons.
+SVG goal ring — Replace linear/bar progress with an SVG circle ring, color-coded thresholds, and a dynamic motivational message.
+Code split & performance — Apply React.lazy/Suspense to heavy sub-components; debounce socket events 200 ms; memoize expensive computations.
+Relevant files
+apps/rider-app/src/components/dashboard/
+apps/rider-app/src/components/home/
+apps/rider-app/src/pages/
+apps/rider-app/src/hooks/
+apps/rider-app/src/contexts/
+Dependencies
+
+Rider App — Phase 1: Design System Foundation
